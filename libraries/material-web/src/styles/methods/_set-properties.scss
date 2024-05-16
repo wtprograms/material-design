@@ -1,0 +1,17 @@
+@function _remove-leading-dash($string) {
+  @if str-slice($string, 1, 1) == '-' {
+    @return str-slice($string, 2);
+  }
+  @return $string;
+}
+
+@mixin set-properties($tokens, $name: '', $prefix: '') {
+  @each $key, $value in $tokens {
+    $token-name: if($key == '', $prefix, '#{$prefix}-#{$key}');
+    @if type-of($value) == 'map' {
+      @include set-properties($value, $name, $token-name);
+    } @else {
+      --_#{_remove-leading-dash($token-name)}: var(--md-comp-#{$name}#{$token-name});
+    }
+  }
+}

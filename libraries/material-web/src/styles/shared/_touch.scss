@@ -1,0 +1,7 @@
+@mixin touch {
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+}

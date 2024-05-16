@@ -1,0 +1,85 @@
+@use '../md';
+
+$elevated: (
+  'container-color': var(--md-sys-color-surface-container-low),
+  'disabled': (
+    'container-color': md.disabled('container'),
+  )
+);
+
+$filled: (
+  'container-color': var(--md-sys-color-surface-container-highest),
+  'disabled': (
+    'container-color': md.disabled('container'),
+  )
+);
+
+$outlined: (
+  'container-outline': 1px solid var(--md-sys-color-outline-variant),
+  'disabled': (
+    'container-outline': 1px solid md.disabled('outline'),
+  )
+);
+
+$variants: (
+  'elevated': $elevated,
+  'filled': $filled,
+  'outlined': $outlined
+);
+
+@each $variant, $properties in $variants {
+  :host([variant='#{$variant}']) {
+    @include md.declare-component-tokens($properties, 'card');
+  }
+
+  :host([variant='#{$variant}'][disabled]) {
+    @include md.set-properties(map-get($properties, 'disabled'), 'card-disabled');
+  }
+}
+
+$public: (
+  'container-shape': var(--md-sys-shape-medium),
+  'padding': 8px,
+  'color': inherit,
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'card');
+}
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  border-radius: var(--_container-shape);
+  color: inherit;
+  position: relative;
+  isolation: isolate;
+  color: var(--_color);
+  padding: var(--_padding);
+
+  .container {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: var(--_container-color);
+    border: var(--_container-outline);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @include md.button {
+    text-align: start;
+    justify-content: start;
+  }
+
+}
+
+@include md.disabled-component {
+  --_color: #{md.disabled('text')};
+}
+
+:host([activatable]) {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}

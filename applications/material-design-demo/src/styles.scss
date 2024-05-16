@@ -1,0 +1,18 @@
+@use '../../../libraries/material-web/src/styles' as md;
+
+@include md.import;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @include md.reboot;
+}
+
+md-card {
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}

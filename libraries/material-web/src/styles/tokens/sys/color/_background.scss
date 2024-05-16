@@ -1,0 +1,6 @@
+@use '../../../methods/color';
+
+$tokens: (
+  '': color.color('neutral', 98, 6),
+  'on': color.color('neutral', 10, 90)
+);

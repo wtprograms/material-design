@@ -1,0 +1,26 @@
+@use '../md' as md;
+
+$public-tokens: (
+  'color': var(--md-sys-color-outline-variant),
+);
+
+:host {
+  @include md.declare-component-tokens($public-tokens, 'focus-ring');
+
+  outline-offset: 3px;
+  outline-width: 0;
+  outline-style: solid;
+  outline-color: var(--_color);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  display: flex;
+  pointer-events: none;
+  border-radius: inherit;
+  @include md.motion('outline, opacity');
+}
+
+:host([focused]) {
+  outline-width: 3px;
+  opacity: 1;
+}

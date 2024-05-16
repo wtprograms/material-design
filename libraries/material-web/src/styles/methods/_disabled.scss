@@ -1,0 +1,5 @@
+@use 'mix';
+
+@function disabled($target) {
+  @return mix.mix(transparent, var(--md-sys-color-surface-on), var(--md-sys-disabled-#{$target}));
+}

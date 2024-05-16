@@ -1,0 +1,13 @@
+@use 'imports';
+@use 'reboot';
+
+@forward 'imports';
+@forward 'methods';
+@forward 'reboot';
+@forward 'shared';
+@forward 'variables';
+
+@mixin initialize {
+  @include imports.import;
+  @include reboot.reboot;
+}

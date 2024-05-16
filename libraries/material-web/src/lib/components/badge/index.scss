@@ -1,0 +1,64 @@
+@use '../md';
+
+$public-tokens: (
+  'container-color': var(--md-sys-color-error),
+  'content-color': var(--md-sys-color-error-on),
+  'dot-color': var(--_container-color),
+);
+
+$private: (
+  'dot-size': 6px,
+  'number': (
+    'left': 50%,
+    'top': -2px,
+    'padding': 4px
+  ),
+  'height': 16px
+);
+
+:host {
+  @include md.declare-component-tokens($public-tokens, 'badge', $private);
+
+  background-color: var(--_container-color);
+  color: var(--_content-color);
+  border-radius: var(--md-sys-shape-full);
+  height: var(--_height);
+  width: fit-content;
+  position: absolute;
+  display: inline-flex;
+  isolation: isolate;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  @include md.typescale('label', 'small');
+
+  @include md.motion;
+}
+
+:host([dot]) {
+  background-color: var(--_dot-color);
+  width: var(--_dot-size);
+  height: var(--_dot-size);
+  right: 0;
+  top: 0;
+}
+
+:host([number]) {
+  top: var(--_number-top);
+  left: var(--_number-left);
+  padding-left: var(--_number-padding);
+  padding-right: var(--_number-padding);
+}
+
+:host([single-digit]) {
+  width: var(--_height);
+  padding: 0;
+  text-align: center;
+}
+
+:host([embedded]) {
+  position: relative;
+  inset: auto;
+  --_number-top: auto;
+  --_number-left: auto;
+}

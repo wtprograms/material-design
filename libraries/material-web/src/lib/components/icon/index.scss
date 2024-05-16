@@ -1,0 +1,50 @@
+@use '../md';
+
+$public-tokens: (
+  'filled': 0,
+  'weight': var(--md-ref-typeface-weight-regular),
+  'size': unset
+);
+
+$internal-tokens: (
+  'size-px': calc(var(--_size) * 1px)
+);
+
+:host {
+  @include md.declare-component-tokens($public-tokens, 'icon', $internal-tokens);
+
+  position: relative;
+  font-size: var(--_size-px);
+  width: var(--_size-px);
+  max-width: var(--_size-px);
+  height: var(--_size-px);
+  color: inherit;
+  display: inline-flex;
+  font-style: normal;
+  place-items: center;
+  place-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  user-select: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  flex-shrink: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--md-ref-typeface-font-icon);
+  font-weight: var(--_weight);
+  font-variation-settings:
+    'FILL' var(--_filled),
+    'wght' var(--_weight),
+    'GRAD' 0,
+    'opsz' clamp(20, var(--_size), 48);
+
+  @include md.motion;
+}
+
+:host([filled]) {
+  --_filled: 1;
+}

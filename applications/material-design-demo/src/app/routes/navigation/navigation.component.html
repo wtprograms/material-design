@@ -1,0 +1,27 @@
+<h1>md-navigation</h1>
+<md-card>
+  <md-button (click)="onChange()">Change layout</md-button>
+  {{ navigation.layout }}
+</md-card>
+<md-card class="w-[500px] h-[500px] relative">
+  <md-navigation #navigation>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-divider></md-divider>
+    <md-navigation-headline>Navigation Label</md-navigation-headline>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+  </md-navigation>
+</md-card>

@@ -1,0 +1,70 @@
+@use '../md' as md;
+
+$public-tokens: (
+  'color': var(--md-sys-color-surface-on),
+  'transform': (
+    'default': scale(1),
+    'hover': scale(1),
+    'origin': center
+  )
+);
+
+$internal-tokens: (
+  'transform': var(--_transform-default)
+);
+
+:host {
+  @include md.declare-component-tokens($public-tokens, 'ripple', $internal-tokens);
+
+  display: flex;
+  margin: auto;
+  pointer-events: none;
+}
+
+:host([disabled]) {
+  display: none;
+}
+
+:host,
+.surface {
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.surface {
+  -webkit-tap-highlight-color: var(--md-ref-palette-transparent);
+
+  &::before,
+  &::after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+  }
+
+  &::before {
+    background-color: var(--_color);
+    inset: 0;
+    border-radius: inherit;
+    transform: var(--_transform);
+    transform-origin: var(--_transform-origin);
+    @include md.motion('opacity, background-color, transform');
+  }
+
+  &::after {
+    background: radial-gradient(closest-side, var(--_color) max(calc(100% - 70px), 65%), transparent 100%);
+    transform-origin: center center;
+    @include md.motion('opacity', 'standard', 'medium-4');
+  }
+}
+
+.hovered::before {
+  --_transform: var(--_transform-hover);
+  opacity: var(--md-sys-state-hover);
+}
+
+.activated::after {
+  opacity: var(--md-sys-state-active);
+  transition-duration: 105ms;
+}

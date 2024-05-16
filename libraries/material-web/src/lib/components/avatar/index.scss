@@ -1,0 +1,128 @@
+@use '../md';
+
+$surface: (
+  'container':(
+    'color': var(--md-sys-color-surface-container-low),
+    'outline-color': var(--md-sys-color-primary)
+  ),
+  'content-color': var(--md-sys-color-primary)
+);
+
+$primary: (
+  'container':(
+    'color': var(--md-sys-color-primary-container),
+    'outline-color': var(--md-sys-color-primary-container-on)
+  ),
+  'content-color': var(--md-sys-color-primary-container-on)
+);
+
+$secondary: (
+  'container':(
+    'color': var(--md-sys-color-secondary-container),
+    'outline-color': var(--md-sys-color-secondary-container-on)
+  ),
+  'content-color': var(--md-sys-color-secondary-container-on)
+);
+
+$tertiary: (
+  'container':(
+    'color': var(--md-sys-color-tertiary-container),
+    'outline-color': var(--md-sys-color-tertiary-container-on)
+  ),
+  'content-color': var(--md-sys-color-tertiary-container-on)
+);
+
+$palettes: (
+  'surface': $surface,
+  'primary': $primary,
+  'secondary': $secondary,
+  'tertiary': $tertiary
+);
+
+@each $palette, $tokens in $palettes {
+  :host([palette='#{$palette}']) {
+    @include md.declare-component-tokens($tokens, 'avatar');
+  }
+}
+
+$public: (
+  'container-shape': var(--md-sys-shape-full),
+  'disabled': (
+    'container': (
+      'color': md.disabled('container'),
+      'outline-color': md.disabled('outline')
+    ),
+    'content-color': md.disabled('text')
+  )
+);
+
+$private: (
+  'size': 40px,
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'avatar', $private);
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($public, 'disabled'), 'avatar-disabled');
+}
+
+:host {
+  border-radius: var(--_container-shape);
+  display: inline-flex;
+  outline: none;
+  place-content: center;
+  place-items: center;
+  position: relative;
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  font-size: calc(var(--_size) * 0.5);
+  flex-shrink: 0;
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  height: var(--_size);
+  width: var(--_size);
+  isolation: isolate;
+  background-color: var(--_container-color);
+
+  @include md.button {
+    color: var(--_content-color);
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border-width: 1px;
+    border-color: var(--_container-outline-color);
+    border-style: solid;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+
+  img {
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+  }
+}
+
+:host([activatable]) {
+  cursor: pointer;
+}
+
+@include md.disabled-component {
+  --_elevation-level: 0;
+
+  img {
+    opacity: 0.3
+  }
+}

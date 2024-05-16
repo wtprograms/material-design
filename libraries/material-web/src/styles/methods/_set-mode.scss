@@ -1,0 +1,18 @@
+@use '../tokens/sys/color';
+
+@mixin _set-mode($mode, $tokens, $prefix: 'md-sys-color') {
+  @each $key, $value in $tokens {
+    @if ($key != 'light' and $key != 'dark') {
+      $token-name: if($key == '', $prefix, '#{$prefix}-#{$key}');
+      @if type-of($value) == 'map' {
+        @include _set-mode($mode, $value, $token-name);
+      } @else {
+        --#{$token-name}: var(--#{$token-name}-#{$mode});
+      }
+    }
+  }
+}
+
+@mixin set-mode($mode) {
+  @include _set-mode($mode, color.$tokens);
+}

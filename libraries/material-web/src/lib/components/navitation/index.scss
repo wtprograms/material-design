@@ -1,0 +1,88 @@
+@use '../md';
+
+$public: (
+  'position': absolute,
+  'container-color': var(--md-sys-color-surface-container),
+  'gap': 8px,
+  'flex-direction': row,
+  'justify-content': stretch,
+  'item-container-width': 64px,
+  'padding': 12px 0 16px 0,
+  'inset': auto 0 0 0,
+  'min-width': auto,
+  'drawer-specific-display': none,
+  'rail': (
+    'container-color': transparent,
+    'gap': 16px,
+    'flex-direction': column,
+    'justify-content': center,
+    'item-container-width': 56px,
+    'padding': 16px 12px,
+    'inset': 0 auto 0 0,
+    'min-width': 80px,
+    'drawer-specific-display': none,
+  ),
+  'drawer': (
+    'container-color': transparent,
+    'gap': 0,
+    'flex-direction': column,
+    'justify-content': flex-start,
+    'item-container-width': auto,
+    'padding': 0 12px,
+    'inset': 0 auto 0 0,
+    'min-width': 360px,
+    'drawer-specific-display': block,
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'navigation');
+}
+
+:host([layout='rail']) {
+  @include md.set-properties(map-get($public, 'rail'), 'navigation-rail');
+}
+
+:host([layout='drawer']) {
+  @include md.set-properties(map-get($public, 'drawer'), 'navigation-drawer');
+}
+
+:host {
+  position: var(--_position);
+  inset: var(--_inset);
+  display: flex;
+  flex-direction: var(--_flex-direction);
+  gap: var(--_gap);
+  justify-content: var(--_justify-content);
+  padding: var(--_padding);
+  min-width: var(--_min-width);
+  flex-shrink: 0;
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    pointer-events: none;
+  }
+
+  ::slotted(md-navigation-item) {
+    --md-comp-navigation-item-container-width: var(--_item-container-width);
+  }
+
+  ::slotted(md-divider), ::slotted(md-navigation-headline) {
+    display: var(--_drawer-specific-display);
+  }
+
+  ::slotted(md-divider) {
+    margin-left: 16px;
+    margin-right: 16px;
+    width: auto;
+    --md-comp-divider-color: var(--md-sys-color-outline-variant);
+  }
+
+  ::slotted(md-navigation-headline) {
+    margin-left: 16px;
+    margin-right: 16px;
+    width: auto;
+  }
+}

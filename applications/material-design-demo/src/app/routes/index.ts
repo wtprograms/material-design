@@ -1,0 +1,76 @@
+import { Routes } from '@angular/router';
+
+export default [
+  {
+    path: 'avatar',
+    loadComponent: () => import('./avatar/avatar.component'),
+  },
+  {
+    path: 'badge',
+    loadComponent: () => import('./badge/badge.component'),
+  },
+  {
+    path: 'button',
+    loadComponent: () => import('./button/button.component'),
+  },
+  {
+    path: 'card',
+    loadComponent: () => import('./card/card.component'),
+  },
+  {
+    path: 'colors',
+    loadComponent: () => import('./colors/colors.component'),
+  },
+  {
+    path: 'divider',
+    loadComponent: () => import('./divider/divider.component'),
+  },
+  {
+    path: 'elevation',
+    loadComponent: () => import('./elevation/elevation.component'),
+  },
+  {
+    path: 'focus-ring',
+    loadComponent: () => import('./focus-ring/focus-ring.component'),
+  },
+  {
+    path: 'icon',
+    loadComponent: () => import('./icon/icon.component'),
+  },
+  {
+    path: 'icon-button',
+    loadComponent: () => import('./icon-button/icon-button.component'),
+  },
+  {
+    path: 'list',
+    loadComponent: () => import('./list/list.component'),
+  },
+  {
+    path: 'list-item',
+    loadComponent: () => import('./list-item/list-item.component'),
+  },
+  {
+    path: 'navigation',
+    loadComponent: () => import('./navigation/navigation.component'),
+  },
+  {
+    path: 'navigation-item',
+    loadComponent: () => import('./navigation-item/navigation-item.component'),
+  },
+  {
+    path: 'navigation-headline',
+    loadComponent: () => import('./navigation-headline/navigation-headline.component'),
+  },
+  {
+    path: 'ripple',
+    loadComponent: () => import('./ripple/ripple.component'),
+  },
+  {
+    path: 'typescale',
+    loadComponent: () => import('./typescale/typescale.component'),
+  },
+  {
+    path: 'typescale',
+    loadComponent: () => import('./typescale/typescale.component'),
+  },
+] satisfies Routes;

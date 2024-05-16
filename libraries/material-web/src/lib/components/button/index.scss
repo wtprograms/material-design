@@ -1,0 +1,180 @@
+@use '../md';
+
+$elevated: (
+  'container-color': var(--md-sys-color-surface-container-low),
+  'content-color': var(--md-sys-color-primary),
+  'spacing': (
+    '': 24px,
+    'icon': 16px
+  ),
+  'elevation-level': 1,
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  )
+);
+
+$filled: (
+  'container-color': var(--md-sys-color-primary),
+  'content-color': var(--md-sys-color-primary-on),
+  'spacing': (
+    '': 24px,
+    'icon': 16px
+  ),
+  'elevation-level': 0,
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  )
+);
+
+$tonal: (
+  'container-color': var(--md-sys-color-surface-container-high),
+  'content-color': var(--md-sys-color-secondary-container-on),
+  'spacing': (
+    '': 24px,
+    'icon': 16px
+  ),
+  'elevation-level': 0,
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  )
+);
+
+$outlined: (
+  'container-outline': (
+    'color': var(--md-sys-color-outline),
+    'style': solid,
+    'width': 1px
+  ),
+  'content-color': var(--md-sys-color-primary),
+  'spacing': (
+    '': 24px,
+    'icon': 16px
+  ),
+  'elevation-level': 0,
+  'disabled': (
+    'container-outline-color': md.disabled('outline'),
+    'content-color': md.disabled('text')
+  )
+);
+
+$text: (
+  'content-color': var(--md-sys-color-primary),
+  'spacing': (
+    '': 24px,
+    'icon': 16px
+  ),
+  'elevation-level': 0,
+  'disabled': (
+    'content-color': md.disabled('text')
+  )
+);
+
+$variants: (
+  'elevated': $elevated,
+  'filled': $filled,
+  'tonal': $tonal,
+  'outlined': $outlined,
+  'text': $text
+);
+
+@each $variant, $tokens in $variants {
+  :host([variant='#{$variant}']) {
+    @include md.declare-component-tokens($tokens, 'button');
+  }
+
+  :host([variant='#{$variant}'][disabled]) {
+    $disabled: map-get($tokens, 'disabled');
+    @include md.set-properties($disabled, 'button-disabled');
+  }
+}
+
+$public: (
+  'container': (
+    'shape': var(--md-sys-shape-full)
+  ),
+  'content': (
+    'font': var(--md-sys-typescale-label-large-font),
+    'size': var(--md-sys-typescale-label-large-size),
+    'weight': var(--md-sys-typescale-label-large-weight)
+  ),
+  'icon-size': 18,
+  'height': 40px
+);
+
+$private: (
+  'spacing': (
+    'leading': var(--_spacing),
+    'trailing': var(--_spacing)
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'button', $private);
+
+  border-radius: var(--_container-shape);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  outline: none;
+  padding-inline-start: var(--_spacing-leading);
+  padding-inline-end: var(--_spacing-trailing);
+  place-content: center;
+  place-items: center;
+  position: relative;
+  font-family: var(--_content-font);
+  font-size: var(--_content-size);
+  font-weight: var(--_content-weight);
+  flex-shrink: 0;
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  height: var(--_height);
+  isolation: isolate;
+
+  @include md.button {
+    color: var(--_content-color);
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    border-radius: inherit;
+    border-width: var(--_container-outline-width);
+    border-color: var(--_container-outline-color);
+    border-style: var(--_container-outline-style);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+
+  md-elevation {
+    --md-comp-elevation-level-default: var(--_elevation-level);
+  }
+
+  --__icon-size: var(--_icon-size);
+  ::slotted(md-icon) {
+    --md-comp-icon-size: var(--__icon-size);
+    z-index: -1;
+  }
+}
+
+:host([has-icon]:not([trailing-icon])) {
+  --_spacing-leading: var(--_spacing-icon);
+}
+
+:host([has-icon][trailing-icon]) {
+  --_spacing-trailing: var(--_spacing-icon);
+}
+
+@include md.disabled-component {
+  --_elevation-level: 0;
+}

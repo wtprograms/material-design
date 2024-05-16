@@ -1,0 +1,142 @@
+@use '../md';
+
+$public: (
+  'container': (
+    'color': transparent,
+    'width': 64px,
+    'height': 32px,
+    'position': relative,
+    'inset': auto,
+    'shape': var(--md-sys-shape-full)
+  ),
+  'min-height': unset,
+  'width': 100%,
+  'spacing': (
+    'leading': unset,
+    'trailing': unset
+  ),
+  'gap': 4px,
+  'flex-direction': column,
+  'content': (
+    'justify': center,
+    'color': var(--md-sys-color-surface-variant-on),
+    'font': var(--md-sys-typescale-label-small-font),
+    'size': var(--md-sys-typescale-label-small-size),
+    'weight': var(--md-sys-typescale-label-small-weight)
+  ),
+  'icon-filled': 0,
+  'drawer': (
+    'container': (
+      'width': auto,
+      'height': auto,
+      'position': absolute,
+      'inset': 0
+    ),
+    'min-height': 56px,
+    'width': auto,
+    'spacing': (
+      'leading': 16px,
+      'trailing': 24px
+    ),
+    'gap': 12px,
+    'flex-direction': row,
+    'content': (
+      'justify': flex-start,
+      'font': var(--md-sys-typescale-label-large-font),
+      'size': var(--md-sys-typescale-label-large-size),
+      'weight': var(--md-sys-typescale-label-large-weight)
+    ),
+   ),
+  'selected': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on),
+    'icon-filled': 1
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'navigation-item');
+}
+
+:host([selected]) {
+  $selected: map-get($public, 'selected');
+  @include md.set-properties($selected, 'navigation-item-selected');
+}
+
+:host([drawer]) {
+  $drawer: map-get($public, 'drawer');
+  @include md.set-properties($drawer, 'navigation-item-drawer');
+}
+
+:host([disabled]) {
+  --_content-color: #{md.disabled('text')};
+}
+
+:host([disabled][selected]) {
+  --_container-color: #{md.disabled('container')};
+}
+
+:host {
+  position: relative;
+  border-radius: var(--_container-shape);
+  cursor: pointer;
+  display: flex;
+  flex-direction: var(--_flex-direction);
+  padding-inline-start: var(--_spacing-leading);
+  padding-inline-end: var(--_spacing-trailing);
+  gap: var(--_gap);
+  outline: none;
+  place-content: center;
+  place-items: center;
+  font-family: var(--_content-font);
+  font-size: var(--_content-size);
+  font-weight: var(--_content-weight);
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  min-height: var(--_min-height);
+  width: var(--_width);
+
+  @include md.motion;
+
+  @include md.button {
+    color: var(--_content-color);
+    justify-content: var(--_content-justify);
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: var(--_container-position);
+    inset: var(--_container-inset);
+    background-color: var(--_container-color);
+    width: var(--_container-width);
+    height: var(--_container-height);
+    border-radius: inherit;
+    flex-shrink: 0;
+    pointer-events: none;
+    @include md.motion;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+
+  --__icon-filled: var(--_icon-filled);
+  ::slotted(md-icon) {
+    --md-comp-icon-size: 24;
+    --md-comp-icon-filled: var(--__icon-filled);
+  }
+}
+
+:host(:not([drawer])) {
+  md-ripple {
+    --md-comp-ripple-transform-default: scaleX(0);
+    --md-comp-ripple-transform-hover: scaleX(1);
+  }
+}
+
+@include md.disabled-component;

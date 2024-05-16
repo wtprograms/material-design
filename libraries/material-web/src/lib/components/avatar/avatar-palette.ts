@@ -1,0 +1,1 @@
+export type AvatarPalette = 'surface' | 'primary' | 'secondary' | 'tertiary';

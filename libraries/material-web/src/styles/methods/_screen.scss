@@ -1,0 +1,7 @@
+@use '../variables';
+
+@mixin screen($name) {
+  @media screen and (min-width: map-get(variables.$screens, $name)) {
+    @content;
+  }
+}

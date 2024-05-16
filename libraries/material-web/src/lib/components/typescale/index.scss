@@ -1,0 +1,16 @@
+@use '../md';
+
+$tokens: (
+  'font': var(--md-sys-typescale-body-medium-font),
+  'weight': var(--md-sys-typescale-body-medium-weight),
+  'size': var(--md-sys-typescale-body-medium-size)
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'typescale');
+
+  display: inline;
+  font-family: var(--_font);
+  font-size: var(--_size);
+  font-weight: var(--_weight);
+}

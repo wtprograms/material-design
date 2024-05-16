@@ -1,0 +1,184 @@
+@use '../md';
+
+$standard: (
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'content-color': var(--md-sys-color-primary),
+    'disabled': (
+      'content-color': md.disabled('text')
+    )
+  )
+);
+
+$filled: (
+  'container-color': var(--md-sys-color-surface-container-highest),
+  'content-color': var(--md-sys-color-primary),
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'container-color': var(--md-sys-color-primary),
+    'content-color': var(--md-sys-color-primary-on),
+    'disabled': (
+      'container-color': md.disabled('container'),
+      'content-color': md.disabled('text')
+    )
+  )
+);
+
+$tonal: (
+  'container-color': var(--md-sys-color-surface-container-highest),
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on),
+    'disabled': (
+      'container-color': md.disabled('container'),
+      'content-color': md.disabled('text')
+    )
+  )
+);
+
+$outlined: (
+  'container-outline': (
+    'color': var(--md-sys-color-outline),
+    'style': solid,
+    'width': 1px
+  ),
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'container-outline-color': md.disabled('outline'),
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'container': (
+      'color': var(--md-sys-color-surface-inverse),
+      'outline': (
+        'color': var(--md-sys-color-outline),
+        'style': solid,
+        'width': 1px
+      )
+    ),
+    'content-color': var(--md-sys-color-surface-inverse-on),
+    'disabled': (
+      'container': (
+        'color': md.disabled('container'),
+        'outline-color': md.disabled('outline')
+      ),
+      'content-color': md.disabled('text')
+    )
+  )
+);
+
+$variants: (
+  'standard': $standard,
+  'filled': $filled,
+  'tonal': $tonal,
+  'outlined': $outlined
+);
+
+@each $variant, $tokens in $variants {
+  :host([variant='#{$variant}']) {
+    @include md.declare-component-tokens($tokens, 'icon-button');
+  }
+
+  :host([variant='#{$variant}'][disabled]) {
+    $disabled: map-get($tokens, 'disabled');
+    @include md.set-properties($disabled, 'icon-button-disabled');
+  }
+
+  :host([variant='#{$variant}'][selected]) {
+    $selected: map-get($tokens, 'selected');
+    @include md.set-properties($selected, 'icon-button-selected');
+  }
+
+  :host([variant='#{$variant}'][selected][disabled]) {
+    $selected: map-get($tokens, 'selected');
+    $disabled: map-get($selected, 'disabled');
+    @include md.set-properties($disabled, 'icon-button-selected-disabled');
+  }
+}
+
+$public: (
+  'container': (
+    'shape': var(--md-sys-shape-full)
+  ),
+  'icon': (
+    'size': 24,
+    'filled': 0
+  ),
+  'height': 40px,
+  'width': 40px,
+  'selected': (
+    'icon-filled': 1
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'icon-button');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($public, 'selected'), 'icon-button-selected');
+}
+
+:host {
+  border-radius: var(--_container-shape);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  outline: none;
+  place-content: center;
+  place-items: center;
+  position: relative;
+  flex-shrink: 0;
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  height: var(--_height);
+  width: var(--_width);
+
+  @include md.button {
+    color: var(--_content-color);
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    border-radius: inherit;
+    border-width: var(--_container-outline-width);
+    border-color: var(--_container-outline-color);
+    border-style: var(--_container-outline-style);
+    pointer-events: none;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  md-elevation {
+    --md-comp-elevation-level-default: var(--_elevation-level);
+  }
+
+  --__icon-size: var(--_icon-size);
+  --__icon-filled: var(--_icon-filled);
+  ::slotted(md-icon) {
+    --md-comp-icon-size: var(--__icon-size);
+    --md-comp-icon-filled: var(--__icon-filled);
+  }
+}
+
+@include md.disabled-component;

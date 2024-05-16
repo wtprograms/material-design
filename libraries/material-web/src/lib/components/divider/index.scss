@@ -1,0 +1,21 @@
+@use '../md';
+
+$tokens: (
+  'color': var(--md-sys-color-outline),
+  'width': 1px
+);
+
+:host {
+  display: flex;
+  @include md.declare-component-tokens($tokens, 'divider');
+  background-color: var(--_color);
+  height: var(--_width);
+  width: 100%;
+
+  @include md.motion;
+}
+
+:host([vertical]) {
+  width: var(--_width);
+  height: 100%;
+}
