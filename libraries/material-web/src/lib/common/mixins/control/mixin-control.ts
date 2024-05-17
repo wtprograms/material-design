@@ -17,8 +17,23 @@ export function mixinControl<T extends MixinBase<LitElement>>(
       this.setAttribute('name', name);
     }
 
-    @property({ reflect: true })
-    value = '';
+    @property({ noAccessor: true })
+    get value() {
+      return this.getAttribute('value') ?? '';
+    }
+    set value(value: string | null) {
+      value = this.coerceValue(value);
+      if (value) {
+        this.setAttribute('value', value);
+      } else {
+        this.removeAttribute('value');
+      }
+      this.requestUpdate('value');
+    }
+
+    coerceValue(value: string | null): string | null {
+      return value;
+    }
   }
   return ControlMixin;
 }

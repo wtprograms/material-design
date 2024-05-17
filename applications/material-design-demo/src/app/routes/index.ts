@@ -18,6 +18,10 @@ export default [
     loadComponent: () => import('./card/card.component'),
   },
   {
+    path: 'checkbox',
+    loadComponent: () => import('./checkbox/checkbox.component'),
+  },
+  {
     path: 'colors',
     loadComponent: () => import('./colors/colors.component'),
   },
@@ -60,6 +64,10 @@ export default [
   {
     path: 'navigation-headline',
     loadComponent: () => import('./navigation-headline/navigation-headline.component'),
+  },
+  {
+    path: 'radiobutton',
+    loadComponent: () => import('./radiobutton/radiobutton.component'),
   },
   {
     path: 'ripple',

@@ -18,6 +18,8 @@ export * from './mixins/attachable/attachable';
 export * from './mixins/attachable/mixin-attachable';
 export * from './mixins/button/button';
 export * from './mixins/button/mixin-button';
+export * from './mixins/check/check';
+export * from './mixins/check/mixin-check';
 export * from './mixins/control/control';
 export * from './mixins/control/mixin-control';
 export * from './mixins/disable/disable';

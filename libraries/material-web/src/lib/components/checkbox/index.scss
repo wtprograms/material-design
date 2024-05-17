@@ -1,0 +1,3 @@
+@use '../md';
+
+@include md.input-check('checkbox');

@@ -5,5 +5,5 @@ import { FormSubmitterType } from './form-submitter-type';
 export interface FormSubmitter extends ReactiveElement, WithElementInternals {
   type: FormSubmitterType;
   name: string;
-  value: string;
+  value: string | null;
 }

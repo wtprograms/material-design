@@ -1,0 +1,96 @@
+@use '../methods' as md;
+
+@mixin input-check($name) {
+  $public: (
+    'color': (
+      'unchecked': var(--md-sys-color-surface-variant-on),
+      'checked': var(--md-sys-color-primary)
+    ),
+    'error': (
+      'color': (
+        'unchecked': var(--md-sys-color-error),
+        'checked': var(--md-sys-color-error)
+      )
+    ),
+    'disabled': (
+      'color': (
+        'unchecked': md.disabled('text'),
+        'checked': md.disabled('text')
+      )
+    )
+  );
+
+  $private: (
+    'color': var(--_color-unchecked),
+    'filled': 0
+  );
+
+  :host {
+    @include md.declare-component-tokens($public, $name, $private);
+  }
+
+  :host([error]) {
+    @include md.set-properties(map-get($public, 'error'), '#{$name}-error');
+  }
+
+  :host([disabled]),
+  :host([disabled][error]) {
+    @include md.set-properties(map-get($public, 'disabled'), '#{$name}-disabled');
+  }
+
+  :host([checked]) {
+    --_color: var(--_color-checked);
+    --_filled: 1;
+  }
+
+  :host {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    gap: 8px;
+    color: var(--_color);
+
+    @include md.motion('color');
+
+    .container {
+      position: relative;
+      min-height: 40px;
+      min-width: 40px;
+      border-radius: var(--md-sys-shape-full);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    label {
+      @include md.typescale('body', 'large');
+      cursor: inherit;
+    }
+
+    input {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      -moz-appearance: none;
+      appearance: none;
+      outline: 0;
+      border: 0;
+      cursor: inherit;
+    }
+
+    --__color: var(--_color);
+    md-ripple {
+      --md-comp-ripple-color: var(--__color);
+      --md-comp-ripple-transform-default: scale(0);
+      --md-comp-ripple-transform-hover: scale(1);
+    }
+
+    --__filled: var(--_filled);
+    md-icon {
+      --md-comp-icon-filled: var(--__filled);
+    }
+  }
+
+  @include md.disabled-component;
+}

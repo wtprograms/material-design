@@ -3,6 +3,7 @@ export const LINKS = [
   'badge',
   'button',
   'card',
+  'checkbox',
   'colors',
   'divider',
   'elevation',
@@ -14,6 +15,7 @@ export const LINKS = [
   'navigation',
   'navigation-item',
   'navigation-headline',
+  'radiobutton',
   'ripple',
   'typescale',
 ];
