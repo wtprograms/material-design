@@ -55,7 +55,7 @@ export class MdElevationElement extends base {
     }
     if (changedProps.has('level') && this.level !== undefined) {
       this.style.setProperty(
-        '--md-comp-elevation-level-default',
+        '--_level-default',
         this.level.toString()
       );
     }
