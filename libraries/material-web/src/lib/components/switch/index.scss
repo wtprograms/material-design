@@ -1,0 +1,163 @@
+@use '../md';
+
+$public: (
+  'track': (
+    'color': var(--md-sys-color-surface-container-highest),
+    'outline-color': var(--md-sys-color-outline)
+  ),
+  'handle-color': var(--md-sys-color-outline),
+  'ripple-color': var(--md-sys-color-outline),
+  'icon-color': var(--md-sys-color-surface-container-highest),
+  'disabled': (
+    'track': (
+      'color': md.disabled('container'),
+      'outline-color': md.disabled('outline')
+    ),
+    'handle-color': md.disabled('outline'),
+    'icon-color': md.disabled('container')
+  ),
+  'error': (
+    'track': (
+      'color': var(--md-sys-color-error-container),
+      'outline-color': var(--md-sys-color-error)
+    ),
+    'handle-color': var(--md-sys-color-error),
+    'ripple-color': var(--md-sys-color-error),
+    'icon-color': var(--md-sys-color-error-container)
+  ),
+  'checked': (
+    'track': (
+      'color': var(--md-sys-color-primary),
+      'outline-color': var(--md-sys-color-primary)
+    ),
+    'handle-color': var(--md-sys-color-primary-on),
+    'ripple-color': var(--md-sys-color-primary),
+    'icon-color': var(--md-sys-color-primary),
+    'error': (
+      'track': (
+        'color': var(--md-sys-color-error),
+        'outline-color': var(--md-sys-color-error)
+      ),
+      'handle-color': var(--md-sys-color-error-on),
+      'ripple-color': var(--md-sys-color-error),
+      'icon-color': var(--md-sys-color-error)
+    )
+  )
+);
+
+$private: (
+  'handle': (
+    'size': 16px,
+    'left': -6px
+  ),
+  'checked': (
+    'handle': (
+      'size': 24px,
+      'left': 14px
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'switch', $private);
+}
+
+:host([error]) {
+  @include md.set-properties(map-get($public, 'error'), 'switch-error');
+}
+
+:host([checked]) {
+  @include md.set-properties(map-get($public, 'checked'), 'switch-checked');
+}
+
+:host([checked][error]) {
+  @include md.set-properties(map-get(map-get($public, 'checked'), 'error'), 'switch-checked-error');
+}
+
+:host([disabled]),
+:host([checked][disabled]) {
+  @include md.set-properties(map-get($public, 'disabled'), 'switch-disabled');
+}
+
+:host([checked]) {
+  --_handle-left: var(--_checked-handle-left);
+  --_handle-size: var(--_checked-handle-size);
+}
+
+:host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  gap: 8px;
+
+  .track {
+    width: 52px;
+    box-sizing: border-box;
+    height: 32px;
+    border-radius: var(--md-sys-shape-full);
+    background-color: var(--_track-color);
+    border: 2px solid var(--_track-outline-color);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .handle-container {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: var(--_handle-left);
+
+    @include md.motion('margin-left');
+  }
+
+  .handle {
+    width: var(--_handle-size);
+    height: var(--_handle-size);
+    background-color: var(--_handle-color);
+    border-radius: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--_icon-color);
+
+    @include md.motion('width, height, background-color');
+  }
+
+  input {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    border: 0;
+    cursor: inherit;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_ripple-color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-size: 16px;
+  }
+}
+
+:host([has-unchecked-icon]) {
+  --_handle-size: 24px;
+}
+
+:host(:active) {
+  --_handle-size: 28px;
+}
+
+@include md.disabled-component;

@@ -1,4 +1,4 @@
-import { TemplateResult } from 'lit';
+import { TemplateResult, nothing } from 'lit';
 import { Control } from '../control/control';
 
 export interface Check extends Control {
@@ -6,11 +6,10 @@ export interface Check extends Control {
   hasLabel: boolean;
   inputElement: HTMLInputElement;
   error: boolean;
-  get icon(): string;
   toggle(): void;
   onSlotChange(): void;
   handleActivationClick(event: MouseEvent): void;
   renderLabel(): TemplateResult;
   renderAttachables(): TemplateResult;
-  renderIcon(size: number): TemplateResult;
+  renderIcon(): TemplateResult | typeof nothing;
 }

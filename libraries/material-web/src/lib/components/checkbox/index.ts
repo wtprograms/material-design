@@ -1,8 +1,5 @@
-import { LitElement, html } from 'lit';
-import {
-  customElement,
-  property,
-} from 'lit/decorators.js';
+import { LitElement, TemplateResult, html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import style from './index.scss';
 import { mixinCheck } from '../../common/mixins/check/mixin-check';
 
@@ -23,21 +20,11 @@ export class MdCheckboxElement extends base {
   @property({ type: Boolean })
   indeterminate = false;
 
-  override get icon() {
-    let icon = 'check_box_outline_blank';
-    if (this.checked && !this.indeterminate) {
-      icon = 'check_box';
-    } else if (this.checked && this.indeterminate) {
-      icon = 'indeterminate_check_box';
-    }
-    return icon;
-  }
-
   override render() {
     return html`<div class="container">
-        ${this.renderAttachables()}
-        ${this.renderIcon(24)}
-        <input
+        ${this.renderAttachables()} ${this.renderIcon()}
+        
+      </div><input
           id="input"
           ?checked=${this.checked}
           ?indeterminate=${this.indeterminate}
@@ -45,7 +32,6 @@ export class MdCheckboxElement extends base {
           type="checkbox"
           @change=${this.onInputChange}
         />
-      </div>
       ${this.renderLabel()}`;
   }
 
@@ -66,6 +52,17 @@ export class MdCheckboxElement extends base {
       this.checked = false;
       this.indeterminate = false;
     }
+  }
+
+  override renderIcon(): TemplateResult | typeof nothing {
+    let icon = 'check_box_outline_blank';
+    if (this.checked && !this.indeterminate) {
+      icon = 'check_box';
+    } else if (this.checked && this.indeterminate) {
+      icon = 'indeterminate_check_box';
+    }
+
+    return html`<md-icon size="24">${icon}</md-icon>`;
   }
 }
 

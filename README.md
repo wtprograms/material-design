@@ -5,7 +5,6 @@
 - [X] md-button
 - [X] md-card
 - [X] md-checkbox
-- [X] md-colors
 - [X] md-divider
 - [X] md-elevation
 - [X] md-fab
@@ -21,4 +20,5 @@
 - [X] md-ripple
 - [X] md-segmented-button
 - [X] md-segmented-button-set
+- [X] md-switch
 - [X] md-typescale

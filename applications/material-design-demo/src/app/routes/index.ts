@@ -90,6 +90,10 @@ export default [
     loadComponent: () => import('./segmented-button-set/segmented-button-set.component'),
   },
   {
+    path: 'switch',
+    loadComponent: () => import('./switch/switch.component'),
+  },
+  {
     path: 'typescale',
     loadComponent: () => import('./typescale/typescale.component'),
   },

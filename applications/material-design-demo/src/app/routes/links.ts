@@ -20,5 +20,6 @@ export const LINKS = [
   'ripple',
   'segmented-button',
   'segmented-button-set',
+  'switch',
   'typescale',
 ];

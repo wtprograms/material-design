@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult, html, isServer } from 'lit';
+import { LitElement, TemplateResult, html, isServer, nothing } from 'lit';
 import { MixinBase, MixinReturn } from '../mixin';
 import {
   property,
@@ -30,8 +30,6 @@ export function mixinCheck<T extends MixinBase<LitElement>>(
 
     @property({ type: Boolean, reflect: true })
     error = false;
-
-    abstract get icon(): string;
 
     constructor() {
       super();
@@ -75,8 +73,8 @@ export function mixinCheck<T extends MixinBase<LitElement>>(
         <md-ripple for="input" hoverable activatable></md-ripple>`;
     }
 
-    renderIcon(size: number): TemplateResult {
-      return html`<md-icon size=${size}>${this.icon}</md-icon>`;
+    renderIcon(): TemplateResult | typeof nothing {
+      return nothing;
     }
   }
   return CheckMixin;
