@@ -7,6 +7,7 @@ export const LINKS = [
   'colors',
   'divider',
   'elevation',
+  'fab',
   'focus-ring',
   'icon',
   'icon-button',

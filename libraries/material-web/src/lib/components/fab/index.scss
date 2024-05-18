@@ -1,0 +1,138 @@
+@use '../md';
+
+$surface: (
+  'container-color': var(--md-sys-color-surface-container-low),
+  'content-color': var(--md-sys-color-primary)
+);
+
+$primary: (
+  'container-color': var(--md-sys-color-primary-container),
+  'content-color': var(--md-sys-color-primary-container-on)
+);
+
+$secondary: (
+  'container-color': var(--md-sys-color-secondary-container),
+  'content-color': var(--md-sys-color-secondary-container-on)
+);
+
+$tertiary: (
+  'container-color': var(--md-sys-color-tertiary-container),
+  'content-color': var(--md-sys-color-tertiary-container-on)
+);
+
+$large: (
+  'width': 96px,
+  'height': 96px,
+  'icon-size': 36,
+  'padding': 32px,
+  'container-shape': var(--md-sys-shape-extra-large)
+);
+
+$medium: (
+  'width': 56px,
+  'height': 56px,
+  'icon-size': 24,
+  'padding': 16px,
+  'container-shape': var(--md-sys-shape-large)
+);
+
+$small: (
+  'width': 40px,
+  'height': 40px,
+  'icon-size': 24,
+  'padding': 8px,
+  'container-shape': var(--md-sys-shape-medium)
+);
+
+$palettes: (
+  'surface': $surface,
+  'primary': $primary,
+  'secondary': $secondary,
+  'tertiary': $tertiary
+);
+
+$sizes: (
+  'large': $large,
+  'medium': $medium,
+  'small': $small
+);
+
+@each $palette, $tokens in $palettes {
+  :host([palette='#{$palette}']) {
+    @include md.declare-component-tokens($tokens, 'fab');
+  }
+}
+
+@each $size, $tokens in $sizes {
+  :host([size='#{$size}']) {
+    @include md.declare-component-tokens($tokens, 'fab');
+  }
+}
+
+:host {
+  --_label-width: 0;
+  --_label-left: 0;
+  border-radius: var(--_container-shape);
+  cursor: pointer;
+  display: inline-flex;
+  outline: none;
+  place-content: center;
+  place-items: center;
+  position: relative;
+  font-family: var(--_content-font);
+  font-size: var(--_content-size);
+  font-weight: var(--_content-weight);
+  flex-shrink: 0;
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  height: var(--_height);
+  min-width: var(--_width);
+  isolation: isolate;
+
+  @include md.button {
+    justify-content: flex-start;
+    color: var(--_content-color);
+    padding: var(--_padding);
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+
+  md-elevation {
+    --md-comp-elevation-level-default: var(--_elevation-level);
+  }
+
+  .label {
+    overflow: hidden;
+    width: var(--_label-width);
+    margin-left: var(--_label-left);
+  }
+
+  --__icon-size: var(--_icon-size);
+  ::slotted(md-icon) {
+    --md-comp-icon-size: var(--__icon-size);
+  }
+}
+
+@include md.disabled-component;
+
+:host([extended]) {
+  --_label-width: fit-content;
+}
+
+:host([extended][has-icon]) {
+  --_label-left: 8px;
+}

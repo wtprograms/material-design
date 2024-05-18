@@ -34,6 +34,10 @@ export default [
     loadComponent: () => import('./elevation/elevation.component'),
   },
   {
+    path: 'fab',
+    loadComponent: () => import('./fab/fab.component'),
+  },
+  {
     path: 'focus-ring',
     loadComponent: () => import('./focus-ring/focus-ring.component'),
   },

@@ -1,0 +1,1 @@
+export type FabPalette = 'surface' | 'primary' | 'secondary' | 'tertiary';

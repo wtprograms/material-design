@@ -4,7 +4,7 @@
 
 - [ ] App bars
   - [ ] Bottom app bar
-  - [ ] top app bar
+  - [ ] Top app bar
 - [X] Badges
 - [ ] Buttons
   - [X] Common buttons
@@ -13,7 +13,7 @@
     - [X] Tonal
     - [X] Outlined
     - [X] Text
-  - [ ] FAB
+  - [X] FAB
   - [ ] Extended FAB
   - [X] Icon buttons
     - [X] Standard
@@ -32,11 +32,13 @@
 - [ ] Dialogs
 - [X] Divider
 - [X] Lists
-- [ ] Menu
+- [ ] Menus
 - [X] Navigation
   - [X] Navigation bar
   - [X] Navigation drawer
   - [X] Navigation rail
+- [ ] Progress indicators
+- [X] Radio button
 - [ ] Search
 - [ ] Sheets
   - [ ] Bottom sheets
@@ -51,6 +53,7 @@
 
 ## Helper components
 
+- Avatar
 - Elevation
 - Focus ring
 - Navigation headline
