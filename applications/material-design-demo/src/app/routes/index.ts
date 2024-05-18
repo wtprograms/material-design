@@ -82,6 +82,10 @@ export default [
     loadComponent: () => import('./typescale/typescale.component'),
   },
   {
+    path: 'scrim',
+    loadComponent: () => import('./scrim/scrim.component'),
+  },
+  {
     path: 'segmented-button',
     loadComponent: () => import('./segmented-button/segmented-button.component'),
   },

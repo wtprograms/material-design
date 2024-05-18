@@ -18,6 +18,7 @@ export const LINKS = [
   'navigation-headline',
   'radiobutton',
   'ripple',
+  'scrim',
   'segmented-button',
   'segmented-button-set',
   'switch',

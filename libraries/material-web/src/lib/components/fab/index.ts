@@ -5,7 +5,7 @@ import {
   query,
   queryAssignedElements,
 } from 'lit/decorators.js';
-import { DURATION, EASING, InvalidOperationError, mixinButton, sleep } from '../../common';
+import { DURATION, EASING, InvalidOperationError, mixinButton } from '../../common';
 import { FabPalette } from './fab-palette';
 import style from './index.scss';
 import { FabSize } from './fab-size';
@@ -103,7 +103,7 @@ export class MdFabElement extends base {
   }
 
   private _labelAnimation?: Animation;
-  private async showLabel() {
+  private showLabel() {
     if (!this._labelElement || this.extended) {
       return;
     }
@@ -134,7 +134,7 @@ export class MdFabElement extends base {
     );
   }
 
-  private async hideLabel() {
+  private hideLabel() {
     if (!this._labelElement || !this.extended) {
       return;
     }

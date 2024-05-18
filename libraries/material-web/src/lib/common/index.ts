@@ -33,6 +33,8 @@ export * from './mixins/focusable/with-focusable';
 export * from './mixins/hoverable/hoverable';
 export * from './mixins/hoverable/mixin-hoverable';
 export * from './mixins/mixin';
+export * from './mixins/openable/mixin-openable';
+export * from './mixins/openable/openable';
 export * from './mixins/selectable/mixin-selectable';
 export * from './mixins/selectable/selectable';
 export * from './motion/duration';

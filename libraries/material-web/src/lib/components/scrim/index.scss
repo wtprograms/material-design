@@ -1,0 +1,10 @@
+@use '../md';
+
+:host {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  display: none;
+
+  background-color: var(--md-sys-color-scrim);
+}

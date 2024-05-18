@@ -23,6 +23,7 @@ export * from './navitation';
 export * from './navitation/navigation-layout';
 export * from './radiobutton';
 export * from './ripple';
+export * from './scrim';
 export * from './segmented-button';
 export * from './segmented-button-set';
 export * from './switch';
