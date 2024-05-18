@@ -18,5 +18,7 @@ export const LINKS = [
   'navigation-headline',
   'radiobutton',
   'ripple',
+  'segmented-button',
+  'segmented-button-set',
   'typescale',
 ];

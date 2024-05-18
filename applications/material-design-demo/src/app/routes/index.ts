@@ -82,6 +82,14 @@ export default [
     loadComponent: () => import('./typescale/typescale.component'),
   },
   {
+    path: 'segmented-button',
+    loadComponent: () => import('./segmented-button/segmented-button.component'),
+  },
+  {
+    path: 'segmented-button-set',
+    loadComponent: () => import('./segmented-button-set/segmented-button-set.component'),
+  },
+  {
     path: 'typescale',
     loadComponent: () => import('./typescale/typescale.component'),
   },

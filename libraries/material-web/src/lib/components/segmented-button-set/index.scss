@@ -1,0 +1,11 @@
+@use '../md';
+
+:host {
+  display: flex;
+}
+
+:host([full]) {
+  ::slotted(md-segmented-button) {
+    width: 100%;
+  }
+}

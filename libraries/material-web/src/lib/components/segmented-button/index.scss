@@ -1,0 +1,157 @@
+@use '../md';
+
+$public: (
+  'container': (
+    'color': transparent,
+    'outline': (
+      'width': (
+        'full': 1px,
+        'half': 0.5px
+      ),
+      'style': solid,
+      'color': var(--md-sys-color-outline)
+    ),
+    'shape': var(--md-sys-shape-full)
+  ),
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'icon-size': 18,
+  'disabled': (
+    'container': (
+      'color': transparent,
+      'outline-color': md.disabled('outline')
+    ),
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on),
+    'disabled': (
+      'container': (
+        'color': md.disabled('container'),
+        'outline-color': md.disabled('outline')
+      ),
+      'content-color': md.disabled('text')
+    )
+  ),
+  'height': 40px
+);
+
+$private: (
+  'container': (
+    'outline': (
+      'width': (
+        'start': var(--_container-outline-width-full),
+        'end': var(--_container-outline-width-full)
+      ),
+      'top': var(--_container-outline-width-full) solid var(--_container-outline-color),
+      'end': var(--_container-outline-width-end) solid var(--_container-outline-color),
+      'bottom': var(--_container-outline-width-full) solid var(--_container-outline-color),
+      'start': var(--_container-outline-width-start) solid var(--_container-outline-color)
+    ),
+    'shape': (
+      'start': var(--_container-shape),
+      'end': var(--_container-shape)
+    )
+  ),
+  'content': (
+    'font': var(--md-sys-typescale-label-large-font),
+    'size': var(--md-sys-typescale-label-large-size),
+    'weight': var(--md-sys-typescale-label-large-weight)
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'segmented-button', $private);
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($public, 'disabled'), 'segmented-button-disabled');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($public, 'selected'), 'segmented-button-selected');
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(map-get(map-get($public, 'selected'), 'disabled'), 'segmented-button-selected-disabled');
+}
+
+:host(:not(:first-child):not(:last-child)) {
+  --_container-shape-start: 0;
+  --_container-shape-end: 0;
+  --_container-outline-width-start: var(--_container-outline-width-half);
+  --_container-outline-width-end: var(--_container-outline-width-half);
+}
+
+:host(:first-child:not(:last-child)) {
+  --_container-shape-end: 0;
+  --_container-outline-width-end: var(--_container-outline-width-half);
+}
+
+:host(:not(:first-child):last-child) {
+  --_container-shape-start: 0;
+  --_container-outline-width-start: var(--_container-outline-width-half);
+}
+
+
+:host {
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  outline: none;
+  padding-inline-start: 24px;
+  padding-inline-end: 24px;
+  place-content: center;
+  place-items: center;
+  position: relative;
+  font-family: var(--_content-font);
+  font-size: var(--_content-size);
+  font-weight: var(--_content-weight);
+  text-wrap: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: top;
+  color: var(--_content-color);
+  height: var(--_height);
+  isolation: isolate;
+  border-top-right-radius: var(--_container-shape-end);
+  border-bottom-right-radius: var(--_container-shape-end);
+  border-top-left-radius: var(--_container-shape-start);
+  border-bottom-left-radius: var(--_container-shape-start);
+
+  @include md.button {
+    color: var(--_content-color);
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    border-top: var(--_container-outline-top);
+    border-right: var(--_container-outline-end);
+    border-bottom: var(--_container-outline-bottom);
+    border-left: var(--_container-outline-start);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+  --__icon-size: var(--_icon-size);
+  ::slotted(md-icon) {
+    --md-comp-icon-size: var(--__icon-size);
+    z-index: -1;
+  }
+}
+
+:host([has-icon]) {
+  --_spacing-leading: var(--_spacing-icon);
+}
+
+:host([has-badge]) {
+  --_spacing-trailing: var(--_spacing-icon);
+}
+
+@include md.disabled-component;
