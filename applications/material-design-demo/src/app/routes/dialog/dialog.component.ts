@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 
 @Component({
-  templateUrl: './scrim.component.html',
+  templateUrl: './dialog.component.html',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export default class ScrimComponent {}
+export default class DialogComponent {}

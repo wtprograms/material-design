@@ -1,0 +1,118 @@
+@use '../md';
+
+:host {
+  display: contents;
+  margin: auto;
+  max-height: min(560px, calc(100% - 48px));
+  max-width: min(560px, calc(100% - 48px));
+  min-height: 140px;
+  min-width: 280px;
+  position: fixed;
+  height: fit-content;
+  width: fit-content;
+  z-index: var(--md-sys-z-index-dialog);
+
+  dialog {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+  }
+
+  ::backdrop {
+    // Can't use ::backdrop since Firefox does not allow animations on it.
+    background: none;
+  }
+
+  .scrim {
+    background: var(--md-sys-color-scrim);
+    display: none;
+    inset: 0;
+    opacity: 32%;
+    pointer-events: none;
+    position: fixed;
+    z-index: 1;
+  }
+
+  .icon {
+    color: var(--md-sys-color-secondary);
+
+    ::slotted(md-icon) {
+      --md-comp-icon-size: 24;
+    }
+  }
+
+  .headline {
+    color: var(--md-sys-color-surface-on);
+    @include md.typescale('headline', 'small');
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .supporting-text {
+    color: var(--md-sys-color-surface-variant-on);
+    @include md.typescale('body', 'medium');
+    margin-bottom: 24px;
+  }
+
+  .action {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .body {
+    overflow-y: auto;
+    margin-bottom: 24px;
+  }
+
+  .container {
+    position: relative;
+    border-radius: var(--md-sys-shape-extra-large);
+    padding: 24px;
+    isolation: isolate;
+
+    .container-paint {
+      background-color: var(--md-sys-color-surface-container-high);
+      border-radius: inherit;
+      content: '';
+      inset: 0;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+}
+
+:host([has-icon]) {
+  .header {
+    flex-direction: column;
+  }
+}
+
+:host([has-supporting-text]:not([has-body]):not([has-action])) {
+  .supporting-text {
+    margin-bottom: 0;
+  }
+}
+
+:host([has-body]:not([has-action])) {
+  .body {
+    margin-bottom: 0;
+  }
+}

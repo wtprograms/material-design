@@ -5,6 +5,7 @@
 - [X] md-button
 - [X] md-card
 - [X] md-checkbox
+- [X] md-dialog
 - [X] md-divider
 - [X] md-elevation
 - [X] md-fab
@@ -13,6 +14,8 @@
 - [X] md-icon-button
 - [X] md-list
 - [X] md-list-item
+- [X] md-menu
+- [x] md-menu-item
 - [X] md-navigation
 - [X] md-navigation-item
 - [X] md-navigation-headline

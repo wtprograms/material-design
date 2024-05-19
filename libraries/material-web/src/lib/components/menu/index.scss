@@ -1,0 +1,30 @@
+:host {
+  --_container-paint-inset: auto 0 0 0;
+  top: 0;
+  left: 0;
+  display: none;
+  position: absolute;
+  opacity: 0;
+
+  .container {
+    padding: 4px 0;
+    width: max-content;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 112px;
+    isolation: isolate;
+  }
+
+  .container-paint {
+    position: absolute;
+    inset: var(--_container-paint-inset);
+    background: var(--md-sys-color-surface-container);
+    z-index: -1;
+  }
+
+  ::slotted(md-divider) {
+    --md-comp-divider-color: var(--md-sys-color-outline-variant);
+    margin: 8px 0;
+  }
+}

@@ -1,5 +1,3 @@
-import { InvalidOperationError } from '../errors/invalid-operation.error';
-
 export class AutoResetEvent {
   private _promise: Promise<void>;
   private _resolver?: () => void;
@@ -12,11 +10,11 @@ export class AutoResetEvent {
     }
   }
 
-  waitOne() {
+  async waitOne(): Promise<void> {
     if (this._resolved) {
-      throw new InvalidOperationError('The event has already been set. Please call reset() before waiting again.');
+      return;
     }
-    return this._promise;
+    await this._promise;
   }
 
   set() {

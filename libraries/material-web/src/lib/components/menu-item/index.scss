@@ -1,0 +1,79 @@
+@use '../md';
+
+$public: (
+  'container-color': transparent,
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'icon-filled': 0,
+  'disabled': (
+    'container-color': transparent,
+    'content-color': md.disabled('text')
+  ),
+  'selected': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on),
+    'icon-filled': 1,
+    'disabled': (
+      'container-color': md.disabled('container'),
+      'content-color': md.disabled('text')
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($public, 'menu-item');
+}
+
+:host([disabled]) {
+  $tokens: map-get($public, 'disabled');
+  @include md.set-properties($tokens, 'menu-item-disabled');
+}
+
+:host([selected]) {
+  $tokens: map-get($public, 'selected');
+  @include md.set-properties($tokens, 'menu-item-selected');
+}
+
+:host([selected][disabled]) {
+  $tokens: map-get($public, 'selected');
+  $tokens: map-get($tokens, 'disabled');
+  @include md.set-properties($tokens, 'menu-item-selected-disabled');
+}
+
+:host {
+  background-color: var(--_container-color);
+  color: var(--_content-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding-inline-start: 12px;
+  padding-inline-end: 12px;
+  position: relative;
+  cursor: pointer;
+
+  @include md.typescale('label', 'large');
+
+  @include md.motion('color, background-color');
+
+  @include md.button {
+    justify-content: start;
+    align-items: center;
+    text-align: start;
+  }
+
+  slot[name='icon']::slotted(md-icon) {
+    --md-comp-icon-size: 24;
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
+
+  slot[name='trailing']::slotted(*) {
+    @include md.typescale('label', 'small');
+    margin-left: auto;
+  }
+
+  slot[name='trailing']::slotted(md-icon) {
+    --md-comp-icon-size: 24;
+  }
+}
+
+@include md.disabled-component;

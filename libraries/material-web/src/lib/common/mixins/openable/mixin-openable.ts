@@ -7,24 +7,29 @@ export function mixinOpenable<T extends MixinBase<LitElement>>(
   base: T
 ): MixinReturn<T, Openable> {
   abstract class OpenableMixin extends base implements Openable {
-    @property({ type: Boolean, reflect: true, noAccessor: true })
+    @property({ type: Boolean, noAccessor: true })
     get open() {
-      return this.getAttribute('open') !== null;
+      return !!this.hasAttribute('open');
     }
     set open(value: boolean) {
       if (value) {
-        this.show();
         this.setAttribute('open', '');
+        this.show();
       } else {
-        this.hide();
         this.removeAttribute('open');
+        this.close();
       }
-      this.requestUpdate('open');
     }
-
-    async hide(): Promise<void> {}
+  
+    @property({ type: Boolean, reflect: true })
+    opening = false;
+  
+    @property({ type: Boolean, reflect: true })
+    closing = false;
 
     async show(): Promise<void> {}
+
+    async close(): Promise<void> {}
   }
 
   return OpenableMixin;

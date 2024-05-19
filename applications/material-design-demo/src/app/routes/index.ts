@@ -26,6 +26,10 @@ export default [
     loadComponent: () => import('./colors/colors.component'),
   },
   {
+    path: 'dialog',
+    loadComponent: () => import('./dialog/dialog.component'),
+  },
+  {
     path: 'divider',
     loadComponent: () => import('./divider/divider.component'),
   },
@@ -58,6 +62,14 @@ export default [
     loadComponent: () => import('./list-item/list-item.component'),
   },
   {
+    path: 'menu',
+    loadComponent: () => import('./menu/menu.component'),
+  },
+  {
+    path: 'menu-item',
+    loadComponent: () => import('./menu-item/menu-item.component'),
+  },
+  {
     path: 'navigation',
     loadComponent: () => import('./navigation/navigation.component'),
   },
@@ -80,10 +92,6 @@ export default [
   {
     path: 'typescale',
     loadComponent: () => import('./typescale/typescale.component'),
-  },
-  {
-    path: 'scrim',
-    loadComponent: () => import('./scrim/scrim.component'),
   },
   {
     path: 'segmented-button',

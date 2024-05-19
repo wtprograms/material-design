@@ -1,0 +1,19 @@
+<h1>md-dialog</h1>
+<md-card>
+  <md-button (click)="dialog.open = true">Toggle</md-button>
+</md-card>
+
+<md-dialog #dialog>
+  <md-icon slot="icon">Home</md-icon>
+  <span slot="headline">Headline</span>
+  <span slot="supporting-text">
+    Cillum dolor mollit irure laborum enim qui nulla non eu eu consectetur deserunt ut excepteur. Proident nisi culpa
+    aute sunt incididunt. Nostrud officia qui dolore cillum nisi veniam qui irure officia.
+  </span>
+  <span slot="body">
+    Cillum dolor mollit irure laborum enim qui nulla non eu eu consectetur deserunt ut excepteur. Proident nisi culpa
+    aute sunt incididunt. Nostrud officia qui dolore cillum nisi veniam qui irure officia.
+  </span>
+  <md-button slot="action" variant="text" (click)="dialog.open = false">Okay</md-button>
+  <md-button slot="action" variant="text">Cancel</md-button>
+</md-dialog>

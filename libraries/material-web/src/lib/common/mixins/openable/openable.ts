@@ -1,5 +1,7 @@
 export interface Openable {
   open: boolean;
-  hide(): Promise<void>;
-  show(): Promise<void>;
+  opening: boolean;
+  closing: boolean;
+  show(): Promise<void>
+  close(): Promise<void>
 }
