@@ -1,1 +1,0 @@
-export type MenuTrigger = 'click' | 'hover' | 'contextmenu' | 'manual';

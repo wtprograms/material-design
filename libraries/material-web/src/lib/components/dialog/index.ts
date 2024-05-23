@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LitElement, html, nothing } from 'lit';
 import {
   customElement,
@@ -281,7 +283,6 @@ export class MdDialogElement extends base {
 
   private _escapePressedWithoutCancel = false;
   private _nextClickIsFromContent = false;
-  private _animations: Animation[] = [];
 
   protected override render() {
     const showFocusTrap = this.open && !this.noFocusTrap;
@@ -298,7 +299,7 @@ export class MdDialogElement extends base {
       <dialog
         @cancel=${this.handleCancel}
         @click=${this.handleDialogClick}
-        @close=${this.handleClose}
+        @close=${this.handleCloseDialog}
         @keydown=${this.handleKeydown}
         .returnValue=${this.returnValue}
       >
@@ -349,12 +350,12 @@ export class MdDialogElement extends base {
     this.isConnectedLatch.reset();
   }
 
-  override async show(): Promise<void> {
+  override async handleShow(...args: any[]): Promise<boolean> {
     await this.isConnectedLatch.waitOne();
     await this.updateComplete;
 
-    if (!!this._dialog?.open || this.opening) {
-      return;
+    if (!!this._dialog?.open) {
+      return false;
     }
 
     const preventOpen = !this.dispatchEvent(
@@ -362,12 +363,11 @@ export class MdDialogElement extends base {
     );
     if (preventOpen) {
       this.open = false;
-      return;
+      return false;
     }
 
     this._dialog!.style.display = 'flex';
     this._scrim!.style.display = 'flex';
-    this.opening = true;
     this._dialog?.showModal();
 
     if (this._body) {
@@ -376,18 +376,16 @@ export class MdDialogElement extends base {
 
     this.querySelector<HTMLElement>('[autofocus]')?.focus();
 
-    await this.animateDialog(DIALOG_DEFAULT_OPEN_ANIMATION);
+    await this.animateOpen();
     this.dispatchEvent(new Event('opened'));
-    this.opening = false;
+    return true;
   }
 
-  override async close(returnValue = this.returnValue): Promise<void> {
-    if (this.closing) {
-      return;
+  override async handleClose(...args: any[]): Promise<boolean> {
+    if (!this.isConnected || !this._dialog?.open) {
+      return false;
     }
-    if (!this.isConnected || !this._dialog?.open || this.opening) {
-      return;
-    }
+    const returnValue = args[0] ?? this.returnValue;
     const previousReturnValue = this.returnValue;
     this.returnValue = returnValue;
     const preventClose = !this.dispatchEvent(
@@ -396,20 +394,31 @@ export class MdDialogElement extends base {
     if (preventClose) {
       this.open = true;
       this.returnValue = previousReturnValue;
-      return;
+      return false;
     }
-    this.closing = true;
 
-    await this.animateDialog(DIALOG_DEFAULT_CLOSE_ANIMATION);
+    await this.animateClose();
     this._dialog.close(returnValue);
     this.open = false;
     this._dialog.style.display = 'none';
     this._scrim!.style.display = 'none';
     this.dispatchEvent(new Event('closed'));
-    this.closing = false;
+    return true;
   }
 
-  private handleClose() {
+  override async animateOpen(): Promise<void> {
+    this.cancelAnimations();
+    await this.animateDialog(DIALOG_DEFAULT_OPEN_ANIMATION);
+    await this.animationsPromise();
+  }
+  
+  override async animateClose(): Promise<void> {
+    this.cancelAnimations();
+    await this.animateDialog(DIALOG_DEFAULT_CLOSE_ANIMATION);
+    await this.animationsPromise();
+  }
+
+  private handleCloseDialog() {
     if (!this._escapePressedWithoutCancel) {
       return;
     }
@@ -469,11 +478,6 @@ export class MdDialogElement extends base {
   }
 
   private async animateDialog(animation: DialogAnimation) {
-    for (const animation of this._animations) {
-      animation.cancel();
-    }
-    this._animations = [];
-
     const elementAndAnimations: Array<
       [HTMLElement | null, DialogAnimationArgs]
     > = [
@@ -491,12 +495,8 @@ export class MdDialogElement extends base {
       if (!element || !frames) {
         continue;
       }
-      this._animations.push(element.animate(frames, options));
+      this.animations.push(element.animate(frames, options));
     }
-
-    await Promise.all(
-      this._animations.map((animation) => animation.finished.catch(() => {}))
-    );
   }
 
   private handleFocusTrapFocus(event: FocusEvent) {

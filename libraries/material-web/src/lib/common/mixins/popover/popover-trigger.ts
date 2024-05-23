@@ -1,0 +1,1 @@
+export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual';

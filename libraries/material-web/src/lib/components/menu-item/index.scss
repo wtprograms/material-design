@@ -49,6 +49,8 @@ $public: (
   padding-inline-start: 12px;
   padding-inline-end: 12px;
   position: relative;
+  flex-shrink: 0;
+  min-width: 112px;
   cursor: pointer;
 
   @include md.typescale('label', 'large');

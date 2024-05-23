@@ -1,15 +1,18 @@
 import { LitElement, isServer } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import style from './index.scss';
-import { mixinPopover } from '../../common';
+import { PopoverTrigger, mixinPopover } from '../../common';
 import { MdMenuItemElement } from '../menu-item';
 import { MdDividerElement } from '../divider';
 
 const base = mixinPopover(LitElement);
 
-@customElement('md-menu')
-export class MdMenuElement extends base {
+@customElement('md-tooltip')
+export class MdTooltip extends base {
   static override styles = [style];
+
+  @property({ type: String, reflect: true })
+  override trigger: PopoverTrigger = 'hover';
 
   get items(): MdMenuItemElement[] {
     return this.slots.filter(
@@ -88,6 +91,6 @@ export class MdMenuElement extends base {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'md-menu': MdMenuElement;
+    'md-tooltip': MdTooltip;
   }
 }

@@ -11,10 +11,19 @@ const base = mixinButton(LitElement);
 export class MdMenuItemElement extends base {
   static override styles = [style];
 
+  constructor() {
+    super();
+    this.addEventListener('click', this.handleClick.bind(this));
+  }
+
   override render() {
     return html`<md-ripple for="button" hoverable activatable></md-ripple>
       <slot name="icon"></slot> ${this.renderAnchorOrButton()}
       <slot name="trailing"></slot>`;
+  }
+
+  private handleClick() {
+    this.dispatchEvent(new CustomEvent('close-popover', { bubbles: true, composed: true }));
   }
 }
 

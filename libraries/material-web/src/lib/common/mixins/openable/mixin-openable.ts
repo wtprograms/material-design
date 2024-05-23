@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LitElement } from 'lit';
 import { MixinBase, MixinReturn } from '../mixin';
 import { property } from 'lit/decorators.js';
@@ -12,24 +14,73 @@ export function mixinOpenable<T extends MixinBase<LitElement>>(
       return !!this.hasAttribute('open');
     }
     set open(value: boolean) {
+      if (value === this.open) {
+        return;
+      }
       if (value) {
-        this.setAttribute('open', '');
         this.show();
+        this.setAttribute('open', '');
       } else {
-        this.removeAttribute('open');
         this.close();
+        this.removeAttribute('open');
       }
     }
-  
-    @property({ type: Boolean, reflect: true })
-    opening = false;
-  
-    @property({ type: Boolean, reflect: true })
-    closing = false;
 
-    async show(): Promise<void> {}
+    animations: Animation[] = [];
 
-    async close(): Promise<void> {}
+    private _opening = false;
+    private _closing = false;
+
+    async show(...args: any[]): Promise<void> {
+      if (this.open || this._opening || this._closing) {
+        return;
+      }
+      this._opening = true;
+      this.cancelAnimations();
+
+      if (!await this.handleShow(...args)) {
+        return;
+      }
+      this.open = true;
+      this._opening = false;
+    }
+
+    async handleShow(...args: any[]): Promise<boolean> {
+      return true;
+    }
+
+    async close(...args: any[]): Promise<void> {
+      if (!this.open || this._opening || this._closing) {
+        return;
+      }
+      this._closing = true;
+      if (!await this.handleClose(...args)) {
+        return;
+      }
+      this.open = false;
+      this._closing = false;
+    }
+
+    async handleClose(...args: any[]): Promise<boolean> {
+      return true;
+    }
+
+    async animateOpen(): Promise<void> {}
+
+    async animateClose(): Promise<void> {}
+
+    cancelAnimations(): void {
+      for (const animation of this.animations) {
+        animation.cancel();
+      }
+      this.animations = [];
+    }
+
+    async animationsPromise(): Promise<void> {
+      await Promise.all(
+        this.animations.map((animation) => animation.finished.catch(() => {}))
+      );
+    }
   }
 
   return OpenableMixin;

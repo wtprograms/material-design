@@ -106,6 +106,10 @@ export default [
     loadComponent: () => import('./switch/switch.component'),
   },
   {
+    path: 'tooltip',
+    loadComponent: () => import('./tooltip/tooltip.component'),
+  },
+  {
     path: 'typescale',
     loadComponent: () => import('./typescale/typescale.component'),
   },

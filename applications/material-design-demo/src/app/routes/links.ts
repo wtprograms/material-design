@@ -24,5 +24,6 @@ export const LINKS = [
   'segmented-button',
   'segmented-button-set',
   'switch',
+  'tooltip',
   'typescale',
 ];

@@ -1,0 +1,35 @@
+@mixin popover {
+  :host {
+    display: none;
+    position: absolute;
+    opacity: 0;
+    color: var(--md-sys-color-surface-on);
+  
+    .modal {
+      position: relative;
+      isolation: isolate;
+      border-radius: var(--md-sys-shape-extra-small);
+    }
+  
+    .container {
+      position: absolute;
+      inset: 0;
+      background: var(--md-sys-color-surface-container);
+      z-index: -1;
+      border-radius: inherit;
+    }
+  
+    .body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: inherit;
+   }
+  
+    ::slotted(md-divider) {
+      --md-comp-divider-color: var(--md-sys-color-outline-variant);
+      margin: 8px 0;
+      flex-shrink: 0;
+    }
+  }
+}

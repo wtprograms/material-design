@@ -1,25 +1,39 @@
 <h1>md-menu</h1>
-<md-card>
-  <md-button id="top-start">Toggle menu</md-button>
-  <md-menu for="top-start">
-    <md-menu-item>Item 1</md-menu-item>
-    <md-menu-item>Item 2</md-menu-item>
-    <md-menu-item>Item 3</md-menu-item>
-    <md-menu-item>Item 4</md-menu-item>
-    <md-divider></md-divider>
-    <md-menu-item>Item 5</md-menu-item>
-    <md-menu-item>Item 6</md-menu-item>
+
+<ng-template #template>
+  <md-menu-item>Item 1</md-menu-item>
+  <md-menu-item>Item 2</md-menu-item>
+  <md-menu-item>Item 3</md-menu-item>
+  <md-menu-item>Item 4</md-menu-item>
+  <md-divider></md-divider>
+  <md-menu-item>Item 5</md-menu-item>
+  <md-menu-item>Item 6</md-menu-item>
+
+</ng-template>
+
+<md-card class=" justify-between">
+  <div class="relative">
+    <md-button id="top-start">Toggle menu</md-button>
+    <md-menu for="top-start" animate-width>
+      <ng-container *ngTemplateOutlet="template" />
+    </md-menu>
+  </div>
+  <md-button id="top-end">Toggle menu</md-button>
+  <md-menu for="top-end">
+    <ng-container *ngTemplateOutlet="template" />
+  </md-menu>
+  <md-button id="top-middle">Toggle menu</md-button>
+  <md-menu for="top-middle">
+    <ng-container *ngTemplateOutlet="template" />
   </md-menu>
 </md-card>
-<md-card class="bottom-0 absolute">
+<md-card class="bottom-0 absolute justify-between">
   <md-button id="button-start">Toggle menu</md-button>
   <md-menu for="button-start">
-    <md-menu-item>Item 1</md-menu-item>
-    <md-menu-item>Item 2</md-menu-item>
-    <md-menu-item>Item 3</md-menu-item>
-    <md-menu-item>Item 4</md-menu-item>
-    <md-divider></md-divider>
-    <md-menu-item>Item 5</md-menu-item>
-    <md-menu-item>Item 6</md-menu-item>
+    <ng-container *ngTemplateOutlet="template" />
+  </md-menu>
+  <md-button id="button-end">Toggle menu</md-button>
+  <md-menu for="button-end">
+    <ng-container *ngTemplateOutlet="template" />
   </md-menu>
 </md-card>
