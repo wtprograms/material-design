@@ -1,0 +1,47 @@
+:host {
+  position: fixed;
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+  color: var(--md-sys-color-surface-inverse-on);
+  border-radius: var(--md-sys-shape-extra-small);
+  padding: 4px 16px;
+  gap: 12px;
+  min-width: 360px;
+  height: 0;
+  left: 24px;
+  bottom: 24px;
+
+  .container {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: var(--md-sys-color-surface-inverse);
+    z-index: -1;
+  }
+
+  .body {
+    margin-right: auto;
+  }
+
+  .actions {
+    display: none;
+    gap: 12px;
+  }
+
+  ::slotted(md-button[variant='text']) {
+    --md-comp-button-content-color: var(--md-sys-color-primary-inverse-on)
+  }
+
+  ::slotted(md-icon-button[variant='standard']) {
+    --md-comp-icon-button-content-color: var(--md-sys-color-surface-inverse-on)
+  }
+}
+
+:host([has-action]) {
+  padding-right: 4px;
+
+  .actions {
+    display: flex;
+  }
+}

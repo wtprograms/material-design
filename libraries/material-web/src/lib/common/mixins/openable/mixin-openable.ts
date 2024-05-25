@@ -43,6 +43,7 @@ export function mixinOpenable<T extends MixinBase<LitElement>>(
       }
       this.open = true;
       this._opening = false;
+      this.dispatchEvent(new Event('opened'))
     }
 
     async handleShow(...args: any[]): Promise<boolean> {
@@ -59,6 +60,7 @@ export function mixinOpenable<T extends MixinBase<LitElement>>(
       }
       this.open = false;
       this._closing = false;
+      this.dispatchEvent(new Event('closed'))
     }
 
     async handleClose(...args: any[]): Promise<boolean> {

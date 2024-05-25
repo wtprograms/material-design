@@ -1,0 +1,9 @@
+<h1>md-snackbar</h1>
+<md-card>
+  <md-button (click)="snackbar.open = !snackbar.open">Push snackbar</md-button>
+</md-card>
+<md-snackbar #snackbar>
+  Snackbar!
+  <md-button slot="action" variant="text">Action</md-button>
+  <md-icon-button slot="action"><md-icon>close</md-icon></md-icon-button>
+</md-snackbar>

@@ -106,6 +106,10 @@ export default [
     loadComponent: () => import('./sheet/sheet.component'),
   },
   {
+    path: 'snackbar',
+    loadComponent: () => import('./snackbar/snackbar.component'),
+  },
+  {
     path: 'switch',
     loadComponent: () => import('./switch/switch.component'),
   },

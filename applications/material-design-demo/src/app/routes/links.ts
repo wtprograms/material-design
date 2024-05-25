@@ -24,6 +24,7 @@ export const LINKS = [
   'segmented-button',
   'segmented-button-set',
   'sheet',
+  'snackbar',
   'switch',
   'tooltip',
   'typescale',

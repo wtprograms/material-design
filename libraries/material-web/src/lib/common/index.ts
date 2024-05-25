@@ -23,6 +23,8 @@ export * from './mixins/check/check';
 export * from './mixins/check/mixin-check';
 export * from './mixins/control/control';
 export * from './mixins/control/mixin-control';
+export * from './mixins/dialog/dialog';
+export * from './mixins/dialog/mixin-dialog';
 export * from './mixins/disable/disable';
 export * from './mixins/disable/mixin-disable';
 export * from './mixins/element-internals/internals';
