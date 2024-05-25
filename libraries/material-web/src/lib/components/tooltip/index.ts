@@ -1,5 +1,9 @@
-import { LitElement, isServer } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, TemplateResult, html, isServer } from 'lit';
+import {
+  customElement,
+  property,
+  queryAssignedElements,
+} from 'lit/decorators.js';
 import style from './index.scss';
 import { PopoverTrigger, mixinPopover } from '../../common';
 import { MdMenuItemElement } from '../menu-item';
@@ -13,6 +17,9 @@ export class MdTooltip extends base {
 
   @property({ type: String, reflect: true })
   override trigger: PopoverTrigger = 'hover';
+
+  @property({ type: Boolean, reflect: true })
+  rich = false;
 
   get items(): MdMenuItemElement[] {
     return this.slots.filter(
@@ -28,15 +35,51 @@ export class MdTooltip extends base {
 
   private readonly internals = (this as HTMLElement).attachInternals();
 
-  private _pointerPath: EventTarget[] = [];
+  @queryAssignedElements({ slot: 'headline', flatten: true })
+  private readonly _headlineSlots!: HTMLSpanElement[];
+
+  @property({ type: Boolean, attribute: 'has-headline', reflect: true })
+  hasHeadline = false;
+
+  @queryAssignedElements({ slot: 'action', flatten: true })
+  private readonly _actionSlots!: HTMLElement[];
+
+  @property({ type: Boolean, attribute: 'has-actions', reflect: true })
+  hasActions = false;
+
   private _cancelGlobalEventListeners?: () => void;
 
   constructor() {
     super();
     this.initialize('click', 'pointerenter', 'pointerleave', 'contextmenu');
     if (!isServer) {
-      this.internals.role = 'menu';
+      this.internals.role = 'tooltip';
     }
+  }
+
+  override renderContent(): TemplateResult {
+    return html`<span class="headline" ?hidden=${!this
+      .hasHeadline}><slot name="headline" @slotchange=${
+      this.onSlotChange
+    }></span></div>
+          <slot></slot>
+          <span class="actions" ?hidden=${!this
+            .hasActions}><slot name="action" @slotchange=${
+      this.onSlotChange
+    }></span>`;
+  }
+
+  override async handleOpen(event: Event, value: boolean): Promise<void> {
+    if (event.type === 'pointerleave' && this.rich && this.hasActions) {
+      return;
+    }
+    await super.handleOpen(event, value);
+  }
+
+  private onSlotChange() {
+    this.hasHeadline = this._headlineSlots.length > 0;
+    this.hasActions = this._actionSlots.length > 0;
+    this.rich = this.hasHeadline || this.hasActions;
   }
 
   override async handleShow() {
@@ -57,14 +100,11 @@ export class MdTooltip extends base {
 
   private setUpGlobalEventListeners(): () => void {
     const documentClick = this.onDocumentClick.bind(this);
-    const windowPointerdown = this.onWindowPointerdown.bind(this);
 
     document.addEventListener('click', documentClick, { capture: true });
-    window.addEventListener('pointerdown', windowPointerdown);
 
     return () => {
       document.removeEventListener('click', documentClick);
-      window.removeEventListener('pointerdown', windowPointerdown);
     };
   }
 
@@ -82,10 +122,6 @@ export class MdTooltip extends base {
     ) {
       this.open = false;
     }
-  }
-
-  private onWindowPointerdown(event: Event) {
-    this._pointerPath = event.composedPath();
   }
 }
 

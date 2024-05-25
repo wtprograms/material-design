@@ -2,9 +2,52 @@
 
 @include md.popover;
 
+$tokens: (
+  'container': (
+    'color': var(--md-sys-color-surface-inverse),
+    'shape': var(--md-sys-shape-extra-small)
+  ),
+  'content': (
+    'color': var(--md-sys-color-surface-inverse-on),
+    'font': var(--md-sys-typescale-body-small-font),
+    'size': var(--md-sys-typescale-body-small-size),
+    'weight': var(--md-sys-typescale-body-small-weight)
+  ),
+  'padding': 4px,
+  'rich': (
+    'container': (
+      'color': var(--md-sys-color-surface-container),
+      'shape': var(--md-sys-shape-extra-medium)
+    ),
+    'headline': (
+      'font': var(--md-sys-typescale-title-small-font),
+      'size': var(--md-sys-typescale-title-small-size),
+      'weight': var(--md-sys-typescale-title-small-weight)
+    ),
+    'content': (
+      'color': var(--md-sys-color-surface-variant-on),
+      'font': var(--md-sys-typescale-body-medium-font),
+      'size': var(--md-sys-typescale-body-medium-size),
+      'weight': var(--md-sys-typescale-body-medium-weight)
+    ),
+    'padding': 12px 16px 8px 16px
+  )
+);
+
 :host {
-  color: var(--md-sys-color-surface-inverse-on);
-  @include md.typescale('body', 'small');
+  @include md.declare-component-tokens($tokens, 'tooltip');
+}
+
+:host([rich]) {
+  @include md.set-properties(map-get($tokens, 'rich'), 'tooltip-rich');
+}
+
+:host {
+  color: var(--_content-color);
+  font-family: var(--_content-font);
+  font-size: var(--_content-size);
+  font-weight: var(--_content-weight);
+  z-index: var(--md-sys-z-index-tooltip);
 
   .modal {
     width: max-content;
@@ -12,10 +55,36 @@
   }
 
   .container {
-    background-color: var(--md-sys-color-surface-on);
+    background-color: var(--_container-color);
   }
 
   .body {
-    margin: 4px;
+    margin: var(--_padding);
+  }
+
+  .headline {
+    font-family: var(--_headline-font);
+    font-size: var(--_headline-size);
+    font-weight: var(--_headline-weight);
+    margin-bottom: 4px;
+    display: none;
+  }
+
+  .actions {
+    margin-top: 12px;
+    display: none;
+    gap: 8px;
+  }
+}
+
+:host([has-actions]) {
+  .actions {
+    display: inline-flex;
+  }
+}
+
+:host([has-headline]) {
+  .headline {
+    display: inline;
   }
 }

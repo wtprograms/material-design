@@ -45,9 +45,14 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
     @query('.body')
     body!: HTMLDivElement | null;
 
+    @property({ type: Number, attribute: 'open-delay' })
+    openDelay = 0;
+
+    @property({ type: Number, attribute: 'close-delay' })
+    closeDelay = 0;
+
     private _cancelAutoUpdate?: () => void;
     currentPlacement: Placement = this.placement;
-    private _hovering = false;
 
     constructor() {
       super();
@@ -57,12 +62,14 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
     override render() {
       return html`<div class="modal">
         <div class="container">
-          <md-elevation level="3"></md-elevation>
+          <md-elevation level="2"></md-elevation>
         </div>
-        <div class="body">
-          <slot @close-popover=${this.close}></slot>
-        </div>
+        <div class="body">${this.renderContent()}</div>
       </div>`;
+    }
+
+    renderContent() {
+      return html`<slot></slot>`;
     }
 
     override async handleShow(...args: any[]): Promise<boolean> {
@@ -164,20 +171,22 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
         (event.type === 'pointerenter' && this.trigger === 'hover') ||
         (event.type === 'contextmenu' && this.trigger === 'contextmenu')
       ) {
-        await sleep(100);
-        if (!this.open && !this._hovering) {
-          this.open = true;
+        await sleep(this.openDelay);
+        if (!this.open) {
+          await this.handleOpen(event, true);
         }
-        this._hovering = true;
       }
 
       if (event.type === 'pointerleave' && this.trigger === 'hover') {
-        this._hovering = false;
-        await sleep(100);
+        await sleep(this.closeDelay);
         if (this.open) {
-          this.open = false;
+          await this.handleOpen(event, false);
         }
       }
+    }
+
+    async handleOpen(event: Event, value: boolean): Promise<void> {
+      this.open = value;
     }
 
     async updatePosition(): Promise<void> {

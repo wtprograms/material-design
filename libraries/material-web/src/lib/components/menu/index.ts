@@ -1,4 +1,4 @@
-import { LitElement, isServer } from 'lit';
+import { LitElement, TemplateResult, html, isServer } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import style from './index.scss';
 import { mixinPopover } from '../../common';
@@ -34,6 +34,10 @@ export class MdMenuElement extends base {
     if (!isServer) {
       this.internals.role = 'menu';
     }
+  }
+
+  override renderContent(): TemplateResult {
+    return html`<slot @close-popover=${this.close}></slot>`;
   }
 
   override async handleShow() {

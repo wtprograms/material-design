@@ -3,7 +3,9 @@
 @include md.popover;
 
 :host {
+  z-index: var(--md-sys-z-index-menu);
+  
   .body {
-    padding: 4px 0;
+    margin: 4px 0;
   }
 }
