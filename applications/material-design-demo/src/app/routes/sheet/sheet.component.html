@@ -1,0 +1,18 @@
+<h1>md-sheet</h1>
+<md-card class="justify-between">
+  <div>
+    <md-button (click)="onChange()">Change layout</md-button>
+    {{ sheet.layout }}
+  </div>
+  <md-button (click)="sheet.open = !sheet.open">Toggle</md-button>
+</md-card>
+<md-sheet #sheet>
+  <span slot="headline">Headline</span>
+  <span slot="supporting-text">Supporting text</span>
+  Laboris esse ad excepteur commodo quis ad Lorem ut. Labore eiusmod aute est cillum. Fugiat labore eu anim fugiat
+  commodo ad duis in eiusmod exercitation proident commodo. In consequat commodo excepteur pariatur anim esse. Duis aute
+  id dolor nostrud sint excepteur nulla dolore elit nostrud culpa. Irure incididunt dolore exercitation dolore elit
+  occaecat. Anim officia ipsum quis adipisicing elit non in laboris nisi aliquip.
+  <md-button variant="text" slot="action">Primary action</md-button>
+  <md-button variant="text" slot="action">Cancel</md-button>
+</md-sheet>

@@ -23,6 +23,7 @@ export const LINKS = [
   'ripple',
   'segmented-button',
   'segmented-button-set',
+  'sheet',
   'switch',
   'tooltip',
   'typescale',

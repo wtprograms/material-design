@@ -12,7 +12,7 @@ import { MdDividerElement } from '../divider';
 const base = mixinPopover(LitElement);
 
 @customElement('md-tooltip')
-export class MdTooltip extends base {
+export class MdTooltipElement extends base {
   static override styles = [style];
 
   @property({ type: String, reflect: true })
@@ -127,6 +127,6 @@ export class MdTooltip extends base {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'md-tooltip': MdTooltip;
+    'md-tooltip': MdTooltipElement;
   }
 }

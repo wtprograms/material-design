@@ -102,6 +102,10 @@ export default [
     loadComponent: () => import('./segmented-button-set/segmented-button-set.component'),
   },
   {
+    path: 'sheet',
+    loadComponent: () => import('./sheet/sheet.component'),
+  },
+  {
     path: 'switch',
     loadComponent: () => import('./switch/switch.component'),
   },

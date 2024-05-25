@@ -1,0 +1,192 @@
+@use '../md';
+
+$tokens: (
+  'container': (
+    'color': var(--md-sys-color-surface-container),
+    'outline': 0
+  ),
+  'top': (
+    'container-shape': var(--md-sys-shape-extra-large-bottom),
+    'margin': 0 auto auto auto,
+    'width': 640px,
+    'height': fit-content,
+    'max-width': min(var(--_width), 100%),
+    'actions-direction': flex-end,
+  ),
+  'end': (
+    'container-shape': var(--md-sys-shape-extra-large-start),
+    'margin': 0 0 0 auto,
+    'width': 360px,
+    'height': 100%,
+    'max-width': min(var(--_width), calc(100% - 56px)),
+    'actions-direction': flex-start
+  ),
+  'bottom': (
+    'container-shape': var(--md-sys-shape-extra-large-top),
+    'margin': auto auto 0 auto,
+    'width': 640px,
+    'height': fit-content,
+    'max-width': min(var(--_width), 100%),
+    'actions-direction': flex-end
+  ),
+  'start': (
+    'container-shape': var(--md-sys-shape-extra-large-end),
+    'margin': 0 auto 0 0,
+    'width': 360px,
+    'height': 100%,
+    'max-width': min(var(--_width), calc(100% - 56px)),
+    'actions-direction': flex-end
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'sheet');
+}
+
+$layouts: (
+  'top': map-get($tokens, 'top'),
+  'bottom': map-get($tokens, 'bottom'),
+  'start': map-get($tokens, 'start'),
+  'end': map-get($tokens, 'end')
+);
+
+@each $layout, $layout-tokens in $layouts {
+  :host([layout='#{$layout}']) {
+    @include md.set-properties($layout-tokens, 'sheet-#{$layout}');
+  }
+}
+
+:host {
+  display: contents;
+  margin: var(--_margin);
+  position: fixed;
+  max-width: var(--_max-width);
+  min-width: var(--_max-width);
+  height: var(--_height);
+  width: var(--_width);
+  z-index: var(--md-sys-z-index-dialog);
+
+  dialog {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+  }
+
+  ::backdrop {
+    // Can't use ::backdrop since Firefox does not allow animations on it.
+    background: none;
+  }
+
+  .handle {
+    display: none;
+    justify-content: center;
+    width: 100%;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    opacity: 0.4;
+    cursor: grab;
+
+    &::after {
+      content: '';
+      width: 32px;
+      height: 4px;
+      background: var(--md-sys-color-surface-variant-on);
+      border-radius: var(--md-sys-shape-extra-small);
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .scrim {
+    background: var(--md-sys-color-scrim);
+    display: none;
+    inset: 0;
+    opacity: 32%;
+    pointer-events: none;
+    position: fixed;
+    z-index: 1;
+  }
+
+  .headline {
+    color: var(--md-sys-color-surface-on);
+    @include md.typescale('headline', 'small');
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .supporting-text {
+    color: var(--md-sys-color-surface-variant-on);
+    @include md.typescale('body', 'medium');
+  }
+
+  .action {
+    margin-top: 24px;
+    display: flex;
+    justify-content: var(--_actions-direction);
+    gap: 8px;
+  }
+
+  .body {
+    overflow-y: auto;
+    margin-bottom: auto;
+  }
+
+  .container {
+    position: relative;
+    border-radius: var(--_container-shape);
+    padding: 24px;
+    isolation: isolate;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .container-paint {
+      background-color: var(--_container-color);
+      border-radius: inherit;
+      content: '';
+      inset: 0;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+}
+
+:host([layout='top']){
+  .handle-bottom {
+    display: flex;
+  }
+
+  .container {
+    padding-bottom: 0;
+  }
+}
+
+
+:host([layout='bottom']){
+  .handle-top {
+    display: flex;
+  }
+
+  .container {
+    padding-top: 0;
+  }
+}

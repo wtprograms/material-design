@@ -28,6 +28,8 @@ export * from './radiobutton';
 export * from './ripple';
 export * from './segmented-button';
 export * from './segmented-button-set';
+export * from './sheet';
+export * from './sheet/sheet-layout';
 export * from './switch';
 export * from './tooltip';
 export * from './typescale';
