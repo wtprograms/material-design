@@ -1,0 +1,75 @@
+@use '../md';
+
+$tokens: (
+  'container-color': var(--md-sys-color-surface-container),
+  'direction': row,
+  'indicator-width': 64px,
+  'item-width': 100%,
+  'spacing': (
+    'padding': 12px 0 16px 0,
+    'gap': 8px
+  ),
+  'rail': (
+    'container-color': transparent,
+    'indicator-width': 56px,
+    'direction': column,
+    'item-width': fit-content,
+    'spacing': (
+      'padding': 16px 12px,
+      'gap': 12px
+    )
+  ),
+  'drawer': (
+    'container-color': transparent,
+    'indicator-width': unset,
+    'direction': column,
+    'item-width': auto,
+    'spacing': (
+      'padding': 16px 12px,
+      'gap': 0px
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'navigation');
+}
+
+:host([layout='rail']) {
+  @include md.set-properties(map-get($tokens, 'rail'), 'navigation-rail');
+}
+
+:host([layout='drawer']) {
+  @include md.set-properties(map-get($tokens, 'drawer'), 'navigation-drawer');
+}
+
+:host {
+  display: flex;
+  flex-direction: var(--_direction);
+  background-color: var(--_container-color);
+  width: 100%;
+  padding: var(--_spacing-padding);
+  gap: var(--_spacing-gap);
+
+  --__indicator-width: var(--_indicator-width);
+  ::slotted(md-navigation-item) {
+    --md-comp-navigation-item-indicator-width: var(--__indicator-width);
+    width: var(--_item-width);
+  }
+
+  --_decoration-display: none;
+
+  ::slotted(md-divider) {
+    display: var(--_decoration-display);
+    margin-left: 14px;
+    margin-right: 8px;
+  }
+
+  ::slotted(md-navigation-headline) {
+    display: var(--_decoration-display);
+  }
+}
+
+:host([layout='drawer']) {
+  --_decoration-display: inline-flex;
+}

@@ -1,0 +1,192 @@
+@use '../md';
+
+$tokens: (
+  'filled': (
+    'container': (
+      'color': var(--md-sys-color-surface-container-high),
+      'outline': none
+    ),
+    'content-color': var(--md-sys-color-primary),
+    'disabled': (
+      'container': (
+        'color': md.disabled('container'),
+        'outline': none
+      ),
+      'content-color': md.disabled('text')
+    ),
+    'selected': (
+      'container': (
+        'color': var(--md-sys-color-primary),
+        'outline': none
+      ),
+      'content-color': var(--md-sys-color-primary-on),
+      'disabled': (
+        'container': (
+          'color': md.disabled('container'),
+          'outline': none
+        ),
+        'content-color': md.disabled('text')
+      )
+    )
+  ),
+  'tonal': (
+    'container': (
+      'color': var(--md-sys-color-surface-container-high),
+      'outline': none
+    ),
+    'content-color': var(--md-sys-color-surface-variant-on),
+    'disabled': (
+      'container': (
+        'color': md.disabled('container')
+      ),
+      'content-color': md.disabled('text')
+    ),
+    'selected': (
+      'container': (
+        'color': var(--md-sys-color-secondary-container),
+        'outline': none
+      ),
+      'content-color': var(--md-sys-color-secondary-container-on),
+      'disabled': (
+        'container': (
+          'color': md.disabled('container')
+        ),
+        'content-color': md.disabled('text')
+      )
+    )
+  ),
+  'outlined': (
+    'container': (
+      'color': transparent,
+      'outline': 1px solid var(--md-sys-color-outline)
+    ),
+    'content-color': var(--md-sys-color-surface-variant-on),
+    'disabled': (
+      'container': (
+        'color': transparent,
+        'outline': 1px solid md.disabled('outline')
+      ),
+      'content-color': md.disabled('text')
+    ),
+    'selected': (
+      'container': (
+        'color': var(--md-sys-color-surface-inverse),
+        'outline': 1px solid var(--md-sys-color-outline)
+      ),
+      'content-color': var(--md-sys-color-surface-inverse-on),
+      'disabled': (
+        'container': (
+          'color': md.disabled('container'),
+          'outline': 1px solid md.disabled('outline')
+        ),
+        'content-color': md.disabled('text')
+      )
+    )
+  ),
+  'standard': (
+    'container': (
+      'color': transparent,
+      'outline': none
+    ),
+    'content-color': var(--md-sys-color-surface-variant-on),
+    'disabled': (
+      'container': (
+        'color': transparent,
+        'outline': none
+      ),
+      'content-color': md.disabled('text')
+    ),
+    'selected': (
+      'container': (
+        'color': transparent,
+        'outline': none
+      ),
+      'content-color': var(--md-sys-color-primary),
+      'disabled': (
+        'container': (
+          'color': transparent,
+          'outline': none
+        ),
+        'content-color': md.disabled('text')
+      )
+    )
+  ),
+  'icon-filled': 0,
+  'selected': (
+    'icon-filled': 1
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'icon-button');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($tokens, 'selected'), 'icon-button-selected');
+}
+
+$variants: ('filled', 'tonal', 'outlined', 'standard');
+
+@each $variant in $variants {
+  $variant-tokens: map-get($tokens, $variant);
+
+  :host([variant='#{$variant}']) {
+    @include md.set-properties($variant-tokens, 'icon-button-#{$variant}');
+  }
+
+  :host([variant='#{$variant}'][disabled]) {
+    $disabled: map-get($variant-tokens, 'disabled');
+    @include md.set-properties($disabled, 'icon-button-#{$variant}-disabled');
+  }
+
+  :host([variant='#{$variant}'][selected]) {
+    $selected: map-get($variant-tokens, 'selected');
+    @include md.set-properties($selected, 'icon-button-#{$variant}-selected');
+  }
+
+  :host([variant='#{$variant}'][selected][disabled]) {
+    $selected: map-get($variant-tokens, 'selected');
+    $disabled: map-get($selected, 'disabled');
+    @include md.set-properties($disabled, 'icon-button-#{$variant}-selected-disabled');
+  }
+}
+
+:host {
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  color: var(--_content-color);
+  height: 48px;
+  width: 48px;
+  flex-shrink: 0;
+  cursor: pointer;
+  isolation: isolate;
+  @include md.typescale('label', 'large');
+
+  .container {
+    background-color: var(--_container-color);
+    border: var(--_container-outline);
+    border-radius: inherit;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  @include md.button {
+    color: inherit;
+    display: flex;
+    gap: 8px;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-filled: var(--_icon-filled);
+    pointer-events: none;
+  }
+}
+
+@include md.disabled-component;

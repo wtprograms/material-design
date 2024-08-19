@@ -1,0 +1,10 @@
+<h1>
+  md-typescale
+</h1>
+<div class="flex flex-col border p-4 gap-4">
+  @for (scale of scales; track scale) {
+  @for (size of sizes; track size) {
+  <md-typescale [scale]="scale" [size]="size">{{ scale }} {{ size }}</md-typescale>
+  }
+  }
+</div>

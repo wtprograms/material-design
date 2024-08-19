@@ -1,0 +1,58 @@
+@use '../md';
+
+@include md.field('text-field');
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  @include md.button {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .body {
+    cursor: pointer;
+  }
+
+  md-popup {
+    --md-comp-popup-width: 100%;
+  }
+
+  .popup-date {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .popup-date-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 12px 0 12px;
+  }
+
+  .popup-date-body {
+    position: relative;
+    margin: 0 12px 0 12px;
+  }
+
+  .popup-date-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0 12px 12px 12px;
+  }
+
+  .trailing {
+    display: inline;
+  }
+
+  .reset {
+    margin-right: auto;
+  }
+}

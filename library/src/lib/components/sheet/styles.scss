@@ -1,0 +1,72 @@
+@use '../md';
+
+@include md.dialog;
+
+$tokens: (
+  'container-color': var(--md-sys-color-surface-container-high),
+  'icon-color': var(--md-sys-color-secondary),
+  'headline-color': var(--md-sys-color-surface-on),
+  'supporting-text-color': var(--md-sys-color-surface-variant-on),
+  'top': (
+    'container-shape': var(--md-sys-shape-extra-large-bottom),
+    'container-max-height': calc(100dvh - 72px),
+    'max-width': min(640px, calc(100% - 56px)),
+    'max-height': 100px,
+    'margin': 0 auto auto auto
+  ),
+  'end': (
+    'container-shape': var(--md-sys-shape-extra-large-start),
+    'container-height': 100dvh,
+    'max-width': min(400px, calc(100% - 48px)),
+    'max-height': 100%,
+    'margin': 0 0 0 auto
+  ),
+  'bottom': (
+    'container-shape': var(--md-sys-shape-extra-large-top),
+    'container-max-height': calc(100dvh - 72px),
+    'max-width': min(640px, calc(100% - 56px)),
+    'max-height': revert,
+    'margin': auto auto 0 auto
+  ),
+  'start': (
+    'container-shape': var(--md-sys-shape-extra-large-end),
+    'container-height': 100dvh,
+    'max-width': min(400px, calc(100% - 48px)),
+    'max-height': 100%,
+    'margin': 0 auto 0 0
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'sheet');
+}
+
+$docks: ('top', 'end', 'bottom', 'start');
+@each $dock in $docks {
+  :host([dock='#{$dock}']) {
+    @include md.set-properties(map-get($tokens, $dock), 'sheet-#{$dock}');
+  }
+}
+
+:host {
+  max-height: var(--_max-height);
+  max-width: var(--_max-width);
+  margin: var(--_margin);
+
+  .headline {
+    align-items: center;
+  }
+
+  .container {
+    height: var(--_container-height);
+    max-height: var(--_container-max-height);
+  }
+
+  .container-content {
+    height: 100%;
+  }
+
+  .actions {
+    margin-top: auto;
+  }
+}

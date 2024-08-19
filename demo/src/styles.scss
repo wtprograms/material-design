@@ -1,0 +1,11 @@
+@use '../../library/dist/styles/index' as md;
+
+@include md.import;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @include md.reboot;
+}

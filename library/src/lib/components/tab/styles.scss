@@ -1,0 +1,72 @@
+@use '../md';
+
+$tokens: (
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'icon-filled': 0,
+  'selected': (
+    'content-color': var(--md-sys-color-primary),
+    'icon-filled': 1,
+    ),
+  'disabled': (
+    'content-color': md.disabled('text')
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'tab');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($tokens, 'selected'), 'tab-selected');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'tab-disabled');
+}
+
+:host {
+  position: relative;
+  color: var(--_content-color);
+  cursor: pointer;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 64px;
+  @include md.typescale('title', 'small');
+
+  .container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+  }
+
+  @include md.button {
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::slotted(md-icon) {
+    pointer-events: none;
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
+}
+
+:host([secondary]) {
+  flex-direction: row;
+  height: 48px;
+
+  button, a {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+@include md.disabled-component;
+

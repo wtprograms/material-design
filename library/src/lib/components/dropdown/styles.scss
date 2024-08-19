@@ -1,0 +1,37 @@
+@use '../md';
+
+@include md.field('text-field');
+
+:host {
+  position: relative;
+
+  @include md.button {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .body {
+    cursor: pointer;
+  }
+
+  md-popup {
+    --md-comp-popup-width: 100%;
+  }
+
+  .trailing {
+    display: inline;
+  }
+
+  md-list {
+    display: none;
+  }
+}
+
+:host([has-items]) {
+  md-list {
+    display: flex;
+  }
+}

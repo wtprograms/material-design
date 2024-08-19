@@ -1,0 +1,83 @@
+@use '../methods' as md;
+@use 'input';
+
+@mixin checkbox-radio($name) {
+  $tokens: (
+    'color': (
+      'unchecked': var(--md-sys-color-surface-variant-on),
+      'checked': var(--md-sys-color-primary),
+      'error': var(--md-sys-color-error),
+      'disabled': md.disabled('text')
+    )
+  );
+
+  :host(:not([checked])) {
+    --_color: var(--_color-unchecked);
+
+    md-icon {
+      --md-comp-icon-filled: 0;
+    }
+  }
+
+  :host([checked]) {
+    --_color: var(--_color-checked);
+
+    md-icon {
+      --md-comp-icon-filled: 1;
+    }
+  }
+
+  :host([has-error]) {
+    --_color: var(--_color-error);
+  }
+
+  :host([disabled]) {
+    --_color: var(--_color-disabled);
+  }
+
+  :host {
+    @include md.declare-component-tokens($tokens, $name);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    color: var(--_color);
+    cursor: pointer;
+    border-radius: var(--md-sys-shape-full);
+    outline: 0;
+
+    @include md.motion('color');
+
+    @include input.input;
+
+    .container {
+      position: relative;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: inherit;
+    }
+
+    .label {
+      display: none;
+    }
+
+    --__color: var(--_color);
+    md-ripple {
+      --md-comp-ripple-color: var(--__color);
+      --md-comp-ripple-transform-default: scale(0);
+      --md-comp-ripple-transform-hover: scale(1);
+    }
+  }
+
+  :host([has-label]) {
+    .label {
+      display: inline;
+    }
+  }
+
+  @include md.disabled-component;
+}

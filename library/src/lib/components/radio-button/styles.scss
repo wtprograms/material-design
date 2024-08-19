@@ -1,0 +1,80 @@
+@use '../md';
+
+$tokens: (
+  'content-color': var(--md-sys-color-surface-variant-on),
+  'checked-content-color': var(--md-sys-color-primary),
+  'error-content-color': var(--md-sys-color-error),
+  'disabled-content-color': md.disabled('text')
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'radio-button');
+}
+
+:host([checked]) {
+  --_content-color: var(--_checked-content-color);
+}
+
+:host([has-error]) {
+  --_content-color: var(--_error-content-color);
+}
+
+:host([disabled]) {
+  --_content-color: var(--_disabled-content-color);
+}
+
+:host {
+  flex-shrink: 0;
+  cursor: pointer;
+  isolation: isolate;
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  color: var(--_content-color);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--_container-color);
+    border: var(--_container-outline);
+    border-radius: inherit;
+    z-index: -1;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    cursor: pointer;
+  }
+
+  md-icon {
+    pointer-events: none;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  .label {
+    display: none;
+  }
+}
+
+:host([has-label]) {
+  .label {
+    display: inline;
+  }
+}
+
+@include md.disabled-component;

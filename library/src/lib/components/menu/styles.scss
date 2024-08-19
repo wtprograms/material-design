@@ -1,0 +1,22 @@
+@use '../md';
+
+@include md.popover;
+
+$tokens: (
+  'container-color': var(--md-sys-color-surface-container)
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'menu');
+}
+
+:host {
+  padding: 4px 0;
+  min-width: 112px;
+  max-width: 280px;
+  border-radius: var(--md-sys-shape-extra-small);
+
+  ::slotted(*) {
+    opacity: 0;
+  }
+}

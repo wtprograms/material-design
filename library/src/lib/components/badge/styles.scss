@@ -1,0 +1,71 @@
+@use '../md';
+
+$tokens: (
+  'container-color': var(--md-sys-color-error),
+  'content-color': var(--md-sys-color-error-on)
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'badge');
+}
+
+:host {
+  position: absolute;
+  background-color: var(--_container-color);
+  color: var(--_content-color);
+  border-radius: var(--md-sys-shape-full);
+  display: inline-flex;
+  place-content: center;
+  place-items: center;
+  isolation: isolate;
+  flex-shrink: 0;
+
+  font-size: var(--md-sys-typescale-label-small-size);
+  font-weight: var(--md-sys-typescale-label-small-weight);
+  font-family: var(--md-sys-typescale-label-small-font);
+}
+
+:host(:not([embedded])) {
+  top: 0;
+}
+
+:host(:not([embedded])[dot]) {
+  right: 0;
+}
+
+:host([number]:not([number='0'])) {
+  height: 16px;
+}
+
+:host(:not([embedded])[number]:not([number='0'])) {
+  left: 50%;
+}
+
+:host([embedded]) {
+  position: relative;
+}
+
+:host([dot]) {
+  width: 6px;
+  height: 6px;
+}
+
+:host(:not([dot]):not([number])),
+:host(:not([dot])[number='0']) {
+  display: none;
+}
+
+:host([single-digit]:not([number='0'])) {
+  width: 16px;
+}
+
+:host(:not([embedded])[single-digit]:not([number='0'])),
+:host(:not([embedded]):not([single-digit]):not([number='0']):not([dot])) {
+  margin-top: -2px;
+  margin-right: -4px;
+}
+
+:host(:not([single-digit]):not([number='0']):not([dot])) {
+  padding-inline-start: 4px;
+  padding-inline-end: 4px;
+}

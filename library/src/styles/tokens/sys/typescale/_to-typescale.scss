@@ -1,0 +1,7 @@
+@function to-typescale($typescale, $size, $font, $weight) {
+  @return (
+    'size': $size,
+    'font': var(--md-ref-typeface-font-#{$font}),
+    'weight': var(--md-ref-typeface-weight-#{$weight}),
+  );
+}

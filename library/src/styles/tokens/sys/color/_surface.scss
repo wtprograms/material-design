@@ -1,0 +1,24 @@
+@use '../../../methods/color';
+
+$tokens: (
+  '': color.color('neutral', 98, 6),
+  'on': color.color('neutral', 10, 90),
+  'variant': (
+    '': color.color('neutral-variant', 90, 30),
+    'on': color.color('neutral-variant', 30, 80)
+  ),
+  'container': (
+    'highest': color.color('neutral', 90, 22),
+    'high': color.color('neutral', 92, 17),
+    '': color.color('neutral', 94, 12),
+    'low': color.color('neutral', 96, 10),
+    'lowest': color.color('neutral', 100, 4)
+  ),
+  'dim': color.color('neutral', 87, 6),
+  'bright': color.color('neutral', 98, 24),
+  'tint': color.color('neutral', 40, 80),
+  'inverse': (
+    '': color.color('neutral', 20, 90),
+    'on': color.color('neutral', 95, 20)
+  ),
+);

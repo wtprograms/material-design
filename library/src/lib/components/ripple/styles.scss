@@ -1,0 +1,73 @@
+@use '../md';
+
+$tokens: (
+  'color': (
+    '': var(--md-sys-color-surface-on),
+    'activated': var(--_color)
+  ),
+  'transform': (
+    'default': unset,
+    'hover': unset
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'ripple');
+
+  display: flex;
+  margin: auto;
+  pointer-events: none;
+}
+
+:host([disabled]) {
+  display: none;
+}
+
+:host,
+.surface {
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.surface {
+  -webkit-tap-highlight-color: transparent;
+
+  &::before,
+  &::after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    border-radius: inherit;
+  }
+
+  &::before {
+    background-color: var(--_color);
+    inset: 0;
+    transform: var(--_transform-default);
+    @include md.motion('opacity, background-color, transform');
+  }
+
+  &::after {
+    background: radial-gradient(closest-side, var(--_color-activated) max(calc(100% - 70px), 65%), transparent 100%);
+    transform-origin: center center;
+    transition: opacity 375ms linear;
+  }
+}
+
+:host([is-hovering]), :host([external-activated]) {
+  .surface::before {
+    background-color: var(--_color);
+    opacity: var(--md-sys-state-hover);
+    transform: var(--_transform-hover);
+  }
+}
+
+:host([is-activated]), :host([external-activated]) {
+  .surface::after {
+    opacity: var(--md-sys-state-active);
+    transition-duration: 105ms;
+  }
+}
+

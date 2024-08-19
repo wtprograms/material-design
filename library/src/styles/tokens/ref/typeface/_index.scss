@@ -1,0 +1,7 @@
+@use 'font';
+@use 'weight';
+
+$tokens: (
+  'font': font.$tokens,
+  'weight': weight.$tokens
+);

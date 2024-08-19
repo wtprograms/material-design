@@ -1,0 +1,50 @@
+@use '../md';
+
+$tokens: (
+  'level': 0
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'elevation');
+
+  display: flex;
+  pointer-events: none;
+} 
+
+:host,
+.shadow,
+.shadow::before,
+.shadow::after {
+  border-radius: inherit;
+  inset: 0;
+  position: absolute;
+  transition-duration: inherit;
+  transition-property: inherit;
+  transition-timing-function: inherit;
+}
+
+.shadow::before,
+.shadow::after {
+  content: '';
+  @include md.motion('box-shadow, opacity');
+}
+
+.shadow::before {
+  @include md.elevate-default(var(--_level));
+}
+
+.shadow::after {
+  @include md.elevate-hover(var(--_level));
+}
+
+:host([is-hovering]) {
+  --_level: calc(var(--md-comp-elevation-level) + 1);
+}
+
+:host([is-activated]) {
+  --_level: var(--md-comp-elevation-level);
+}
+
+:host([is-dragging]) {
+  --_level: 4;
+}

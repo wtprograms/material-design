@@ -1,0 +1,35 @@
+@use '../md';
+
+:host {
+  display: flex;
+  height: 40px;
+  @include md.button {
+    cursor: pointer;
+    width: auto;
+    position: relative;
+    color: var(--md-sys-color-surface-variant-on);
+  }
+
+  #left, #right {
+    width: 40px;
+  }
+
+  #center {
+    padding-left: 16px;
+    padding-right: 8px;
+  }
+}
+
+:host([disabled-left]) {
+  #left {
+    color: #{md.disabled('text')};
+    pointer-events: none;
+  }
+}
+
+:host([disabled-right]) {
+  #right {
+    color: #{md.disabled('text')};
+    pointer-events: none;
+  }
+}

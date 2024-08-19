@@ -1,0 +1,6 @@
+@mixin typescale($scale, $size: null) {
+  $typescale: if($size == null, $scale, '#{$scale}-#{$size}');
+  font-size: var(--md-sys-typescale-#{$typescale}-size);
+  font-weight: var(--md-sys-typescale-#{$typescale}-weight);
+  font-family: var(--md-sys-typescale-#{$typescale}-font);
+}

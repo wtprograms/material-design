@@ -1,0 +1,213 @@
+@use '../md';
+
+$tokens: (
+  'track': (
+    'color': var(--md-sys-color-surface-container-highest),
+    'outline-color': var(--md-sys-color-outline)
+  ),
+  'handle': (
+    'color': var(--md-sys-color-outline),
+    'icon-color': var(--md-sys-color-surface-container-highest)
+  ),
+  'label-color': var(--md-sys-color-surface-variant-on),
+  'error': (
+    'track': (
+      'color': var(--md-sys-color-error-container),
+      'outline-color': var(--md-sys-color-error)
+    ),
+    'handle': (
+      'color': var(--md-sys-color-error),
+      'icon-color': var(--md-sys-color-error-container)
+    ),
+    'label-color': var(--md-sys-color-error)
+  ),
+  'disabled': (
+    'track': (
+      'color': var(--md-sys-color-surface-container-highest),
+      'outline-color': md.disabled('outline')
+    ),
+    'handle': (
+      'color': md.disabled('outline'),
+      'icon-color': var(--md-sys-color-surface)
+    ),
+    'label-color': md.disabled('text')
+  ),
+  'checked': (
+    'track': (
+      'color': var(--md-sys-color-primary),
+      'outline-color': var(--md-sys-color-primary)
+    ),
+    'handle': (
+      'color': var(--md-sys-color-primary-on),
+      'icon-color': var(--md-sys-color-primary)
+    ),
+    'label-color': var(--md-sys-color-primary),
+    'error': (
+      'track': (
+        'color': var(--md-sys-color-error),
+        'outline-color': var(--md-sys-color-error)
+      ),
+      'handle': (
+        'color': var(--md-sys-color-error-on),
+        'icon-color': var(--md-sys-color-error)
+      ),
+      'label-color': var(--md-sys-color-error)
+    ),
+    'disabled': (
+      'track': (
+        'color': var(--md-sys-color-surface-container-highest),
+        'outline-color': md.disabled('outline')
+      ),
+      'handle': (
+        'color': md.disabled('outline'),
+        'icon-color': var(--md-sys-color-surface)
+      ),
+      'label-color': md.disabled('text')
+      )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'switch');
+}
+
+:host([has-error]) {
+  @include md.set-properties(map-get($tokens, 'error'), 'switch-error');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'switch-disabled');
+}
+
+:host([checked]) {
+  @include md.set-properties(map-get($tokens, 'checked'), 'switch-checked');
+}
+
+:host([checked][has-error]) {
+  $checked: map-get($tokens, 'checked');
+  @include md.set-properties(map-get($checked, 'error'), 'switch-checked-error');
+}
+
+:host([checked][disabled]) {
+  $checked: map-get($tokens, 'checked');
+  @include md.set-properties(map-get($checked, 'disabled'), 'switch-checked-disabled');
+}
+
+:host {
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .track {
+    width: 52px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--_track-color);
+    border: 2px solid var(--_track-outline-color);
+    border-radius: inherit;
+    box-sizing: border-box;
+    @include md.motion('background-color, border');
+  }
+
+  .container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: inherit;
+    width: 40px;
+    height: 40px;
+    @include md.motion('left');
+  }
+
+  .handle {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--_handle-icon-color);
+    background-color: var(--_handle-color);
+    border-radius: inherit;
+    @include md.motion('width, height, background-color');
+  }
+
+  .unchecked-icon, .checked-icon {
+    display: none;
+  }
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    cursor: pointer;
+  }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-size: 16;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_label-color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  .label {
+    display: none;
+    color: var(--_label-color);
+  }
+}
+
+:host([has-label]) {
+  .label {
+    display: inline;
+  }
+}
+
+:host(:not([checked])) {
+  .container {
+    left: -4px;
+  }
+}
+
+:host([checked]) {
+  .container {
+    left: 16px;
+  }
+  .handle {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+:host(:not([checked])[has-unchecked-icon]) {
+  .unchecked-icon {
+    display: flex;
+  }
+  .handle {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+:host([checked][has-checked-icon]) {
+  .checked-icon {
+    display: flex;
+  }
+}
+
+:host(:active), :host(:active:not([checked])[has-unchecked-icon]) {
+  .handle {
+    height: 28px;
+    width: 28px;
+  }
+}
+
+@include md.disabled-component;
+

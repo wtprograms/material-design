@@ -1,0 +1,48 @@
+@use '../md';
+
+@include md.field('text-field');
+
+:host {
+  .input {
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    @include md.typescale('body', 'large');
+    width: 100%;
+    color: var(--_color-control);
+    caret-color: var(--_color-label);
+    resize: none;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  .control {
+    cursor: text;
+  }
+}

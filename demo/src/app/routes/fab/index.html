@@ -1,0 +1,26 @@
+<h1>
+  md-fab
+</h1>
+<div  class="flex flex-row border p-4 gap-4">
+  <md-fab>
+    <md-icon slot="icon">home</md-icon>
+  </md-fab>
+  <md-fab lowered>
+    <md-icon slot="icon">home</md-icon>
+  </md-fab>
+  <md-fab>
+    <span slot="label">FAB label</span>
+  </md-fab>
+  <md-fab #fab (click)="fab.extended = !fab.extended">
+    <md-icon slot="icon">home</md-icon>
+    <span slot="label">FAB label</span>
+  </md-fab>
+</div>
+<div *ngFor="let palette of palettes" class="flex flex-row border p-4 gap-4">
+  <md-fab *ngFor="let size of sizes" [palette]="palette" [size]="size">
+    <md-icon slot="icon">home</md-icon>
+  </md-fab>
+  <md-fab [palette]="palette" size="small" disabled>
+    <md-icon slot="icon">home</md-icon>
+  </md-fab>
+</div>

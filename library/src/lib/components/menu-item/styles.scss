@@ -1,0 +1,95 @@
+@use '../md';
+
+$tokens: (
+  'container-color': transparent,
+  'content-color': var(--md-sys-color-surface-on),
+  'trailing-color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'container-color': transparent,
+    'content-color': md.disabled('text'),
+    'trailing-color': md.disabled('text')
+  ),
+  'selected': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on),
+    'trailing-color': var(--md-sys-color-secondary-container-on),
+    'disabled': (
+      'container-color': md.disabled('container'),
+      'content-color': md.disabled('text'),
+      'trailing-color': md.disabled('text')
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'menu-item');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'menu-item-disabled');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($tokens, 'selected'), 'menu-item-selected');
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(map-get(map-get($tokens, 'selected'), 'disabled'), 'menu-item-selected-disabled');
+}
+
+:host {
+  padding: 0 8px;
+  position: relative;
+  height: 48px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+  text-wrap: nowrap;
+  cursor: pointer;
+  color: var(--_content-color);
+  @include md.typescale('label', 'large');
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--_container-color);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  @include md.button {
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    text-align: left;
+  }
+
+  .leading {
+    display: none;
+    z-index: -1;
+
+    ::slotted(img) {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  .trailing {
+    color: var(--_trailing-color);
+    z-index: -1;
+    @include md.typescale('label', 'small');
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+}
+
+:host([has-leading]) {
+  .leading {
+    display: flex;
+  }
+}

@@ -1,0 +1,115 @@
+<h1>
+  md-text-field
+</h1>
+<div class="flex flex-row border p-4 gap-4">
+  <md-button (click)="disabled.set(!disabled())">Toggle Disabled</md-button>
+  <md-button (click)="error.set(!error())">Toggle Error</md-button>
+</div>
+<div class="flex flex-col border p-4 gap-4">
+  <md-text-field [disabled]="disabled()">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+</div>
+<div class="flex flex-col border p-4 gap-4">
+  <md-text-field variant="outlined" [disabled]="disabled()">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field variant="outlined" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field variant="outlined" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+</div>
+<div class="flex flex-col border p-4 gap-4">
+  <md-text-field type="textarea" [disabled]="disabled()">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field type="textarea" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field type="textarea" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+</div>
+<div class="flex flex-col border p-4 gap-4">
+  <md-text-field type="textarea" variant="outlined" [disabled]="disabled()">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field type="textarea" variant="outlined" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+  <md-text-field type="textarea" variant="outlined" [disabled]="disabled()" label="Label text">
+    <span slot="prefix">$</span>
+    <span slot="suffix">.00</span>
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+    <span slot="supporting-text">This is the supporting text.</span>
+    <span *ngIf="error()" slot="error">{{errorText()}}</span>
+    <span slot="counter">2/16</span>
+  </md-text-field>
+</div>

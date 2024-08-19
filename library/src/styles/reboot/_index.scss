@@ -1,0 +1,15 @@
+@use 'body';
+@use 'document';
+@use 'h';
+@use 'p';
+@use 'a';
+@use 'hr';
+
+@mixin reboot {
+  @include body.reboot;
+  @include document.reboot;
+  @include h.reboot;
+  @include p.reboot;
+  @include a.reboot;
+  @include hr.reboot;
+}

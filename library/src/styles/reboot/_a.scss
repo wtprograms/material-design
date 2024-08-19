@@ -1,0 +1,19 @@
+@use '../methods';
+
+@mixin reboot {
+  a {
+    appearance: none;
+    text-decoration: none;
+    color: var(--md-sys-color-primary);
+
+    @include methods.motion(('color'));
+
+    &:hover {
+      color: methods.mix(var(--md-sys-color-primary), var(--md-sys-color-surface-on), 0.3)
+    }
+
+    &:active {
+      color: methods.mix(var(--md-sys-color-primary), var(--md-sys-color-surface-on), 0.5)
+    }
+  }
+}

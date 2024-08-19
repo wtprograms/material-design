@@ -1,0 +1,9 @@
+<h1>
+  md-badge
+</h1>
+<div *ngFor="let variant of variants" class="flex flex-row border p-4 gap-4">
+  <md-icon-button [variant]="variant"><md-icon slot="icon">home</md-icon></md-icon-button>
+  <md-icon-button [variant]="variant" disabled><md-icon slot="icon">home</md-icon></md-icon-button>
+  <md-icon-button selected [variant]="variant"><md-icon slot="icon">home</md-icon></md-icon-button>
+  <md-icon-button selected [variant]="variant" disabled><md-icon slot="icon">home</md-icon></md-icon-button>
+</div>

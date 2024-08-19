@@ -1,0 +1,82 @@
+@use '../md';
+
+@include md.popover;
+
+$tokens: (
+  'min-width': 112px,
+  'max-width': 280px,
+  'width': auto,
+  'plain': (
+    'padding': 4px 8px,
+    'content-color': var(--md-sys-color-surface-inverse-on),
+    'container': (
+      'color': var(--md-sys-color-surface-inverse),
+      'shape': var(--md-sys-shape-extra-small)
+    )
+  ),
+  'rich': (
+    'padding': 12px 16px 8px 16px,
+    'content-color': var(--md-sys-color-surface-variant-on),
+    'container': (
+      'color': var(--md-sys-color-surface-container),
+      'shape': var(--md-sys-shape-medium),
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'tooltip');
+}
+
+:host([variant='plain']) {
+  @include md.set-properties(map-get($tokens, 'plain'), 'tooltip-plain');
+  pointer-events: none;
+}
+
+:host([variant='rich']) {
+  @include md.set-properties(map-get($tokens, 'rich'), 'tooltip-rich');
+}
+
+:host {
+  padding: var(--_padding);
+  min-width: var(--_min-width);
+  max-width: var(--_max-width);
+  width: var(--_width);
+  border-radius: var(--_container-shape);
+  color: var(--_content-color);
+  min-height: 24px;
+  text-align: left;
+
+  .popover-body {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .headline {
+    display: none;
+    @include md.typescale('title', 'small');
+    margin-bottom: 4px;
+  }
+
+  .supporting-text {
+    @include md.typescale('body', 'medium');
+    margin-bottom: 12px;
+  }
+
+  .actions {
+    display: none;
+    gap: 8px;
+  }
+}
+
+:host([has-headline]) {
+  .headline {
+    display: inline;
+  }
+}
+
+:host([has-actions]) {
+  .actions {
+    display: flex;
+  }
+}

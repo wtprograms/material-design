@@ -1,0 +1,6 @@
+<md-navigation layout="drawer" class="w-[360px] sticky top-0 h-[100dvh] overflow-y-auto">
+  <md-navigation-item *ngFor="let route of routes" [routerLink]="route.path" [selectedLink]="route.path">{{ route.path }}</md-navigation-item>
+</md-navigation>
+<div class="flex flex-col w-full pr-4">
+  <router-outlet />
+</div>

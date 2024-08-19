@@ -1,0 +1,137 @@
+@use '../md';
+
+$tokens: (
+  'surface': (
+    'container-color': var(--md-sys-color-surface-container-low),
+    'content-color': var(--md-sys-color-primary)
+  ),
+  'primary': (
+    'container-color': var(--md-sys-color-primary-container),
+    'content-color': var(--md-sys-color-primary-container-on)
+  ),
+  'secondary': (
+    'container-color': var(--md-sys-color-secondary-container),
+    'content-color': var(--md-sys-color-secondary-container-on)
+  ),
+  'tertiary': (
+    'container-color': var(--md-sys-color-tertiary-container),
+    'content-color': var(--md-sys-color-tertiary-container-on)
+  ),
+  'disabled': (
+    'container-color': md.disabled('container'),
+    'content-color': md.disabled('text')
+  ),
+  'large': (
+    'size': 96px,
+    'icon-size': 36,
+    'padding': 32px,
+    'shape': var(--md-sys-shape-medium)
+  ),
+  'medium': (
+    'size': 56px,
+    'icon-size': 24,
+    'padding': 16px,
+    'shape': var(--md-sys-shape-small)
+  ),
+  'small': (
+    'size': 40px,
+    'icon-size': 24,
+    'padding': 8px,
+    'shape': var(--md-sys-shape-extra-small)
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'fab');
+}
+
+$palettes: ('surface', 'primary', 'secondary', 'tertiary');
+$sizes: ('large', 'medium', 'small');
+
+@each $palette in $palettes {
+  :host([palette='#{$palette}']) {
+    @include md.set-properties(map-get($tokens, $palette), 'fab-#{$palette}');
+  }
+}
+
+@each $size in $sizes {
+  :host([size='#{$size}']) {
+    @include md.set-properties(map-get($tokens, $size), 'fab-#{$size}');
+  }
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'fab-disabled');
+}
+
+:host {
+  --_spacing: var(--_spacing-default);
+  position: relative;
+  border-radius: var(--_shape);
+  color: var(--_content-color);
+  height: var(--_size);
+  width: var(--_size);
+  flex-shrink: 0;
+  cursor: pointer;
+  isolation: isolate;
+  @include md.typescale('label', 'large');
+
+  .container {
+    background-color: var(--_container-color);
+    border: var(--_container-outline);
+    justify-content: flex-start;
+    border-radius: inherit;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  @include md.button {
+    color: inherit;
+    display: flex;
+    padding: var(--_padding);
+    gap: 8px;
+  }
+
+  .icon,
+  .label {
+    display: none;
+    pointer-events: none;
+  }
+
+  .label {
+    text-wrap: nowrap;
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+  }
+
+  ::slotted(md-icon) {
+    pointer-events: none;
+    --md-comp-icon-size: var(--_icon-size);
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_content-color);
+  }
+}
+
+:host([has-icon]) {
+  .icon {
+    display: inline;
+  }
+}
+
+:host([has-label]) {
+  width: auto;
+}
+
+:host([has-label][extended]) {
+  .label {
+    display: inline;
+    opacity: 1;
+    width: auto;
+  }
+}
+
+@include md.disabled-component;
