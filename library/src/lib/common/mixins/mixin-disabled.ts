@@ -10,11 +10,14 @@ export function mixinDisabled<T extends MixinBase<LitElement>>(
   base: T
 ): MixinReturn<T, Disabled> {
   abstract class Mixin extends base implements Disabled {
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean, reflect: true, noAccessor: true })
     get disabled() {
       return this.hasAttribute('disabled');
     }
     set disabled(value: boolean) {
+      if (value === this.disabled) {
+        return;
+      }
       if (value) {
         this.setAttribute('disabled', '');
       } else {

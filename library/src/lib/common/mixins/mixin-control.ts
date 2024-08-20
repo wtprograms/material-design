@@ -33,6 +33,9 @@ export function mixinControl<T extends MixinBase<LitElement>>(
     }
     set value(value: string | null) {
       value = this.coerceValue(value);
+      if (value === this.value) {
+        return;
+      }
       if (value) {
         this.setAttribute('value', value);
       } else {
