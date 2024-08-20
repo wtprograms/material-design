@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
-import { MdSegmentedButtonElement } from '../../../../../library/dist';
+import { MdSegmentedButtonElement } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',

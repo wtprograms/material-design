@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
-import { Typescale, TypescaleSize } from '../../../../../library/dist';
+import { Typescale, TypescaleSize } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',

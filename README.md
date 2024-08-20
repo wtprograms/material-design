@@ -21,6 +21,14 @@ Then add it to your project:
 </html>
 ```
 
+### SCSS
+Should you want to import the scss files. You can just add the following to your entry .scss file:
+```scss
+@use 'node_modules/@wtprograms/material-design/styles/index' as md;
+
+@include md.initialize;
+```
+
 ## Demo
 
 To run the demo after cloning the project, you need to run these two commands in separate terminals.

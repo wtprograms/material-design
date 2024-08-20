@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
-import { ButtonVariant } from '../../../../../library/dist';
+import { ButtonVariant } from '../../../../../dist';
 import { CommonModule } from '@angular/common';
 
 @Component({

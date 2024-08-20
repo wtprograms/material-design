@@ -13,7 +13,7 @@
     "build": "npm run clean && npm run index && npm run build:scss && npm run build:styles && npm run build:css-ts && npm run build:tsc",
     "index": "node indexer",
     "lint": "eslint . --ext .ts",
-    "watch": "npm run index && npm run build:styles && concurrently -k -p \"[{name}]\" -n \"tsc,scss\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"npm:build:tsc -- --watch --preserveWatchOutput\" \"npm:build:scss -- --watch\" \"npm:build:css-ts -- -w\""
+    "watch": "npm run clean && npm run index && npm run build:styles && concurrently -k -p \"[{name}]\" -n \"tsc,scss\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"npm:build:tsc -- --watch --preserveWatchOutput\" \"npm:build:scss -- --watch\" \"npm:build:css-ts -- -w\""
   },
   "author": "WT Programs",
   "license": "ISC",

@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import {
-  ButtonVariant,
   FabPalette,
   FabSize,
-} from '../../../../../library/dist';
+} from '../../../../../dist';
 import { CommonModule } from '@angular/common';
 
 @Component({

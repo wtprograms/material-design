@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, signal } from '@angular/core';
-import { SheetDock } from '../../../../../library/dist';
+import { SheetDock } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',
