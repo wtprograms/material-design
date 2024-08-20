@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { styles } from './styles';
 import { mixinField } from '../../common/mixins/mixin-field';
 
@@ -21,6 +22,18 @@ export class MdTextFieldElement extends base {
   @property({ type: String, reflect: true, attribute: 'type' })
   type: TextFieldType = 'text';
 
+  @property({ type: Number })
+  minlength: number | null = null;
+
+  @property({ type: Number })
+  maxlength: number | null = null;
+
+  @property({ type: Number })
+  min: number | null = null;
+
+  @property({ type: Number })
+  max: number | null = null;
+
   @query('.input')
   input!: HTMLInputElement | HTMLTextAreaElement;
 
@@ -37,6 +50,8 @@ export class MdTextFieldElement extends base {
           @focus=${this.onInputFocus}
           @blur=${this.onInputBlur}
           @input=${this.onInput}
+          minlength=${ifDefined(this.minlength)}
+          maxlength=${ifDefined(this.maxlength)}
           rows="1"
         ></textarea>`
       : html`<input
@@ -46,6 +61,10 @@ export class MdTextFieldElement extends base {
           @focus=${this.onInputFocus}
           @blur=${this.onInputBlur}
           @input=${this.onInput}
+          minlength=${ifDefined(this.minlength)}
+          maxlength=${ifDefined(this.maxlength)}
+          min=${ifDefined(this.min)}
+          max=${ifDefined(this.max)}
         />`;
   }
 

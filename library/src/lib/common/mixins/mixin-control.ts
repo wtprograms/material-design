@@ -2,8 +2,9 @@ import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
 import { Disabled, mixinDisabled } from './mixin-disabled';
+import { mixinElementInternals, WithElementInternals } from './mixin-internals';
 
-export interface Control extends Disabled {
+export interface Control extends Disabled, WithElementInternals {
   name: string;
   value: string | null;
   coerceValue(value: string | null): string | null;
@@ -12,7 +13,7 @@ export interface Control extends Disabled {
 export function mixinControl<T extends MixinBase<LitElement>>(
   base: T
 ): MixinReturn<T, Control> {
-  const _base = mixinDisabled(base);
+  const _base = mixinDisabled(mixinElementInternals(base));
   abstract class Mixin extends _base implements Control {
     @property({ noAccessor: true })
     get name() {

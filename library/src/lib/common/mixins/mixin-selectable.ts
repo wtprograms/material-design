@@ -10,7 +10,7 @@ export function mixinSelectable<T extends MixinBase<LitElement>>(
   base: T
 ): MixinReturn<T, Selectable> {
   abstract class Mixin extends base implements Selectable {
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean, reflect: true, noAccessor: true })
     get selected() {
       return this.hasAttribute('selected');
     }

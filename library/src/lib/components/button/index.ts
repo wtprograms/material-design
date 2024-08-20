@@ -5,7 +5,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton } from '../../common';
+import { mixinButton, setupFormSubmitter } from '../../common';
 
 export type ButtonVariant =
   | 'elevated'
@@ -19,6 +19,17 @@ const base = mixinButton(LitElement);
 @customElement('md-button')
 export class MdButtonElement extends base {
   static override styles = [styles];
+
+  static {
+    setupFormSubmitter(MdButtonElement);
+  }
+  
+  static readonly formAssociated = true;
+  
+  static override shadowRootOptions: ShadowRootInit = {
+    mode: 'open',
+    delegatesFocus: true,
+  };
 
   @property({ type: String, reflect: true })
   variant: ButtonVariant = 'filled';
