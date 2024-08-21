@@ -35,6 +35,6 @@ jobs:
         version: ${{ steps.get_version.outputs.version }}
 
     - name: Publish
-      run: npm publish --access public --tag ${{ steps.get_version.outputs.version }}
+      run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
