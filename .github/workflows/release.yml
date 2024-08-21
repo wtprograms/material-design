@@ -26,6 +26,7 @@ jobs:
       with:
         name: build-artifacts
         path: dist
+        needs: build
     - run: npm publish --access public --tag ${{ github.ref }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
