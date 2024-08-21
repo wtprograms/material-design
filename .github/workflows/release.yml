@@ -20,12 +20,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-artifacts
-        github-token: ${{ secrets.REPOSITORY_GITHUB_TOKEN }}
-        repository: actions/build
+    - run: npm ci
+    - npm: npm run buld --if-present
     - run: npm publish --access public --tag ${{ github.ref }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
