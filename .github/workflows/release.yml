@@ -8,22 +8,24 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
       with:
-        node-version: '22'  # Specify the Node.js version you need
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
-
-    - name: Publish to npm
-      run: npm publish --access public
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - name: Download build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifact
+        path: ./dist
+    - run: npm ci
+    - run: npm publish --access public --tag ${{ github.ref }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
