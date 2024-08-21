@@ -19,7 +19,7 @@ Then add it to your project:
     <script src="./node_modules/@wtprograms/material-design/index.js"></script>
   </body>
 </html>
-```
+``` 
 
 ### SCSS
 Should you want to import the scss files. You can just add the following to your entry .scss file:
