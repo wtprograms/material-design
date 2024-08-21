@@ -20,7 +20,7 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
         
     - run: npm ci
-    - run: npm run buld --if-present
+    - run: npm run build
     
     - id: get_version
       name: Get Version
