@@ -26,7 +26,7 @@ jobs:
         name: build-artifacts
         path: dist
         github-token: ${{ secrets.REPOSITORY_GITHUB_TOKEN }}
-        repository: material-design
+        repository: actions/build
     - run: npm publish --access public --tag ${{ github.ref }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
