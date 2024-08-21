@@ -22,6 +22,12 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run buld --if-present
+    - name: Set package.json version
+      # You may pin to the exact commit or the version.
+      # uses: HarmvZ/set-package-json-version-action@e7e0e86480e2c8623033617a4a2f4cd8182ceff9
+      uses: HarmvZ/set-package-json-version-action@v0.2.5
+      with:
+        version: ${{ github.ref }}
     - run: npm publish --access public --tag ${{ github.ref }}
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
