@@ -4,6 +4,7 @@
 @use 'p';
 @use 'a';
 @use 'hr';
+@use 'small';
 
 @mixin reboot {
   @include body.reboot;
@@ -12,4 +13,5 @@
   @include p.reboot;
   @include a.reboot;
   @include hr.reboot;
+  @include small.reboot;
 }

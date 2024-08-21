@@ -1,0 +1,7 @@
+@use '../methods/typescale';
+
+@mixin reboot {
+  small {
+    @include typescale.typescale('body', 'small');
+  }
+}
