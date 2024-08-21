@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'  # Triggers the workflow on version tags
+  release:
+    types: [published]
 
 jobs:
   release:
