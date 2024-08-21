@@ -3,6 +3,7 @@
   "private": false,
   "version": "0.0.1",
   "description": "@wtprograms/material-design is a library of web components and styles for Material 3.",
+  "repository": "https://github.com/wtprograms/material-design",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist",
@@ -34,5 +35,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
