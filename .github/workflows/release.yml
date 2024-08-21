@@ -24,7 +24,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
-        path: dist
         github-token: ${{ secrets.REPOSITORY_GITHUB_TOKEN }}
         repository: actions/build
     - run: npm publish --access public --tag ${{ github.ref }}
