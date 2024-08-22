@@ -1,6 +1,6 @@
 import { html, LitElement, nothing } from 'lit';
 import { MixinBase, MixinReturn } from './mixin';
-import { autoUpdate, Placement, Strategy } from '@floating-ui/dom';
+import { Placement, Strategy } from '@floating-ui/dom';
 import { property, query } from 'lit/decorators.js';
 import { EASING } from '../motion/easing';
 import { mixinPopup, Popup } from './mixin-popup';
