@@ -1,95 +1,323 @@
-import { html, LitElement } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { html, LitElement, nothing } from 'lit';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinField } from '../../common/mixins/mixin-field';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import {
+  createValidator,
+  Field,
+  getFormValue,
+  getValidityAnchor,
+  mixinConstraintValidation,
+  mixinControl,
+  mixinElementInternals,
+  mixinField,
+  mixinFormAssociated,
+  mixinOnReportValidity,
+  onReportValidity,
+  redispatchEvent,
+  stringConverter,
+  TextFieldValidator,
+  Validator,
+} from '../../common';
 
 export type TextFieldType =
-  | 'text'
   | 'email'
-  | 'password'
-  | 'tel'
-  | 'url'
   | 'number'
+  | 'password'
+  | 'search'
+  | 'tel'
+  | 'text'
+  | 'url'
   | 'textarea';
 
-const base = mixinField(LitElement);
+const base = mixinField(
+  mixinOnReportValidity(
+    mixinConstraintValidation(
+      mixinFormAssociated(mixinElementInternals(LitElement))
+    )
+  )
+);
 
 @customElement('md-text-field')
 export class MdTextFieldElement extends base {
   static override styles = [styles];
 
-  @property({ type: String, reflect: true, attribute: 'type' })
+  @property({ type: String, reflect: true })
   type: TextFieldType = 'text';
 
-  @property({ type: Number })
-  minlength: number | null = null;
+  @property({ reflect: true })
+  override inputMode = '';
 
-  @property({ type: Number })
-  maxlength: number | null = null;
+  @property({ type: String })
+  max = '';
 
-  @property({ type: Number })
-  min: number | null = null;
+  @property({ type: Number, attribute: 'maxlength' })
+  maxLength: number | null = null;
 
-  @property({ type: Number })
-  max: number | null = null;
+  @property({ type: String })
+  min = '';
+
+  @property({ type: Number, attribute: 'minlength' })
+  minLength: number | null = null;
+
+  @property({ type: String })
+  pattern = '';
+
+  @property({ reflect: true, converter: stringConverter })
+  placeholder = '';
+
+  @property({ type: Boolean, reflect: true })
+  readOnly = false;
+
+  @property({ attribute: 'text-direction' })
+  textDirection = '';
+
+  @property({ type: Boolean, reflect: true })
+  multiple = false;
+
+  @property()
+  step = '';
+
+  get selectionDirection() {
+    return this.input.selectionDirection;
+  }
+  set selectionDirection(value: 'forward' | 'backward' | 'none' | null) {
+    this.input.selectionDirection = value;
+  }
+
+  get selectionEnd() {
+    return this.input.selectionEnd;
+  }
+  set selectionEnd(value: number | null) {
+    this.input.selectionEnd = value;
+  }
+
+  get selectionStart() {
+    return this.input.selectionStart;
+  }
+  set selectionStart(value: number | null) {
+    this.input.selectionStart = value;
+  }
+
+  @state()
+  private dirty = false;
+  @state()
+  private focused = false;
+  @state()
+  private nativeError = false;
+  @state()
+  private nativeErrorText = '';
 
   @query('.input')
-  input!: HTMLInputElement | HTMLTextAreaElement;
+  private readonly input!: HTMLInputElement | HTMLTextAreaElement;
 
-  override render(): unknown {
-    return html`${this.renderBody()}${this.renderFooter()}`;
+  @query('.field')
+  private readonly field!: Field | null;
+
+  /** @nocollapse */
+  static override shadowRootOptions: ShadowRootInit = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
+
+  override render() {
+    const input =
+      this.type === 'textarea' ? this.renderTextArea() : this.renderTextField();
+    const count =
+      this.minLength || this.maxLength
+        ? `${this.value?.length ?? '0'}/${this.maxLength}`
+        : nothing;
+    return html`<md-field
+      counter-text=${count}
+      error-text=${ifDefined(this.errorText)}
+      prefix-text=${ifDefined(this.prefixText)}
+      suffix-text=${ifDefined(this.suffixText)}
+      supporting-text=${ifDefined(this.supportingText)}
+      variant=${this.variant}
+      ?has-leading=${this.hasLeading}
+      ?has-trailing=${this.hasTrailing}
+      label=${ifDefined(this.label)}
+      ?populated=${this.populated}
+      @control-click=${this.onControlClick}
+    >
+      <slot
+        name="leading"
+        slot="leading"
+        @slotchange=${this.onLeadingAndTrailingSlotChange}
+      ></slot>
+      ${input}
+      <slot
+        name="trailing"
+        slot="trailing"
+        @slotchange=${this.onLeadingAndTrailingSlotChange}
+      ></slot>
+    </md-field>`;
   }
 
-  override renderInput(): unknown {
-    return this.type === 'textarea'
-      ? html`<textarea
-          id="input"
-          class="input"
-          ?disabled=${this.disabled}
-          @focus=${this.onInputFocus}
-          @blur=${this.onInputBlur}
-          @input=${this.onInput}
-          minlength=${ifDefined(this.minlength)}
-          maxlength=${ifDefined(this.maxlength)}
-          rows="1"
-        ></textarea>`
-      : html`<input
-          id="input"
-          class="input"
-          ?disabled=${this.disabled}
-          @focus=${this.onInputFocus}
-          @blur=${this.onInputBlur}
-          @input=${this.onInput}
-          minlength=${ifDefined(this.minlength)}
-          maxlength=${ifDefined(this.maxlength)}
-          min=${ifDefined(this.min)}
-          max=${ifDefined(this.max)}
-        />`;
-  }
-
-  private onInputFocus(): void {
-    this.populated = true;
-  }
-
-  private onInputBlur(): void {
-    this.populated = !!this.value;
-  }
-
-  override onControlClick(): void {
+  private onControlClick() {
     this.input.focus();
   }
 
-  private onInput(event: InputEvent): void {
-    const result = this.dispatchEvent(event);
-    if (!result) {
-      return;
-    }
+  private handleFocusChange() {
+    this.focused = this.input?.matches(':focus') ?? false;
+    this.populated = this.focused || !!this.value;
+  }
+
+  private redispatchEvent(event: Event) {
+    redispatchEvent(this, event);
+  }
+
+  private renderTextField() {
+    return html`<input
+      class="input"
+      ?disabled=${this.disabled}
+      inputmode=${ifDefined(this.inputMode)}
+      max=${ifDefined(this.max)}
+      maxlength=${ifDefined(this.maxLength)}
+      min=${ifDefined(this.min)}
+      minlength=${ifDefined(this.minLength)}
+      pattern=${this.pattern || nothing}
+      placeholder=${this.placeholder || nothing}
+      ?readonly=${this.readOnly}
+      ?required=${this.required}
+      ?multiple=${this.multiple}
+      step=${ifDefined(this.step)}
+      type=${this.type}
+      value=${ifDefined(this.value)}
+      @change=${this.redispatchEvent}
+      @focus=${this.handleFocusChange}
+      @blur=${this.handleFocusChange}
+      @input=${this.handleInput}
+      @select=${this.redispatchEvent}
+    />`;
+  }
+
+  private renderTextArea() {
+    return html`<textarea
+      class="input"
+      ?disabled=${this.disabled}
+      inputmode=${ifDefined(this.inputMode)}
+      maxlength=${ifDefined(this.maxLength)}
+      minlength=${ifDefined(this.minLength)}
+      pattern=${this.pattern || nothing}
+      placeholder=${this.placeholder || nothing}
+      ?readonly=${this.readOnly}
+      ?required=${this.required}
+      ?multiple=${this.multiple}
+      value=${ifDefined(this.value)}
+      @change=${this.redispatchEvent}
+      @focus=${this.handleFocusChange}
+      @blur=${this.handleFocusChange}
+      @input=${this.handleInput}
+      @select=${this.redispatchEvent}
+      rows="1"
+    ></textarea>`;
+  }
+
+  private handleInput(event: InputEvent) {
+    this.dirty = true;
     this.value = (event.target as HTMLInputElement).value;
     if (this.type === 'textarea') {
       this.input.style.height = 'auto';
       this.input.style.height = this.input.scrollHeight + 'px';
     }
+  }
+
+  select() {
+    this.input.select();
+  }
+
+  reset() {
+    this.dirty = false;
+    this.value = this.getAttribute('value') ?? '';
+    this.nativeError = false;
+    this.nativeErrorText = '';
+  }
+
+  setRangeText(replacement: string): void;
+  setRangeText(
+    replacement: string,
+    start: number,
+    end: number,
+    selectionMode?: SelectionMode
+  ): void;
+  setRangeText(...args: unknown[]) {
+    this.input!.setRangeText(
+      ...(args as Parameters<HTMLInputElement['setRangeText']>)
+    );
+    this.value = this.input.value;
+  }
+
+  stepDown(stepDecrement?: number) {
+    if (this.input instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    this.input.stepDown(stepDecrement);
+    this.value = this.input.value;
+  }
+
+  stepUp(stepIncrement?: number) {
+    if (this.input instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    this.input.stepUp(stepIncrement);
+    this.value = this.input.value;
+  }
+
+  override attributeChangedCallback(
+    attribute: string,
+    newValue: string | null,
+    oldValue: string | null
+  ) {
+    if (attribute === 'value' && this.dirty) {
+      // After user input, changing the value attribute no longer updates the
+      // text field's value (until reset). This matches native <input> behavior.
+      return;
+    }
+
+    super.attributeChangedCallback(attribute, newValue, oldValue);
+  }
+
+  protected override updated() {
+    const value = this.input.value;
+    if (this.value !== value) {
+      this.value = value;
+    }
+  }
+
+  override [getFormValue]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.reset();
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
+  }
+
+  override focus() {
+    this.input.focus();
+  }
+
+  [createValidator](): Validator<unknown> {
+    return new TextFieldValidator(() => ({
+      state: this,
+      renderedControl: this.input,
+    }));
+  }
+
+  [getValidityAnchor](): HTMLElement | null {
+    return this.input;
+  }
+
+  [onReportValidity](invalidEvent: Event | null) {
+    invalidEvent?.preventDefault();
+    this.nativeError = !!invalidEvent;
+    this.nativeErrorText = this.validationMessage;
   }
 }
 

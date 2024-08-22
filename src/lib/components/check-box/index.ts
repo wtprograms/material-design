@@ -3,13 +3,23 @@ import {
   customElement,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinCheck } from '../../common';
+import { mixinCheck, mixinElementInternals } from '../../common';
+import { getFormState, getFormValue, mixinFormAssociated } from '../../common/behaviors/form-associated';
+import { createValidator, getValidityAnchor, mixinConstraintValidation } from '../../common/mixins/mixin-constraint-validation';
+import { CheckboxValidator } from '../../common/behaviors/validators/checkbox-validator';
 
-const base = mixinCheck(LitElement);
+const base = mixinConstraintValidation(
+  mixinFormAssociated(mixinElementInternals(mixinCheck(LitElement))));
 
 @customElement('md-check-box')
 export class MdCheckBoxElement extends base {
   static override styles = [styles];
+
+  /** @nocollapse */
+  static override shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
 
   get icon(): string {
     if (!this.checked) {
@@ -29,6 +39,36 @@ export class MdCheckBoxElement extends base {
     </div>
     ${this.renderInput('checkbox')}
     ${this.renderLabel()}`;
+  }
+
+  override [getFormValue]() {
+    if (!this.checked || this.indeterminate) {
+      return null;
+    }
+
+    return this.value;
+  }
+
+  override [getFormState]() {
+    return String(this.checked);
+  }
+
+  override formResetCallback() {
+    // The checked property does not reflect, so the original attribute set by
+    // the user is used to determine the default value.
+    this.checked = this.hasAttribute('checked');
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.checked = state === 'true';
+  }
+
+  [createValidator]() {
+    return new CheckboxValidator(() => this);
+  }
+
+  [getValidityAnchor]() {
+    return this.inputElement;
   }
 }
 
