@@ -20,7 +20,7 @@ export class MdTooltipElement extends base {
   static override styles = [styles];
 
   @property({ type: String, reflect: true })
-  variant!: TooltipVariant;
+  variant: TooltipVariant = 'plain';
 
   @property({ type: Boolean, reflect: true, attribute: 'has-headline' })
   hasHeadline = false;

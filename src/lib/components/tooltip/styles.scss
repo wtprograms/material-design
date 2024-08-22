@@ -3,7 +3,7 @@
 @include md.popover;
 
 $tokens: (
-  'min-width': 112px,
+  'min-width': fit-content,
   'max-width': 280px,
   'width': auto,
   'plain': (
