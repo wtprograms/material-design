@@ -46,6 +46,7 @@ $tokens: (
   color: var(--_content-color);
   min-height: 24px;
   text-align: left;
+  isolation: isolate;
 
   .popover-body {
     align-items: flex-start;

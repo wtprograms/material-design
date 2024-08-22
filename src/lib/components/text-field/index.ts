@@ -8,7 +8,6 @@ import {
   getFormValue,
   getValidityAnchor,
   mixinConstraintValidation,
-  mixinControl,
   mixinElementInternals,
   mixinField,
   mixinFormAssociated,
