@@ -147,6 +147,8 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
   }
 
   ::slotted(md-progress-indicator) {
+    position: absolute;
+    --md-comp-progress-indicator-circular-size: 24px;
     --md-comp-progress-indicator-indicator-color: var(--_content-color);
   }
 }
