@@ -32,7 +32,7 @@ export class MdTooltipElement extends base {
   hasActions = false;
 
   @property({ type: Number, attribute: 'hover-delay' })
-  hoverDelay: number | null = 1;
+  hoverDelay: number | null = 1000;
 
   @queryAssignedElements({ slot: 'action', flatten: true })
   private readonly _actionSlotElements!: HTMLElement[];
@@ -58,7 +58,7 @@ export class MdTooltipElement extends base {
     }
     this._hoverOpenHandle = setTimeout(
       () => super.showComponent(),
-      this.hoverDelay * 1000
+      this.hoverDelay
     );
   }
 

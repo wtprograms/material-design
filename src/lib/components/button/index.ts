@@ -23,9 +23,9 @@ export class MdButtonElement extends base {
   static {
     setupFormSubmitter(MdButtonElement);
   }
-  
+
   static readonly formAssociated = true;
-  
+
   static override shadowRootOptions: ShadowRootInit = {
     mode: 'open',
     delegatesFocus: true,
@@ -37,11 +37,18 @@ export class MdButtonElement extends base {
   @property({ type: Boolean, reflect: true, attribute: 'has-icon' })
   hasIcon = false;
 
+  @property({ type: Boolean, reflect: true, attribute: 'has-progress' })
+  hasProgress = false;
+
+  @queryAssignedElements({ slot: 'progress', flatten: true })
+  private readonly progressSlotElements!: HTMLElement[];
+
   @queryAssignedElements({ slot: 'icon', flatten: true })
   private readonly iconSlotElements!: HTMLElement[];
 
   protected override render(): unknown {
-    return html`<div class="container"></div> ${this.renderElevation()}
+    return html`<div class="container"></div>
+      ${this.renderElevation()}
       <md-ripple
         for="button"
         activatable
@@ -70,11 +77,16 @@ export class MdButtonElement extends base {
 
   override renderContent() {
     return html` <slot name="icon" @slotchange=${this.onIconSlotChange}></slot>
-      <slot></slot>`;
+      <slot></slot>
+      <slot name="progress" @slotchange=${this.onProgressSlotChange}></slot>`;
   }
 
   private onIconSlotChange() {
     this.hasIcon = this.iconSlotElements.length > 0;
+  }
+
+  private onProgressSlotChange() {
+    this.hasProgress = this.progressSlotElements.length > 0;
   }
 }
 

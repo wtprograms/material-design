@@ -145,10 +145,20 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
   md-ripple {
     --md-comp-ripple-color: var(--_content-color);
   }
+
+  ::slotted(md-progress-indicator) {
+    --md-comp-progress-indicator-indicator-color: var(--_content-color);
+  }
 }
 
 :host([has-icon]) {
   --_spacing: var(--_spacing-icon);
+}
+
+:host([has-progress]) {
+  #button {
+    opacity: 0;
+  }
 }
 
 @include md.disabled-component;
