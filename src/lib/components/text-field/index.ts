@@ -7,6 +7,7 @@ import {
   Field,
   getFormValue,
   getValidityAnchor,
+  internals,
   mixinConstraintValidation,
   mixinElementInternals,
   mixinField,
@@ -65,7 +66,7 @@ export class MdTextFieldElement extends base {
   @property({ reflect: true, converter: stringConverter })
   placeholder = '';
 
-  @property({ type: Boolean, reflect: true })
+  @property({ type: Boolean, reflect: true, attribute: 'readonly' })
   readOnly = false;
 
   @property({ attribute: 'text-direction' })
@@ -126,9 +127,15 @@ export class MdTextFieldElement extends base {
       this.minLength || this.maxLength
         ? `${this.value?.length ?? '0'}/${this.maxLength}`
         : nothing;
+    let errorText: null | string = null;
+    if (this.errorText) {
+      errorText = this.errorText;
+    } else if (this.nativeErrorText) {
+      errorText = this.nativeErrorText;
+    }
     return html`<md-field
       counter-text=${count}
-      error-text=${ifDefined(this.errorText)}
+      error-text=${ifDefined(errorText)}
       prefix-text=${ifDefined(this.prefixText)}
       suffix-text=${ifDefined(this.suffixText)}
       supporting-text=${ifDefined(this.supportingText)}
@@ -188,6 +195,7 @@ export class MdTextFieldElement extends base {
       @blur=${this.handleFocusChange}
       @input=${this.handleInput}
       @select=${this.redispatchEvent}
+      @keypress=${this.keypressEvent}
     />`;
   }
 
@@ -213,6 +221,12 @@ export class MdTextFieldElement extends base {
     ></textarea>`;
   }
 
+  private keypressEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this[internals].form?.requestSubmit();
+    }
+  }
+
   private handleInput(event: InputEvent) {
     this.dirty = true;
     this.value = (event.target as HTMLInputElement).value;
@@ -220,6 +234,7 @@ export class MdTextFieldElement extends base {
       this.input.style.height = 'auto';
       this.input.style.height = this.input.scrollHeight + 'px';
     }
+    this.reportValidity();
   }
 
   select() {

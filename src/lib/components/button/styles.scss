@@ -166,7 +166,7 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
   --_spacing: var(--_spacing-icon);
 }
 
-:host([busy]) {
+:host([busy]:not([disabled])) {
   pointer-events: none;
   opacity: 0.5;
 
