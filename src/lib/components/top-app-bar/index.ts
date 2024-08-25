@@ -22,6 +22,9 @@ export class MdTopAppBarElement extends LitElement {
       <span class="headline">
         <slot></slot>
       </span>
+      <div class="body">
+        <slot name="body"></slot>
+      </div>
       <div class="trailing">
         <div class="actions">
           <slot name="action"></slot>

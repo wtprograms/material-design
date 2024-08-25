@@ -61,8 +61,18 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     })
     hasSupportingText = false;
 
+    @property({
+      type: Boolean,
+      reflect: true,
+      attribute: 'has-supporting-text',
+    })
+    hasHeadline = false;
+
     @queryAssignedElements({ slot: 'icon', flatten: true })
     readonly supportingTextSlots!: HTMLElement[];
+
+    @queryAssignedElements({ slot: 'headline', flatten: true })
+    readonly headlineSlots!: HTMLElement[];
 
     @property({ type: Boolean, reflect: true, attribute: 'has-actions' })
     hasActions = false;
@@ -216,7 +226,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
           <div class="icon">
             <slot name="icon" @slotchange=${this.onIconSlotChange}></slot>
           </div>
-          <slot name="headline"></slot>
+          <slot name="headline" @slotchange=${this.onHeadlineSlotChange}></slot>
         </div>
         <div class="supporting-text">
           <slot
@@ -338,6 +348,10 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
 
     private onIconSlotChange() {
       this.hasIcon = this.iconSlots.length > 0;
+    }
+
+    private onHeadlineSlotChange() {
+      this.hasHeadline = this.iconSlots.length > 0;
     }
 
     private onSupportingTextChange() {

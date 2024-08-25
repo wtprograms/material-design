@@ -10,6 +10,7 @@
 
   .actions {
     display: flex;
+    align-items: center;
     gap: 8px;
   }
 
@@ -20,11 +21,16 @@
   }
 
   .headline {
+    text-wrap: nowrap;
     @include md.typescale('title', 'large');
   }
 
   .menu {
     display: none;
+  }
+
+  .body {
+    width: 100%;
   }
 }
 

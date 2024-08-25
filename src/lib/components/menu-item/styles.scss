@@ -49,6 +49,7 @@ $tokens: (
   cursor: pointer;
   color: var(--_content-color);
   @include md.typescale('label', 'large');
+  isolation: isolate;
 
   .container {
     position: absolute;
