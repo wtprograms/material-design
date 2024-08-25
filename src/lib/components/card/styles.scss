@@ -41,6 +41,7 @@ $variants: ('elevated', 'filled', 'outlined');
   display: flex;
   flex-direction: column;
   border-radius: var(--md-sys-shape-medium);
+  isolation: isolate;
 
   .container {
     position: absolute;
