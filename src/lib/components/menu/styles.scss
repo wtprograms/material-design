@@ -15,6 +15,8 @@ $tokens: (
   min-width: 112px;
   max-width: 280px;
   border-radius: var(--md-sys-shape-extra-small);
+  isolation: isolate;
+  border: 0;
 
   ::slotted(*) {
     opacity: 0;

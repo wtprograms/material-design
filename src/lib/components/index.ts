@@ -32,4 +32,5 @@ export * from './tab';
 export * from './tabs';
 export * from './text-field';
 export * from './tooltip';
+export * from './top-app-bar';
 export * from './typescale';

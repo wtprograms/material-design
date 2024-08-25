@@ -138,6 +138,10 @@ export default [
     loadComponent: () => import('./text-field'),
   },
   {
+    path: 'top-app-bar',
+    loadComponent: () => import('./top-app-bar'),
+  },
+  {
     path: 'typescale',
     loadComponent: () => import('./typescale'),
   },

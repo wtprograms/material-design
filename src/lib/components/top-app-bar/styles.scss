@@ -1,0 +1,35 @@
+@use '../md';
+
+:host {
+  display: flex;
+  padding: 8px 16px;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .trailing {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .headline {
+    @include md.typescale('title', 'large');
+  }
+
+  .menu {
+    display: none;
+  }
+}
+
+:host([menu]) {
+  .menu {
+    display: flex;
+  }
+}
