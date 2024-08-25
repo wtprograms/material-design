@@ -119,6 +119,7 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
   cursor: pointer;
   isolation: isolate;
   @include md.typescale('label', 'large');
+  @include md.motion('opacity');
 
   .container {
     background-color: var(--_container-color);
@@ -146,9 +147,17 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
     --md-comp-ripple-color: var(--_content-color);
   }
 
-  ::slotted(md-progress-indicator) {
+  .progress {
     position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  md-progress-indicator {
     --md-comp-progress-indicator-circular-size: 24px;
+    --md-comp-progress-indicator-circular-indicator-width: 8;
     --md-comp-progress-indicator-indicator-color: var(--_content-color);
   }
 }
@@ -157,7 +166,10 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
   --_spacing: var(--_spacing-icon);
 }
 
-:host([has-progress]) {
+:host([busy]) {
+  pointer-events: none;
+  opacity: 0.5;
+
   #button {
     opacity: 0;
   }

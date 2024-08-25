@@ -37,29 +37,48 @@ export class MdButtonElement extends base {
   @property({ type: Boolean, reflect: true, attribute: 'has-icon' })
   hasIcon = false;
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-progress' })
-  hasProgress = false;
+  @property({ type: Boolean, reflect: true })
+  busy = false;
 
-  @queryAssignedElements({ slot: 'progress', flatten: true })
-  private readonly progressSlotElements!: HTMLElement[];
+  @property({ type: Number, attribute: 'progress-value' })
+  progressValue = 0;
+
+  @property({ type: Number, attribute: 'progress-max' })
+  progressMax = 1;
+
+  @property({ type: Boolean, attribute: 'progress-indeterminate' })
+  progressIndeterminate = false;
+
+  @property({ type: Number, attribute: 'progress-buffer' })
+  progressBuffer = 0;
 
   @queryAssignedElements({ slot: 'icon', flatten: true })
   private readonly iconSlotElements!: HTMLElement[];
 
   protected override render(): unknown {
+    const progress = this.busy
+      ? html`<div class="progress">
+          <md-progress-indicator
+            ?indeterminate=${this.progressIndeterminate}
+            buffer=${this.progressBuffer}
+            value=${this.progressValue}
+            max=${this.progressMax}
+          ></md-progress-indicator>
+        </div>`
+      : nothing;
     return html`<div class="container"></div>
       ${this.renderElevation()}
       <md-ripple
         for="button"
         activatable
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || this.busy}
       ></md-ripple>
       <md-focus-ring
         for="button"
         focus-visible
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || this.busy}
       ></md-focus-ring>
-      ${this.renderAnchorOrButton()}`;
+      ${this.renderAnchorOrButton()} ${progress}`;
   }
 
   private renderElevation() {
@@ -77,16 +96,11 @@ export class MdButtonElement extends base {
 
   override renderContent() {
     return html` <slot name="icon" @slotchange=${this.onIconSlotChange}></slot>
-      <slot></slot>
-      <slot name="progress" @slotchange=${this.onProgressSlotChange}></slot>`;
+      <slot></slot>`;
   }
 
   private onIconSlotChange() {
     this.hasIcon = this.iconSlotElements.length > 0;
-  }
-
-  private onProgressSlotChange() {
-    this.hasProgress = this.progressSlotElements.length > 0;
   }
 }
 
