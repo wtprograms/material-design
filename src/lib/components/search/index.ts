@@ -2,7 +2,7 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinAttachablePopover, mixinPopup } from '../../common';
-import { MdPopupElement } from '../popup';
+import { MdPopoverElement } from '../popover';
 
 @customElement('md-search')
 export class MdSearchElement extends LitElement {
@@ -18,11 +18,11 @@ export class MdSearchElement extends LitElement {
   private _input!: HTMLInputElement;
 
   @query('.popup')
-  private _popup?: MdPopupElement;
+  private _popup?: MdPopoverElement;
 
   @property({ type: Boolean, reflect: true })
   open = false;
-  
+
   @property({ type: Boolean, reflect: true })
   opening = false;
 
@@ -36,6 +36,9 @@ export class MdSearchElement extends LitElement {
   }
   private _value = '';
 
+  @query('#popover')
+  private _popover!: MdPopoverElement;
+
   override render() {
     const menu =
       this.hasMenu && !this.open
@@ -48,21 +51,48 @@ export class MdSearchElement extends LitElement {
           <md-icon>arrow_back</md-icon>
         </md-icon-button>`
       : nothing;
+    const elevation = this.opening || this.open ? 2 : 0;
     return html`
       <div id="body" class="body">
         <div class="container">
+        <md-elevation level="${elevation}"></md-elevation>
         </div>
         ${menu} ${back}
         <div class="content">
           <slot></slot>
         </div>
-        <input class="input" @focus=${this.onFocus} @input=${this.onInput} />
+        <input
+          id="input"
+          class="input"
+          @focus=${this.onFocus}
+          @input=${this.onInput}
+        />
         <slot name="avatar"></slot>
       </div>
-      <md-popup for="body" class="popup" trigger="manual" @opened=${this.openToggled} @opening=${this.openingToggled} @closed=${this.openToggled}>
+      <md-popover
+        id="popover"
+        for="body"
+        @position-changed=${this.positionChanged}
+        offset="0"
+        class="popup"
+        trigger="manual"
+        adjust-plugins=""
+        @opened=${this.openToggled}
+        @opening=${this.openingToggled}
+        @closed=${this.openToggled}
+      >
+        <slot name="popover"></slot>
         <slot name="item"></slot>
-      </md-popup>
+      </md-popover>
     `;
+  }
+
+  private positionChanged() {
+    this._popover.style.setProperty('--md-comp-popup-width', `${this.offsetWidth}px`);
+    this._popover.style.height = '';
+    if (this.fullscreen) {
+      this._popover.style.height = (this.parentElement!.offsetHeight - this.offsetHeight) + 'px';
+    }
   }
 
   private onInput() {

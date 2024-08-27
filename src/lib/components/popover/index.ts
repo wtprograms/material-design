@@ -4,12 +4,11 @@ import { styles } from './styles';
 import { mixinAttachablePopover } from '../../common';
 
 const base = mixinAttachablePopover(LitElement, {
-  useBuiltInPopup: true,
   trigger: 'manual',
 });
 
-@customElement('md-popup')
-export class MdPopupElement extends base {
+@customElement('md-popover')
+export class MdPopoverElement extends base {
   static override styles = [styles];
 
   override render(): unknown {
@@ -23,6 +22,6 @@ export class MdPopupElement extends base {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'md-popup': MdPopupElement;
+    'md-popover': MdPopoverElement;
   }
 }

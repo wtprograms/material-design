@@ -1,4 +1,4 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import {
   customElement,
   property,
@@ -20,7 +20,7 @@ export class MdTopAppBarElement extends LitElement {
     return html`
       <slot name="leading"></slot>
       <span class="headline">
-        <slot></slot>
+        <slot name="headline"></slot>
       </span>
       <div class="body">
         <slot name="body"></slot>

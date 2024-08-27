@@ -19,7 +19,7 @@ export * from './menu-item';
 export * from './navigation';
 export * from './navigation-headline';
 export * from './navigation-item';
-export * from './popup';
+export * from './popover';
 export * from './progress-indicator';
 export * from './radio-button';
 export * from './ripple';

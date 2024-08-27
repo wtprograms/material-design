@@ -49,13 +49,13 @@ export class MdSnackBarElement extends base {
     if (this._hideHandle) {
       clearTimeout(this._hideHandle);
     }
-    this._hideHandle = setTimeout(() => this.close(), this.timeout);
+    this._hideHandle = setTimeout(() => this.closeComponent(), this.timeout);
     await super.showComponent();
   }
 
-  override async close(): Promise<void> {
+  override async closeComponent(): Promise<void> {
     clearTimeout(this._hideHandle);
-    await super.close();
+    await super.closeComponent();
   }
 
   private onSlotChange() {

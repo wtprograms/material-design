@@ -62,12 +62,12 @@ export class MdTooltipElement extends base {
     );
   }
 
-  override async close(): Promise<void> {
+  override async closeComponent(): Promise<void> {
     if (this._hoverOpenHandle) {
       clearTimeout(this._hoverOpenHandle as number);
       this._hoverOpenHandle = undefined;
     }
-    await super.close();
+    await super.closeComponent();
   }
 
   override render(): unknown {

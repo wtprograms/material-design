@@ -37,7 +37,7 @@ export interface Dialog extends Popup {
   animateSupportingText(): Animation | undefined;
   animateScroller(): Animation | undefined;
   animateActions(): Animation | undefined;
-  close(returnValue?: string): Promise<void>;
+  closeComponent(returnValue?: string): Promise<void>;
 }
 
 export function mixinDialog<T extends MixinBase<LitElement>>(
@@ -164,7 +164,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
         return;
       }
 
-      this.close();
+      this.closeComponent();
     }
 
     private handleContentClick() {
@@ -180,7 +180,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
 
       // Close reason is the submitter's value attribute, or the dialog's
       // `returnValue` if there is no attribute.
-      this.close(submitter.getAttribute('value') ?? this.returnValue);
+      this.closeComponent(submitter.getAttribute('value') ?? this.returnValue);
     }
 
     private handleCancel(event: Event) {
@@ -193,7 +193,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
         return;
       }
 
-      this.close();
+      this.closeComponent();
     }
 
     private handleClose() {
@@ -285,7 +285,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
       this.dispatchEvent(new Event('opened', { bubbles: true }));
     }
 
-    override async close(returnValue = this.returnValue) {
+    override async closeComponent(returnValue = this.returnValue) {
       this.closing = true;
       await this.animateComponent();
       this.removeAttribute('open');

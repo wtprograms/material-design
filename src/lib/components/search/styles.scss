@@ -1,5 +1,15 @@
 @use '../md';
 
+$tokens: (
+  'container': (
+    'color': var(--md-sys-color-surface-container-high)
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'search');
+}
+
 :host {
   .body {
     position: relative;
@@ -16,7 +26,7 @@
   .container {
     position: absolute;
     inset: 0;
-    background-color: var(--md-sys-color-surface-container-high);
+    background-color: var(--_container-color);
     z-index: -1;
     border-radius: inherit;
   }
@@ -34,10 +44,8 @@
 
   .popup {
     --md-comp-popup-width: 100%;
-    top: 0 !important;
-    z-index: 0;
-    border-radius: var(--md-sys-shape-extra-large);
-    --md-comp-popup-body-padding: 72px 16px 16px 16px;
+    border-radius: var(--md-sys-shape-extra-large-bottom);
+    --md-comp-popup-body-padding: 16px;
   }
 
   .input {
@@ -88,7 +96,6 @@
 
 :host([fullscreen]) {
   .popup {
-    inset: 0 !important;
     border-radius: 0;
   }
 }

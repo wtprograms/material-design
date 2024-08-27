@@ -34,8 +34,8 @@ export class MdMenuElement extends base {
     await super.onClosePopup();
   }
 
-  override async close(): Promise<void> {
-    await super.close();
+  override async closeComponent(): Promise<void> {
+    await super.closeComponent();
     if (this.parentMenuItem) {
       this.parentMenuItem.open = false;
     }
