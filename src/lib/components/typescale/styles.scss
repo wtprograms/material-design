@@ -1,0 +1,26 @@
+@use '../md';
+
+$map: (
+  'extra-small': ('headline', 'small'),
+  'small': ('headline', 'medium'),
+  'medium': ('headline', 'large'),
+  'large': ('display', 'small'),
+  'extra-large': ('display', 'medium'),
+  'large2x': ('display', 'large'),
+  'large3x': ('display', 'large'),
+  'large4x': ('display', 'large'),
+  'large5x': ('display', 'large')
+);
+
+:host {
+  @include md.motion('font-weight, font-size');
+}
+
+:host([responsive]) {
+  @each $screen, $size in md.$screens {
+    @media screen and (min-width: $size) {
+      $properties: map-get($map, $screen);
+      @include md.typescale(nth($properties, 1), nth($properties, 2));
+    }
+  }
+}

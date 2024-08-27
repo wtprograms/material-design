@@ -1,0 +1,134 @@
+@use '../md';
+
+:host {
+  .body {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    border-radius: var(--md-sys-shape-full);
+    min-height: 56px;
+    gap: 16px;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1;
+  }
+
+  .container {
+    position: absolute;
+    inset: 0;
+    background-color: var(--md-sys-color-surface-container-high);
+    z-index: -1;
+    border-radius: inherit;
+  }
+
+  .back {
+    display: none;
+  }
+
+  .content {
+    position: absolute;
+    opacity: 1;
+    @include md.motion('opacity');
+    pointer-events: none;
+  }
+
+  .popup {
+    --md-comp-popup-width: 100%;
+    top: 0 !important;
+    z-index: 0;
+    border-radius: var(--md-sys-shape-extra-large);
+    --md-comp-popup-body-padding: 72px 16px 16px 16px;
+  }
+
+  .input {
+    opacity: 0;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    @include md.typescale('body', 'large');
+    width: 100%;
+    color: var(--md-sys-color-sufrace-variant-on);
+    caret-color: var(--md-sys-color-sufrace-variant-on);
+    resize: none;
+    @include md.motion('opacity');
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  .content, .input {
+    margin-left: 6px;
+  }
+}
+
+:host([fullscreen]) {
+  .popup {
+    inset: 0 !important;
+    border-radius: 0;
+  }
+}
+
+:host([opening]), :host([open]) {
+  .content {
+    opacity: 0;
+  }
+
+  .input {
+    opacity: 1;
+  }
+
+  .back {
+    display: flex;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .body {
+    border-radius: var(--md-sys-shape-extra-large-top);
+    border-bottom: 1px solid var(--md-sys-color-outline);
+  }
+}
+
+:host([fullscreen][opening]), :host([fullscreen][open]) {
+  .body {
+    border-radius: 0;
+    border-bottom: 1px solid var(--md-sys-color-outline);
+  }
+}
+
+:host([has-menu]) {
+  .input, .content {
+    margin-left: 0;
+  }
+
+  .content {
+    margin-left: calc(10px + 24px + 16px);
+  }
+}

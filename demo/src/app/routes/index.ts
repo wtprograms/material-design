@@ -138,6 +138,10 @@ export default [
     loadComponent: () => import('./text-field'),
   },
   {
+    path: 'search',
+    loadComponent: () => import('./search'),
+  },
+  {
     path: 'top-app-bar',
     loadComponent: () => import('./top-app-bar'),
   },
