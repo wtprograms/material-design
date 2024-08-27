@@ -4,7 +4,7 @@ import { styles } from './styles';
 import { mixinAttachablePopover } from '../../common';
 
 const base = mixinAttachablePopover(LitElement, {
-  useBuiltInPopup: false,
+  useBuiltInPopup: true,
   trigger: 'manual',
 });
 
