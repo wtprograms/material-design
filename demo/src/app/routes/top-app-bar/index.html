@@ -1,36 +1,24 @@
 <h1>
   md-top-app-bar
 </h1>
-<div class="flex flex-col border gap-4">
-  <md-top-app-bar>
+<md-card class="flex flex-col gap-4 p-4 border-outline">
+  <md-top-app-bar class="border-outline-variant">
+    Material Design
+  </md-top-app-bar>
+  <md-top-app-bar class="border-outline-variant">
     <md-icon-button slot="leading">
       <md-icon>menu</md-icon>
     </md-icon-button>
-    <span slot="headline">Headline</span>
-    <md-icon-button slot="action">
-      <md-icon>home</md-icon>
-    </md-icon-button>
+    Material Design
   </md-top-app-bar>
-</div>
-<div class="flex flex-col border gap-4">
-  <md-top-app-bar>
+  <md-top-app-bar class="border-outline-variant">
     <md-icon-button slot="leading">
       <md-icon>menu</md-icon>
     </md-icon-button>
-    <span slot="headline">Headline</span>
-    <md-icon-button slot="action">
-      <md-icon>home</md-icon>
+    Material Design
+    <md-icon-button slot="trailing">
+      <md-icon>notifications</md-icon>
     </md-icon-button>
-    <md-menu-item slot="menu-item">
-      Home
-    </md-menu-item>
+    <md-avatar slot="trailing" activatable full-name="Willem Toerien"></md-avatar>
   </md-top-app-bar>
-</div>
-<md-icon-button id="menu1">
-  <md-icon>more_vert</md-icon>
-</md-icon-button>
-<md-menu for="menu1">
-  <md-menu-item>
-    Home
-  </md-menu-item>
-</md-menu>
+</md-card>

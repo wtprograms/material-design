@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, nothing } from 'lit';
 import {
   customElement,
   property,
@@ -25,8 +25,8 @@ export class MdAvatarElement extends base {
   @property({ type: String })
   src: string | null = null;
 
-  @property({ type: String })
-  text = '';
+  @property({ type: String, attribute: 'full-name' })
+  fullName: string | null = null;
 
   @property({ type: Number, reflect: true })
   get size(): number | null {
@@ -38,11 +38,14 @@ export class MdAvatarElement extends base {
   }
   private _size: number | null = null;
 
-  get initials() {
-    return this.text
+  get initial() {
+    if (!this.fullName) {
+      return '';
+    }
+    return this.fullName
       .split(' ')
       .map((word) => word[0].toUpperCase())
-      .join('');
+      .join('')[0];
   }
 
   override connectedCallback() {
@@ -62,11 +65,11 @@ export class MdAvatarElement extends base {
         focus-visible
         ?disabled=${this.disabled}
       ></md-focus-ring>
-      ${this.renderAnchorOrButton()}` : html`<div class="container">${this.renderContent()}</div>`;
+      ${this.renderAnchorOrButton()}` : html`${this.renderContent()}`;
   }
 
   override renderContent() {
-    const content = this.src ? html`<img src=${this.src} alt=${this.text} />` : this.initials;
+    const content = this.src ? html`<img src=${this.src} alt=${this.fullName ?? nothing} />` : this.initial;
     return html`${content}`;
   }
 

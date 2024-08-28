@@ -16,6 +16,7 @@ import {
   PopoverOptions,
 } from './mixin-popover';
 import { property } from 'lit/decorators.js';
+import { sleep } from '../promise/sleep';
 
 export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual';
 

@@ -1,4 +1,4 @@
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { MdElevationElement } from '../elevation';
 import { DURATION, EASING, mixinDialog } from '../../common';

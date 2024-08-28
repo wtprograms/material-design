@@ -106,6 +106,14 @@ export default [
     loadComponent: () => import('./segmented-button'),
   },
   {
+    path: 'search',
+    loadComponent: () => import('./search'),
+  },
+  {
+    path: 'search-view',
+    loadComponent: () => import('./search-view'),
+  },
+  {
     path: 'segmented-button-set',
     loadComponent: () => import('./segmented-button-set'),
   },
@@ -134,16 +142,12 @@ export default [
     loadComponent: () => import('./tooltip'),
   },
   {
-    path: 'text-field',
-    loadComponent: () => import('./text-field'),
-  },
-  {
-    path: 'search',
-    loadComponent: () => import('./search'),
-  },
-  {
     path: 'top-app-bar',
     loadComponent: () => import('./top-app-bar'),
+  },
+  {
+    path: 'text-field',
+    loadComponent: () => import('./text-field'),
   },
   {
     path: 'typescale',

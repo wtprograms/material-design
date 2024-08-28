@@ -57,18 +57,11 @@ $tokens: (
   align-items: center;
   gap: 8px;
   @include md.typescale('label', 'large');
-
-  .container {
-    background-color: var(--_container-color);
-    border-top: 1px solid var(--_container-outline-color);
-    border-bottom: 1px solid var(--_container-outline-color);
-    border-left: 0.5px solid var(--_container-outline-color);
-    border-right: 0.5px solid var(--_container-outline-color);
-    border-radius: inherit;
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
+  background-color: var(--_container-color);
+  border-top: 1px solid var(--_container-outline-color);
+  border-bottom: 1px solid var(--_container-outline-color);
+  border-left: 0.5px solid var(--_container-outline-color);
+  border-right: 0.5px solid var(--_container-outline-color);
 
   input {
     appearance: none;
@@ -91,17 +84,13 @@ $tokens: (
 :host(:first-child) {
   border-top-left-radius: var(--md-sys-shape-full);
   border-bottom-left-radius: var(--md-sys-shape-full);
-  .container {
     border-left-width: 1px;
-  }
 }
 
 :host(:last-child) {
   border-top-right-radius: var(--md-sys-shape-full);
   border-bottom-right-radius: var(--md-sys-shape-full);
-  .container {
     border-right-width: 1px;
-  }
 }
 
 @include md.disabled-component;

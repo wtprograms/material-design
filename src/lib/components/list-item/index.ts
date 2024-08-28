@@ -75,7 +75,7 @@ export class MdListItemElement extends base {
 
   protected override render(): unknown {
     const content = !this.nonActivatable ? this.renderAnchorOrButton() : this.renderContent();
-    return html`<div class="container"></div>
+    return html`
       ${this.renderElevation()}
       <md-ripple
         for="button"

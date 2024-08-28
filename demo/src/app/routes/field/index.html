@@ -1,7 +1,7 @@
 <h1>
   md-avatar
 </h1>
-<div *ngFor="let variant of variants" class="flex flex-col border p-4 gap-4">
+<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
   <md-field [variant]="variant">
     Control
   </md-field>
@@ -34,4 +34,4 @@
     Control
     <md-icon slot="trailing">home</md-icon>
   </md-field>
-</div>
+</md-card>

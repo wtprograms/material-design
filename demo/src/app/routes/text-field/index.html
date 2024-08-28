@@ -1,7 +1,7 @@
 <h1>
   md-text-field
 </h1>
-<div *ngFor="let variant of variants" class="flex flex-col border p-4 gap-4">
+<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
   <md-text-field [variant]="variant" required>
   </md-text-field>
   <md-text-field [variant]="variant" label="Label text">
@@ -18,9 +18,9 @@
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-</div>
+</md-card>
 
-<div *ngFor="let variant of variants" class="flex flex-col border p-4 gap-4">
+<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
   <md-text-field type="textarea" [variant]="variant" required>
   </md-text-field>
   <md-text-field type="textarea" [variant]="variant" label="Label text">
@@ -37,4 +37,4 @@
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-</div>
+</md-card>

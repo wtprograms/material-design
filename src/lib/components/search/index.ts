@@ -1,126 +1,105 @@
 import { html, LitElement, nothing } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+import {
+  customElement,
+  property,
+  query,
+  queryAssignedElements,
+} from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinAttachablePopover, mixinPopup } from '../../common';
 import { MdPopoverElement } from '../popover';
+import { redispatchEvent } from '../../common';
 
 @customElement('md-search')
 export class MdSearchElement extends LitElement {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-menu' })
-  hasMenu = false;
-
-  @property({ type: Boolean, reflect: true })
-  fullscreen = false;
-
-  @query('.input')
-  private _input!: HTMLInputElement;
-
-  @query('.popup')
-  private _popup?: MdPopoverElement;
-
   @property({ type: Boolean, reflect: true })
   open = false;
 
   @property({ type: Boolean, reflect: true })
-  opening = false;
+  populated = false;
 
   @property({ type: String })
-  get value(): string {
-    return this._value;
-  }
-  set value(value: string) {
-    this._value = value;
-    this.dispatchEvent(new Event('value-change', { bubbles: true }));
-  }
-  private _value = '';
+  placeholder = '';
 
-  @query('#popover')
+  @property({ type: Boolean, reflect: true, attribute: 'has-items' })
+  hasItems = false;
+
+  @queryAssignedElements({ slot: 'item', flatten: true })
+  private _itemSlots!: HTMLElement[];
+
+  @property({ type: Boolean, reflect: true, attribute: 'has-body' })
+  hasBody = false;
+
+  @queryAssignedElements({ slot: 'body', flatten: true })
+  private _bodySlots!: HTMLElement[];
+
+  @query('.input')
+  private _input!: HTMLInputElement;
+
+  @query('#container')
+  private _container!: HTMLElement;
+
+  @query('.popover')
   private _popover!: MdPopoverElement;
 
+  @property({ type: Boolean, reflect: true })
+  searching = false;
+
   override render() {
-    const menu =
-      this.hasMenu && !this.open
-        ? html`<md-icon-button class="menu" @click=${this.onMenu}>
-            <md-icon>menu</md-icon>
-          </md-icon-button>`
-        : nothing;
-    const back = this.fullscreen
-      ? html`<md-icon-button class="back" @click=${this.onBack}>
-          <md-icon>arrow_back</md-icon>
-        </md-icon-button>`
-      : nothing;
-    const elevation = this.opening || this.open ? 2 : 0;
-    return html`
-      <div id="body" class="body">
-        <div class="container">
-        <md-elevation level="${elevation}"></md-elevation>
+    return html`<div id="container" class="container">
+        <md-elevation level="${this.open ? 2 : 0}"></md-elevation>
+        <div class="body">
+          <md-icon>search</md-icon>
+          <input
+            class="input"
+            @focus=${this.onFocus}
+            placeholder=${this.placeholder}
+            @input=${this.onInput}
+          />
         </div>
-        ${menu} ${back}
-        <div class="content">
-          <slot></slot>
-        </div>
-        <input
-          id="input"
-          class="input"
-          @focus=${this.onFocus}
-          @input=${this.onInput}
-        />
-        <slot name="avatar"></slot>
       </div>
       <md-popover
-        id="popover"
-        for="body"
-        @position-changed=${this.positionChanged}
+        for="container"
+        class="popover"
         offset="0"
-        class="popup"
-        trigger="manual"
+        .open=${this.open}
         adjust-plugins=""
-        @opened=${this.openToggled}
-        @opening=${this.openingToggled}
-        @closed=${this.openToggled}
+        @position-changed=${this.onPositionChanged}
+        @closed=${this.onPopoverClosed}
       >
-        <slot name="popover"></slot>
-        <slot name="item"></slot>
-      </md-popover>
-    `;
+        <md-progress-indicator
+          variant="linear"
+          indeterminate
+        ></md-progress-indicator>
+        <div class="popover-content">
+          <slot name="body" @slotchange=${this.onSlotChange}></slot>
+        </div>
+        <md-list>
+          <slot name="item" @slotchange=${this.onSlotChange}></slot>
+        </md-list>
+      </md-popover>`;
   }
 
-  private positionChanged() {
-    this._popover.style.setProperty('--md-comp-popup-width', `${this.offsetWidth}px`);
-    this._popover.style.height = '';
-    if (this.fullscreen) {
-      this._popover.style.height = (this.parentElement!.offsetHeight - this.offsetHeight) + 'px';
-    }
+  private onInput(event: InputEvent) {
+    redispatchEvent(this, event);
   }
 
-  private onInput() {
-    this.value = this._input.value;
-  }
-
-  private openingToggled() {
-    this.opening = this._popup!.opening;
-  }
-
-  private openToggled() {
-    this.open = this._popup!.open;
-    this.opening = false;
-    if (!this.open) {
-      this._input.value = this.value = '';
-    }
-  }
-
-  private onMenu() {
-    this.dispatchEvent(new Event('menu', { bubbles: true }));
+  private onPositionChanged() {
+    this._popover.style.width = `${this._container.clientWidth}px`;
   }
 
   private onFocus() {
-    this._popup!.open = true;
+    this.open = true;
   }
 
-  private onBack() {
-    this._popup!.open = false;
+  private onPopoverClosed() {
+    this.open = false;
+  }
+
+  private onSlotChange() {
+    this.hasItems = this._itemSlots.length > 0;
+    this.hasBody = this._bodySlots.length > 0;
   }
 }
 

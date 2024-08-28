@@ -14,7 +14,7 @@ $tokens: (
 );
 
 :host {
-  @include md.declare-component-tokens($tokens, 'popup');
+  @include md.declare-component-tokens($tokens, 'popover');
 }
 
 :host {

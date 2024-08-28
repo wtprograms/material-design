@@ -2,40 +2,30 @@
 
 :host {
   display: flex;
-  padding: 8px 16px;
-  gap: 24px;
+  gap: 8px;
+  padding: 0 16px;
   align-items: center;
-  position: relative;
-  isolation: isolate;
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .trailing {
-    display: flex;
-    gap: 8px;
-    margin-left: auto;
-  }
-
-  .headline {
-    text-wrap: nowrap;
-    @include md.typescale('title', 'large');
-  }
-
-  .menu {
-    display: none;
-  }
+  height: 72px;
 
   .body {
     width: 100%;
   }
+
+  .trailing {
+    margin-left: 16px;
+    display: none;
+    gap: 8px;
+  }
 }
 
-:host([menu]) {
-  .menu {
+:host([has-leading]) {
+  padding-left: 8px;
+}
+
+:host([has-trailing]) {
+  padding-right: 8px;
+
+  .trailing {
     display: flex;
   }
 }

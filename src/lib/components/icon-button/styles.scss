@@ -163,15 +163,8 @@ $variants: ('filled', 'tonal', 'outlined', 'standard');
   cursor: pointer;
   isolation: isolate;
   @include md.typescale('label', 'large');
-
-  .container {
-    background-color: var(--_container-color);
-    border: var(--_container-outline);
-    border-radius: inherit;
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
+  background-color: var(--_container-color);
+  border: var(--_container-outline);
 
   @include md.button {
     color: inherit;

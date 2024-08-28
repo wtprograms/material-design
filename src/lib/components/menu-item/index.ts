@@ -38,7 +38,7 @@ export class MdMenuItemElement extends base {
   subMenu?: MdMenuElement;
 
   protected override render(): unknown {
-    return html`<div class="container"></div>
+    return html`
       <md-ripple
         for="button"
         activatable

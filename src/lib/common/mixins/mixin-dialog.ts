@@ -64,7 +64,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     @property({
       type: Boolean,
       reflect: true,
-      attribute: 'has-supporting-text',
+      attribute: 'has-headline',
     })
     hasHeadline = false;
 
@@ -277,6 +277,9 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     }
 
     override async showComponent() {
+      if (!isServer) {
+        document.body.style.overflow = 'hidden';
+      }
       this.opening = true;
       this.setAttribute('open', '');
       this.dialog.showModal();
@@ -288,6 +291,9 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     override async closeComponent(returnValue = this.returnValue) {
       this.closing = true;
       await this.animateComponent();
+      if (!isServer) {
+        document.body.style.overflow = '';
+      }
       this.removeAttribute('open');
       this.dialog.close(returnValue);
       this.closing = false;

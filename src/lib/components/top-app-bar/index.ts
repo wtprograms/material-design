@@ -10,42 +10,33 @@ import { styles } from './styles';
 export class MdTopAppBarElement extends LitElement {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true })
-  menu = false;
+  @property({ type: Boolean, reflect: true, attribute: 'has-leading' })
+  hasLeading = false;
 
-  @queryAssignedElements({ slot: 'menu-item', flatten: true })
-  private readonly menuItemSlots!: HTMLElement[];
+  @property({ type: Boolean, reflect: true, attribute: 'has-trailing' })
+  hasTrailing = false;
+
+  @queryAssignedElements({ slot: 'leading', flatten: true })
+  private _leadingSlots!: HTMLElement[];
+
+  @queryAssignedElements({ slot: 'trailing', flatten: true })
+  private _trailingSlots!: HTMLElement[];
 
   override render() {
     return html`
-      <slot name="leading"></slot>
-      <span class="headline">
-        <slot name="headline"></slot>
-      </span>
+      <slot name="leading" @slotchange=${this.onSlotChange}></slot>
       <div class="body">
-        <slot name="body"></slot>
+        <slot></slot>
       </div>
       <div class="trailing">
-        <div class="actions">
-          <slot name="action"></slot>
-        </div>
-        <div class="menu">
-          <md-icon-button id="menu">
-            <md-icon>more_vert</md-icon>
-          </md-icon-button>
-          <md-menu for="menu" placement="bottom-end">
-            <slot
-              name="menu-item"
-              @slotchange=${this.onMenuItemSlotChange}
-            ></slot>
-          </md-menu>
-        </div>
+        <slot name="trailing" @slotchange=${this.onSlotChange}></slot>
       </div>
     `;
   }
 
-  private onMenuItemSlotChange() {
-    this.menu = this.menuItemSlots.length > 0;
+  private onSlotChange() {
+    this.hasLeading = this._leadingSlots.length > 0;
+    this.hasTrailing = this._trailingSlots.length > 0;
   }
 }
 

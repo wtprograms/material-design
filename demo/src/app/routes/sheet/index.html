@@ -1,10 +1,10 @@
 <h1>
   md-sheet
 </h1>
-<div class="flex flex-row border p-4 gap-4">
+<md-card class="flex flex-row p-4 gap-4">
   <md-button (click)="rotateDock()">{{ dock() }}</md-button>
   <md-button (click)="sheet.showComponent()">Toggle</md-button>
-</div>
+</md-card>
 
 <md-sheet #sheet [dock]="dock()">
   <md-icon slot="icon">home</md-icon>

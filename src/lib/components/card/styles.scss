@@ -42,16 +42,8 @@ $variants: ('elevated', 'filled', 'outlined');
   flex-direction: column;
   border-radius: var(--md-sys-shape-medium);
   isolation: isolate;
-
-  .container {
-    position: absolute;
-    border-radius: inherit;
-    inset: 0;
-    background-color: var(--_container-color);
-    border: var(--_container-outline);
-    z-index: -1;
-    pointer-events: none;
-  }
+  background-color: var(--_container-color);
+  border: var(--_container-outline);
 
   @include md.button {
     color: inherit;

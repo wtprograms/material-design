@@ -24,6 +24,7 @@ export * from './progress-indicator';
 export * from './radio-button';
 export * from './ripple';
 export * from './search';
+export * from './search-view';
 export * from './segmented-button';
 export * from './segmented-button-set';
 export * from './sheet';

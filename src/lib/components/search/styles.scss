@@ -2,7 +2,9 @@
 
 $tokens: (
   'container': (
-    'color': var(--md-sys-color-surface-container-high)
+    'color': var(--md-sys-color-surface-container-high),
+    'outline': 0,
+    'shape': var(--md-sys-shape-full)
   )
 );
 
@@ -11,47 +13,46 @@ $tokens: (
 }
 
 :host {
-  .body {
-    position: relative;
-    isolation: isolate;
-    display: flex;
-    border-radius: var(--md-sys-shape-full);
-    min-height: 56px;
-    gap: 16px;
-    align-items: center;
-    padding: 0 10px;
-    z-index: 1;
-  }
+  background-color: var(--_container-color);
+  border: var(--_container-outline);
+  border-radius: var(--_container-shape);
 
   .container {
-    position: absolute;
-    inset: 0;
-    background-color: var(--_container-color);
-    z-index: -1;
+    display: flex;
+    height: 56px;
+    align-items: center;
+    position: relative;
+    background-color: inherit;
     border-radius: inherit;
   }
 
-  .back {
-    display: none;
-  }
-
-  .content {
-    position: absolute;
-    opacity: 1;
-    @include md.motion('opacity');
-    pointer-events: none;
-  }
-
-  .popup {
-    --md-comp-popup-width: 100%;
+  .popover {
     border-radius: var(--md-sys-shape-extra-large-bottom);
-    --md-comp-popup-body-padding: 16px;
+  }
+
+  .popover-content {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid var(--md-sys-color-outline);
+    padding: 16px;
+  }
+
+  md-list {
+    display: none;
+    padding-bottom: 24px;
+  }
+
+  .body {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+    padding: 0 16px;
   }
 
   .input {
-    opacity: 0;
+    border-radius: inherit;
     appearance: none;
-    margin: 0;
     padding: 0;
     padding-inline: 0;
     padding-block: 0;
@@ -60,10 +61,10 @@ $tokens: (
     background-color: transparent;
     @include md.typescale('body', 'large');
     width: 100%;
-    color: var(--md-sys-color-sufrace-variant-on);
-    caret-color: var(--md-sys-color-sufrace-variant-on);
+    color: var(--md-sys-color-surface-variant-on);
+    caret-color: var(--md-sys-color-surface-variant-on);
     resize: none;
-    @include md.motion('opacity');
+    height: 56px;
 
     &::placeholder {
       color: currentColor;
@@ -89,53 +90,45 @@ $tokens: (
     }
   }
 
-  .content, .input {
-    margin-left: 6px;
-  }
-}
-
-:host([fullscreen]) {
-  .popup {
-    border-radius: 0;
-  }
-}
-
-:host([opening]), :host([open]) {
-  .content {
+  md-progress-indicator {
+    height: 0;
     opacity: 0;
-  }
+    width: 100%;
 
-  .input {
+    @include md.motion('height, opacity');
+  }
+}
+
+:host([searching]) {
+  md-progress-indicator {
+    height: 4px;
     opacity: 1;
-  }
 
-  .back {
+    @include md.motion('height, opacity');
+  }
+}
+
+:host([has-body]) {
+  .popover-content {
     display: flex;
   }
+}
 
-  .menu {
-    display: none;
+:host([has-items][has-body]) {
+  md-list {
+    border-top: 1px solid var(--md-sys-color-outline);
   }
+}
 
-  .body {
+:host([has-items]) {
+  md-list {
+    display: flex;
+  }
+}
+
+:host([open]) {
+  .container {
     border-radius: var(--md-sys-shape-extra-large-top);
     border-bottom: 1px solid var(--md-sys-color-outline);
-  }
-}
-
-:host([fullscreen][opening]), :host([fullscreen][open]) {
-  .body {
-    border-radius: 0;
-    border-bottom: 1px solid var(--md-sys-color-outline);
-  }
-}
-
-:host([has-menu]) {
-  .input, .content {
-    margin-left: 0;
-  }
-
-  .content {
-    margin-left: calc(10px + 24px + 16px);
   }
 }

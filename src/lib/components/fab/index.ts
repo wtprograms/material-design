@@ -102,7 +102,7 @@ export class MdFabElement extends base {
 
   protected override render(): unknown {
     const level = this.lowered ? 1 : 3;
-    return html`<div class="container"></div>
+    return html`
       <md-elevation
         for="button"
         level=${level}

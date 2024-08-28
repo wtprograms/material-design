@@ -33,7 +33,7 @@ export class MdCardElement extends base {
             ?disabled=${this.disabled || !this.activatable}
           ></md-focus-ring>`
       : nothing;
-    return html`<div class="container"></div>
+    return html`
       ${this.renderElevation()} ${attachables} ${content}`;
   }
 

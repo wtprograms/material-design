@@ -4,6 +4,7 @@ import { Placement, Strategy } from '@floating-ui/dom';
 import { property, query } from 'lit/decorators.js';
 import { EASING } from '../motion/easing';
 import { mixinPopup, Popup } from './mixin-popup';
+import { sleep } from '../promise/sleep';
 
 export interface Popover extends Popup {
   placement: Placement;

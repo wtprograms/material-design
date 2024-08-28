@@ -99,6 +99,13 @@ $palettes: ('surface', 'primary', 'secondary', 'tertiary', 'plain');
   flex-shrink: 0;
   isolation: isolate;
   @include md.typescale('label', 'large');
+  font-size: calc(var(--_size) * 0.45);
+  background-color: var(--_container-color);
+  border: 1px solid var(--_container-outline-color);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  overflow: hidden;
 
   img {
     height: var(--_size);
@@ -106,21 +113,6 @@ $palettes: ('surface', 'primary', 'secondary', 'tertiary', 'plain');
   }
 
   @include md.button {
-    background-color: var(--_container-color);
-    border: 1px solid var(--_container-outline-color);
-    color: inherit;
-    display: flex;
-    overflow: hidden;
-  }
-
-  .container {
-    position: absolute;
-    inset: 0;
-    background-color: var(--_container-color);
-    border: 1px solid var(--_container-outline-color);
-    border-radius: inherit;
-    justify-content: center;
-    align-items: center;
     color: inherit;
     display: flex;
     overflow: hidden;

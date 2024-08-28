@@ -1,7 +1,7 @@
 <h1>
   md-badge
 </h1>
-<div *ngFor="let variant of variants" class="flex flex-row border p-4 gap-4">
+<md-card *ngFor="let variant of variants" class="flex flex-row p-4 gap-4">
   <md-button [variant]="variant">elevated</md-button>
   <md-button [variant]="variant">
     <md-icon slot="icon">home</md-icon>
@@ -12,10 +12,10 @@
     <md-icon slot="icon">home</md-icon>
     Busy
   </md-button>
-</div>
-<div class="flex flex-row border p-4 gap-4">
+</md-card>
+<md-card class="flex flex-row p-4 gap-4">
   <form #form>
     <md-text-field required></md-text-field>
     <md-button type="submit">Submit</md-button>
   </form>
-</div>
+</md-card>

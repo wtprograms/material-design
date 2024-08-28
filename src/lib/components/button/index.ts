@@ -66,7 +66,7 @@ export class MdButtonElement extends base {
           ></md-progress-indicator>
         </div>`
       : nothing;
-    return html`<div class="container"></div>
+    return html`
       ${this.renderElevation()}
       <md-ripple
         for="button"

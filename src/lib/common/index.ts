@@ -31,5 +31,6 @@ export * from './mixins/mixin';
 export * from './motion/duration';
 export * from './motion/easing';
 export * from './promise/await-animation';
+export * from './promise/sleep';
 export * from './types/anchor-target';
 export * from './types/focus-state';
