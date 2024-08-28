@@ -6,9 +6,10 @@
   padding: 0 16px;
   align-items: center;
   height: 72px;
-  width: 100%;
 
   .body {
+    display: flex;
+    gap: 8px;
     width: 100%;
   }
 
