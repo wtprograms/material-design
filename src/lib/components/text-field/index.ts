@@ -160,25 +160,22 @@ export class MdTextFieldElement extends base {
     </md-field>`;
   }
 
-  protected override firstUpdated(_changedProperties: PropertyValues): void {
-    super.firstUpdated(_changedProperties);
+  private updatePopulated() {
     this.focused = this.input?.matches(':focus') ?? false;
     this.populated = this.focused || !!this.value;
- }
+  }
 
   private onControlClick() {
     this.input.focus();
   }
 
   private handleBlurChange(event: Event) {
-    this.focused = this.input?.matches(':focus') ?? false;
-    this.populated = this.focused || !!this.value;
+    this.updatePopulated();
     this.redispatchEvent(event);
   }
 
   private handleFocusChange(event: Event) {
-    this.focused = this.input?.matches(':focus') ?? false;
-    this.populated = this.focused || !!this.value;
+    this.updatePopulated();
     this.redispatchEvent(event);
   }
 
@@ -294,6 +291,15 @@ export class MdTextFieldElement extends base {
     this.value = this.input.value;
   }
 
+  protected override updated(changedProperties: PropertyValues) {
+    super.updated(changedProperties);
+    const value = this.input.value;
+    if (this.value !== value) {
+      this.value = value;
+    }
+    this.updatePopulated();
+  }
+
   override attributeChangedCallback(
     attribute: string,
     newValue: string | null,
@@ -306,13 +312,6 @@ export class MdTextFieldElement extends base {
     }
 
     super.attributeChangedCallback(attribute, newValue, oldValue);
-  }
-
-  protected override updated() {
-    const value = this.input.value;
-    if (this.value !== value) {
-      this.value = value;
-    }
   }
 
   override [getFormValue]() {
