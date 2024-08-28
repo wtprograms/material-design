@@ -1,4 +1,4 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement, nothing, PropertyValues } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -159,6 +159,12 @@ export class MdTextFieldElement extends base {
       ></slot>
     </md-field>`;
   }
+
+  protected override firstUpdated(_changedProperties: PropertyValues): void {
+    super.firstUpdated(_changedProperties);
+    this.focused = this.input?.matches(':focus') ?? false;
+    this.populated = this.focused || !!this.value;
+ }
 
   private onControlClick() {
     this.input.focus();

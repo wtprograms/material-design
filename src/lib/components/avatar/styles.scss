@@ -116,6 +116,8 @@ $palettes: ('surface', 'primary', 'secondary', 'tertiary', 'plain');
     color: inherit;
     display: flex;
     overflow: hidden;
+    justify-content: center;
+    align-items: center;
   }
 
   md-ripple {
