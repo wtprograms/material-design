@@ -49,7 +49,7 @@ export class MdTabElement extends base {
   override render() {
     return html`<div class="container"></div>
       <md-focus-ring
-        for="button"
+        for=${this.targetId}
         focus-visible
         ?disabled=${this.disabled}
       ></md-focus-ring>

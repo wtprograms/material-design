@@ -1,11 +1,33 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  ElementRef,
+  OnInit,
+  effect,
+  viewChild,
+} from '@angular/core';
+import { MdCardElement } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   host: {
-    class: 'tw flex flex-col gap-4'
-  }
+    class: 'tw flex flex-col gap-4',
+  },
 })
-export default class Page {}
+export default class Page {
+  readonly item = viewChild<ElementRef<MdCardElement>>('item');
+
+  constructor() {
+    effect(() => {
+      const item = this.item();
+      if (!item) {
+        return;
+      }
+      setTimeout(() => {
+        item.nativeElement.href = '/';
+      }, 1000);
+    });
+  }
+}

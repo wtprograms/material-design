@@ -56,12 +56,12 @@ export class MdAvatarElement extends base {
   protected override render(): unknown {
     return this.activatable ? html`
       <md-ripple
-        for="button"
+        for=${this.targetId}
         activatable
         ?disabled=${this.disabled}
       ></md-ripple>
       <md-focus-ring
-        for="button"
+        for=${this.targetId}
         focus-visible
         ?disabled=${this.disabled}
       ></md-focus-ring>

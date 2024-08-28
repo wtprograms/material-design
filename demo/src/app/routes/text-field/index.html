@@ -2,22 +2,10 @@
   md-text-field
 </h1>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-text-field value="Value" required>
-  </md-text-field>
-  <md-text-field value="Value"  label="Label text">
-  </md-text-field>
-  <md-text-field value="Value" >
-    <md-icon slot="leading">home</md-icon>
-    <md-icon slot="trailing">home</md-icon>
-  </md-text-field>
-  <md-text-field value="Value"  label="Label text">
-    <md-icon slot="leading">home</md-icon>
-    <md-icon slot="trailing">home</md-icon>
-  </md-text-field>
-  <md-text-field value="Value"  supporting-text="This field is required." maxlength="30">
-    <md-icon slot="leading">home</md-icon>
-    <md-icon slot="trailing">home</md-icon>
-  </md-text-field>
+  <form [formGroup]="formGroup">
+    <md-text-field formControlName="value" label="Label text">
+    </md-text-field>
+  </form>
 </md-card>
 
 <md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
