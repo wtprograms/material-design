@@ -41,7 +41,7 @@ export function mixinControl<T extends MixinBase<LitElement>>(
       } else {
         this.removeAttribute('value');
       }
-      this.dispatchEvent(new Event('value-change'));
+      this.dispatchEvent(new Event('change'));
     }
 
     coerceValue(value: string | null): string | null {

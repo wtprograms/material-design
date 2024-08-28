@@ -164,9 +164,16 @@ export class MdTextFieldElement extends base {
     this.input.focus();
   }
 
-  private handleFocusChange() {
+  private handleBlurChange(event: Event) {
     this.focused = this.input?.matches(':focus') ?? false;
     this.populated = this.focused || !!this.value;
+    this.redispatchEvent(event);
+  }
+
+  private handleFocusChange(event: Event) {
+    this.focused = this.input?.matches(':focus') ?? false;
+    this.populated = this.focused || !!this.value;
+    this.redispatchEvent(event);
   }
 
   private redispatchEvent(event: Event) {
@@ -192,7 +199,7 @@ export class MdTextFieldElement extends base {
       value=${ifDefined(this.value)}
       @change=${this.redispatchEvent}
       @focus=${this.handleFocusChange}
-      @blur=${this.handleFocusChange}
+      @blur=${this.handleBlurChange}
       @input=${this.handleInput}
       @select=${this.redispatchEvent}
       @keypress=${this.keypressEvent}
@@ -214,7 +221,7 @@ export class MdTextFieldElement extends base {
       value=${ifDefined(this.value)}
       @change=${this.redispatchEvent}
       @focus=${this.handleFocusChange}
-      @blur=${this.handleFocusChange}
+      @blur=${this.handleBlurChange}
       @input=${this.handleInput}
       @select=${this.redispatchEvent}
       rows="1"
@@ -235,6 +242,7 @@ export class MdTextFieldElement extends base {
       this.input.style.height = this.input.scrollHeight + 'px';
     }
     this.reportValidity();
+    redispatchEvent(this, event);
   }
 
   select() {
@@ -314,6 +322,9 @@ export class MdTextFieldElement extends base {
   }
 
   override focus() {
+    if (this.focused) {
+      return;
+    }
     this.input.focus();
   }
 
