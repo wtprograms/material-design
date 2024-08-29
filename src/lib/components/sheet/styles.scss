@@ -78,6 +78,6 @@ $docks: ('top', 'end', 'bottom', 'start');
 :host([navigation]) {
   .container-content {
     min-width: 360px;
-    padding: 0;
+    padding: 24px 12px;
   }
 }

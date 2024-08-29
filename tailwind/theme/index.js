@@ -7,4 +7,5 @@ module.exports = {
   fontSize: require('./fontSize'),
   transitionDuration: require('./transitionDuration'),
   transitionTimingFunction: require('./transitionTimingFunction'),
+  zIndex: require('./zIndex')
 };
