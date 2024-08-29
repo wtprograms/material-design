@@ -14,6 +14,9 @@ export class MdSheetElement extends base {
   @property({ type: String, reflect: true })
   dock: SheetDock = 'start';
 
+  @property({ type: Boolean, reflect: true })
+  navigation = false;
+
   protected override render(): unknown {
     return this.renderDialog();
   }

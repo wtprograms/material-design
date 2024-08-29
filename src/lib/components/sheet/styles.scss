@@ -69,4 +69,15 @@ $docks: ('top', 'end', 'bottom', 'start');
   .actions {
     margin-top: auto;
   }
+
+  .scroller, .content {
+    height: 100%;
+  }
+}
+
+:host([navigation]) {
+  .container-content {
+    min-width: 360px;
+    padding: 0;
+  }
 }

@@ -2,7 +2,7 @@
 @use 'to-typescale';
 
 $tokens: (
-  'large': to-typescale.to-typescale('display-large', 3.5625rem, 'brand', 'regular'),
-  'medium': to-typescale.to-typescale('display-medium', 2.8125rem, 'brand', 'regular'),
-  'small': to-typescale.to-typescale('display-small', 2.25rem, 'brand', 'regular')
+  'large': to-typescale.to-typescale('display-large', methods.rfs(57, 31), 'brand', 'regular'),
+  'medium': to-typescale.to-typescale('display-medium', methods.rfs(45, 27), 'brand', 'regular'),
+  'small': to-typescale.to-typescale('display-small', methods.rfs(36, 24), 'brand', 'regular')
 );

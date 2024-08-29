@@ -72,4 +72,9 @@ $tokens: (
 
 :host([layout='drawer']) {
   --_decoration-display: inline-flex;
+  height: 100%;
+}
+
+:host([layout='rail']) {
+  height: 100%;
 }

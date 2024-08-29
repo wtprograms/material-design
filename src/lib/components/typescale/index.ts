@@ -16,15 +16,8 @@ export class MdTypescaleElement extends LitElement {
   @property({ type: String })
   size: TypescaleSize = 'medium';
 
-  @property({ type: Boolean, reflect: true })
-  responsive = false;
-
   protected override update(changedProperties: PropertyValues): void {
-    if (this.responsive) {
-      this.style.fontFamily = '';
-      this.style.fontWeight = '';
-      this.style.fontSize = '';
-    } else if (
+    if (
       changedProperties.has('scale') ||
       changedProperties.has('size')
     ) {
