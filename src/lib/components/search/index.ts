@@ -49,6 +49,7 @@ export class MdSearchElement extends LitElement {
   override render() {
     return html`<div id="container" class="container">
         <md-elevation level="${this.open ? 2 : 0}"></md-elevation>
+        <md-ripple for="container" hoverable></md-ripple>
         <div class="body">
           <md-icon>search</md-icon>
           <input

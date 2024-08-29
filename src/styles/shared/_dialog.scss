@@ -112,10 +112,11 @@
       display: none;
       overflow-y: auto;
       flex-direction: column;
+      height: 100%;
     }
   
     .content {
-      height: min-content;
+      height: 100%;
       position: relative;
     }
   }
