@@ -2,6 +2,7 @@ import { LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { DURATION, EASING, mixinDialog } from '../../common';
+import { MdNavigationItemElement } from '../navigation-item';
 
 export type SheetDock = 'top' | 'end' | 'bottom' | 'start';
 
@@ -16,6 +17,15 @@ export class MdSheetElement extends base {
 
   @property({ type: Boolean, reflect: true })
   navigation = false;
+
+  get navigationItems(): MdNavigationItemElement[] {
+    return this.bodySlots.filter(
+      (x: HTMLElement): x is MdNavigationItemElement =>
+        x instanceof MdNavigationItemElement
+    );
+  }
+
+  private _previousNavigationItems: MdNavigationItemElement[] = [];
 
   protected override render(): unknown {
     return this.renderDialog();
@@ -42,6 +52,19 @@ export class MdSheetElement extends base {
       { opacity, transform },
       { duration, easing, fill: 'forwards' }
     );
+  }
+
+  override onBodyChange(): void {
+    super.onBodyChange();
+    const items = this.navigationItems;
+    const action = () => this.open = false;
+    for (const item of this._previousNavigationItems) {
+      item.removeEventListener('click', action.bind(this));
+    }
+    for (const item of items) {
+      item.addEventListener('click', action.bind(this));
+    }
+    this._previousNavigationItems = items
   }
 }
 

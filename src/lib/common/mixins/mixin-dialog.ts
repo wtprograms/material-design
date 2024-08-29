@@ -38,6 +38,7 @@ export interface Dialog extends Popup {
   animateScroller(): Animation | undefined;
   animateActions(): Animation | undefined;
   closeComponent(returnValue?: string): Promise<void>;
+  onBodyChange(): void;
 }
 
 export function mixinDialog<T extends MixinBase<LitElement>>(
@@ -371,7 +372,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
       }
     }
 
-    private onBodyChange() {
+    onBodyChange() {
       this.hasBody = this.bodySlots.length > 0;
     }
 
