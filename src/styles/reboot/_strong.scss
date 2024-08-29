@@ -1,0 +1,5 @@
+@mixin reboot {
+  b, strong {
+    font-weight: var(--md-ref-typeface-weight-bold);
+  }
+}

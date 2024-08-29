@@ -5,6 +5,8 @@
 @use 'a';
 @use 'hr';
 @use 'small';
+@use 'select';
+@use 'strong';
 
 @mixin reboot {
   @include body.reboot;
@@ -14,4 +16,6 @@
   @include a.reboot;
   @include hr.reboot;
   @include small.reboot;
+  @include select.reboot;
+  @include strong.reboot;
 }
