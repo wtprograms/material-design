@@ -1,0 +1,37 @@
+<h1>
+  md-avatar
+</h1>
+<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
+  <md-field [variant]="variant">
+    Control
+  </md-field>
+  <md-field [variant]="variant" populated>
+    Control
+  </md-field>
+  <md-field [variant]="variant" label="Label text">
+    Control
+  </md-field>
+  <md-field [variant]="variant" label="Label text" populated>
+    Control
+  </md-field>
+  <md-field [variant]="variant" has-leading has-trailing>
+    <md-icon slot="leading">home</md-icon>
+    Control
+    <md-icon slot="trailing">home</md-icon>
+  </md-field>
+  <md-field [variant]="variant" has-leading has-trailing label="Label text">
+    <md-icon slot="leading">home</md-icon>
+    Control
+    <md-icon slot="trailing">home</md-icon>
+  </md-field>
+  <md-field [variant]="variant" has-leading has-trailing supporting-text="This field is required." counter-text="3/10">
+    <md-icon slot="leading">home</md-icon>
+    Control
+    <md-icon slot="trailing">home</md-icon>
+  </md-field>
+  <md-field [variant]="variant" has-leading has-trailing populated error-text="This field is required.">
+    <md-icon slot="leading">home</md-icon>
+    Control
+    <md-icon slot="trailing">home</md-icon>
+  </md-field>
+</md-card>

@@ -7,7 +7,7 @@ export interface Popup {
   closing: boolean;
   open: boolean;
   showComponent(): Promise<void>;
-  close(): Promise<void>;
+  closeComponent(): Promise<void>;
   animateComponent(): Promise<void>;
   getComponentAnimations(): Generator<Animation | undefined>;
 }
@@ -30,14 +30,14 @@ export function mixinPopup<T extends MixinBase<LitElement>>(
       if (value) {
         this.showComponent();
       } else {
-        this.close();
+        this.closeComponent();
       }
     }
 
     private _cancelAnimations?: AbortController;
 
     abstract showComponent(): Promise<void>;
-    abstract close(): Promise<void>;
+    abstract closeComponent(): Promise<void>;
     abstract getComponentAnimations(): Generator<Animation | undefined>;
 
     async animateComponent(): Promise<void> {

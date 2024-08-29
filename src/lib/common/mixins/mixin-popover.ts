@@ -1,9 +1,10 @@
 import { html, LitElement, nothing } from 'lit';
 import { MixinBase, MixinReturn } from './mixin';
-import { autoUpdate, Placement, Strategy } from '@floating-ui/dom';
+import { Placement, Strategy } from '@floating-ui/dom';
 import { property, query } from 'lit/decorators.js';
 import { EASING } from '../motion/easing';
 import { mixinPopup, Popup } from './mixin-popup';
+import { sleep } from '../promise/sleep';
 
 export interface Popover extends Popup {
   placement: Placement;
@@ -30,7 +31,6 @@ export interface PopoverOptions {
   strategy?: Strategy;
   offset?: number;
   closeOnAction?: boolean;
-  useBuiltInPopup?: boolean;
 }
 
 export const DEFAULT_POPOVER_OPTIONS: PopoverOptions = {
@@ -38,7 +38,6 @@ export const DEFAULT_POPOVER_OPTIONS: PopoverOptions = {
   strategy: 'absolute',
   offset: 8,
   closeOnAction: false,
-  useBuiltInPopup: true,
 };
 
 export function mixinPopover<T extends MixinBase<LitElement>>(
@@ -49,6 +48,9 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
   abstract class Mixin extends _base implements Popover {
     @property({ type: String, reflect: true })
     placement: Placement = options.placement ?? 'bottom-start';
+
+    @property({ type: Boolean, reflect: true, attribute: 'non-native' })
+    nonNative = false;
 
     @property({ type: String, reflect: true })
     strategy: Strategy = options.strategy ?? 'absolute';
@@ -68,7 +70,7 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
     resultTransformOrigin = this.placement;
 
     override connectedCallback() {
-      if (options.useBuiltInPopup) {
+      if (!this.nonNative) {
         this.popover = 'manual';
       }
       super.connectedCallback();
@@ -82,7 +84,7 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
       this.dispatchEvent(new Event('opening', { bubbles: true }));
       this.style.display = 'flex';
       this.setAttribute('open', '');
-      if (options.useBuiltInPopup) {
+      if (!this.nonNative) {
         this.showPopover();
       }
       await this.updatePosition();
@@ -92,7 +94,7 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
       this.dispatchEvent(new Event('opened', { bubbles: true }));
     }
 
-    override async close() {
+    override async closeComponent() {
       if (!this.open || this.closing) {
         return;
       }
@@ -102,8 +104,8 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
       this.style.opacity = '';
       this.style.display = '';
       this.removeAttribute('open');
-      if (options.useBuiltInPopup) {
-        this.close();
+      if (!this.nonNative) {
+        this.hidePopover();
       }
       this.closing = false;
 
@@ -115,7 +117,7 @@ export function mixinPopover<T extends MixinBase<LitElement>>(
     }
 
     async onClosePopup() {
-      await this.close();
+      await this.closeComponent();
     }
 
     renderPopover(): unknown {

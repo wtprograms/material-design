@@ -23,9 +23,9 @@ export class MdButtonElement extends base {
   static {
     setupFormSubmitter(MdButtonElement);
   }
-  
+
   static readonly formAssociated = true;
-  
+
   static override shadowRootOptions: ShadowRootInit = {
     mode: 'open',
     delegatesFocus: true,
@@ -37,22 +37,48 @@ export class MdButtonElement extends base {
   @property({ type: Boolean, reflect: true, attribute: 'has-icon' })
   hasIcon = false;
 
+  @property({ type: Boolean, reflect: true })
+  busy = false;
+
+  @property({ type: Number, attribute: 'progress-value' })
+  progressValue = 0;
+
+  @property({ type: Number, attribute: 'progress-max' })
+  progressMax = 1;
+
+  @property({ type: Boolean, attribute: 'progress-indeterminate' })
+  progressIndeterminate = false;
+
+  @property({ type: Number, attribute: 'progress-buffer' })
+  progressBuffer = 0;
+
   @queryAssignedElements({ slot: 'icon', flatten: true })
   private readonly iconSlotElements!: HTMLElement[];
 
   protected override render(): unknown {
-    return html`<div class="container"></div> ${this.renderElevation()}
+    const progress = this.busy
+      ? html`<div class="progress">
+          <md-progress-indicator
+            ?indeterminate=${this.progressIndeterminate}
+            buffer=${this.progressBuffer}
+            value=${this.progressValue}
+            max=${this.progressMax}
+          ></md-progress-indicator>
+        </div>`
+      : nothing;
+    return html`
+      ${this.renderElevation()}
       <md-ripple
-        for="button"
+        for=${this.targetId}
         activatable
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || this.busy}
       ></md-ripple>
       <md-focus-ring
-        for="button"
+        for=${this.targetId}
         focus-visible
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || this.busy}
       ></md-focus-ring>
-      ${this.renderAnchorOrButton()}`;
+      ${this.renderAnchorOrButton()} ${progress}`;
   }
 
   private renderElevation() {
@@ -61,7 +87,7 @@ export class MdButtonElement extends base {
     }
     const level = this.variant === 'elevated' && !this.disabled ? 1 : 0;
     return html`<md-elevation
-      for="button"
+      for=${this.targetId}
       level=${level}
       activatable
       ?disabled=${this.disabled}

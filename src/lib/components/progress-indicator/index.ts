@@ -28,6 +28,16 @@ export class MdProgressIndicatorElement extends LitElement {
   @property({ type: Number })
   buffer = 0;
 
+  @property({ type: Number, reflect: true })
+  get size(): number | null {
+    return this._size;
+  }
+  set size(value: number | null) {
+    this._size = value;
+    this.updateIconSize();
+  }
+  private _size: number | null = null;
+
   protected override render() {
     const body =
       this.variant === 'circular' ? this.renderCircular() : this.renderLinear();
@@ -124,6 +134,19 @@ export class MdProgressIndicatorElement extends LitElement {
       indeterminate: this.indeterminate,
       'four-color': this.fourColor,
     };
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this.updateIconSize();
+  }
+
+  private updateIconSize() {
+    if (this._size !== null) {
+      this.style.setProperty('--md-comp-icon-size', `${this._size}px`);
+    } else {
+      this.style.removeProperty('--md-comp-icon-size');
+    }
   }
 }
 

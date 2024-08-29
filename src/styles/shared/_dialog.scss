@@ -64,14 +64,14 @@
     .header {
       flex-direction: column;
       width: 100%;
-      display: flex;
+      display: none;
       gap: 16px;
     }
   
     .headline {
       @include md.typescale('headline', 'small');
       color: var(--_headline-color);
-      display: flex;
+      display: none;
       flex-direction: row;
       align-items: flex-start;
       gap: 16px;
@@ -134,7 +134,22 @@
     .supporting-text {
       display: block;
     }
+
+    .header {
+      display: flex;
+    }
   }
+  
+  :host([has-headline]) {
+    .headline {
+      display: flex;
+    }
+
+    .header {
+      display: flex;
+    }
+  }
+
   
   :host([has-actions]) {
     .actions {

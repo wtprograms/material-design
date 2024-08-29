@@ -33,14 +33,14 @@ export class MdChipElement extends base {
 
   protected override render(): unknown {
     if (this.closable) {
-      return html`<div class="container"></div>
+      return html`
         ${this.renderContent()}
         <button id="button" class="close-button">
           <md-icon size="18">close</md-icon>
           ${this.renderAttachables()}
         </button>`;
     }
-    return html`<div class="container"></div>
+    return html`
       ${this.renderAttachables()} ${this.renderAnchorOrButton()}`;
   }
 

@@ -12,6 +12,7 @@ export interface Button extends Control {
   href: string | null;
   target: AnchorTarget;
   buttonElement: HTMLElement | null;
+  targetId: 'button' | 'anchor';
   renderAnchor(excludeContent?: boolean): unknown;
   renderButton(excludeContent?: boolean): unknown;
   renderAnchorOrButton(excludeContent?: boolean): unknown;
@@ -35,6 +36,10 @@ export function mixinButton<T extends MixinBase<LitElement>>(
 
     @query('.button')
     readonly buttonElement!: HTMLAnchorElement | HTMLButtonElement | null;
+
+    get targetId(): 'button' | 'anchor' {
+      return this.href ? 'anchor' : 'button';
+    }
 
     override connectedCallback(): void {
       super.connectedCallback();
@@ -69,7 +74,7 @@ export function mixinButton<T extends MixinBase<LitElement>>(
 
     renderAnchor(excludeContent?: boolean): TemplateResult {
       return html`<a
-        id="button"
+        id="anchor"
         class="button"
         href=${this.href ?? ''}
         target=${this.target || nothing}

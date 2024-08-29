@@ -16,6 +16,7 @@ import {
   PopoverOptions,
 } from './mixin-popover';
 import { property } from 'lit/decorators.js';
+import { sleep } from '../promise/sleep';
 
 export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual';
 
@@ -25,6 +26,7 @@ export interface AttachablePopover extends Attachable, Popover {
   handlePointerEnter(): Promise<void>;
   handlePointerLeave(): Promise<void>;
   handleContextMenu(): Promise<void>;
+  adjustPlugins: string;
 }
 
 export class DocumentCloseEvent extends Event {
@@ -54,6 +56,12 @@ export function mixinAttachablePopover<T extends MixinBase<LitElement>>(
     @property({ type: Boolean, noAccessor: true, attribute: 'manual-control' })
     manualControl = false;
 
+    @property({ type: String, attribute: 'adjust-plugins' })
+    adjustPlugins = 'flip,shift';
+
+    @property({ type: Boolean, attribute: 'no-shift' })
+    no = false;
+
     private _cleanup?: () => void;
     private _cleanUpPositioningEvents?: () => void;
 
@@ -73,8 +81,8 @@ export function mixinAttachablePopover<T extends MixinBase<LitElement>>(
       );
     }
 
-    override async close(): Promise<void> {
-      await super.close();
+    override async closeComponent(): Promise<void> {
+      await super.closeComponent();
       this._cleanup?.();
       this._cleanUpPositioningEvents?.();
     }
@@ -103,8 +111,18 @@ export function mixinAttachablePopover<T extends MixinBase<LitElement>>(
     }
 
     override async updatePosition(): Promise<void> {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const middleware: any[] = [offset(this.offset)];
+      const plugins = this.adjustPlugins.split(',');
+      for (const plugin of plugins) {
+        if (plugin === 'flip') {
+          middleware.push(flip());
+        } else if (plugin === 'shift') {
+          middleware.push(shift());
+        }
+      }
       const result = await computePosition(this.control!, this, {
-        middleware: [offset(this.offset), shift(), flip()],
+        middleware,
         placement: this.placement,
         strategy: this.strategy,
       });
@@ -112,6 +130,7 @@ export function mixinAttachablePopover<T extends MixinBase<LitElement>>(
       this.setTransformOrigin();
       this.style.top = `${result.y}px`;
       this.style.left = `${result.x}px`;
+      this.dispatchEvent(new Event('position-changed', { bubbles: true }));
     }
 
     override setTransformOrigin() {
@@ -147,7 +166,7 @@ export function mixinAttachablePopover<T extends MixinBase<LitElement>>(
     }
 
     async handlePointerLeave() {
-      this.close();
+      this.closeComponent();
     }
 
     async handleContextMenu() {

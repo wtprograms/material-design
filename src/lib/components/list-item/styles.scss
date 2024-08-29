@@ -58,14 +58,7 @@ $tokens: (
   align-items: center;
   padding: 8px 16px;
   cursor: pointer;
-
-  .container {
-    position: absolute;
-    inset: 0;
-    background-color: var(--_container-color);
-    z-index: -1;
-    pointer-events: none;
-  }
+  background-color: var(--_container-color);
 
   @include md.button {
     color: inherit;

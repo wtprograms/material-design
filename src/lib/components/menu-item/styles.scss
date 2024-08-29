@@ -49,14 +49,8 @@ $tokens: (
   cursor: pointer;
   color: var(--_content-color);
   @include md.typescale('label', 'large');
-
-  .container {
-    position: absolute;
-    inset: 0;
-    background-color: var(--_container-color);
-    z-index: -1;
-    pointer-events: none;
-  }
+  isolation: isolate;
+  background-color: var(--_container-color);
 
   @include md.button {
     color: inherit;

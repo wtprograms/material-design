@@ -75,15 +75,15 @@ export class MdListItemElement extends base {
 
   protected override render(): unknown {
     const content = !this.nonActivatable ? this.renderAnchorOrButton() : this.renderContent();
-    return html`<div class="container"></div>
+    return html`
       ${this.renderElevation()}
       <md-ripple
-        for="button"
+        for=${this.targetId}
         ?activatable=${!this.nonActivatable}
         ?disabled=${this.disabled}
       ></md-ripple>
       <md-focus-ring
-        for="button"
+        for=${this.targetId}
         focus-visible
         ?disabled=${this.disabled || this.nonActivatable}
       ></md-focus-ring>
@@ -100,7 +100,7 @@ export class MdListItemElement extends base {
   private renderElevation() {
     return this.dragged
       ? html`<md-elevation
-          for="button"
+          for=${this.targetId}
           level="4"
           activatable
           ?disabled=${this.disabled}

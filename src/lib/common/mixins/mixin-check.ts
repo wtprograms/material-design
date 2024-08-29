@@ -16,6 +16,7 @@ export interface CheckControl extends Control {
   labelSlots: HTMLElement[];
   noFocusRing: boolean;
   noRipple: boolean;
+  required: boolean;
   renderInput(checkType: CheckType): unknown;
   renderLabel(): unknown;
   renderRipple(): unknown;
@@ -43,6 +44,9 @@ export function mixinCheck<T extends MixinBase<LitElement>>(
 
     @property({ type: Boolean, reflect: true, attribute: 'no-focus-ring' })
     noFocusRing = false;
+
+    @property({ type: Boolean })
+    required = false;
 
     @property({ type: Boolean, noAccessor: true })
     get checked() {

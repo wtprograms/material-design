@@ -2,6 +2,8 @@
 # material-design
 `@wtprograms/material-design` is a library of web components and styles for [Material 3](https://m3.material.io/components).
 
+I have wanted to use the [Material Web](https://material-web.dev/) project for [Material 3](https://m3.material.io/components), but they are taking a bit long on their components. On top of that, I wanted to make my own changes and learn web components in Lit.
+
 ## Installation
 To install this package, first install it via NPM:
 ```

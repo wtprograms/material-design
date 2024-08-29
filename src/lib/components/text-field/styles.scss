@@ -1,7 +1,5 @@
 @use '../md';
 
-@include md.field('text-field');
-
 :host {
   .input {
     appearance: none;
@@ -42,7 +40,7 @@
     }
   }
 
-  .control {
-    cursor: text;
+  md-field {
+    --md-comp-field-control-cursor: text;
   }
 }

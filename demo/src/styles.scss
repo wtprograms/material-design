@@ -1,11 +1,7 @@
 @use '../../dist/styles/index' as md;
 
 @include md.import;
+@include md.reboot;
 
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer base {
-  @include md.reboot;
-}

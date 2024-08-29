@@ -37,7 +37,7 @@ export interface Dialog extends Popup {
   animateSupportingText(): Animation | undefined;
   animateScroller(): Animation | undefined;
   animateActions(): Animation | undefined;
-  close(returnValue?: string): Promise<void>;
+  closeComponent(returnValue?: string): Promise<void>;
 }
 
 export function mixinDialog<T extends MixinBase<LitElement>>(
@@ -61,8 +61,18 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     })
     hasSupportingText = false;
 
+    @property({
+      type: Boolean,
+      reflect: true,
+      attribute: 'has-headline',
+    })
+    hasHeadline = false;
+
     @queryAssignedElements({ slot: 'icon', flatten: true })
     readonly supportingTextSlots!: HTMLElement[];
+
+    @queryAssignedElements({ slot: 'headline', flatten: true })
+    readonly headlineSlots!: HTMLElement[];
 
     @property({ type: Boolean, reflect: true, attribute: 'has-actions' })
     hasActions = false;
@@ -154,7 +164,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
         return;
       }
 
-      this.close();
+      this.closeComponent();
     }
 
     private handleContentClick() {
@@ -170,7 +180,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
 
       // Close reason is the submitter's value attribute, or the dialog's
       // `returnValue` if there is no attribute.
-      this.close(submitter.getAttribute('value') ?? this.returnValue);
+      this.closeComponent(submitter.getAttribute('value') ?? this.returnValue);
     }
 
     private handleCancel(event: Event) {
@@ -183,7 +193,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
         return;
       }
 
-      this.close();
+      this.closeComponent();
     }
 
     private handleClose() {
@@ -216,7 +226,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
           <div class="icon">
             <slot name="icon" @slotchange=${this.onIconSlotChange}></slot>
           </div>
-          <slot name="headline"></slot>
+          <slot name="headline" @slotchange=${this.onHeadlineSlotChange}></slot>
         </div>
         <div class="supporting-text">
           <slot
@@ -267,6 +277,9 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     }
 
     override async showComponent() {
+      if (!isServer) {
+        document.body.style.overflow = 'hidden';
+      }
       this.opening = true;
       this.setAttribute('open', '');
       this.dialog.showModal();
@@ -275,9 +288,12 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
       this.dispatchEvent(new Event('opened', { bubbles: true }));
     }
 
-    override async close(returnValue = this.returnValue) {
+    override async closeComponent(returnValue = this.returnValue) {
       this.closing = true;
       await this.animateComponent();
+      if (!isServer) {
+        document.body.style.overflow = '';
+      }
       this.removeAttribute('open');
       this.dialog.close(returnValue);
       this.closing = false;
@@ -338,6 +354,10 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
 
     private onIconSlotChange() {
       this.hasIcon = this.iconSlots.length > 0;
+    }
+
+    private onHeadlineSlotChange() {
+      this.hasHeadline = this.iconSlots.length > 0;
     }
 
     private onSupportingTextChange() {

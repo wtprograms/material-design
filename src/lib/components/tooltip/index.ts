@@ -20,7 +20,7 @@ export class MdTooltipElement extends base {
   static override styles = [styles];
 
   @property({ type: String, reflect: true })
-  variant!: TooltipVariant;
+  variant: TooltipVariant = 'plain';
 
   @property({ type: Boolean, reflect: true, attribute: 'has-headline' })
   hasHeadline = false;
@@ -31,13 +31,43 @@ export class MdTooltipElement extends base {
   @property({ type: Boolean, reflect: true, attribute: 'has-actions' })
   hasActions = false;
 
+  @property({ type: Number, attribute: 'hover-delay' })
+  hoverDelay: number | null = 1000;
+
   @queryAssignedElements({ slot: 'action', flatten: true })
   private readonly _actionSlotElements!: HTMLElement[];
+
+  private _hoverOpenHandle?: unknown;
 
   get buttons(): MdButtonElement[] {
     return this._actionSlotElements.filter(
       (x) => x instanceof MdButtonElement
     ) as MdButtonElement[];
+  }
+
+  override async showComponent(): Promise<void> {
+    if (this.open || this.opening) {
+      return;
+    }
+    if (!this.hoverDelay) {
+      await super.showComponent();
+      return;
+    }
+    if (this._hoverOpenHandle) {
+      return;
+    }
+    this._hoverOpenHandle = setTimeout(
+      () => super.showComponent(),
+      this.hoverDelay
+    );
+  }
+
+  override async closeComponent(): Promise<void> {
+    if (this._hoverOpenHandle) {
+      clearTimeout(this._hoverOpenHandle as number);
+      this._hoverOpenHandle = undefined;
+    }
+    await super.closeComponent();
   }
 
   override render(): unknown {

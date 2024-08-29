@@ -1,0 +1,328 @@
+@use '../md';
+
+@mixin _has-property($name, $class) {
+  :host([#{$name}]) {
+    .#{$class} {
+      display: flex;
+    }
+
+    @content;
+  }
+}
+
+$tokens: (
+  'color': (
+    'outline': var(--md-sys-color-outline),
+    'leading': var(--md-sys-color-surface-variant-on),
+    'control': var(--md-sys-color-surface-variant-on),
+    'trailing': var(--md-sys-color-surface-variant-on),
+    'footer': var(--md-sys-color-surface-variant-on),
+    'error': var(--md-sys-color-error),
+    'label': var(--md-sys-color-surface-variant-on)
+  ),
+  'populated': (
+    'color': (
+      'outline': var(--md-sys-color-primary),
+      'label': var(--md-sys-color-primary)
+    )
+  ),
+  'error': (
+    'color': (
+      'outline': var(--_color-error),
+      'trailing': var(--_color-error),
+      'footer': var(--_color-error),
+      'label': var(--_color-error)
+    )
+  ),
+  'disabled': (
+    'color': (
+      'outline': md.disabled('outline'),
+      'leading': md.disabled('text'),
+      'control': md.disabled('text'),
+      'trailing': md.disabled('text'),
+      'footer': md.disabled('text'),
+      'label': md.disabled('text')
+    )
+  ),
+  'filled': (
+    'container': (
+      'color': var(--md-sys-color-surface-container-high),
+      'shape': var(--md-sys-shape-extra-small-top)
+    ),
+    'disabled': (
+      'container': (
+        'color': md.disabled('container')
+      )
+    )
+  ),
+  'outlined': (
+    'container': (
+      'color': transparent,
+      'shape': var(--md-sys-shape-extra-small)
+    ),
+    'disabled': (
+      'container': (
+        'color': transparent
+      )
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'md-field');
+}
+
+:host([populated]) {
+  @include md.set-properties(map-get($tokens, 'populated'), 'md-field' + '-populated');
+}
+
+:host([error-text]) {
+  @include md.set-properties(map-get($tokens, 'error'), 'md-field' + '-error');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'md-field' + '-disabled');
+}
+
+$variants: ('filled', 'outlined');
+@each $variant in $variants {
+  :host([variant='#{$variant}']) {
+    @include md.set-properties(map-get($tokens, $variant), 'md-field' + '-' + $variant);
+  }
+  :host([variant='#{$variant}'][disabled]) {
+    @include md.set-properties(map-get(map-get($tokens, $variant), 'disabled'), 'md-field' + '-' + $variant + '-disabled');
+  }
+}
+
+:host {
+  --md-comp-field-control-cursor: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  isolation: isolate;
+
+  .body {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    border-radius: var(--_container-shape);
+    min-height: 56px;
+    padding: 0 16px;
+  }
+
+  .container {
+    position: absolute;
+    border-color: var(--_color-outline);
+    background-color: var(--_container-color);
+    border-radius: inherit;
+    inset: 0;
+    z-index: -1;
+    border-style: solid;
+    border-width: 0;
+    @include md.motion('border, background-color');
+  }
+
+  .container-top {
+    position: absolute;
+    border-color: var(--_color-outline);
+    border-radius: inherit;
+    inset: 0;
+    z-index: -1;
+    border-style: solid;
+    border-width: 0;
+    @include md.motion('border, color, margin');
+  }
+
+  .footer,
+  .supporting-text,
+  .error,
+  .counter,
+  .leading,
+  .trailing,
+  .label,
+  .small-label {
+    display: none;
+  }
+
+  .leading {
+    color: var(--_color-leading);
+    margin-top: 16px;
+    @include md.motion('color');
+  }
+
+  .control {
+    display: flex;
+    color: var(--_color-control);
+    width: 100%;
+    padding-top: 18px;
+    align-items: flex-start;
+    margin-bottom: 4px;
+    cursor: var(--md-comp-field-control-cursor);
+    @include md.typescale('body', 'large');
+    @include md.motion('color, margin, opacity');
+  }
+
+  .trailing {
+    color: var(--_color-trailing);
+    margin-top: 16px;
+    @include md.motion('color');
+  }
+
+  .footer {
+    gap: 16px;
+    padding: 0 16px;
+    color: var(--_color-footer);
+    @include md.typescale('body', 'small');
+    @include md.motion('color');
+  }
+
+  .counter {
+    margin-left: auto;
+  }
+
+  .label,
+  .small-label {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .label {
+    @include md.typescale('body', 'large');
+    color: var(--_color-label);
+    z-index: 1;
+    top: 18px;
+    left: 0;
+    @include md.motion('left, top, font-size, color');
+  }
+
+  .small-label {
+    @include md.typescale('body', 'small');
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+@include _has-property('has-leading', 'leading') {
+  .body {
+    padding-left: 12px;
+  }
+}
+@include _has-property('has-trailing', 'trailing') {
+  .body {
+    padding-right: 12px;
+  }
+}
+@include _has-property('supporting-text', 'supporting-text') {
+  .footer {
+    display: flex;
+  }
+}
+@include _has-property('error-text', 'error') {
+  .supporting-text {
+    display: none;
+  }
+
+  .footer {
+    display: flex;
+  }
+}
+@include _has-property('counter-text', 'counter') {
+  .footer {
+    display: flex;
+  }
+}
+@include _has-property('label', 'label') {
+  .small-label {
+    display: flex;
+  }
+}
+
+:host([label]) {
+  .control {
+    opacity: 0;
+  }
+}
+
+:host([populated]) {
+  .label {
+    @include md.typescale('body', 'small');
+  }
+
+  .control {
+    opacity: 1;
+  }
+}
+
+:host(:hover) {
+  --_color-error: #{md.mix(var(--md-sys-color-error), var(--md-sys-color-surface-on), 0.38)};
+}
+
+:host([variant='filled']) {
+  --_border-transform: scaleX(0);
+
+  .container {
+    border-bottom-width: 1px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      background-color: var(--_color-outline);
+      height: 2px;
+      transform: var(--_border-transform);
+      @include md.motion('transform');
+    }
+  }
+}
+
+:host([variant='filled'][populated]) {
+  --_border-transform: scaleX(1);
+
+  .label {
+    top: 8px;
+  }
+}
+
+:host([variant='filled'][populated][label]) {
+  .control {
+    padding-top: 26px;
+  }
+}
+
+:host([variant='outlined']) {
+  --_border-width: 1px;
+  .container {
+    border-width: var(--_border-width);
+  }
+}
+
+:host([variant='outlined'][populated]) {
+  --_border-width: 2px;
+  .label {
+    top: -6px;
+    left: 16px !important;
+  }
+}
+
+:host([variant='outlined'][label]) {
+  .container {
+    border-top-color: transparent;
+  }
+
+  .container-top {
+    border-top: var(--_border-width) solid var(--_color-outline);
+  }
+
+  .border-before {
+    border-top-right-radius: 0;
+    width: 12px;
+  }
+
+  .border-after {
+    border-top-left-radius: 0;
+    margin-left: 12px;
+  }
+}
+
+@include md.disabled-component;

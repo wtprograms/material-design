@@ -152,24 +152,19 @@ $variants: ('filled', 'tonal', 'outlined', 'standard');
 }
 
 :host {
+  display: flex;
   position: relative;
   border-radius: var(--md-sys-shape-full);
   color: var(--_content-color);
-  height: 48px;
-  width: 48px;
+  height: 40px;
+  width: 40px;
   flex-shrink: 0;
+  flex-grow: 0;
   cursor: pointer;
   isolation: isolate;
   @include md.typescale('label', 'large');
-
-  .container {
-    background-color: var(--_container-color);
-    border: var(--_container-outline);
-    border-radius: inherit;
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
+  background-color: var(--_container-color);
+  border: var(--_container-outline);
 
   @include md.button {
     color: inherit;

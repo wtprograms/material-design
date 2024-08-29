@@ -1,0 +1,152 @@
+@use '../md';
+
+$tokens: (
+  'container-color': var(--md-sys-color-surface-container)
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'search-dialog');
+}
+
+:host {
+  display: contents;
+  margin: 0;
+  position: fixed;
+  height: fit-content;
+  width: fit-content;
+
+  .search-header {
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+    border-bottom: 1px solid var(--md-sys-color-outline);
+  }
+
+  dialog {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+    color: var(--md-sys-color-surface-on);
+  }
+
+  dialog[open] {
+    display: flex;
+  }
+
+  ::backdrop {
+    background: none;
+  }
+
+  .container {
+    position: relative;
+    border-radius: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: 100dvw;
+
+    &::before {
+      content: '';
+      background-color: var(--_container-color);
+      border-radius: inherit;
+      inset: 0;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+
+  .body {
+    display: none;
+    padding: 16px;
+  }
+
+  md-list {
+    display: none;
+    padding-bottom: 24px;
+  }
+
+  .input {
+    border-radius: inherit;
+    appearance: none;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    @include md.typescale('body', 'large');
+    width: 100%;
+    color: var(--md-sys-color-surface-variant-on);
+    caret-color: var(--md-sys-color-surface-variant-on);
+    resize: none;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  md-progress-indicator {
+    height: 0;
+    opacity: 0;
+
+    @include md.motion('height, opacity');
+  }
+}
+
+:host([searching]) {
+  md-progress-indicator {
+    height: 4px;
+    opacity: 1;
+
+    @include md.motion('height, opacity');
+  }
+}
+
+:host([has-body]) {
+  .body {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+:host([has-items]) {
+  md-list {
+    display: flex;
+  }
+}
+
+:host([has-items][has-body]) {
+  md-list {
+    border-top: 1px solid var(--md-sys-color-outline);
+  }
+}

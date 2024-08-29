@@ -23,17 +23,17 @@ export class MdCardElement extends base {
       : this.renderContent();
     const attachables = this.activatable
       ? html`<md-ripple
-            for="button"
+            for=${this.targetId}
             ?activatable=${this.activatable}
             ?disabled=${this.disabled}
           ></md-ripple>
           <md-focus-ring
-            for="button"
+            for=${this.targetId}
             focus-visible
             ?disabled=${this.disabled || !this.activatable}
           ></md-focus-ring>`
       : nothing;
-    return html`<div class="container"></div>
+    return html`
       ${this.renderElevation()} ${attachables} ${content}`;
   }
 
@@ -41,7 +41,7 @@ export class MdCardElement extends base {
     const level = this.variant === 'elevated' ? 1 : 0;
     return this.variant !== 'outlined'
       ? html`<md-elevation
-          for="button"
+          for=${this.targetId}
           level="${level}"
           activatable
           ?disabled=${this.disabled}

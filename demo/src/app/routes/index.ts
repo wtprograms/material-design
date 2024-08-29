@@ -30,28 +30,12 @@ export default [
     loadComponent: () => import('./colors'),
   },
   {
-    path: 'date-picker',
-    loadComponent: () => import('./date-picker'),
-  },
-  {
-    path: 'date-picker-calendar',
-    loadComponent: () => import('./date-picker-calendar'),
-  },
-  {
-    path: 'date-picker-selector',
-    loadComponent: () => import('./date-picker-selector'),
-  },
-  {
     path: 'divider',
     loadComponent: () => import('./divider'),
   },
   {
     path: 'dialog',
     loadComponent: () => import('./dialog'),
-  },
-  {
-    path: 'dropdown',
-    loadComponent: () => import('./dropdown'),
   },
   {
     path: 'elevation',
@@ -64,6 +48,10 @@ export default [
   {
     path: 'focus-ring',
     loadComponent: () => import('./focus-ring'),
+  },
+  {
+    path: 'field',
+    loadComponent: () => import('./field'),
   },
   {
     path: 'icon',
@@ -118,6 +106,14 @@ export default [
     loadComponent: () => import('./segmented-button'),
   },
   {
+    path: 'search',
+    loadComponent: () => import('./search'),
+  },
+  {
+    path: 'search-view',
+    loadComponent: () => import('./search-view'),
+  },
+  {
     path: 'segmented-button-set',
     loadComponent: () => import('./segmented-button-set'),
   },
@@ -142,16 +138,16 @@ export default [
     loadComponent: () => import('./tabs'),
   },
   {
-    path: 'text-field',
-    loadComponent: () => import('./text-field'),
-  },
-  {
-    path: 'time-picker',
-    loadComponent: () => import('./time-picker'),
-  },
-  {
     path: 'tooltip',
     loadComponent: () => import('./tooltip'),
+  },
+  {
+    path: 'top-app-bar',
+    loadComponent: () => import('./top-app-bar'),
+  },
+  {
+    path: 'text-field',
+    loadComponent: () => import('./text-field'),
   },
   {
     path: 'typescale',

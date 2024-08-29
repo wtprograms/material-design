@@ -41,24 +41,21 @@ $variants: ('elevated', 'filled', 'outlined');
   display: flex;
   flex-direction: column;
   border-radius: var(--md-sys-shape-medium);
-
-  .container {
-    position: absolute;
-    border-radius: inherit;
-    inset: 0;
-    background-color: var(--_container-color);
-    border: var(--_container-outline);
-    z-index: -1;
-    pointer-events: none;
-  }
+  isolation: isolate;
+  background-color: var(--_container-color);
+  border: var(--_container-outline);
+  gap: 0;
+  text-align: left;
+  align-items: flex-start;
 
   @include md.button {
     color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    text-align: left;
+    display: inherit;
+    flex-direction: inherit;
+    align-items: inherit;
+    gap: inherit;
+    text-align: inherit;
+    justify-content: inherit;
   }
 }
 

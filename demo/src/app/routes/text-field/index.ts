@@ -1,17 +1,22 @@
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import { FieldVariant } from '../../../../../dist';
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component, computed, signal } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessorsModule } from '../../sdk/control-value-accessors/control-value-accessors.module';
 
 @Component({
   templateUrl: './index.html',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ControlValueAccessorsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   host: {
     class: 'tw flex flex-col gap-4'
   }
 })
 export default class Page {
-  readonly disabled = signal(false);
-  readonly error = signal(false);
-  readonly errorText = computed(() => this.error() ? 'This is an error message' : null);
+  readonly variants: FieldVariant[] = ['filled', 'outlined'];
+
+  readonly formGroup = new FormGroup({
+    value: new FormControl('This is some value.')
+  });
 }

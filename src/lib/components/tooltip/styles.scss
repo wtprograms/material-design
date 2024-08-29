@@ -3,7 +3,7 @@
 @include md.popover;
 
 $tokens: (
-  'min-width': 112px,
+  'min-width': auto,
   'max-width': 280px,
   'width': auto,
   'plain': (
@@ -46,6 +46,7 @@ $tokens: (
   color: var(--_content-color);
   min-height: 24px;
   text-align: left;
+  isolation: isolate;
 
   .popover-body {
     align-items: flex-start;

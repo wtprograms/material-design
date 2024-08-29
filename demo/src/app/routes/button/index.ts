@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, ElementRef, effect, viewChild } from '@angular/core';
 import { ButtonVariant } from '../../../../../dist';
 import { CommonModule } from '@angular/common';
 
@@ -18,5 +18,19 @@ export default class Page {
     'tonal',
     'outlined',
     'text'
-  ]
+  ];
+
+  readonly form = viewChild<ElementRef<HTMLFormElement>>('form');
+
+  constructor() {
+    effect(() => {
+      const form = this.form();
+      if (!form) {
+        return;
+      }
+      form.nativeElement.addEventListener('submit', () => {
+        console.log('Form submitted');
+      });
+    })
+  }
 }

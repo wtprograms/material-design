@@ -1,9 +1,9 @@
 <h1>
   md-dialog
 </h1>
-<div class="flex flex-col border p-4 gap-4">
+<md-card class="flex flex-row p-4 gap-4">
   <md-button (click)="dialog.showComponent()">Open</md-button>
-</div>
+</md-card>
 
 <md-dialog #dialog requires-action>
   <md-icon slot="icon">home</md-icon>
