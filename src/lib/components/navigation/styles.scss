@@ -50,6 +50,7 @@ $tokens: (
   width: 100%;
   padding: var(--_spacing-padding);
   gap: var(--_spacing-gap);
+  z-index: var(--md-sys-z-index-navigation);
 
   --__indicator-width: var(--_indicator-width);
   ::slotted(md-navigation-item) {

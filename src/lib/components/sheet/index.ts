@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { DURATION, EASING, mixinDialog } from '../../common';
 import { MdNavigationItemElement } from '../navigation-item';
+import { MdNavigationElement } from '../navigation';
 
 export type SheetDock = 'top' | 'end' | 'bottom' | 'start';
 
@@ -19,10 +20,14 @@ export class MdSheetElement extends base {
   navigation = false;
 
   get navigationItems(): MdNavigationItemElement[] {
-    return this.bodySlots.filter(
-      (x: HTMLElement): x is MdNavigationItemElement =>
-        x instanceof MdNavigationItemElement
-    );
+    const navigation = this.bodySlots.filter(
+      (x: HTMLElement): x is MdNavigationElement =>
+        x instanceof MdNavigationElement
+    )[0];
+    if (!navigation) {
+      return [];
+    }
+    return navigation.navigationItems;
   }
 
   private _previousNavigationItems: MdNavigationItemElement[] = [];
@@ -57,7 +62,9 @@ export class MdSheetElement extends base {
   override onBodyChange(): void {
     super.onBodyChange();
     const items = this.navigationItems;
-    const action = () => this.open = false;
+    const action = () => {
+      this.open = false;
+    };
     for (const item of this._previousNavigationItems) {
       item.removeEventListener('click', action.bind(this));
     }

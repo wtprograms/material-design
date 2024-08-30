@@ -76,8 +76,12 @@ $docks: ('top', 'end', 'bottom', 'start');
 }
 
 :host([navigation]) {
+  ::slotted(md-navigation-item) {
+    height: 100%;
+  }
+
   .container-content {
-    min-width: 360px;
-    padding: 24px 12px;
+    min-width: 300px;
+    padding: 0;
   }
 }

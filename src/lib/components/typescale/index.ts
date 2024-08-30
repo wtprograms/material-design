@@ -1,6 +1,5 @@
 import { html, LitElement, PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styles } from './styles';
 
 export type Typescale = 'display' | 'headline' | 'title' | 'label' | 'body';
 
@@ -8,8 +7,6 @@ export type TypescaleSize = 'large' | 'medium' | 'small';
 
 @customElement('md-typescale')
 export class MdTypescaleElement extends LitElement {
-  static override styles = [styles];
-
   @property({ type: String })
   scale: Typescale = 'body';
 
