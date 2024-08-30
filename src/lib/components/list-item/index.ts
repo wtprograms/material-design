@@ -74,7 +74,7 @@ export class MdListItemElement extends base {
   private readonly _supportingTextSlotElements!: HTMLElement[];
 
   protected override render(): unknown {
-    const content = !this.nonActivatable ? this.renderAnchorOrButton() : this.renderContent();
+    const content = !this.nonActivatable ? this.renderAnchorOrButton() : html`<div class="content-container">${this.renderContent()}</div>`;
     return html`
       ${this.renderElevation()}
       <md-ripple

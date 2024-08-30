@@ -2,75 +2,87 @@
   md-list-item
 </h1>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable>
+  <md-list-item>
     Headline
   </md-list-item>
-  <md-list-item activatable disabled>
+  <md-list-item disabled>
     Headline
   </md-list-item>
-  <md-list-item activatable selected>
+  <md-list-item selected>
     Headline
   </md-list-item>
-  <md-list-item activatable selected disabled>
+  <md-list-item selected disabled>
     Headline
   </md-list-item>
 </md-card>
+<md-card class="flex flex-col p-4 gap-4 items-stretch">
+  <md-list-item>
+    <md-icon slot="leading">home</md-icon>
+    Headline
+    <md-icon slot="trailing">home</md-icon>
+  </md-list-item>
+  <md-list-item non-activatable>
+    <md-icon slot="leading">home</md-icon>
+    Headline
+    <md-icon slot="trailing">home</md-icon>
+  </md-list-item>
+</md-card>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable>
+  <md-list-item>
     Headline
     <span slot="supporting-text">Supporting text</span>
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     <md-icon slot="leading">home</md-icon>
     Headline
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     <md-avatar slot="leading" text="Willem Toerien"></md-avatar>
     Headline
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     <img slot="leading" src="https://placehold.co/128/EEE/31343C">
     Headline
   </md-list-item>
-  <md-list-item activatable large-leading>
+  <md-list-item large-leading>
     <img slot="leading" src="https://placehold.co/600x400/EEE/31343C">
     Headline
   </md-list-item>
 </md-card>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable>
+  <md-list-item>
     Headline
     <md-badge slot="trailing" embedded number="9999"></md-badge>
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     Headline
     <md-check-box slot="trailing"></md-check-box>
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     Headline
     <md-radio-button slot="trailing"></md-radio-button>
   </md-list-item>
-  <md-list-item activatable>
+  <md-list-item>
     Headline
     <md-switch slot="trailing"></md-switch>
   </md-list-item>
 </md-card>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable split-button>
+  <md-list-item split-button>
     Headline
     <md-check-box slot="trailing"></md-check-box>
   </md-list-item>
-  <md-list-item activatable split-button>
+  <md-list-item split-button>
     Headline
     <md-radio-button slot="trailing"></md-radio-button>
   </md-list-item>
-  <md-list-item activatable split-button>
+  <md-list-item split-button>
     Headline
     <md-switch slot="trailing"></md-switch>
   </md-list-item>
 </md-card>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable top-align>
+  <md-list-item top-align>
     <img slot="leading" src="https://placehold.co/128/EEE/31343C">
     Headline
     <span slot="supporting-text">
@@ -83,7 +95,7 @@
   </md-list-item>
 </md-card>
 <md-card class="flex flex-col p-4 gap-4">
-  <md-list-item activatable top-align disabled>
+  <md-list-item top-align disabled>
     <img slot="leading" src="https://placehold.co/128/EEE/31343C">
     Headline
     <span slot="supporting-text">

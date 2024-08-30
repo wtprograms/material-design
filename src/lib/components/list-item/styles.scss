@@ -69,6 +69,15 @@ $tokens: (
     text-align: left;
   }
 
+  .content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    text-align: left;
+  }
+
   .headline {
     font-size: var(--_headline-size);
     font-weight: var(--_headline-weight);
@@ -91,6 +100,11 @@ $tokens: (
     }
   }
 
+  .trailing {
+    display: none;
+    color: var(--_trailing-color);
+  }
+
   ::slotted(md-check-box), ::slotted(md-radio-button), ::slotted(md-switch) {
     pointer-events: none;
   }
@@ -98,6 +112,12 @@ $tokens: (
 
 :host([has-leading]) {
   .leading {
+    display: flex;
+  }
+}
+
+:host([has-trailing]) {
+  .trailing {
     display: flex;
   }
 }

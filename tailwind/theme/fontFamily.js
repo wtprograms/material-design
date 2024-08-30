@@ -1,8 +1,8 @@
 module.exports = {
-  brand: 'var(--md-ref-typeface-brand)',
-  plain: 'var(--md-ref-typeface-plain)',
-  mono: 'var(--md-ref-typeface-mono)',
-  icon: 'var(--md-ref-typeface-icon)',
+  brand: 'var(--md-ref-typeface-font-brand)',
+  plain: 'var(--md-ref-typeface-font-plain)',
+  mono: 'var(--md-ref-typeface-font-mono)',
+  icon: 'var(--md-ref-typeface-font-icon)',
   'display-large': 'var(--md-sys-typescale-display-large-font)',
   'display-medium': 'var(--md-sys-typescale-display-medium-font)',
   'display-small': 'var(--md-sys-typescale-display-small-font)',
