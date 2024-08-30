@@ -1,4 +1,4 @@
-[![Release](https://github.com/wtprograms/material-design/actions/workflows/release.yml/badge.svg?event=release)](https://github.com/wtprograms/material-design/actions/workflows/release.yml) 
+[![Build](https://github.com/wtprograms/material-design/actions/workflows/build.yml/badge.svg)](https://github.com/wtprograms/material-design/actions/workflows/build.yml)
 # material-design
 `@wtprograms/material-design` is a library of web components and styles for [Material 3](https://m3.material.io/components).
 
