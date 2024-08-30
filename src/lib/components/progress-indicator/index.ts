@@ -34,7 +34,7 @@ export class MdProgressIndicatorElement extends LitElement {
   }
   set size(value: number | null) {
     this._size = value;
-    this.updateIconSize();
+    this.updateSize();
   }
   private _size: number | null = null;
 
@@ -138,14 +138,14 @@ export class MdProgressIndicatorElement extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    this.updateIconSize();
+    this.updateSize();
   }
 
-  private updateIconSize() {
+  private updateSize() {
     if (this._size !== null) {
-      this.style.setProperty('--md-comp-icon-size', `${this._size}px`);
+      this.style.setProperty('--_size', `${this._size}px`);
     } else {
-      this.style.removeProperty('--md-comp-icon-size');
+      this.style.removeProperty('--_size');
     }
   }
 }
