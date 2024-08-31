@@ -12,28 +12,32 @@ $tokens: (
     'container-max-height': calc(100dvh - 72px),
     'max-width': min(640px, calc(100% - 56px)),
     'max-height': 100px,
-    'margin': 0 auto auto auto
+    'margin': 0 auto auto auto,
+    'justify-actions': flex-end
   ),
   'end': (
     'container-shape': var(--md-sys-shape-extra-large-start),
     'container-height': 100dvh,
     'max-width': min(400px, calc(100% - 48px)),
     'max-height': 100%,
-    'margin': 0 0 0 auto
+    'margin': 0 0 0 auto,
+    'justify-actions': flex-start
   ),
   'bottom': (
     'container-shape': var(--md-sys-shape-extra-large-top),
     'container-max-height': calc(100dvh - 72px),
     'max-width': min(640px, calc(100% - 56px)),
     'max-height': revert,
-    'margin': auto auto 0 auto
+    'margin': auto auto 0 auto,
+    'justify-actions': flex-end
   ),
   'start': (
     'container-shape': var(--md-sys-shape-extra-large-end),
     'container-height': 100dvh,
     'max-width': min(400px, calc(100% - 48px)),
     'max-height': 100%,
-    'margin': 0 auto 0 0
+    'margin': 0 auto 0 0,
+    'justify-actions': flex-end
   )
 );
 
@@ -68,6 +72,7 @@ $docks: ('top', 'end', 'bottom', 'start');
 
   .actions {
     margin-top: auto;
+    justify-content: var(--_actions-justify);
   }
 
   .scroller, .content {
