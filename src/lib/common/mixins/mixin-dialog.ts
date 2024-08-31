@@ -367,9 +367,6 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
 
     private onHasActionsChange() {
       this.hasActions = this.actionsSlots.length > 0;
-      for (const button of this.buttons) {
-        button.variant = 'text';
-      }
     }
 
     onBodyChange() {
