@@ -78,7 +78,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     @property({ type: Boolean, reflect: true, attribute: 'has-actions' })
     hasActions = false;
 
-    @queryAssignedElements({ slot: 'icon', flatten: true })
+    @queryAssignedElements({ slot: 'action', flatten: true })
     readonly actionsSlots!: HTMLElement[];
 
     @property({ type: Boolean, reflect: true, attribute: 'has-body' })
@@ -268,7 +268,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
               </div>
               <div class="actions">
                 <slot
-                  name="actions"
+                  name="action"
                   @slotchange=${this.onHasActionsChange}
                 ></slot>
               </div>
@@ -358,7 +358,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     }
 
     private onHeadlineSlotChange() {
-      this.hasHeadline = this.iconSlots.length > 0;
+      this.hasHeadline = this.headlineSlots.length > 0;
     }
 
     private onSupportingTextChange() {
