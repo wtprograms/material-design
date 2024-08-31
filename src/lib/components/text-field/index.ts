@@ -244,7 +244,6 @@ export class MdTextFieldElement extends base {
       this.input.style.height = 'auto';
       this.input.style.height = this.input.scrollHeight + 'px';
     }
-    this.reportValidity();
     redispatchEvent(this, event);
   }
 
