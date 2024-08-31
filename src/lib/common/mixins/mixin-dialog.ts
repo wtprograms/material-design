@@ -69,7 +69,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
     })
     hasHeadline = false;
 
-    @queryAssignedElements({ slot: 'icon', flatten: true })
+    @queryAssignedElements({ slot: 'supporting-text', flatten: true })
     readonly supportingTextSlots!: HTMLElement[];
 
     @queryAssignedElements({ slot: 'headline', flatten: true })
