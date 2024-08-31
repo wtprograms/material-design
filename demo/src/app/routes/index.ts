@@ -14,6 +14,10 @@ export default [
     loadComponent: () => import('./button'),
   },
   {
+    path: 'breadcrumb',
+    loadComponent: () => import('./breadcrumb'),
+  },
+  {
     path: 'check-box',
     loadComponent: () => import('./check-box'),
   },
