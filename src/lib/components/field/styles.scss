@@ -1,16 +1,17 @@
 @use '../md';
 
-@mixin _has-property($name, $class) {
-  :host([#{$name}]) {
-    .#{$class} {
-      display: flex;
-    }
-
-    @content;
-  }
-}
-
 $tokens: (
+  'control-cursor': auto,
+  'body-cursor': auto,
+  'popover': (
+    'height': unset,
+    'padding': (
+      'top': 8px,
+      'bottom': 8px,
+      'start': 0,
+      'end': 0
+    )
+  ),
   'color': (
     'outline': var(--md-sys-color-outline),
     'leading': var(--md-sys-color-surface-variant-on),
@@ -36,12 +37,12 @@ $tokens: (
   ),
   'disabled': (
     'color': (
-      'outline': md.disabled('outline'),
-      'leading': md.disabled('text'),
-      'control': md.disabled('text'),
-      'trailing': md.disabled('text'),
-      'footer': md.disabled('text'),
-      'label': md.disabled('text')
+      'outline': md.disabled('border-color'),
+      'leading': md.disabled('color'),
+      'control': md.disabled('color'),
+      'trailing': md.disabled('color'),
+      'footer': md.disabled('color'),
+      'label': md.disabled('color')
     )
   ),
   'filled': (
@@ -51,7 +52,7 @@ $tokens: (
     ),
     'disabled': (
       'container': (
-        'color': md.disabled('container')
+        'color': md.disabled('background-color')
       )
     )
   ),
@@ -69,46 +70,55 @@ $tokens: (
 );
 
 :host {
-  @include md.declare-component-tokens($tokens, 'md-field');
+  @include md.declare-component-tokens($tokens, 'field');
 }
 
 :host([populated]) {
-  @include md.set-properties(map-get($tokens, 'populated'), 'md-field' + '-populated');
+  @include md.set-properties(map-get($tokens, 'populated'), 'field-populated');
 }
 
 :host([error-text]) {
-  @include md.set-properties(map-get($tokens, 'error'), 'md-field' + '-error');
+  @include md.set-properties(map-get($tokens, 'error'), 'field-error');
 }
 
 :host([disabled]) {
-  @include md.set-properties(map-get($tokens, 'disabled'), 'md-field' + '-disabled');
+  @include md.set-properties(map-get($tokens, 'disabled'), 'field-disabled');
 }
 
 $variants: ('filled', 'outlined');
 @each $variant in $variants {
   :host([variant='#{$variant}']) {
-    @include md.set-properties(map-get($tokens, $variant), 'md-field' + '-' + $variant);
+    @include md.set-properties(map-get($tokens, $variant), 'field-' + $variant);
   }
   :host([variant='#{$variant}'][disabled]) {
-    @include md.set-properties(map-get(map-get($tokens, $variant), 'disabled'), 'md-field' + '-' + $variant + '-disabled');
+    @include md.set-properties(
+      map-get(map-get($tokens, $variant), 'disabled'),
+      'field-' + $variant + '-disabled'
+    );
   }
 }
 
 :host {
-  --md-comp-field-control-cursor: auto;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
-  gap: 4px;
   position: relative;
   isolation: isolate;
 
   .body {
-    display: flex;
-    gap: 16px;
+    display: inline-flex;
     position: relative;
     border-radius: var(--_container-shape);
     min-height: 56px;
-    padding: 0 16px;
+    cursor: var(--_body-cursor);
+  }
+
+  .content {
+    display: inline-flex;
+    gap: 16px;
+    padding-inline-start: 16px;
+    padding-inline-end: 16px;
+    position: relative;
+    width: 100%;
   }
 
   .container {
@@ -136,37 +146,32 @@ $variants: ('filled', 'outlined');
 
   .footer,
   .supporting-text,
-  .error,
+  .error-text,
   .counter,
-  .leading,
-  .trailing,
   .label,
   .small-label {
     display: none;
   }
 
-  .leading {
-    color: var(--_color-leading);
+  slot[name='leading']::slotted(*) {
     margin-top: 16px;
-    @include md.motion('color');
+    color: var(--_color-leading);
+  }
+
+  slot[name='trailing']::slotted(*) {
+    margin-top: 16px;
+    color: var(--_color-trailing);
   }
 
   .control {
-    display: flex;
+    display: inline-flex;
     color: var(--_color-control);
     width: 100%;
     padding-top: 18px;
-    align-items: flex-start;
-    margin-bottom: 4px;
-    cursor: var(--md-comp-field-control-cursor);
+    padding-bottom:8px;
+    cursor: var(--_control-cursor);
     @include md.typescale('body', 'large');
-    @include md.motion('color, margin, opacity');
-  }
-
-  .trailing {
-    color: var(--_color-trailing);
-    margin-top: 16px;
-    @include md.motion('color');
+    @include md.motion('color, padding, opacity');
   }
 
   .footer {
@@ -201,44 +206,61 @@ $variants: ('filled', 'outlined');
     opacity: 0;
     z-index: -1;
   }
+
+  .footer {
+    margin-top: 4px;
+  }
+
+  .popover {
+    position: relative;
+  }
+
+  md-popover {
+    width: 100%;
+    --md-comp-popover-body-padding-top: var(--_popover-padding-top);
+    --md-comp-popover-body-padding-bottom: var(--_popover-padding-bottom);
+    --md-comp-popover-body-padding-start: var(--_popover-padding-start);
+    --md-comp-popover-body-padding-end: var(--_popover-padding-end);
+    --md-comp-popover-body-max-height: var(--_popover-height);
+  }
 }
 
-@include _has-property('has-leading', 'leading') {
+:host([leading]) {
   .body {
-    padding-left: 12px;
+    padding-inline-start: 12px;
   }
 }
-@include _has-property('has-trailing', 'trailing') {
+:host([trailing]) {
   .body {
-    padding-right: 12px;
+    padding-inline-end: 12px;
   }
 }
-@include _has-property('supporting-text', 'supporting-text') {
+:host([supporting-text]) {
+  .supporting-text,
   .footer {
-    display: flex;
+    display: inline-flex;
   }
 }
-@include _has-property('error-text', 'error') {
+:host([error-text]) {
+  .error-text,
+  .footer {
+    display: inline-flex;
+  }
   .supporting-text {
     display: none;
   }
-
+}
+:host([counter]) {
+  .counter,
   .footer {
-    display: flex;
+    display: inline-flex;
   }
 }
-@include _has-property('counter-text', 'counter') {
-  .footer {
-    display: flex;
-  }
-}
-@include _has-property('label', 'label') {
-  .small-label {
-    display: flex;
-  }
-}
-
 :host([label]) {
+  .small-label,
+  .label {
+    display: inline-flex;
+  }
   .control {
     opacity: 0;
   }
@@ -280,7 +302,7 @@ $variants: ('filled', 'outlined');
   --_border-transform: scaleX(1);
 
   .label {
-    top: 8px;
+    top: 12px;
   }
 }
 
@@ -321,7 +343,7 @@ $variants: ('filled', 'outlined');
 
   .border-after {
     border-top-left-radius: 0;
-    margin-left: 12px;
+    margin-inline-start: 12px;
   }
 }
 

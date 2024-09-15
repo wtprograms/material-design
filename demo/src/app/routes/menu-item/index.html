@@ -1,17 +1,13 @@
-<h1>
-  md-menu-item
-</h1>
-<md-card class="flex flex-col p-4 gap-4">
+<div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
   <md-menu-item>
-    Menu Item
+    Item
+  </md-menu-item>
+  <md-menu-item selected>
+    Item
   </md-menu-item>
   <md-menu-item>
     <md-icon slot="leading">home</md-icon>
-    Menu Item
+    Item
+    <md-icon slot="trailing">arrow_right</md-icon>
   </md-menu-item>
-  <md-menu-item>
-    <md-icon slot="leading">home</md-icon>
-    Menu Item
-    <span slot="trailing">CTRL+C</span>
-  </md-menu-item>
-</md-card>
+</div>

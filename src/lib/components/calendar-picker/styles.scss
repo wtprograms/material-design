@@ -1,0 +1,44 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .day-names,
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+
+  .day-name {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    @include md.typescale('label', 'large');
+    height: 40px;
+    width: 40px;
+    justify-self: center;
+    align-self: center;
+  }
+
+  .not-current {
+    opacity: var(--md-sys-state-disabled);
+  }
+
+  .today {
+    border: 1px solid var(--md-sys-color-primary);
+  }
+
+  .not-in-range {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  md-icon-button {
+    justify-self: center;
+    align-self: center;
+  }
+}

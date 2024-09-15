@@ -1,0 +1,22 @@
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-button (click)="isOutlined.set(!isOutlined())">
+    Toggle variant
+  </md-button>
+  <md-button (click)="isError.set(!isError())">
+    Toggle error
+  </md-button>
+  <md-button (click)="disabled.set(!disabled())">
+    Toggle disabled
+  </md-button>
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-dropdown-field label="Label" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+    <md-list-item slot="item">None</md-list-item>
+    <md-list-item slot="item" value="one">One</md-list-item>
+    <md-list-item slot="item" value="two">Two</md-list-item>
+    <md-list-item slot="item" value="three">Three</md-list-item>
+  </md-dropdown-field>
+</div>

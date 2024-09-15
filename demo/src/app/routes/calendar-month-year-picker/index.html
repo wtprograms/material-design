@@ -1,0 +1,8 @@
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <md-calendar-month-year-picker #picker1 [value]="today"></md-calendar-month-year-picker>
+  {{ picker1.value }}
+</div>
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <md-calendar-month-year-picker #picker2 year [value]="today"></md-calendar-month-year-picker>
+  {{ picker2.value }}
+</div>

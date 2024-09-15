@@ -1,38 +1,50 @@
-import { LitElement, html, nothing } from 'lit';
+import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
+import { combineLatest, map, Observable } from 'rxjs';
+import { attribute } from '../../common/rxjs/operators/attribute';
+import { observe } from '../../common/lit/observable-directive';
+import { property$ } from '../../common/lit/property$.decorator';
 
 @customElement('md-badge')
 export class MdBadgeElement extends LitElement {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true })
+  @property({ type: Boolean })
+  @property$()
   dot = false;
+  dot$!: Observable<boolean>;
 
-  @property({ type: Number, reflect: true })
+  @property({ type: Number })
+  @property$()
   number: number | null = null;
+  number$!: Observable<number | null>;
 
   @property({ type: Boolean, reflect: true })
   embedded = false;
 
-  @property({ type: Boolean, reflect: true, attribute: 'single-digit' })
-  singleDigit = this.number !== null && this.number < 10;
+  readonly numberText$ = this.number$.pipe(
+    map((number) => (number && number > 999 ? '999+' : number))
+  );
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    combineLatest({
+      dot: this.dot$,
+      number: this.number$,
+    })
+      .pipe(
+        map(({ dot, number }) => !dot && number !== null && number < 10),
+        attribute(this, 'single-digit')
+      )
+      .subscribe();
+  }
 
   override render() {
     if (this.dot || !this.number) {
       return nothing;
     }
-    const content = this.number > 999 ? '999+' : this.number;
-    return html`${content}`;
-  }
-
-  protected override update(
-    changedProperties: Map<PropertyKey, unknown>
-  ): void {
-    if (changedProperties.has('number')) {
-      this.singleDigit = this.number !== null && this.number < 10;
-    }
-    super.update(changedProperties);
+    return html`${observe(this.numberText$)}`;
   }
 }
 

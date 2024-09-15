@@ -1,74 +1,91 @@
-import { html, LitElement } from 'lit';
-import {
-  customElement,
-} from 'lit/decorators.js';
+import { html, LitElement, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinCheck, mixinElementInternals } from '../../common';
-import { getFormState, getFormValue, mixinFormAssociated } from '../../common/behaviors/form-associated';
-import { createValidator, getValidityAnchor, mixinConstraintValidation } from '../../common/mixins/mixin-constraint-validation';
-import { CheckboxValidator } from '../../common/behaviors/validators/checkbox-validator';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  Observable,
+  tap,
+} from 'rxjs';
+import { attribute } from '../../common/rxjs/operators/attribute';
+import { observe } from '../../common/lit/observable-directive';
+import { property$ } from '../../common/lit/property$.decorator';
+import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
 
-const base = mixinConstraintValidation(
-  mixinFormAssociated(mixinElementInternals(mixinCheck(LitElement))));
+const base = mixinParentActivation(LitElement);
 
 @customElement('md-check-box')
 export class MdCheckBoxElement extends base {
   static override styles = [styles];
 
-  /** @nocollapse */
-  static override shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  value = false;
+  value$!: Observable<boolean>;
 
-  get icon(): string {
-    if (!this.checked) {
-      return 'check_box_outline_blank';
-    } else if (this.checked && !this.indeterminate) {
-      return 'check_box';
-    } else {
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  indeterminate = false;
+  indeterminate$!: Observable<boolean>;
+
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  @property({ type: Boolean, reflect: true })
+  error = false;
+
+  @property({ type: String })
+  label: string | null = null;
+
+  private readonly _icon$ = combineLatest({
+    value: this.value$,
+    indeterminate: this.indeterminate$,
+  }).pipe(
+    map(({ value, indeterminate }) => {
+      if (!value) {
+        return 'check_box_outline_blank';
+      } else if (value && !indeterminate) {
+        return 'check_box';
+      }
       return 'indeterminate_check_box';
-    }
+    })
+  );
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.value$.pipe(attribute(this, 'checked')).subscribe();
+    combineLatest([this.value$, this.indeterminate$])
+      .pipe(
+        distinctUntilChanged(),
+        tap(() => this.dispatchEvent(new Event('change')))
+      )
+      .subscribe();
   }
 
-  protected override render(): unknown {
+  override render() {
     return html`<div class="container">
-      ${this.renderRipple()}
-      ${this.renderFocusRing()}
-      <md-icon ?filled=${this.checked}>${this.icon}</md-icon>
-    </div>
-    ${this.renderInput('checkbox')}
-    ${this.renderLabel()}`;
+        <md-ripple for="control" interactive></md-ripple>
+        <md-focus-ring for="control" focus-visible></md-focus-ring>
+        <md-icon ?filled="${this.value}">${observe(this._icon$)}</md-icon>
+      </div>
+      <input
+        id="control"
+        type="checkbox"
+        ?disabled="${this.disabled}"
+        ?checked="${this.value}"
+        @change=${this.onChange}
+        ?indeterminate=${this.indeterminate}
+      />
+      ${this.label}`;
   }
 
-  override [getFormValue]() {
-    if (!this.checked || this.indeterminate) {
-      return null;
+  onChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.checked === this.value) {
+      return;
     }
-
-    return this.value;
-  }
-
-  override [getFormState]() {
-    return String(this.checked);
-  }
-
-  override formResetCallback() {
-    // The checked property does not reflect, so the original attribute set by
-    // the user is used to determine the default value.
-    this.checked = this.hasAttribute('checked');
-  }
-
-  override formStateRestoreCallback(state: string) {
-    this.checked = state === 'true';
-  }
-
-  [createValidator]() {
-    return new CheckboxValidator(() => this);
-  }
-
-  [getValidityAnchor]() {
-    return this.inputElement;
+    this.value = input?.checked ?? false;
   }
 }
 

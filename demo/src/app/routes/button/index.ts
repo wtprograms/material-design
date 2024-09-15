@@ -1,36 +1,18 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, ElementRef, effect, viewChild } from '@angular/core';
-import { ButtonVariant } from '../../../../../dist';
-import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 
 @Component({
   templateUrl: './index.html',
   standalone: true,
-  imports: [CommonModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  host: {
-    class: 'tw flex flex-col gap-4'
-  }
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export default class Page {
-  readonly variants: ButtonVariant[] = [
-    'elevated',
-    'filled',
-    'tonal',
-    'outlined',
-    'text'
-  ];
+  readonly variants: string[] = ['elevated', 'filled', 'tonal', 'outlined', 'text', 'plain'];
+  readonly variant = signal<string>('elevated');
+  readonly disabled = signal(false);
+  readonly busy = signal(false);
 
-  readonly form = viewChild<ElementRef<HTMLFormElement>>('form');
-
-  constructor() {
-    effect(() => {
-      const form = this.form();
-      if (!form) {
-        return;
-      }
-      form.nativeElement.addEventListener('submit', () => {
-        console.log('Form submitted');
-      });
-    })
+  nextVariant() {
+    const currentIndex = this.variants.indexOf(this.variant());
+    this.variant.set(this.variants[(currentIndex + 1) % this.variants.length]);
   }
 }

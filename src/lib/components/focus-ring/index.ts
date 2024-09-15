@@ -1,56 +1,44 @@
+import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { LitElement, nothing, PropertyValues } from 'lit';
 import {
-  mixinAttachable,
-  mixinDisabled,
-} from '../../common';
+  map,
+} from 'rxjs';
+import { attribute, mixinAttachable } from '../../common';
 
-const base = mixinDisabled(
-  mixinAttachable(LitElement)
-);
+const base = mixinAttachable(LitElement);
 
 @customElement('md-focus-ring')
 export class MdFocusRingElement extends base {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'focus-visible' })
+  @property({ type: Boolean, attribute: 'focus-visible' })
   focusVisible = false;
-
-  @property({ type: Boolean, reflect: true, attribute: 'is-focused' })
-  isFocused = false;
 
   constructor() {
     super();
     this.initialize('focusin', 'focusout');
   }
 
-  protected override updated(changedProperties: PropertyValues): void {
-    if (changedProperties.has('disabled') && this.disabled) {
-      this.isFocused = false;
-    }
-    super.updated(changedProperties);
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.event$
+      .pipe(
+        map((event) => {
+          if (event.type === 'focusout') {
+            return false;
+          }
+          return this.focusVisible
+            ? this.control?.matches(':focus-visible') ?? false
+            : true;
+        }),
+        attribute(this, 'focused')
+      )
+      .subscribe();
   }
 
-  protected override render(): unknown {
+  override render() {
     return nothing;
-  }
-
-  override async handleControlEvent(event: Event): Promise<void> {
-    if (this.disabled) {
-      return;
-    }
-
-    if (event.type === 'focusin') {
-      if (this.focusVisible) {
-        this.isFocused = this.control?.matches(':focus-visible') ?? false;
-      } else {
-        this.isFocused = true;
-      }
-    }
-    if (event.type === 'focusout') {
-      this.isFocused = false;
-    }
   }
 }
 

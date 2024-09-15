@@ -1,0 +1,10 @@
+@use '../md';
+
+:host {
+  md-field {
+    width: 100%;
+    --md-comp-field-control-cursor: pointer;
+    --md-comp-field-body-cursor: pointer;
+    --md-comp-field-popover-height: 300px;
+  }
+}

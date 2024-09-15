@@ -3,6 +3,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { classMap } from 'lit/directives/class-map.js';
 import {styleMap} from 'lit/directives/style-map.js';
+import { cssProperty, property$ } from '../../common';
+import { Observable } from 'rxjs';
 
 export type ProgressIndicatorVariant = 'circular' | 'linear';
 
@@ -29,14 +31,16 @@ export class MdProgressIndicatorElement extends LitElement {
   buffer = 0;
 
   @property({ type: Number, reflect: true })
-  get size(): number | null {
-    return this._size;
+  @property$()
+  size: number | null = null;
+  size$!: Observable<number | null>;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.size$.pipe(
+      cssProperty(this, '--md-comp-progress-indicator-size')
+    ).subscribe();
   }
-  set size(value: number | null) {
-    this._size = value;
-    this.updateSize();
-  }
-  private _size: number | null = null;
 
   protected override render() {
     const body =
@@ -134,19 +138,6 @@ export class MdProgressIndicatorElement extends LitElement {
       indeterminate: this.indeterminate,
       'four-color': this.fourColor,
     };
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.updateSize();
-  }
-
-  private updateSize() {
-    if (this._size !== null) {
-      this.style.setProperty('--_size', `${this._size}px`);
-    } else {
-      this.style.removeProperty('--_size');
-    }
   }
 }
 

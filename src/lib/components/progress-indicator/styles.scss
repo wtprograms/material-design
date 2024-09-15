@@ -11,7 +11,7 @@ $tokens: (
     'four': var(--md-sys-color-tertiary-container)
   ),
   'circular': (
-    'size': 48px,
+    'size': 48,
     'indicator-width': 4
   ),
   'linear': (
@@ -35,6 +35,7 @@ $variants: ('circular', 'linear');
 
 // CIRCULAR
 :host([variant='circular']) {
+  --_size-px: calc(var(--_size) * 1px);
   // If changing this value, make sure to change $size-without-padding in the
   // circular-progress tokens.
   $container-padding: 4px;
@@ -59,8 +60,8 @@ $variants: ('circular', 'linear');
 
   display: inline-flex;
   vertical-align: middle;
-  width: var(--_size);
-  height: var(--_size);
+  width: var(--_size-px);
+  height: var(--_size-px);
   position: relative;
   align-items: center;
   justify-content: center;
@@ -141,7 +142,7 @@ $variants: ('circular', 'linear');
     border-radius: 50%;
     // match size to svg stroke width, which is a fraction of the overall
     // padding box width.
-    $_padding-box-width: calc(var(--_size) - 2 * $container-padding);
+    $_padding-box-width: calc(var(--_size-px) - 2 * $container-padding);
     $_indicator-fraction: calc(var(--_indicator-width) / 100);
     border: solid calc($_indicator-fraction * $_padding-box-width);
     border-color: var(--_indicator-color) var(--_indicator-color) transparent transparent;

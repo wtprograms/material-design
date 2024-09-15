@@ -1,7 +1,9 @@
 @use '../md';
 
 :host {
-  .input {
+  input, textarea {
+    display: inline-flex;
+    align-self: baseline;
     appearance: none;
     margin: 0;
     padding: 0;
@@ -15,6 +17,7 @@
     color: var(--_color-control);
     caret-color: var(--_color-label);
     resize: none;
+    overflow: hidden;
 
     &::placeholder {
       color: currentColor;
@@ -41,6 +44,7 @@
   }
 
   md-field {
+    width: 100%;
     --md-comp-field-control-cursor: text;
   }
 }

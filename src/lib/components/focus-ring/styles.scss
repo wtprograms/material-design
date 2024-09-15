@@ -1,3 +1,4 @@
+
 @use '../md';
 
 $tokens: (
@@ -13,7 +14,7 @@ $tokens: (
   @include md.declare-component-tokens($tokens, 'focus-ring');
   --_width: var(--_width-default);
 
-  display: flex;
+  display: inline-flex;
   pointer-events: none;
   border-radius: inherit;
   inset: 0;
@@ -28,7 +29,7 @@ $tokens: (
   @include md.motion('opacity, outline-width')
 }
 
-:host([is-focused]) {
+:host([focused]) {
   --_width: var(--_width-focus);
   opacity: 1;
 }

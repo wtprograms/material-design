@@ -2,7 +2,6 @@
   :host([disabled]) {
     pointer-events: none;
     cursor: default;
-    //opacity: var(--md-sys-state-disabled);
 
     @content;
   }

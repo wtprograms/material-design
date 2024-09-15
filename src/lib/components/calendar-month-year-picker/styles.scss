@@ -1,0 +1,14 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+
+  .navigate {
+    width: 40px;
+    height: 40px;
+  }
+
+  .center {
+    padding-inline-start: 8px;
+    padding-inline-end: 8px;
+  }
+}

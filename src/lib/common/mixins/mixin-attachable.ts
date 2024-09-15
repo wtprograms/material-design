@@ -1,20 +1,27 @@
 import { LitElement } from 'lit';
 import { MixinBase, MixinReturn } from './mixin';
+import { Observable, Subject } from 'rxjs';
 
 export interface Attachable {
   htmlFor: string | null;
   control: HTMLElement | null;
   initialize(...events: string[]): void;
-  handleControlEvent(event: Event): Promise<void>;
   reattach(): void;
   attachControl(control: HTMLElement | null): void;
   detachControl(): void;
+  event$: Observable<Event>;
 }
 
 export function mixinAttachable<T extends MixinBase<LitElement>>(
   base: T
 ): MixinReturn<T, Attachable> {
   abstract class Mixin extends base implements Attachable {
+    private readonly _event$ = new Subject<Event>();
+
+    get event$() {
+      return this._event$.asObservable();
+    }
+
     get htmlFor() {
       return this.getAttribute('for');
     }
@@ -27,7 +34,6 @@ export function mixinAttachable<T extends MixinBase<LitElement>>(
       this.attachControl(this.htmlForControl);
       this.dispatchEvent(new Event('for-change'));
     }
-
     private get htmlForControl(): HTMLElement | null {
       if (this.htmlFor === '') {
         return null;
@@ -40,7 +46,6 @@ export function mixinAttachable<T extends MixinBase<LitElement>>(
     get control() {
       return this._currentControl;
     }
-
     set control(control: HTMLElement | null) {
       this.htmlFor = '';
       this.attachControl(control);
@@ -52,6 +57,7 @@ export function mixinAttachable<T extends MixinBase<LitElement>>(
 
     initialize(...events: string[]) {
       this._events = events;
+      this.reattach();
     }
 
     override connectedCallback(): void {
@@ -105,10 +111,8 @@ export function mixinAttachable<T extends MixinBase<LitElement>>(
     }
 
     async handleEvent(event: Event): Promise<void> {
-      await this.handleControlEvent(event);
+      this._event$.next(event);
     }
-
-    abstract handleControlEvent(event: Event): Promise<void>;
   }
 
   return Mixin;

@@ -1,9 +1,17 @@
-<h1>
-  md-badge
-</h1>
-<md-card *ngFor="let variant of variants" class="flex flex-row p-4 gap-4">
-  <md-icon-button [variant]="variant"><md-icon slot="icon">home</md-icon></md-icon-button>
-  <md-icon-button [variant]="variant" disabled><md-icon slot="icon">home</md-icon></md-icon-button>
-  <md-icon-button selected [variant]="variant"><md-icon slot="icon">home</md-icon></md-icon-button>
-  <md-icon-button selected [variant]="variant" disabled><md-icon slot="icon">home</md-icon></md-icon-button>
-</md-card>
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <md-button (click)="nextVariant()">{{ variant() }}</md-button>
+  <md-button (click)="disabled.set(!disabled())">Toggle disabled</md-button>
+  <md-button (click)="busy.set(!busy())">Toggle busy</md-button>
+  <md-button (click)="selected.set(!selected())">Toggle selected</md-button>
+</div>
+<div class="flex items-start col-span-2 gap-4 rounded-medium border border-solid border-outline-variant p-2">
+  <md-icon-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" [selected]="selected()">
+    home
+  </md-icon-button>
+  <md-icon-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" href="#" [selected]="selected()">
+    link
+  </md-icon-button>
+  <md-icon-button custom [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" [selected]="selected()">
+    1
+  </md-icon-button>
+</div>

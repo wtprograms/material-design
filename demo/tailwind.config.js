@@ -1,11 +1,11 @@
-const tailwind = require('../tailwind')
+const md = require('../tailwind');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
-  theme: tailwind.theme,
+  theme: md.theme,
   plugins: [],
 }
 

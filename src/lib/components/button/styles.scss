@@ -1,94 +1,76 @@
 @use '../md';
 
 $tokens: (
+  'opacity': 1,
+  'disabled': (
+    'color': md.disabled('color'),
+  ),
+  'busy': (
+    'opacity': var(--md-sys-state-busy)
+  ),
+  'shape': var(--md-sys-shape-full),
   'elevated': (
-    'container': (
-      'color': var(--md-sys-color-surface-container-low),
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-primary),
-    'spacing': (
+    'background-color': var(--md-sys-color-surface-container-low),
+    'color': var(--md-sys-color-primary),
+    'border': 0,
+    'padding': (
       'default': 24px,
-      'icon': 16px
+      'addon': 16px
     ),
     'disabled': (
-      'container': (
-        'color': md.disabled('container'),
-        'outline': none
-      ),
-      'content-color': md.disabled('text')
+      'background-color': md.disabled('background-color')
     )
   ),
   'filled': (
-    'container': (
-      'color': var(--md-sys-color-primary),
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-primary-on),
-    'spacing': (
+    'background-color': var(--md-sys-color-primary),
+    'color': var(--md-sys-color-primary-on),
+    'border': 0,
+    'padding': (
       'default': 24px,
-      'icon': 16px
+      'addon': 16px
     ),
     'disabled': (
-      'container': (
-        'color': md.disabled('container'),
-        'outline': none
-      ),
-      'content-color': md.disabled('text')
+      'background-color': md.disabled('background-color')
     )
   ),
   'tonal': (
-    'container': (
-      'color': var(--md-sys-color-surface-container-high),
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-secondary-container-on),
-    'spacing': (
+    'background-color': var(--md-sys-color-surface-container-high),
+    'color': var(--md-sys-color-secondary-container-on),
+    'border': 0,
+    'padding': (
       'default': 24px,
-      'icon': 16px
+      'addon': 16px
     ),
     'disabled': (
-      'container': (
-        'color': md.disabled('container')
-      ),
-      'content-color': md.disabled('text')
+      'background-color': md.disabled('background-color')
     )
   ),
   'outlined': (
-    'container': (
-      'color': transparent,
-      'outline': 1px solid var(--md-sys-color-outline)
-    ),
-    'content-color': var(--md-sys-color-primary),
-    'spacing': (
+    'background-color': transparent,
+    'color': var(--md-sys-color-primary),
+    'border': 1px solid var(--md-sys-color-outline),
+    'padding': (
       'default': 24px,
-      'icon': 16px
+      'addon': 16px
     ),
     'disabled': (
-      'container': (
-        'color': transparent,
-        'outline': 1px solid md.disabled('outline')
-      ),
-      'content-color': md.disabled('text')
+      'border': 1px solid md.disabled('border-color')
     )
   ),
   'text': (
-    'container': (
-      'color': transparent,
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-primary),
-    'spacing': (
+    'background-color': transparent,
+    'color': var(--md-sys-color-primary),
+    'border': 0,
+    'padding': (
       'default': 16px,
-      'icon': 12px
-    ),
-    'disabled': (
-      'container': (
-        'color': transparent,
-        'outline': none
-      ),
-      'content-color': md.disabled('text')
+      'addon': 12px
     )
+  ),
+  'plain': (
+    'background-color': transparent,
+    'color': var(--md-sys-color-surface-variant-on),
+    'border': 0,
+    'shape': 0
   )
 );
 
@@ -96,67 +78,101 @@ $tokens: (
   @include md.declare-component-tokens($tokens, 'button');
 }
 
-$variants: ('elevated', 'filled', 'tonal', 'outlined', 'text');
+$variants: ('elevated', 'filled', 'tonal', 'outlined', 'text', 'plain');
 
 @each $variant in $variants {
+  $variant-tokens: map-get($tokens, $variant);
+  $variant-disabled-tokens: map-get($variant-tokens, 'disabled');
   :host([variant='#{$variant}']) {
-    @include md.set-properties(map-get($tokens, $variant), 'button-#{$variant}');
+    @include md.set-properties($variant-tokens, 'button-#{$variant}');
   }
-
   :host([variant='#{$variant}'][disabled]) {
-    @include md.set-properties(map-get(map-get($tokens, $variant), 'disabled'), 'button-#{$variant}-disabled');
+    @include md.set-properties($variant-disabled-tokens, 'button-#{$variant}-disabled');
   }
 }
 
-:host {
-  --_spacing: var(--_spacing-default);
-  position: relative;
-  border-radius: var(--md-sys-shape-full);
-  color: var(--_content-color);
-  display: inline-flex;
-  height: 40px;
-  flex-shrink: 0;
-  cursor: pointer;
-  isolation: isolate;
-  @include md.typescale('label', 'large');
-  @include md.motion('opacity');
-  background-color: var(--_container-color);
-  border: var(--_container-outline);
+:host([busy]) {
+  @include md.set-properties(map-get($tokens, 'busy'), 'button-busy');
+}
 
-  @include md.button {
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'button-disabled');
+}
+
+:host {
+  --_padding-start: var(--_padding-default);
+  --_padding-end: var(--_padding-default);
+  --__color: var(--_color);
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--_shape);
+  height: 40px;
+  gap: 8px;
+  cursor: pointer;
+  @include md.motion('opacity, background-color, color, border-color');
+  flex-shrink: 0;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  padding-inline-start: var(--_padding-start);
+  padding-inline-end: var(--_padding-end);
+  place-content: center;
+  place-items: center;
+  border: var(--_border);
+  @include md.typescale('label', 'large');
+
+  button, a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
     color: inherit;
-    display: inline-flex;
-    padding-inline-start: var(--_spacing);
-    padding-inline-end: var(--_spacing-default);
-    gap: 8px;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
 
   ::slotted(md-icon) {
-    pointer-events: none;
     --md-comp-icon-size: 18;
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-color: var(--__color);
   }
 
-  .progress {
+  .progress-indicator {
     position: absolute;
     inset: 0;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
   }
 
   md-progress-indicator {
-    --md-comp-progress-indicator-circular-size: 24px;
+    --md-comp-progress-indicator-circular-size: 24;
     --md-comp-progress-indicator-circular-indicator-width: 8;
-    --md-comp-progress-indicator-indicator-color: var(--_content-color);
+    --md-comp-progress-indicator-indicator-color: var(--__color);
   }
 }
 
-:host([has-icon]) {
-  --_spacing: var(--_spacing-icon);
+:host([leading]) {
+  --_padding-start: var(--_padding-addon);
+}
+
+:host([trailing]) {
+  --_padding-end: var(--_padding-addon);
 }
 
 :host([busy]:not([disabled])) {

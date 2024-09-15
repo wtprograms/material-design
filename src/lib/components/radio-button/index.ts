@@ -1,72 +1,68 @@
-import { html, LitElement } from 'lit';
-import {
-  customElement,
-} from 'lit/decorators.js';
+import { html, LitElement, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinCheck, mixinElementInternals } from '../../common';
-import { mixinFormAssociated, getFormValue, getFormState } from '../../common/behaviors/form-associated';
-import { CheckboxValidator } from '../../common/behaviors/validators/checkbox-validator';
-import { mixinConstraintValidation, createValidator, getValidityAnchor } from '../../common/mixins/mixin-constraint-validation';
+import { combineLatest, map, Observable, tap } from 'rxjs';
+import { attribute } from '../../common/rxjs/operators/attribute';
+import { observe } from '../../common/lit/observable-directive';
+import { property$ } from '../../common/lit/property$.decorator';
+import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
 
-const base = mixinConstraintValidation(
-  mixinFormAssociated(mixinElementInternals(mixinCheck(LitElement))));
+const base = mixinParentActivation(LitElement);
 
 @customElement('md-radio-button')
 export class MdRadioButtonElement extends base {
   static override styles = [styles];
 
-  /** @nocollapse */
-  static override shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  value = false;
+  value$!: Observable<boolean>;
 
-  get icon(): string {
-    if (!this.checked) {
-      return 'radio_button_unchecked';
-    } else {
-      return 'radio_button_checked';
-    }
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  @property({ type: Boolean, reflect: true })
+  error = false;
+
+  @property({ type: String })
+  label: string | null = null;
+
+  private readonly _icon$ = this.value$.pipe(
+    map((value) => (value ? 'radio_button_checked' : 'radio_button_unchecked'))
+  );
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.value$
+      .pipe(
+        attribute(this, 'checked'),
+        tap(() => this.dispatchEvent(new Event('change')))
+      )
+      .subscribe();
   }
 
-  protected override render(): unknown {
+  override render() {
     return html`<div class="container">
-      ${this.renderRipple()}
-      ${this.renderFocusRing()}
-      <md-icon ?filled=${this.checked}>${this.icon}</md-icon>
-    </div>
-    ${this.renderInput('radio')}
-    ${this.renderLabel()}`;
+        <md-ripple for="control" interactive></md-ripple>
+        <md-focus-ring for="control" focus-visible></md-focus-ring>
+        <md-icon ?filled="${this.value}">${observe(this._icon$)}</md-icon>
+      </div>
+      <input
+        id="control"
+        type="radio"
+        ?disabled="${this.disabled}"
+        ?checked="${this.value}"
+        @change=${this.onChange}
+      />
+      ${this.label}`;
   }
 
-  override [getFormValue]() {
-    if (!this.checked || this.indeterminate) {
-      return null;
+  onChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.checked === this.value) {
+      return;
     }
-
-    return this.value;
-  }
-
-  override [getFormState]() {
-    return String(this.checked);
-  }
-
-  override formResetCallback() {
-    // The checked property does not reflect, so the original attribute set by
-    // the user is used to determine the default value.
-    this.checked = this.hasAttribute('checked');
-  }
-
-  override formStateRestoreCallback(state: string) {
-    this.checked = state === 'true';
-  }
-
-  [createValidator]() {
-    return new CheckboxValidator(() => this);
-  }
-
-  [getValidityAnchor]() {
-    return this.inputElement;
+    this.value = input?.checked ?? false;
   }
 }
 

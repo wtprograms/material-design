@@ -1,7 +1,7 @@
 @use '../md';
 
 $tokens: (
-  'size': 40px,
+  'size': 40,
   'surface': (
     'container': (
       'color': var(--md-sys-color-surface-container-low),
@@ -91,45 +91,55 @@ $palettes: ('surface', 'primary', 'secondary', 'tertiary', 'plain');
 }
 
 :host {
+  --_size-px: calc(var(--_size) * 1px);
   position: relative;
   border-radius: var(--md-sys-shape-full);
   color: var(--_content-color);
-  height: var(--_size);
-  width: var(--_size);
+  height: var(--_size-px);
+  width: var(--_size-px);
   flex-shrink: 0;
-  isolation: isolate;
   @include md.typescale('label', 'large');
-  font-size: calc(var(--_size) * 0.45);
+  font-size: calc(var(--_size-px) * 0.45);
   background-color: var(--_container-color);
   border: 1px solid var(--_container-outline-color);
   justify-content: center;
   align-items: center;
-  display: flex;
+  display: inline-flex;
   overflow: hidden;
 
   img {
-    height: var(--_size);
-    width: var(--_size);
+    height: var(--_size-px);
+    width: var(--_size-px);
   }
 
-  @include md.button {
+  button, a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
     color: inherit;
-    display: flex;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
   }
 
   md-ripple {
     --md-comp-ripple-color: var(--_content-color);
     --md-comp-ripple-transform-default: scale(0);
     --md-comp-ripple-transform-hover: scale(1);
+    z-index: 1;
   }
 }
 
-:host([activatable]) {
+:host([interactive]) {
   cursor: pointer;
 }
-
 
 @include md.disabled-component;

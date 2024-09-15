@@ -7,7 +7,7 @@ $tokens: (
 :host {
   @include md.declare-component-tokens($tokens, 'elevation');
 
-  display: flex;
+  display: inline-flex;
   pointer-events: none;
 } 
 
@@ -37,14 +37,14 @@ $tokens: (
   @include md.elevate-hover(var(--_level));
 }
 
-:host([is-hovering]) {
+:host([hovering]) {
   --_level: calc(var(--md-comp-elevation-level) + 1);
 }
 
-:host([is-activated]) {
+:host([activated]) {
   --_level: var(--md-comp-elevation-level);
 }
 
-:host([is-dragging]) {
+:host([dragging]) {
   --_level: 4;
 }

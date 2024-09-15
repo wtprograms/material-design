@@ -1,126 +1,194 @@
+import '../badge';
 import { html, LitElement, nothing, PropertyValues } from 'lit';
 import {
   customElement,
+  property,
   query,
+  queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinField } from '../../common';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  Observable,
+  startWith,
+  Subject,
+  tap,
+} from 'rxjs';
+import { observe, property$, redispatchEvent } from '../../common';
+import { MdPopoverElement } from '../popover';
 
-const base = mixinField(LitElement);
+export type FieldVariant = 'filled' | 'outlined';
 
 @customElement('md-field')
-export class MdFieldElement extends base {
+export class MdFieldElement extends LitElement {
   static override styles = [styles];
 
-  @query('.leading')
-  private _leading!: HTMLElement;
+  @property({ type: String, reflect: true })
+  variant: FieldVariant = 'filled';
 
-  @query('.label')
-  private _label?: HTMLElement;
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  populated = false;
+  populated$!: Observable<boolean>;
+
+  @property({ type: String, reflect: true })
+  @property$()
+  label: string | null = null;
+  label$!: Observable<string | null>;
+
+  @property({ type: String, reflect: true, attribute: 'supporting-text' })
+  supportingText: string | null = null;
+
+  @property({ type: String, reflect: true, attribute: 'error-text' })
+  errorText: string | null = null;
+
+  @property({ type: String })
+  prefixText: string | null = null;
+
+  @property({ type: String })
+  suffixText: string | null = null;
+
+  @property({ type: String, reflect: true })
+  counter: string | null = null;
+
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  @queryAssignedElements({ slot: 'leading', flatten: true })
+  private _leadingElements!: HTMLElement[];
+
+  @queryAssignedElements({ slot: 'trailing', flatten: true })
+  private _trailingElements!: HTMLElement[];
 
   @query('.small-label')
-  private _smallLabel?: HTMLElement;
+  private _smallLabel!: HTMLElement;
 
-  @query('.border-after')
-  private _borderAfter!: HTMLElement;
+  @query('md-popover')
+  private _popover!: MdPopoverElement;
+
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  leading = false;
+  leading$!: Observable<boolean>;
+
+  @property({ type: Boolean, reflect: true })
+  trailing = false;
+
+  @query('.body')
+  private _body!: HTMLElement;
+
+  private readonly _labelStart$ = combineLatest({
+    label: this.label$,
+    leading: this.leading$,
+  }).pipe(
+    map(({ label, leading: hasLeading }) => {
+      if (!label) {
+        return '';
+      }
+      let left = 16;
+      if (hasLeading) {
+        const leadingElements = this._leadingElements;
+        const leadingElement = leadingElements![0];
+        left += leadingElement.offsetWidth + 12;
+      }
+      return `${left}px`;
+    })
+  );
+  private readonly _containerStart$ = combineLatest({
+    label: this.label$,
+    populated: this.populated$,
+  }).pipe(
+    map((x) => {
+      if (!x.label || !x.populated || !this._smallLabel) {
+        return '';
+      }
+      return 12 + 8 + this._smallLabel!.offsetWidth + 'px';
+    })
+  );
 
   override render() {
-    return html`${this.renderBody()} ${this.renderFooter()}`;
-  }
-
-  renderBody(): unknown {
-    const leading = this.hasLeading
-      ? html`<div class="leading">
-          <slot name="leading"></slot>
-        </div>`
-      : nothing;
-    const trailing = this.hasTrailing
-      ? html`<div class="trailing">
-          <slot name="trailing"></slot>
-        </div>`
-      : nothing;
     const ripple =
       this.variant === 'filled'
         ? html`<md-ripple for="body" hoverable></md-ripple>`
         : nothing;
-    return html` <span class="label">${this.label}</span>
+    return html`<span
+        class="label"
+        style="inset-inline-start: ${observe(this._labelStart$)}"
+        >${this.label}</span
+      >
       <span class="small-label">${this.label}</span>
-      <div id="body" class="body">
+      <div id="body" class="body" @click=${this.handleBodyClick}>
         ${ripple}
         <div class="container"></div>
         <div class="container-top border-before"></div>
-        <div class="container-top border-after"></div>
-        ${leading} ${this.renderControl()} ${trailing}
+        <div
+          class="container-top border-after"
+          style="margin-inline-start: ${observe(this._containerStart$)}"
+        ></div>
+        <slot
+          name="leading"
+          @slotchange=${() => (this.leading = !!this._leadingElements.length)}
+        ></slot>
+        <div class="content" @click=${this.handleContentClick}>
+          <div class="control">
+            ${this.prefixText}
+            <slot></slot>
+            ${this.suffixText}
+          </div>
+        </div>
+        <slot
+          name="trailing"
+          @slotchange=${() => (this.trailing = !!this._trailingElements.length)}
+        ></slot>
+      </div>
+      <div class="popover">
+        <md-popover triggers="manual" offset="4" @open=${this.popoverOpen} @close=${this.popoverClose}>
+          <slot name="popover"></slot>
+        </md-popover>
+      </div>
+      <div class="footer">
+        <span class="supporting-text">${this.supportingText}</span>
+        <span class="error-text">${this.errorText}</span>
+        <span class="counter">${this.counter}</span>
       </div>`;
   }
 
-  renderFooter(): unknown {
-    const supportingText = this.supportingText
-      ? html`<span class="supporting-text">${this.supportingText}</span>`
-      : nothing;
-    const errorText = this.errorText
-      ? html`<span class="error">${this.errorText}</span>`
-      : nothing;
-    const counter = this.counterText
-      ? html`<span class="counter">${this.counterText}</span>`
-      : nothing;
-    if (
-      supportingText === nothing &&
-      errorText === nothing &&
-      counter === nothing
-    ) {
-      return nothing;
-    }
-    return html`<div class="footer">
-      <div class="supporting-text-div">${supportingText} ${errorText}</div>
-      ${counter}
-    </div>`;
+  private popoverOpen(event: Event) {
+    redispatchEvent(this, event);
   }
 
-  renderControl(): unknown {
-    return html`<div class="control" @click=${this.onControlClick}>
-      ${this.prefixText}
-      <slot></slot>
-      ${this.suffixText}
-      <slot name="suffix"></slot>
-    </div>`;
+  private popoverClose(event: Event) {
+    redispatchEvent(this, event);
   }
 
-  onControlClick(): void {
-    this.dispatchEvent(new CustomEvent('control-click', { bubbles: true }));
+  private handleContentClick() {
+    this.dispatchEvent(new Event('content-click'));
   }
 
-  protected override updated(_changedProperties: PropertyValues): void {
-    super.updated(_changedProperties);
-    this.updateLabelLeft();
-    if (_changedProperties.has('populated')) {
-      this.updateContainerTop();
-    }
+  private handleBodyClick() {
+    this.dispatchEvent(new Event('body-click'));
   }
 
-  private updateLabelLeft(): void {
-    if (!this._label) {
-      return;
-    }
-    let left = 16;
-    if (this.hasLeading) {
-      left -= 2;
-      left += this._leading.offsetWidth + 16;
-    }
-    this._label.style.left = `${left}px`;
+  openPopover() {
+    this._popover.openPopover();
   }
 
-  private updateContainerTop(): void {
-    if (!this._smallLabel && !this.label) {
-      return;
-    }
+  closePopover() {
+    this._popover.closePopover();
+  }
 
-    if (!this.populated) {
-      this._borderAfter.style.marginLeft = '';
-      return;
+  protected override firstUpdated(_changedProperties: PropertyValues): void {
+    super.firstUpdated(_changedProperties);
+    this.handleForChange();
+  }
+
+  private handleForChange() {
+    if (this._popover.control !== this._body) {
+      this._popover.attachControl(this._body);
     }
-    this._borderAfter.style.marginLeft =
-      12 + 8 + this._smallLabel!.offsetWidth + 'px';
   }
 }
 

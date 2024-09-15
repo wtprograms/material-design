@@ -1,52 +1,42 @@
-import { LitElement, html, nothing } from 'lit';
+import '../badge';
+import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
+import { Observable } from 'rxjs';
+import { property$ } from '../../common/lit/property$.decorator';
+import { cssProperty } from '../../common';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 @customElement('md-icon')
 export class MdIconElement extends LitElement {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true })
+  @property({ type: Boolean })
   filled = false;
 
-  @property({ type: Number, reflect: true })
-  get size(): number | null {
-    return this._size;
-  }
-  set size(value: number | null) {
-    this._size = value;
-    this.updateIconSize();
-  }
-  private _size: number | null = null;
+  @property({ type: Number })
+  @property$()
+  size: number | null = null;
+  size$!: Observable<number | null>;
 
-  @property({ type: Boolean, reflect: true, attribute: 'badge-dot' })
+  @property({ type: Boolean, attribute: 'badge-dot' })
   badgeDot = false;
 
-  @property({ type: Number, reflect: true, attribute: 'badge-number' })
-  badgeNumber = 0;
+  @property({ type: Number, attribute: 'badge-number' })
+  badgeNumber: number | null = null;
 
-  override connectedCallback() {
+  override connectedCallback(): void {
     super.connectedCallback();
-    this.updateIconSize();
+    this.size$.pipe(
+      cssProperty(this, '--md-comp-icon-size')
+    ).subscribe();
   }
 
   override render() {
-    const badge =
-      this.badgeDot || this.badgeNumber > 0
-        ? html`<md-badge
-            ?dot=${this.badgeDot}
-            number=${this.badgeNumber}
-          ></md-badge>`
-        : nothing;
-    return html`<slot></slot> ${badge}`;
-  }
-
-  private updateIconSize() {
-    if (this._size !== null) {
-      this.style.setProperty('--md-comp-icon-size', `${this._size}`);
-    } else {
-      this.style.removeProperty('--md-comp-icon-size');
-    }
+    const badge = this.badgeDot || this.badgeNumber !== null
+      ? html`<md-badge ?dot=${this.badgeDot} number=${ifDefined(this.badgeNumber)}></md-badge>`
+      : nothing;
+    return html`<slot></slot>${badge}`;
   }
 }
 

@@ -1,119 +1,63 @@
 @use '../md';
 
 $tokens: (
+  'opacity': 1,
+  'disabled': (
+    'color': md.disabled('color'),
+  ),
+  'busy': (
+    'opacity': var(--md-sys-state-busy)
+  ),
+  'shape': var(--md-sys-shape-full),
+  'transform-default': scale(0),
+  'transform-hover': scale(1),
   'filled': (
-    'container': (
-      'color': var(--md-sys-color-surface-container-high),
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-primary),
+    'background-color': var(--md-sys-color-surface-container-high),
+    'color': var(--md-sys-color-primary),
+    'border': 0,
     'disabled': (
-      'container': (
-        'color': md.disabled('container'),
-        'outline': none
-      ),
-      'content-color': md.disabled('text')
+      'background-color': md.disabled('background-color')
     ),
     'selected': (
-      'container': (
-        'color': var(--md-sys-color-primary),
-        'outline': none
-      ),
-      'content-color': var(--md-sys-color-primary-on),
-      'disabled': (
-        'container': (
-          'color': md.disabled('container'),
-          'outline': none
-        ),
-        'content-color': md.disabled('text')
-      )
+      'background-color': var(--md-sys-color-primary),
+      'color': var(--md-sys-color-primary-on)
     )
   ),
   'tonal': (
-    'container': (
-      'color': var(--md-sys-color-surface-container-high),
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-surface-variant-on),
+    'background-color': var(--md-sys-color-surface-container-high),
+    'color': var(--md-sys-color-surface-variant-on),
+    'border': 0,
     'disabled': (
-      'container': (
-        'color': md.disabled('container')
-      ),
-      'content-color': md.disabled('text')
+      'background-color': md.disabled('background-color')
     ),
     'selected': (
-      'container': (
-        'color': var(--md-sys-color-secondary-container),
-        'outline': none
-      ),
-      'content-color': var(--md-sys-color-secondary-container-on),
-      'disabled': (
-        'container': (
-          'color': md.disabled('container')
-        ),
-        'content-color': md.disabled('text')
-      )
+      'background-color': var(--md-sys-color-secondary-container),
+      'color': var(--md-sys-color-secondary-container-on)
     )
   ),
   'outlined': (
-    'container': (
-      'color': transparent,
-      'outline': 1px solid var(--md-sys-color-outline)
-    ),
-    'content-color': var(--md-sys-color-surface-variant-on),
+    'background-color': transparent,
+    'color': var(--md-sys-color-surface-variant-on),
+    'border': 1px solid var(--md-sys-color-outline),
     'disabled': (
-      'container': (
-        'color': transparent,
-        'outline': 1px solid md.disabled('outline')
-      ),
-      'content-color': md.disabled('text')
+      'border': 1px solid md.disabled('border-color')
     ),
     'selected': (
-      'container': (
-        'color': var(--md-sys-color-surface-inverse),
-        'outline': 1px solid var(--md-sys-color-outline)
-      ),
-      'content-color': var(--md-sys-color-surface-inverse-on),
+      'background-color': var(--md-sys-color-surface-inverse),
+      'color': var(--md-sys-color-surface-inverse-on),
       'disabled': (
-        'container': (
-          'color': md.disabled('container'),
-          'outline': 1px solid md.disabled('outline')
-        ),
-        'content-color': md.disabled('text')
-      )
+        'background-color': md.disabled('background-color'),
+        'color': md.disabled('color'),
+        )
     )
   ),
   'standard': (
-    'container': (
-      'color': transparent,
-      'outline': none
-    ),
-    'content-color': var(--md-sys-color-surface-variant-on),
-    'disabled': (
-      'container': (
-        'color': transparent,
-        'outline': none
-      ),
-      'content-color': md.disabled('text')
-    ),
+    'background-color': transparent,
+    'color': var(--md-sys-color-surface-variant-on),
+    'border': 0,
     'selected': (
-      'container': (
-        'color': transparent,
-        'outline': none
-      ),
-      'content-color': var(--md-sys-color-primary),
-      'disabled': (
-        'container': (
-          'color': transparent,
-          'outline': none
-        ),
-        'content-color': md.disabled('text')
-      )
+      'color': var(--md-sys-color-primary)
     )
-  ),
-  'icon-filled': 0,
-  'selected': (
-    'icon-filled': 1
   )
 );
 
@@ -121,66 +65,117 @@ $tokens: (
   @include md.declare-component-tokens($tokens, 'icon-button');
 }
 
-:host([selected]) {
-  @include md.set-properties(map-get($tokens, 'selected'), 'icon-button-selected');
-}
-
 $variants: ('filled', 'tonal', 'outlined', 'standard');
 
 @each $variant in $variants {
   $variant-tokens: map-get($tokens, $variant);
-
+  $variant-disabled-tokens: map-get($variant-tokens, 'disabled');
+  $variant-selected-tokens: map-get($variant-tokens, 'selected');
+  $variant-selected-disabled-tokens: map-get($variant-selected-tokens, 'disabled');
   :host([variant='#{$variant}']) {
     @include md.set-properties($variant-tokens, 'icon-button-#{$variant}');
   }
-
   :host([variant='#{$variant}'][disabled]) {
-    $disabled: map-get($variant-tokens, 'disabled');
-    @include md.set-properties($disabled, 'icon-button-#{$variant}-disabled');
+    @include md.set-properties($variant-disabled-tokens, 'icon-button-#{$variant}-disabled');
   }
-
   :host([variant='#{$variant}'][selected]) {
-    $selected: map-get($variant-tokens, 'selected');
-    @include md.set-properties($selected, 'icon-button-#{$variant}-selected');
+    @include md.set-properties($variant-selected-tokens, 'icon-button-#{$variant}-selected');
   }
-
   :host([variant='#{$variant}'][selected][disabled]) {
-    $selected: map-get($variant-tokens, 'selected');
-    $disabled: map-get($selected, 'disabled');
-    @include md.set-properties($disabled, 'icon-button-#{$variant}-selected-disabled');
+    @include md.set-properties($variant-selected-disabled-tokens, 'icon-button-#{$variant}-selected-disabled');
   }
 }
 
+:host([busy]) {
+  @include md.set-properties(map-get($tokens, 'busy'), 'icon-button-busy');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'icon-button-disabled');
+}
+
 :host {
-  display: flex;
+  --__color: var(--_color);
+  --__transform-default: var(--_transform-default);
+  --__transform-hover: var(--_transform-hover);
   position: relative;
-  border-radius: var(--md-sys-shape-full);
-  color: var(--_content-color);
+  display: inline-flex;
+  border-radius: var(--_shape);
   height: 40px;
   width: 40px;
-  flex-shrink: 0;
-  flex-grow: 0;
   cursor: pointer;
-  isolation: isolate;
+  @include md.motion('opacity, background-color, color, border-color');
+  flex-shrink: 0;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  place-content: center;
+  place-items: center;
+  border: var(--_border);
   @include md.typescale('label', 'large');
-  background-color: var(--_container-color);
-  border: var(--_container-outline);
 
-  @include md.button {
+  button, a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
     color: inherit;
-    display: flex;
-    gap: 8px;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  ::slotted(md-icon), md-icon {
+    --md-comp-icon-size: 24;
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_content-color);
-    --md-comp-ripple-transform-default: scale(0);
-    --md-comp-ripple-transform-hover: scale(1);
+    --md-comp-ripple-color: var(--__color);
+    --md-comp-ripple-transform-default: var(--__transform-default);
+    --md-comp-ripple-transform-hover: var(--__transform-hover);
+ }
+
+  .progress-indicator {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  ::slotted(md-icon) {
-    --md-comp-icon-filled: var(--_icon-filled);
-    pointer-events: none;
+  md-progress-indicator {
+    --md-comp-progress-indicator-circular-size: 24;
+    --md-comp-progress-indicator-circular-indicator-width: 8;
+    --md-comp-progress-indicator-indicator-color: var(--__color);
+  }
+}
+
+:host([leading]) {
+  --_padding-start: var(--_padding-addon);
+}
+
+:host([trailing]) {
+  --_padding-end: var(--_padding-addon);
+}
+
+:host([busy]:not([disabled])) {
+  pointer-events: none;
+  opacity: 0.5;
+
+  #button {
+    opacity: 0;
   }
 }
 

@@ -3,20 +3,20 @@
 $tokens: (
   'container-color': transparent,
   'headline': (
-    'color':var(--md-sys-color-surface-on),
+    'color': var(--md-sys-color-surface-on),
     'size': var(--md-sys-typescale-body-large-size),
     'weight': var(--md-sys-typescale-body-large-weight),
-    'family': var(--md-sys-typescale-body-large-family),
+    'family': var(--md-sys-typescale-body-large-family)
   ),
   'supporting-text-color': var(--md-sys-color-surface-variant-on),
   'leading-color': var(--md-sys-color-surface-variant-on),
   'trailing-color': var(--md-sys-color-surface-variant-on),
   'disabled': (
     'container-color': transparent,
-    'headline-color': md.disabled('text'),
-    'supporting-text-color': md.disabled('text'),
-    'leading-color': md.disabled('text'),
-    'trailing-color': md.disabled('text')
+    'headline-color': md.disabled('color'),
+    'supporting-text-color': md.disabled('color'),
+    'leading-color': md.disabled('color'),
+    'trailing-color': md.disabled('color')
   ),
   'selected': (
     'container-color': var(--md-sys-color-secondary-container),
@@ -25,11 +25,11 @@ $tokens: (
     'leading-color': var(--md-sys-color-surface-variant-on),
     'trailing-color': var(--md-sys-color-surface-variant-on),
     'disabled': (
-      'container-color': md.disabled('container'),
-      'headline-color': md.disabled('text'),
-      'supporting-text-color': md.disabled('text'),
-      'leading-color': md.disabled('text'),
-      'trailing-color': md.disabled('text')
+      'container-color': md.disabled('background-color'),
+      'headline-color': md.disabled('color'),
+      'supporting-text-color': md.disabled('color'),
+      'leading-color': md.disabled('color'),
+      'trailing-color': md.disabled('color')
     )
   )
 );
@@ -51,27 +51,62 @@ $tokens: (
 }
 
 :host {
-  position: relative;
   min-height: 56px;
-  display: flex;
+  display: inline-flex;
   gap: 16px;
-  align-items: center;
-  padding: 8px 16px;
-  cursor: pointer;
   background-color: var(--_container-color);
 
-  @include md.button {
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    text-align: left;
+  .body {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+    width: 100%;
+    gap: inherit;
+    align-items: center;
+    padding: 8px 16px;
   }
 
-  .content-container {
+  md-divider {
+    height: 100%;
+  }
+
+  .split {
+    display: inline-flex;
+    gap: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-inline-end: 16px;
+    padding-inline-start: 0;
+  }
+
+  #control {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
     width: 100%;
-    display: flex;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .content {
+    width: 100%;
+    display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
@@ -90,59 +125,75 @@ $tokens: (
     color: var(--_supporting-text-color);
   }
 
-  .leading {
-    display: none;
-    color: var(--_leading-color);
-
-    ::slotted(img) {
-      width: 56px !important;
-      height: 56px !important;
-    }
-  }
-
+  .leading,
   .trailing {
     display: none;
+  }
+
+  .leading::slotted(*) {
+    color: var(--_leading-color);
+  }
+
+  .trailing::slotted(*) {
     color: var(--_trailing-color);
   }
 
-  ::slotted(md-check-box), ::slotted(md-radio-button), ::slotted(md-switch) {
+  ::slotted(md-check-box),
+  ::slotted(md-radio-button),
+  ::slotted(md-switch) {
     pointer-events: none;
   }
+
+  ::slotted(md-avatar) {
+    --_size: 40;
+  }
+
+  ::slotted(img) {
+    width: 56px !important;
+    height: 56px !important;
+  }
 }
 
-:host([has-leading]) {
+:host([leading]) {
   .leading {
-    display: flex;
+    display: inline-flex;
   }
 }
 
-:host([has-trailing]) {
+:host([trailing]) {
   .trailing {
-    display: flex;
+    display: inline-flex;
   }
 }
 
-:host([non-activatable]) {
-  cursor: auto;
+:host([non-interactive]) {
+  .body {
+    cursor: auto;
+  }
 }
 
-:host([top-align]) {
-  align-items: flex-start;
+:host([top]) {
+  #control,
+  .split,
+  .body {
+    align-items: flex-start;
+  }
 }
 
-:host([split-button]) {
-  ::slotted(md-check-box), ::slotted(md-radio-button), ::slotted(md-switch) {
+:host([split]) {
+  ::slotted(md-check-box),
+  ::slotted(md-radio-button),
+  ::slotted(md-switch) {
     pointer-events: all;
   }
 }
 
-:host([large-leading]) {
-  padding: 12px 16px 12px 0;
-  .leading {
-    ::slotted(img) {
-      width: 100% !important;
-      height: 64px !important;
-    }
+:host([large]) {
+  .body {
+    padding: 12px 16px 12px 0;
+  }
+  ::slotted(img) {
+    height: 64px !important;
   }
 }
 

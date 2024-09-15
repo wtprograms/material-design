@@ -1,34 +1,36 @@
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { html, LitElement, PropertyValues } from 'lit';
 import {
-  mixinActivatable,
-  mixinAttachable,
-  mixinDisabled,
-  mixinHoverable,
-} from '../../common';
+  filter,
+  map,
+  Observable,
+} from 'rxjs';
+import { property$ } from '../../common/lit/property$.decorator';
+import { attribute, cssProperty, mixinAttachable } from '../../common';
+import { filterAnyEvent } from '../../common/rxjs/operators/filter-any-event';
 
 export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
 
-const base = mixinDisabled(
-  mixinHoverable(mixinActivatable(mixinAttachable(LitElement)))
-);
+const base = mixinAttachable(LitElement);
 
 @customElement('md-elevation')
 export class MdElevationElement extends base {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'is-hovering' })
-  isHovering = false;
-
-  @property({ type: Boolean, reflect: true, attribute: 'is-activated' })
-  isActivated = false;
-
-  @property({ type: Boolean, reflect: true, attribute: 'is-dragging' })
-  isDragging = false;
-
+  @property$()
   @property({ type: Number })
-  level: ElevationLevel | null = null;
+  level: ElevationLevel = 0;
+  level$!: Observable<ElevationLevel>;
+
+  @property({ type: Boolean, reflect: true })
+  dragged = false;
+
+  @property({ type: Boolean })
+  hoverable = false;
+
+  @property({ type: Boolean })
+  interactive = false;
 
   constructor() {
     super();
@@ -39,50 +41,33 @@ export class MdElevationElement extends base {
       'pointerleave',
       'pointercancel'
     );
- }
-
-  protected override updated(changedProperties: PropertyValues): void {
-    if (changedProperties.has('disabled') && this.disabled) {
-      this.isHovering = false;
-      this.isActivated = false;
-    }
-    if (changedProperties.has('level')) {
-      if (this.level !== null) {
-        this.style.setProperty('--md-comp-elevation-level', this.level + '');
-      } else {
-        this.style.removeProperty('--md-comp-elevation-level');
-      }
-    }
-    super.updated(changedProperties);
   }
 
-  protected override render(): unknown {
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.level$
+      .pipe(cssProperty(this, '--md-comp-elevation-level'))
+      .subscribe();
+    this.event$
+      .pipe(
+        filterAnyEvent('pointerenter', 'pointerleave'),
+        filter(() => this.hoverable || this.interactive),
+        map((event) => event.type === 'pointerenter'),
+        attribute(this, 'hovering')
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filterAnyEvent('pointerdown', 'pointerup'),
+        filter(() => this.interactive),
+        map((event) => event.type === 'pointerdown'),
+        attribute(this, 'activated')
+      )
+      .subscribe();
+  }
+
+  override render() {
     return html`<div class="shadow"></div>`;
-  }
-
-  override async handleControlEvent(event: Event): Promise<void> {
-    if (this.disabled) {
-      return;
-    }
-
-    if ((this.hoverable || this.activatable) && event.type === 'pointerenter') {
-      this.isHovering = true;
-    }
-    if (event.type === 'pointerleave') {
-      this.isHovering = false;
-    }
-
-    if (this.activatable && event.type === 'pointerdown') {
-      this.isActivated = true;
-    }
-    if (event.type === 'pointerup') {
-      this.isActivated = false;
-    }
-
-    if (event.type === 'pointercancel') {
-      this.isHovering = false;
-      this.isActivated = false;
-    }
   }
 }
 

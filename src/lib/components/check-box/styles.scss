@@ -1,10 +1,13 @@
 @use '../md';
 
 $tokens: (
-  'content-color': var(--md-sys-color-surface-variant-on),
-  'checked-content-color': var(--md-sys-color-primary),
-  'error-content-color': var(--md-sys-color-error),
-  'disabled-content-color': md.disabled('text')
+  'color': (
+    'content': var(--md-sys-color-surface-variant-on),
+    'unchecked': var(--md-sys-color-surface-variant-on),
+    'checked': var(--md-sys-color-primary),
+    'error': var(--md-sys-color-error),
+    'disabled': md.disabled('color')
+  )
 );
 
 :host {
@@ -12,41 +15,36 @@ $tokens: (
 }
 
 :host([checked]) {
-  --_content-color: var(--_checked-content-color);
+  --_color-content: var(--_color-checked);
 }
 
-:host([has-error]) {
-  --_content-color: var(--_error-content-color);
+:host([error]) {
+  --_color-content: var(--_color-error);
 }
 
 :host([disabled]) {
-  --_content-color: var(--_disabled-content-color);
+  --_color-content: var(--_color-disabled);
 }
 
 :host {
   flex-shrink: 0;
   cursor: pointer;
-  isolation: isolate;
   position: relative;
   border-radius: var(--md-sys-shape-full);
-  color: var(--_content-color);
-  display: flex;
+  color: var(--_color-content);
+  display: inline-flex;
   gap: 8px;
   align-items: center;
 
   .container {
     position: relative;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: inherit;
     width: 40px;
     height: 40px;
     flex-shrink: 0;
-  }
-
-  .label {
-    display: none;
   }
 
   input {
@@ -62,13 +60,13 @@ $tokens: (
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-color: var(--_color-content);
     --md-comp-ripple-transform-default: scale(0);
     --md-comp-ripple-transform-hover: scale(1);
   }
 }
 
-:host([has-label]) {
+:host([label]) {
   .label {
     display: inline;
   }

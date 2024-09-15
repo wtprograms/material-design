@@ -1,11 +1,8 @@
-<h1>
-  md-switch
-</h1>
-<md-card class="flex flex-row p-4 gap-4">
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant mb-4">
   <md-switch></md-switch>
-  <md-switch checked></md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
+  <md-switch value></md-switch>
+</div>
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
   <md-switch>
     <md-icon slot="unchecked-icon">close</md-icon>
   </md-switch>
@@ -16,33 +13,33 @@
     <md-icon slot="unchecked-icon">close</md-icon>
     <md-icon slot="checked-icon">check</md-icon>
   </md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
   <md-switch>
     <span slot="label">This is the switch's label.</span>
   </md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
-  <md-switch has-error></md-switch>
-  <md-switch has-error checked></md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
-  <md-switch has-error>
+</div>
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
+  <md-switch [error]="true"></md-switch>
+  <md-switch [error]="true" value></md-switch>
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
+  <md-switch [error]="true">
     <span slot="label">This is the switch's label.</span>
   </md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
-  <md-switch disabled></md-switch>
-  <md-switch disabled checked></md-switch>
-  <md-switch disabled>
+</div>
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
+  <md-switch [disabled]="true"></md-switch>
+  <md-switch [disabled]="true" value></md-switch>
+  <md-switch [disabled]="true">
     <md-icon slot="unchecked-icon">close</md-icon>
   </md-switch>
-  <md-switch disabled checked>
+  <md-switch [disabled]="true" value>
     <md-icon slot="checked-icon">check</md-icon>
   </md-switch>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
-  <md-switch disabled>
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
+  <md-switch [disabled]="true">
     <span slot="label">This is the switch's label.</span>
   </md-switch>
-</md-card>
+</div>

@@ -1,0 +1,28 @@
+:host {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .header {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .today {
+    padding-inline-start: 8px;
+    padding-inline-end: 8px;
+  }
+
+  md-popover {
+    --md-comp-popover-body-padding-top: 8px;
+    --md-comp-popover-body-padding-bottom: 8px;
+    border-radius: 0;
+    border-top: 1px solid var(--md-sys-color-outline);
+    width: 100%;
+    height: calc(100% - 48px);
+    inset-inline-start: 0 !important;
+  }
+}

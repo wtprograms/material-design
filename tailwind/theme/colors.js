@@ -38,5 +38,8 @@ module.exports = reduce('color', [
   'surface-inverse-on',
   'scrim',
   'outline',
-  'outline-variant'
+  'outline-variant',
+  'transparent',
+  'white',
+  'black'
 ]);

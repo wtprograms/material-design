@@ -39,7 +39,7 @@ $tokens: (
     'GRAD' 0,
     'opsz' clamp(20, var(--_size), 48);
 
-  @include md.motion;
+  @include md.motion('font-variation-settings');
 }
 
 :host([filled]) {

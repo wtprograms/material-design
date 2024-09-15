@@ -1,82 +1,80 @@
-import { LitElement, html } from 'lit';
+import '../icon';
+import '../focus-ring';
+import '../ripple';
+import { html, LitElement, PropertyValues } from 'lit';
 import {
   customElement,
   property,
+  query,
   queryAssignedElements,
+  state,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton, mixinSelectable } from '../../common';
+import { mixinButton } from '../../common';
 import { MdMenuElement } from '../menu';
 
-const base = mixinButton(mixinSelectable(LitElement));
+const base = mixinButton(LitElement);
 
 @customElement('md-menu-item')
 export class MdMenuItemElement extends base {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-leading' })
-  hasLeading = false;
-
-  @queryAssignedElements({ slot: 'leading', flatten: true })
-  private readonly _leadingSlotElements!: HTMLElement[];
-
-  @property({ type: Boolean, reflect: true, attribute: 'has-trailing' })
-  hasTrailing = false;
-
   @property({ type: Boolean, reflect: true })
-  open = false;
+  selected = false;
 
-  @queryAssignedElements({ slot: 'trailing', flatten: true })
-  private readonly _trailingSlotElements!: HTMLElement[];
+  @queryAssignedElements({ slot: 'item' })
+  private _items!: HTMLElement[];
 
-  get parentMenu(): MdMenuElement | undefined {
-    return this.parentElement instanceof MdMenuElement
-      ? this.parentElement
-      : undefined;
+  @query('md-menu')
+  private _menu!: MdMenuElement;
+
+  @state()
+  private _hasItems = false;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.addEventListener('click', this.handleActivationClick.bind(this));
   }
 
-  subMenu?: MdMenuElement;
+  protected override firstUpdated(_changedProperties: PropertyValues): void {
+    super.firstUpdated(_changedProperties);
+    this._menu.attachControl(this);
+  }
 
   protected override render(): unknown {
-    return html`
-      <md-ripple
-        for=${this.targetId}
-        activatable
-        ?disabled=${this.disabled}
-        ?external-activated=${this.open}
-      ></md-ripple>
-      <md-focus-ring
-        for=${this.targetId}
-        focus-visible
-        ?disabled=${this.disabled}
-      ></md-focus-ring>
-
-      <div class="leading">
+    return html`${this.renderAttachables()}
+      <slot name="leading"></slot>
+      ${this.renderAnchorOrButton(this.renderContent())}
+      ${this.renderTrailing()}
+      <md-menu placement="right-start" offset="0" trigger="manual">
         <slot
-          name="leading"
-          @slotchange=${this.onLeadingTrailingSlotChange}
+          name="item"
+          @slotchange=${() => (this._hasItems = !!this._items.length)}
         ></slot>
-      </div>
-      ${this.renderAnchorOrButton()}
-      <div class="trailing">
-        <slot
-          name="trailing"
-          @slotchange=${this.onLeadingTrailingSlotChange}
-        ></slot>
-      </div>`;
+      </md-menu>`;
   }
 
-  private onLeadingTrailingSlotChange() {
-    this.hasLeading = this._leadingSlotElements.length > 0;
-    this.hasTrailing = this._trailingSlotElements.length > 0;
+  private renderTrailing() {
+    return this._hasItems
+      ? html`<md-icon>arrow_right</md-icon>`
+      : html`<slot name="trailing"></slot>`;
   }
 
-  override handleActivationClick(event: MouseEvent): boolean {
-    const result = super.handleActivationClick(event);
-    if (!this.subMenu) {
-      this.dispatchEvent(new Event('close-popover', { bubbles: true }));
+  private renderContent() {
+    return html`<slot></slot>`;
+  }
+
+  private renderAttachables() {
+    return html` <md-focus-ring for="control" focus-visible></md-focus-ring>
+      <md-ripple for="control" interactive></md-ripple>`;
+  }
+
+  private handleActivationClick(): void {
+    if (this._items.length) {
+      this._menu.openMenu();
+      return;
     }
-    return result;
+    this.dispatchEvent(new Event('close-popover', { bubbles: true }));
   }
 }
 

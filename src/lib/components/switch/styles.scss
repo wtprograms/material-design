@@ -24,13 +24,13 @@ $tokens: (
   'disabled': (
     'track': (
       'color': var(--md-sys-color-surface-container-highest),
-      'outline-color': md.disabled('outline')
+      'outline-color': md.disabled('border-color')
     ),
     'handle': (
-      'color': md.disabled('outline'),
+      'color': md.disabled('border-color'),
       'icon-color': var(--md-sys-color-surface)
     ),
-    'label-color': md.disabled('text')
+    'label-color': md.disabled('color')
   ),
   'checked': (
     'track': (
@@ -56,13 +56,13 @@ $tokens: (
     'disabled': (
       'track': (
         'color': var(--md-sys-color-surface-container-highest),
-        'outline-color': md.disabled('outline')
+        'outline-color': md.disabled('border-color')
       ),
       'handle': (
-        'color': md.disabled('outline'),
+        'color': md.disabled('border-color'),
         'icon-color': var(--md-sys-color-surface)
       ),
-      'label-color': md.disabled('text')
+      'label-color': md.disabled('color')
       )
   )
 );
@@ -71,7 +71,7 @@ $tokens: (
   @include md.declare-component-tokens($tokens, 'switch');
 }
 
-:host([has-error]) {
+:host([error]) {
   @include md.set-properties(map-get($tokens, 'error'), 'switch-error');
 }
 
@@ -83,7 +83,7 @@ $tokens: (
   @include md.set-properties(map-get($tokens, 'checked'), 'switch-checked');
 }
 
-:host([checked][has-error]) {
+:host([checked][error]) {
   $checked: map-get($tokens, 'checked');
   @include md.set-properties(map-get($checked, 'error'), 'switch-checked-error');
 }
@@ -96,14 +96,14 @@ $tokens: (
 :host {
   position: relative;
   border-radius: var(--md-sys-shape-full);
-  display: flex;
+  display: inline-flex;
   gap: 8px;
   align-items: center;
 
   .track {
     width: 52px;
     height: 32px;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     background-color: var(--_track-color);
@@ -115,7 +115,7 @@ $tokens: (
 
   .container {
     position: absolute;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: inherit;
@@ -127,7 +127,7 @@ $tokens: (
   .handle {
     width: 16px;
     height: 16px;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     color: var(--_handle-icon-color);
@@ -164,7 +164,7 @@ $tokens: (
   }
 }
 
-:host([has-label]) {
+:host([label]) {
   .label {
     display: inline;
   }
@@ -172,13 +172,13 @@ $tokens: (
 
 :host(:not([checked])) {
   .container {
-    left: -4px;
+    inset-inline-start: -4px;
   }
 }
 
 :host([checked]) {
   .container {
-    left: 16px;
+    inset-inline-start: 16px;
   }
   .handle {
     height: 24px;
@@ -186,9 +186,9 @@ $tokens: (
   }
 }
 
-:host(:not([checked])[has-unchecked-icon]) {
+:host(:not([checked])[unchecked-icon]) {
   .unchecked-icon {
-    display: flex;
+    display: inline-flex;
   }
   .handle {
     height: 24px;
@@ -196,13 +196,13 @@ $tokens: (
   }
 }
 
-:host([checked][has-checked-icon]) {
+:host([checked][checked-icon]) {
   .checked-icon {
-    display: flex;
+    display: inline-flex;
   }
 }
 
-:host(:active), :host(:active:not([checked])[has-unchecked-icon]) {
+:host(:active), :host(:active:not([checked])[unchecked-icon]) {
   .handle {
     height: 28px;
     width: 28px;

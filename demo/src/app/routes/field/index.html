@@ -1,37 +1,42 @@
-<h1>
-  md-avatar
-</h1>
-<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
-  <md-field [variant]="variant">
-    Control
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-button (click)="populated.set(!populated())">
+    Toggle populated
+  </md-button>
+  <md-button (click)="isOutlined.set(!isOutlined())">
+    Toggle variant
+  </md-button>
+  <md-button (click)="isError.set(!isError())">
+    Toggle error
+  </md-button>
+  <md-button (click)="disabled.set(!disabled())">
+    Toggle disabled
+  </md-button>
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-field [attr.populated]="populated() || null" [variant]="variant()" [errorText]="errorText()" prefix="$"
+    suffix=".00" [disabled]="disabled()">
+    Field content
   </md-field>
-  <md-field [variant]="variant" populated>
-    Control
-  </md-field>
-  <md-field [variant]="variant" label="Label text">
-    Control
-  </md-field>
-  <md-field [variant]="variant" label="Label text" populated>
-    Control
-  </md-field>
-  <md-field [variant]="variant" has-leading has-trailing>
+  <md-field [attr.populated]="populated() || null" [variant]="variant()" [errorText]="errorText()" prefix="$"
+    suffix=".00" [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
-    Control
+    Field content
     <md-icon slot="trailing">home</md-icon>
   </md-field>
-  <md-field [variant]="variant" has-leading has-trailing label="Label text">
+  <md-field label="Label" [attr.populated]="populated() || null" [variant]="variant()" [errorText]="errorText()"
+    prefix="$" suffix=".00" [disabled]="disabled()">
+    Field content
+  </md-field>
+  <md-field label="Label" [attr.populated]="populated() || null" [variant]="variant()" [errorText]="errorText()"
+    counter="12/30" prefix="$" suffix=".00" [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
-    Control
+    Field content
     <md-icon slot="trailing">home</md-icon>
   </md-field>
-  <md-field [variant]="variant" has-leading has-trailing supporting-text="This field is required." counter-text="3/10">
+  <md-field label="Label" [attr.populated]="populated() || null" [variant]="variant()" [errorText]="errorText()"
+    supportingText="This is the supporting text." prefix="$" suffix=".00" [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
-    Control
+    10000
     <md-icon slot="trailing">home</md-icon>
   </md-field>
-  <md-field [variant]="variant" has-leading has-trailing populated error-text="This field is required.">
-    <md-icon slot="leading">home</md-icon>
-    Control
-    <md-icon slot="trailing">home</md-icon>
-  </md-field>
-</md-card>
+</div>

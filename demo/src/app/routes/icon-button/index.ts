@@ -1,21 +1,19 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
-import { IconButtonVariant } from '../../../../../dist';
-import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 
 @Component({
   templateUrl: './index.html',
   standalone: true,
-  imports: [CommonModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  host: {
-    class: 'tw flex flex-col gap-4'
-  }
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export default class Page {
-  readonly variants: IconButtonVariant[] = [
-    'filled',
-    'tonal',
-    'outlined',
-    'standard'
-  ]
+  readonly variants: string[] = ['filled' , 'tonal' , 'outlined' , 'standard'];
+  readonly variant = signal<string>('filled');
+  readonly disabled = signal(false);
+  readonly selected = signal(false);
+  readonly busy = signal(false);
+
+  nextVariant() {
+    const currentIndex = this.variants.indexOf(this.variant());
+    this.variant.set(this.variants[(currentIndex + 1) % this.variants.length]);
+  }
 }

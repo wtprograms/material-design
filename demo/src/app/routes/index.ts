@@ -14,68 +14,48 @@ export default [
     loadComponent: () => import('./button'),
   },
   {
-    path: 'breadcrumb',
-    loadComponent: () => import('./breadcrumb'),
+    path: 'calendar-picker',
+    loadComponent: () => import('./calendar-picker'),
+  },
+  {
+    path: 'calendar-month-year-picker',
+    loadComponent: () => import('./calendar-month-year-picker'),
+  },
+  {
+    path: 'calendar-month-year-list-picker',
+    loadComponent: () => import('./calendar-month-year-list-picker'),
   },
   {
     path: 'check-box',
     loadComponent: () => import('./check-box'),
   },
   {
-    path: 'card',
-    loadComponent: () => import('./card'),
+    path: 'date-picker',
+    loadComponent: () => import('./date-picker'),
   },
   {
-    path: 'chip',
-    loadComponent: () => import('./chip'),
+    path: 'date-picker-field',
+    loadComponent: () => import('./date-picker-field'),
   },
   {
-    path: 'colors',
-    loadComponent: () => import('./colors'),
-  },
-  {
-    path: 'divider',
-    loadComponent: () => import('./divider'),
-  },
-  {
-    path: 'dialog',
-    loadComponent: () => import('./dialog'),
+    path: 'dropdown-field',
+    loadComponent: () => import('./dropdown-field'),
   },
   {
     path: 'elevation',
     loadComponent: () => import('./elevation'),
   },
   {
-    path: 'fab',
-    loadComponent: () => import('./fab'),
+    path: 'field',
+    loadComponent: () => import('./field'),
   },
   {
     path: 'focus-ring',
     loadComponent: () => import('./focus-ring'),
   },
   {
-    path: 'field',
-    loadComponent: () => import('./field'),
-  },
-  {
-    path: 'icon',
-    loadComponent: () => import('./icon'),
-  },
-  {
-    path: 'icon-button',
-    loadComponent: () => import('./icon-button'),
-  },
-  {
-    path: 'list',
-    loadComponent: () => import('./list'),
-  },
-  {
     path: 'list-item',
     loadComponent: () => import('./list-item'),
-  },
-  {
-    path: 'navigation',
-    loadComponent: () => import('./navigation'),
   },
   {
     path: 'menu',
@@ -86,75 +66,35 @@ export default [
     loadComponent: () => import('./menu-item'),
   },
   {
-    path: 'navigation-item',
-    loadComponent: () => import('./navigation-item'),
-  },
-  {
-    path: 'navigation-headline',
-    loadComponent: () => import('./navigation-headline'),
+    path: 'popover',
+    loadComponent: () => import('./popover'),
   },
   {
     path: 'progress-indicator',
     loadComponent: () => import('./progress-indicator'),
   },
   {
-    path: 'ripple',
-    loadComponent: () => import('./ripple'),
+    path: 'icon',
+    loadComponent: () => import('./icon'),
+  },
+  {
+    path: 'icon-button',
+    loadComponent: () => import('./icon-button'),
   },
   {
     path: 'radio-button',
     loadComponent: () => import('./radio-button'),
   },
   {
-    path: 'segmented-button',
-    loadComponent: () => import('./segmented-button'),
-  },
-  {
-    path: 'search',
-    loadComponent: () => import('./search'),
-  },
-  {
-    path: 'search-view',
-    loadComponent: () => import('./search-view'),
-  },
-  {
-    path: 'segmented-button-set',
-    loadComponent: () => import('./segmented-button-set'),
+    path: 'ripple',
+    loadComponent: () => import('./ripple'),
   },
   {
     path: 'switch',
     loadComponent: () => import('./switch'),
   },
   {
-    path: 'snack-bar',
-    loadComponent: () => import('./snack-bar'),
-  },
-  {
-    path: 'sheet',
-    loadComponent: () => import('./sheet'),
-  },
-  {
-    path: 'tab',
-    loadComponent: () => import('./tab'),
-  },
-  {
-    path: 'tabs',
-    loadComponent: () => import('./tabs'),
-  },
-  {
-    path: 'tooltip',
-    loadComponent: () => import('./tooltip'),
-  },
-  {
-    path: 'top-app-bar',
-    loadComponent: () => import('./top-app-bar'),
-  },
-  {
     path: 'text-field',
     loadComponent: () => import('./text-field'),
-  },
-  {
-    path: 'typescale',
-    loadComponent: () => import('./typescale'),
   },
 ] satisfies Routes;

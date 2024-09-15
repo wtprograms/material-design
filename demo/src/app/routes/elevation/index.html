@@ -1,34 +1,37 @@
-<h1>
-  md-elevation
-</h1>
-<md-card class="flex flex-row p-4 gap-4">
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="0"></md-elevation>
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <div id="zero" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="zero" level="0"></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="1"></md-elevation>
+  <div id="one" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="one" level="1"></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="2"></md-elevation>
+  <div id="two" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="two" level="2"></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="3"></md-elevation>
+  <div id="three" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="three" level="3"></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="4"></md-elevation>
+  <div id="four" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="four" level="4"></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation level="5"></md-elevation>
+  <div id="five" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="five" level="5"></md-elevation>
   </div>
-</md-card>
-<md-card class="flex flex-row p-4 gap-4">
-  <div id="div1" class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation for="div1"></md-elevation>
+</div>
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <div id="_zero" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="_zero" level="0" hoverable></md-elevation>
   </div>
-  <div id="div2" class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation for="div2" activatable></md-elevation>
+  <div id="_one" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="_one" level="1" hoverable></md-elevation>
   </div>
-  <div class="w-12 h-12 border border-solid border-secondary relative">
-    <md-elevation is-dragging></md-elevation>
+</div>
+
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  <div id="__zero" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="__zero" level="0" interactive></md-elevation>
   </div>
-</md-card>
+  <div id="__one" class="h-6 w-6 border border-solid border-outline relative">
+    <md-elevation for="__one" level="1" interactive></md-elevation>
+  </div>
+</div>

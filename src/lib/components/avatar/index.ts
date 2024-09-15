@@ -1,10 +1,18 @@
-import { LitElement, html, nothing } from 'lit';
+import '../elevation';
+import '../focus-ring';
+import '../ripple';
+import '../progress-indicator';
+import { html, LitElement, nothing } from 'lit';
 import {
   customElement,
   property,
+  queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinActivatable, mixinButton } from '../../common';
+import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
+import { attribute, cssProperty, mixinButton, observe, property$ } from '../../common';
+import { map, Observable } from 'rxjs';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 export type AvatarPalette =
   | 'surface'
@@ -13,7 +21,7 @@ export type AvatarPalette =
   | 'tertiary'
   | 'plain';
 
-const base = mixinButton(mixinActivatable(LitElement));
+const base = mixinButton(mixinParentActivation(LitElement));
 
 @customElement('md-avatar')
 export class MdAvatarElement extends base {
@@ -22,63 +30,47 @@ export class MdAvatarElement extends base {
   @property({ type: String, reflect: true })
   palette: AvatarPalette = 'primary';
 
+  @property({ type: Number })
+  @property$()
+  size: number | null = null;
+  size$!: Observable<number | null>;
+
   @property({ type: String })
   src: string | null = null;
 
-  @property({ type: String, attribute: 'full-name' })
-  fullName: string | null = null;
+  @property({ type: String })
+  @property$()
+  name: string | null = null;
+  name$!: Observable<string | null>;
 
-  @property({ type: Number, reflect: true })
-  get size(): number | null {
-    return this._size;
-  }
-  set size(value: number | null) {
-    this._size = value;
-    this.updateIconSize();
-  }
-  private _size: number | null = null;
+  @property({ type: Boolean, reflect: true })
+  interactive = false;
 
-  get initial() {
-    if (!this.fullName) {
-      return '';
-    }
-    return this.fullName
-      .split(' ')
-      .map((word) => word[0].toUpperCase())
-      .join('')[0];
-  }
+  private readonly _initial$ = this.name$.pipe(
+    map((name) => (name ? name[0].toUpperCase() : ''))
+  );
 
-  override connectedCallback() {
+  override connectedCallback(): void {
     super.connectedCallback();
-    this.updateIconSize();
+    this.size$.pipe(cssProperty(this, '--md-comp-avatar-size')).subscribe();
   }
 
   protected override render(): unknown {
-    return this.activatable ? html`
-      <md-ripple
-        for=${this.targetId}
-        activatable
-        ?disabled=${this.disabled}
-      ></md-ripple>
-      <md-focus-ring
-        for=${this.targetId}
-        focus-visible
-        ?disabled=${this.disabled}
-      ></md-focus-ring>
-      ${this.renderAnchorOrButton()}` : html`${this.renderContent()}`;
+    return this.interactive
+      ? html`${this.renderAttachables()}
+        ${this.renderAnchorOrButton(this.renderContent())}`
+      : html`${this.renderContent()}`;
   }
 
-  override renderContent() {
-    const content = this.src ? html`<img src=${this.src} alt=${this.fullName ?? nothing} />` : this.initial;
-    return html`${content}`;
+  private renderContent() {
+    return this.src
+      ? html`<img src=${this.src} alt=${ifDefined(this.name)} />`
+      : html`${observe(this._initial$)}`;
   }
 
-  private updateIconSize() {
-    if (this._size !== null) {
-      this.style.setProperty('--md-comp-avatar-size', `${this._size}px`);
-    } else {
-      this.style.removeProperty('--md-comp-avatar-size');
-    }
+  private renderAttachables() {
+    return html` <md-focus-ring for="control" focus-visible></md-focus-ring>
+      <md-ripple for="control" interactive></md-ripple>`;
   }
 }
 

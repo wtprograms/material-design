@@ -1,47 +1,46 @@
-<h1>
-  md-text-field
-</h1>
-<md-card class="flex flex-col p-4 gap-4">
-  <form [formGroup]="formGroup">
-    <md-text-field formControlName="value" label="Label text">
-    </md-text-field>
-  </form>
-</md-card>
-
-<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
-  <md-text-field [variant]="variant" required>
+<div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-button (click)="isOutlined.set(!isOutlined())">
+    Toggle variant
+  </md-button>
+  <md-button (click)="isError.set(!isError())">
+    Toggle error
+  </md-button>
+  <md-button (click)="disabled.set(!disabled())">
+    Toggle disabled
+  </md-button>
+</div>
+<div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant mb-4">
+  <md-text-field [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00" [disabled]="disabled()">
   </md-text-field>
-  <md-text-field [variant]="variant" label="Label text">
-  </md-text-field>
-  <md-text-field [variant]="variant">
+  <md-text-field [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00" [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-  <md-text-field [variant]="variant" label="Label text">
+  <md-text-field label="Label" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
+  </md-text-field>
+  <md-text-field label="Label" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-  <md-text-field [variant]="variant" supporting-text="This field is required." maxlength="30">
+  <md-text-field label="Label" [variant]="variant()" [errorText]="errorText()"
+    supportingText="This is the supporting text." prefix="$" suffix=".00" counter maxLength="30"
+    [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-</md-card>
-
-<md-card *ngFor="let variant of variants" class="flex flex-col p-4 gap-4">
-  <md-text-field type="textarea" [variant]="variant" required>
-  </md-text-field>
-  <md-text-field type="textarea" [variant]="variant" label="Label text">
-  </md-text-field>
-  <md-text-field type="textarea" [variant]="variant">
+  <md-text-field label="Label" type="textarea" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
   </md-text-field>
-  <md-text-field type="textarea" [variant]="variant" label="Label text">
+  <md-text-field label="Label" type="textarea" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>
+    <md-list-item slot="item" value="one">One</md-list-item>
+    <md-list-item slot="item" value="two">Two</md-list-item>
+    <md-list-item slot="item" value="three">Three</md-list-item>
   </md-text-field>
-  <md-text-field type="textarea" [variant]="variant" supporting-text="This field is required." maxlength="30">
-    <md-icon slot="leading">home</md-icon>
-    <md-icon slot="trailing">home</md-icon>
-  </md-text-field>
-</md-card>
+</div>

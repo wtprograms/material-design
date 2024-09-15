@@ -1,46 +1,96 @@
-import { html, LitElement } from 'lit';
-import { customElement, property, queryAssignedElements } from 'lit/decorators.js';
+import { html, LitElement, nothing } from 'lit';
+import {
+  customElement,
+  property,
+  queryAssignedElements,
+} from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinCheck } from '../../common';
+import { combineLatest, map, Observable, tap } from 'rxjs';
+import { attribute } from '../../common/rxjs/operators/attribute';
+import { observe } from '../../common/lit/observable-directive';
+import { property$ } from '../../common/lit/property$.decorator';
+import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
 
-const base = mixinCheck(LitElement);
+const base = mixinParentActivation(LitElement);
 
 @customElement('md-switch')
 export class MdSwitchElement extends base {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-unchecked-icon' })
-  hasUncheckedIcon = false;
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  value = false;
+  value$!: Observable<boolean>;
 
-  @queryAssignedElements({ slot: 'unchecked-icon', flatten: true })
-  private _uncheckedIconSlots!: HTMLElement[];
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-checked-icon' })
-  hasCheckedIcon = false;
+  @property({ type: Boolean, reflect: true })
+  error = false;
 
-  @queryAssignedElements({ slot: 'checked-icon', flatten: true })
-  private _checkedIconSlots!: HTMLElement[];
+  @property({ type: String })
+  label: string | null = null;
+
+  @queryAssignedElements({ slot: 'unchecked-icon' })
+  private _uncheckedIconElements!: HTMLElement[];
+
+  @queryAssignedElements({ slot: 'checked-icon' })
+  private _checkedIconElements!: HTMLElement[];
+
+  @property({ type: Boolean, reflect: true, attribute: 'unchecked-icon' })
+  uncheckedIcon = false;
+
+  @property({ type: Boolean, reflect: true, attribute: 'checked-icon' })
+  checkedIcon = false;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.value$
+      .pipe(
+        attribute(this, 'checked'),
+        tap(() => this.dispatchEvent(new Event('change')))
+      )
+      .subscribe();  }
 
   override render() {
     return html`<div class="track">
         <div class="container">
-          ${this.renderFocusRing()} ${this.renderRipple()}
+          <md-ripple for="control" interactive></md-ripple>
+          <md-focus-ring for="control" focus-visible></md-focus-ring>
           <div class="handle">
             <span class="unchecked-icon">
-              <slot name="unchecked-icon" @slotchange=${this.updateIconSlots}></slot>
+              <slot
+                name="unchecked-icon"
+                @slotchange=${() =>
+                  (this.uncheckedIcon = !!this._uncheckedIconElements.length)}
+              ></slot>
             </span>
             <span class="checked-icon">
-              <slot name="checked-icon" @slotchange=${this.updateIconSlots}></slot>
+              <slot
+                name="checked-icon"
+                @slotchange=${() =>
+                  (this.checkedIcon = !!this._checkedIconElements.length)}
+              ></slot>
             </span>
           </div>
         </div>
       </div>
-      ${this.renderLabel()} ${this.renderInput('checkbox')}`;
+      <input
+        id="control"
+        type="checkbox"
+        ?disabled="${this.disabled}"
+        ?checked="${this.value}"
+        @change=${this.onChange}
+      />
+      ${this.label}`;
   }
 
-  private updateIconSlots(): void {
-    this.hasUncheckedIcon = this._uncheckedIconSlots.length > 0;
-    this.hasCheckedIcon = this._checkedIconSlots.length > 0;
+  onChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input?.checked === this.value) {
+      return;
+    }
+    this.value = input?.checked ?? false;
   }
 }
 

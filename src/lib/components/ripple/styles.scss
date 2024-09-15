@@ -14,7 +14,7 @@ $tokens: (
 :host {
   @include md.declare-component-tokens($tokens, 'ripple');
 
-  display: flex;
+  display: inline-flex;
   margin: auto;
   pointer-events: none;
 }
@@ -56,7 +56,7 @@ $tokens: (
   }
 }
 
-:host([is-hovering]), :host([external-activated]) {
+:host([hovering]) {
   .surface::before {
     background-color: var(--_color);
     opacity: var(--md-sys-state-hover);
@@ -64,7 +64,7 @@ $tokens: (
   }
 }
 
-:host([is-activated]), :host([external-activated]) {
+:host([activated]) {
   .surface::after {
     opacity: var(--md-sys-state-active);
     transition-duration: 105ms;

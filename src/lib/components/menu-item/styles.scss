@@ -1,89 +1,126 @@
 @use '../md';
 
 $tokens: (
-  'container-color': transparent,
-  'content-color': var(--md-sys-color-surface-on),
-  'trailing-color': var(--md-sys-color-surface-variant-on),
+  'opacity': 1,
+  'background-color': transparent,
+  'color': var(--md-sys-color-surface-variant-on),
   'disabled': (
-    'container-color': transparent,
-    'content-color': md.disabled('text'),
-    'trailing-color': md.disabled('text')
+    'color': md.disabled('color'),
   ),
   'selected': (
-    'container-color': var(--md-sys-color-secondary-container),
-    'content-color': var(--md-sys-color-secondary-container-on),
-    'trailing-color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'color': var(--md-sys-color-secondary-container-on),
     'disabled': (
-      'container-color': md.disabled('container'),
-      'content-color': md.disabled('text'),
-      'trailing-color': md.disabled('text')
+      'background-color': md.disabled('background-color'),
+      'color': md.disabled('color')
     )
   )
 );
 
 :host {
-  @include md.declare-component-tokens($tokens, 'menu-item');
+  @include md.declare-component-tokens($tokens, 'button');
 }
 
 :host([disabled]) {
-  @include md.set-properties(map-get($tokens, 'disabled'), 'menu-item-disabled');
+  @include md.set-properties(map-get($tokens, 'disabled'), 'button-disabled');
 }
 
 :host([selected]) {
-  @include md.set-properties(map-get($tokens, 'selected'), 'menu-item-selected');
+  @include md.set-properties(map-get($tokens, 'selected'), 'button-selected');
 }
 
 :host([selected][disabled]) {
-  @include md.set-properties(map-get(map-get($tokens, 'selected'), 'disabled'), 'menu-item-selected-disabled');
+  @include md.set-properties(map-get(map-get($tokens, 'selected'), 'disabled'), 'button-selected-disabled');
 }
 
 :host {
-  padding: 0 8px;
+  --__color: var(--_color);
   position: relative;
+  display: inline-flex;
   height: 48px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-shrink: 0;
-  text-wrap: nowrap;
+  gap: 0;
   cursor: pointer;
-  color: var(--_content-color);
+  @include md.motion('opacity, background-color, color, border-color');
+  flex-shrink: 0;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  padding-inline-start: 12px;
+  padding-inline-end: 12px;
+  align-items: center;
+  border: var(--_border);
   @include md.typescale('label', 'large');
-  isolation: isolate;
-  background-color: var(--_container-color);
 
-  @include md.button {
+  button, a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
     color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    text-align: left;
+    padding: 0;
+    margin: 0;
+    gap: 12px;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+
+    @include md.motion('opacity');
   }
 
-  .leading {
-    display: none;
-    z-index: -1;
-
-    ::slotted(img) {
-      width: 24px !important;
-      height: 24px !important;
-    }
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
 
-  .trailing {
-    color: var(--_trailing-color);
+  slot[name='trailing'], md-icon {
+    margin-inline-start: auto;
+  }
+
+  md-icon {
     z-index: -1;
-    @include md.typescale('label', 'small');
+  }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-size: 18;
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_content-color);
+    --md-comp-ripple-color: var(--__color);
+  }
+
+  .progress-indicator {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  md-progress-indicator {
+    --md-comp-progress-indicator-circular-size: 24;
+    --md-comp-progress-indicator-circular-indicator-width: 8;
+    --md-comp-progress-indicator-indicator-color: var(--__color);
   }
 }
 
-:host([has-leading]) {
-  .leading {
-    display: flex;
+:host([leading]) {
+  --_padding-start: var(--_padding-addon);
+}
+
+:host([trailing]) {
+  --_padding-end: var(--_padding-addon);
+}
+
+:host([busy]:not([disabled])) {
+  pointer-events: none;
+  opacity: 0.5;
+
+  #button {
+    opacity: 0;
   }
 }
+
+@include md.disabled-component;

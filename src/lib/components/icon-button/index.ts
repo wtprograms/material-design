@@ -1,15 +1,20 @@
-import { LitElement, html } from 'lit';
+import '../icon';
+import '../focus-ring';
+import '../ripple';
+import '../progress-indicator';
+import { html, LitElement } from 'lit';
 import {
   customElement,
   property,
-  queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton, mixinSelectable } from '../../common';
+import { mixinBusyButton } from '../../common/mixins/mixin-busy-button';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
 
 export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 
-const base = mixinButton(mixinSelectable(LitElement));
+const base = mixinBusyButton(mixinParentActivation(LitElement));
 
 @customElement('md-icon-button')
 export class MdIconButtonElement extends base {
@@ -18,34 +23,38 @@ export class MdIconButtonElement extends base {
   @property({ type: String, reflect: true })
   variant: IconButtonVariant = 'standard';
 
-  @property({ type: Boolean, reflect: true, attribute: 'has-icon' })
-  hasIcon = false;
+  @property({ type: Boolean, reflect: true })
+  custom = false;
 
-  @queryAssignedElements({ slot: 'icon', flatten: true })
-  private readonly iconSlotElements!: HTMLElement[];
+  @property({ type: Boolean, reflect: true })
+  selected = false;
+
+  @property({ type: Boolean, attribute: 'badge-dot' })
+  badgeDot = false;
+
+  @property({ type: Number, attribute: 'badge-number' })
+  badgeNumber: number | null = null;
 
   protected override render(): unknown {
-    return html`
-      <md-ripple
-        for=${this.targetId}
-        activatable
-        ?disabled=${this.disabled}
-      ></md-ripple>
-      <md-focus-ring
-        for=${this.targetId}
-        focus-visible
-        ?disabled=${this.disabled}
-      ></md-focus-ring>
-      ${this.renderAnchorOrButton()}`;
+    return html`${this.renderAttachables()}
+    ${this.renderAnchorOrButton(this.renderContent())}
+    ${this.renderProgressIndicator()}`;
   }
 
-  override renderContent() {
-    return html` <slot name="icon" @slotchange=${this.onIconSlotChange}></slot>
-      <slot></slot>`;
+  private renderContent() {
+    return this.custom
+      ? html`<slot></slot>`
+      : html`<md-icon
+          ?badge-dot=${this.badgeDot}
+          badge-number=${ifDefined(this.badgeNumber)}
+          ?filled=${this.selected}
+          ><slot></slot
+        ></md-icon>`;
   }
 
-  private onIconSlotChange() {
-    this.hasIcon = this.iconSlotElements.length > 0;
+  private renderAttachables() {
+    return html` <md-focus-ring for="control" focus-visible></md-focus-ring>
+      <md-ripple for="control" interactive></md-ripple>`;
   }
 }
 

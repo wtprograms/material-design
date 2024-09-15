@@ -1,13 +1,11 @@
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { html, LitElement, PropertyValues } from 'lit';
-import {
-  EASING,
-  mixinActivatable,
-  mixinAttachable,
-  mixinDisabled,
-  mixinHoverable,
-} from '../../common';
+import { attribute, EASING, mixinAttachable } from '../../common';
+import { filter, map, switchMap, tap } from 'rxjs';
+import { isEvent } from '../../common/events/is-event';
+import { tapIf } from '../../common/rxjs/operators/tap-if';
+import { filterEvent } from '../../common/rxjs/operators/filter-event';
 
 const PRESS_GROW_MS = 450;
 const MINIMUM_PRESS_MS = 225;
@@ -69,32 +67,28 @@ enum State {
  */
 const TOUCH_DELAY_MS = 150;
 
-const base = mixinDisabled(
-  mixinHoverable(mixinActivatable(mixinAttachable(LitElement)))
-);
+const base = mixinAttachable(LitElement);
 
 @customElement('md-ripple')
 export class MdRippleElement extends base {
   static override styles = [styles];
 
-  @property({ type: Boolean, reflect: true, attribute: 'is-hovering' })
-  isHovering = false;
+  @property({ type: Boolean, reflect: true })
+  activated = false;
 
-  @property({ type: Boolean, reflect: true, attribute: 'is-activated' })
-  isActivated = false;
+  @property({ type: Boolean })
+  interactive = false;
 
-  @property({ type: Boolean, reflect: true, attribute: 'external-activated' })
-  externalActivated = false;
+  @property({ type: Boolean })
+  hoverable = false;
 
   @query('.surface')
-  private readonly mdRoot!: HTMLElement | null;
-  private rippleSize = '';
-  private rippleScale = '';
-  private initialSize = 0;
-  private growAnimation?: Animation;
-  private state = State.INACTIVE;
-  private rippleStartEvent?: PointerEvent;
-  private checkBoundsAfterContextMenu = false;
+  private readonly _surface!: HTMLElement | null;
+
+  private _growAnimation?: Animation;
+  private _state = State.INACTIVE;
+  private _rippleStartEvent?: PointerEvent;
+  private _checkBoundsAfterContextMenu = false;
 
   constructor() {
     super();
@@ -109,136 +103,128 @@ export class MdRippleElement extends base {
     );
   }
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.event$
+      .pipe(
+        filter(
+          (x) =>
+            isEvent<PointerEvent>(x, 'pointerenter') &&
+            this.shouldReactToEvent(x) &&
+            (this.hoverable || this.interactive)
+        ),
+        map(() => true),
+        attribute(this, 'hovering')
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filter(
+          (x) =>
+            isEvent<PointerEvent>(x, 'pointerleave') &&
+            this.shouldReactToEvent(x)
+        ),
+        map(() => false),
+        attribute(this, 'hovering'),
+        filter(() => this._state === State.INACTIVE),
+        tap(() => this.endPressAnimation())
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filter(
+          (x) =>
+            isEvent<PointerEvent>(x, 'pointerup') && this.shouldReactToEvent(x)
+        ),
+        tapIf(
+          () => this._state === State.HOLDING,
+          () => (this._state = State.WAITING_FOR_CLICK)
+        ),
+        tapIf(
+          () => this._state === State.TOUCH_DELAY,
+          () => {
+            this._state = State.WAITING_FOR_CLICK;
+            this.startPressAnimation(this._rippleStartEvent);
+          }
+        )
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filterEvent<PointerEvent>('pointerdown'),
+        filter((x) => this.shouldReactToEvent(x) && this.interactive),
+        tap((x) => (this._rippleStartEvent = x)),
+        filter((x) => {
+          if (!this.isTouch(x)) {
+            this._state = State.WAITING_FOR_CLICK;
+            this.startPressAnimation(x);
+            return false;
+          }
+          return true;
+        }),
+        filter((x) => !this._checkBoundsAfterContextMenu || this.inBounds(x)),
+        switchMap(async (x) => {
+          this._checkBoundsAfterContextMenu = false;
+          this._state = State.TOUCH_DELAY;
+          await new Promise((resolve) => {
+            setTimeout(resolve, TOUCH_DELAY_MS);
+          });
+          return x;
+        }),
+        filter(() => this._state === State.TOUCH_DELAY),
+        tap((x) => {
+          this._state = State.HOLDING;
+          this.startPressAnimation(x);
+        })
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filterEvent('click'),
+        filter(() => this.interactive),
+        filter(() => {
+          if (this._state === State.WAITING_FOR_CLICK) {
+            this.endPressAnimation();
+            return false;
+          }
+          return true;
+        }),
+        filter(() => {
+          if (this._state === State.INACTIVE) {
+            this.startPressAnimation();
+            this.endPressAnimation();
+            return false;
+          }
+          return true;
+        })
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filterEvent('pointercancel'),
+        tap(() => this.endPressAnimation())
+      )
+      .subscribe();
+    this.event$
+      .pipe(
+        filterEvent('contextmenu'),
+        tap(() => {
+          this._checkBoundsAfterContextMenu = true;
+          this.endPressAnimation();
+        })
+      )
+      .subscribe();
+  }
+
   protected override updated(changedProperties: PropertyValues): void {
-    if (changedProperties.has('disabled') && this.disabled) {
-      this.isHovering = false;
-      this.isActivated = false;
+    if (changedProperties.has('interactive') && !this.interactive) {
+      this.activated = false;
     }
     super.updated(changedProperties);
   }
 
   protected override render(): unknown {
     return html`<div class="surface"></div>`;
-  }
-
-  /**
-   * TODO(b/269799771): make private
-   * @private only public for slider
-   */
-  handlePointerenter(event: PointerEvent) {
-    if (
-      !this.shouldReactToEvent(event) ||
-      (!this.hoverable && !this.activatable)
-    ) {
-      return;
-    }
-
-    this.isHovering = true;
-  }
-
-  /**
-   * TODO(b/269799771): make private
-   * @private only public for slider
-   */
-  handlePointerleave(event: PointerEvent) {
-    if (!this.shouldReactToEvent(event)) {
-      return;
-    }
-
-    this.isHovering = false;
-
-    // release a held mouse or pen press that moves outside the element
-    if (this.state !== State.INACTIVE) {
-      this.endPressAnimation();
-    }
-  }
-
-  private handlePointerup(event: PointerEvent) {
-    if (!this.shouldReactToEvent(event)) {
-      return;
-    }
-
-    if (this.state === State.HOLDING) {
-      this.state = State.WAITING_FOR_CLICK;
-      return;
-    }
-
-    if (this.state === State.TOUCH_DELAY) {
-      this.state = State.WAITING_FOR_CLICK;
-      this.startPressAnimation(this.rippleStartEvent);
-      return;
-    }
-  }
-
-  private async handlePointerdown(event: PointerEvent) {
-    if (!this.shouldReactToEvent(event) || !this.activatable) {
-      return;
-    }
-
-    this.rippleStartEvent = event;
-    if (!this.isTouch(event)) {
-      this.state = State.WAITING_FOR_CLICK;
-      this.startPressAnimation(event);
-      return;
-    }
-
-    // after a longpress contextmenu event, an extra `pointerdown` can be
-    // dispatched to the pressed element. Check that the down is within
-    // bounds of the element in this case.
-    if (this.checkBoundsAfterContextMenu && !this.inBounds(event)) {
-      return;
-    }
-
-    this.checkBoundsAfterContextMenu = false;
-
-    // Wait for a hold after touch delay
-    this.state = State.TOUCH_DELAY;
-    await new Promise((resolve) => {
-      setTimeout(resolve, TOUCH_DELAY_MS);
-    });
-
-    if (this.state !== State.TOUCH_DELAY) {
-      return;
-    }
-
-    this.state = State.HOLDING;
-    this.startPressAnimation(event);
-  }
-
-  private handleClick() {
-    // Click is a MouseEvent in Firefox and Safari, so we cannot use
-    // `shouldReactToEvent`
-    if (this.disabled || !this.activatable) {
-      return;
-    }
-
-    if (this.state === State.WAITING_FOR_CLICK) {
-      this.endPressAnimation();
-      return;
-    }
-
-    if (this.state === State.INACTIVE) {
-      // keyboard synthesized click event
-      this.startPressAnimation();
-      this.endPressAnimation();
-    }
-  }
-
-  private handlePointercancel(event: PointerEvent) {
-    if (!this.shouldReactToEvent(event)) {
-      return;
-    }
-
-    this.endPressAnimation();
-  }
-
-  private handleContextmenu() {
-    if (this.disabled || !this.activatable) {
-      return;
-    }
-
-    this.checkBoundsAfterContextMenu = true;
-    this.endPressAnimation();
   }
 
   private determineRippleSize() {
@@ -253,9 +239,14 @@ export class MdRippleElement extends base {
     const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
     const maxRadius = hypotenuse + PADDING;
 
-    this.initialSize = initialSize;
-    this.rippleScale = `${(maxRadius + softEdgeSize) / initialSize}`;
-    this.rippleSize = `${initialSize}px`;
+    const rippleScale = `${(maxRadius + softEdgeSize) / initialSize}`;
+    const rippleSize = `${initialSize}px`;
+
+    return {
+      initialSize,
+      rippleScale,
+      rippleSize
+    };
   }
 
   private getNormalizedPointerEventCoords(pointerEvent: PointerEvent): {
@@ -270,12 +261,12 @@ export class MdRippleElement extends base {
     return { x: pageX - documentX, y: pageY - documentY };
   }
 
-  private getTranslationCoordinates(positionEvent?: Event) {
+  private getTranslationCoordinates(initialSize: number, positionEvent?: Event) {
     const { height, width } = this.getBoundingClientRect();
     // end in the center
     const endPoint = {
-      x: (width - this.initialSize) / 2,
-      y: (height - this.initialSize) / 2,
+      x: (width - initialSize) / 2,
+      y: (height - initialSize) / 2,
     };
 
     let startPoint;
@@ -290,35 +281,35 @@ export class MdRippleElement extends base {
 
     // center around start point
     startPoint = {
-      x: startPoint.x - this.initialSize / 2,
-      y: startPoint.y - this.initialSize / 2,
+      x: startPoint.x - initialSize / 2,
+      y: startPoint.y - initialSize / 2,
     };
 
     return { startPoint, endPoint };
   }
 
   private startPressAnimation(positionEvent?: Event) {
-    if (!this.mdRoot) {
+    if (!this._surface) {
       return;
     }
 
-    this.isActivated = true;
-    this.growAnimation?.cancel();
-    this.determineRippleSize();
+    this.activated = true;
+    this._growAnimation?.cancel();
+    const { initialSize, rippleSize, rippleScale } = this.determineRippleSize();
     const { startPoint, endPoint } =
-      this.getTranslationCoordinates(positionEvent);
+      this.getTranslationCoordinates(initialSize,positionEvent);
     const translateStart = `${startPoint.x}px, ${startPoint.y}px`;
     const translateEnd = `${endPoint.x}px, ${endPoint.y}px`;
 
-    this.growAnimation = this.mdRoot.animate(
+    this._growAnimation = this._surface.animate(
       {
         top: [0, 0],
         left: [0, 0],
-        height: [this.rippleSize, this.rippleSize],
-        width: [this.rippleSize, this.rippleSize],
+        height: [rippleSize, rippleSize],
+        width: [rippleSize, rippleSize],
         transform: [
           `translate(${translateStart}) scale(1)`,
-          `translate(${translateEnd}) scale(${this.rippleScale})`,
+          `translate(${translateEnd}) scale(${rippleScale})`,
         ],
       },
       {
@@ -331,9 +322,9 @@ export class MdRippleElement extends base {
   }
 
   private async endPressAnimation() {
-    this.rippleStartEvent = undefined;
-    this.state = State.INACTIVE;
-    const animation = this.growAnimation;
+    this._rippleStartEvent = undefined;
+    this._state = State.INACTIVE;
+    const animation = this._growAnimation;
     let pressAnimationPlayState = Infinity;
     if (typeof animation?.currentTime === 'number') {
       pressAnimationPlayState = animation.currentTime;
@@ -342,7 +333,7 @@ export class MdRippleElement extends base {
     }
 
     if (pressAnimationPlayState >= MINIMUM_PRESS_MS) {
-      this.isActivated = false;
+      this.activated = false;
       return;
     }
 
@@ -350,13 +341,13 @@ export class MdRippleElement extends base {
       setTimeout(resolve, MINIMUM_PRESS_MS - pressAnimationPlayState);
     });
 
-    if (this.growAnimation !== animation) {
+    if (this._growAnimation !== animation) {
       // A new press animation was started. The old animation was canceled and
       // should not finish the pressed state.
       return;
     }
 
-    this.isActivated = false;
+    this.activated = false;
   }
 
   /**
@@ -369,13 +360,13 @@ export class MdRippleElement extends base {
    * held, or the pointer is hovering
    */
   private shouldReactToEvent(event: PointerEvent) {
-    if (this.disabled || !event.isPrimary) {
+    if (!event.isPrimary) {
       return false;
     }
 
     if (
-      this.rippleStartEvent &&
-      this.rippleStartEvent.pointerId !== event.pointerId
+      this._rippleStartEvent &&
+      this._rippleStartEvent.pointerId !== event.pointerId
     ) {
       return false;
     }
@@ -400,40 +391,6 @@ export class MdRippleElement extends base {
 
   private isTouch({ pointerType }: PointerEvent) {
     return pointerType === 'touch';
-  }
-
-  override async handleControlEvent(event: Event): Promise<void> {
-    if (this.disabled) {
-      return;
-    }
-
-    switch (event.type) {
-      case 'click':
-        if (!this.externalActivated) {
-          this.handleClick();
-        }
-        break;
-      case 'contextmenu':
-        this.handleContextmenu();
-        break;
-      case 'pointercancel':
-        this.handlePointercancel(event as PointerEvent);
-        break;
-      case 'pointerdown':
-        if (!this.externalActivated) {
-          await this.handlePointerdown(event as PointerEvent);
-        }
-        break;
-      case 'pointerenter':
-        this.handlePointerenter(event as PointerEvent);
-        break;
-      case 'pointerleave':
-        this.handlePointerleave(event as PointerEvent);
-        break;
-      case 'pointerup':
-        this.handlePointerup(event as PointerEvent);
-        break;
-    }
   }
 }
 

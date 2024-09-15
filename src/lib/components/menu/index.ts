@@ -1,107 +1,74 @@
-import { html, LitElement } from 'lit';
-import { customElement, queryAssignedElements } from 'lit/decorators.js';
+import '../icon';
+import '../focus-ring';
+import '../ripple';
+import { html, LitElement, PropertyValueMap, PropertyValues } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
-import { EASING } from '../../common';
-import { MdMenuItemElement } from '../menu-item';
-import { MdDividerElement } from '../divider';
-import { mixinAttachablePopover } from '../../common/mixins/mixin-attachable-popover';
+import { mixinAttachable } from '../../common';
+import { Placement } from '@floating-ui/dom';
+import { MdPopoverElement, PopoverTrigger } from '../popover';
 
-const base = mixinAttachablePopover(LitElement);
+const base = mixinAttachable(LitElement);
 
 @customElement('md-menu')
 export class MdMenuElement extends base {
   static override styles = [styles];
 
-  @queryAssignedElements({ flatten: true })
-  private _slotElements!: HTMLElement[];
+  @property({ type: String })
+  placement: Placement = 'bottom-start';
 
-  get parentMenuItem(): MdMenuItemElement | undefined {
-    return this.control instanceof MdMenuItemElement ? this.control : undefined;
-  }
+  @property({ type: String })
+  trigger: PopoverTrigger = 'click';
 
-  override render(): unknown {
-    return html`${this.renderPopover()}`;
-  }
+  @property({ type: Number })
+  offset = 8;
 
-  override async showComponent(): Promise<void> {
-    await super.showComponent();
-    if (this.parentMenuItem) {
-      this.parentMenuItem.open = true;
-    }
-  }
+  @query('md-popover')
+  private _popover!: MdPopoverElement;
 
-  override async onClosePopup(): Promise<void> {
-    await super.onClosePopup();
-  }
-
-  override async closeComponent(): Promise<void> {
-    await super.closeComponent();
-    if (this.parentMenuItem) {
-      this.parentMenuItem.open = false;
-    }
-  }
-
-  override *getComponentAnimations(): Generator<Animation> {
-    const superAnimations = super.getComponentAnimations();
-    for (const animation of superAnimations) {
-      yield animation;
-    }
-
-    let index = 0;
-    const items = this.popoverContainer.style.transformOrigin.includes('top')
-      ? this._slotElements.concat(...[])
-      : this._slotElements.concat(...[]).reverse();
-    for (const item of items) {
-      index++;
-      yield this.animateItem(
-        item as MdMenuItemElement | MdDividerElement,
-        index * 25
-      );
-    }
-  }
-
-  private animateItem(
-    item: MdMenuItemElement | MdDividerElement,
-    delay: number
-  ) {
-    const abs = this.popoverContainer.style.transformOrigin.includes('top')
-      ? '-'
-      : '';
-    let opacity = ['0', '1'];
-    let transform = [`translateY(${abs}24px)`, 'translateY(0)'];
-    if (this.closing) {
-      opacity = opacity.reverse();
-      transform = transform.reverse();
-      delay = 0;
-    }
-
-    const easing = this.opening
-      ? EASING.standard.decelerate
-      : EASING.standard.accelerate;
-    const duration = this.opening ? 300 : 150;
-
-    return item.animate(
-      {
-        opacity,
-        transform,
-      },
-      {
-        delay,
-        easing,
-        duration,
-        fill: 'forwards',
-      }
+  constructor() {
+    super();
+    this.initialize(
+      'click',
+      'pointerdown',
+      'pointerenter',
+      'pointerleave',
+      'contextmenu',
+      'focusin',
+      'focusout'
     );
+    this.addEventListener('for-change', this.handleForChange.bind(this));
   }
 
-  override attachControl(control: HTMLElement | null): void {
-    super.attachControl(control);
-    if (this.parentMenuItem) {
-      setTimeout(() => {
-        this.parentMenuItem!.subMenu = this;
-        this.placement = 'right-start';
-        this.offset = 0;
-      }, 50);
+  protected override firstUpdated(_changedProperties: PropertyValues): void {
+    super.firstUpdated(_changedProperties);
+    this.handleForChange();
+  }
+
+  override render() {
+    return html`<md-popover
+      offset="${this.offset}"
+      shift
+      flip
+      native
+      placement=${this.placement}
+      triggers=${this.trigger}
+    >
+      <slot></slot>
+    </md-popover>`;
+  }
+
+  openMenu() {
+    this._popover.openPopover();
+  }
+
+  closeMenu() {
+    this._popover.closePopover();
+  }
+
+  private handleForChange() {
+    if (this._popover.control !== this.control) {
+      this._popover.attachControl(this.control);
     }
   }
 }

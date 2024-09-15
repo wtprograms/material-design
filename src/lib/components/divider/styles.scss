@@ -30,7 +30,7 @@ $tokens: (
   width: var(--_width);
   height: var(--_height);
   isolation: isolate;
-  display: flex;
+  display: inline-flex;
 }
 
 :host([vertical]) {
