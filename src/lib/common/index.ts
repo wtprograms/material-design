@@ -20,6 +20,7 @@ export * from './mixins/mixin-busy-button';
 export * from './mixins/mixin-button';
 export * from './mixins/mixin-internals';
 export * from './mixins/mixin-parent-activation';
+export * from './mixins/mixin-value-element';
 export * from './mixins/mixin';
 export * from './motion/duration';
 export * from './motion/easing';

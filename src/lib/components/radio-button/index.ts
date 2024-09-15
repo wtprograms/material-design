@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { combineLatest, map, Observable, tap } from 'rxjs';
+import { combineLatest, distinct, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { attribute } from '../../common/rxjs/operators/attribute';
 import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
@@ -35,6 +35,7 @@ export class MdRadioButtonElement extends base {
     super.connectedCallback();
     this.value$
       .pipe(
+        distinctUntilChanged(),
         attribute(this, 'checked'),
         tap(() => this.dispatchEvent(new Event('change')))
       )

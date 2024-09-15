@@ -7,7 +7,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { observe, property$, redispatchEvent } from '../../common';
+import { mixinValueElement, observe, property$, redispatchEvent } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -29,8 +29,10 @@ export type FieldType =
   | 'url'
   | 'textarea';
 
+const base = mixinValueElement(LitElement);
+
 @customElement('md-text-field')
-export class MdTextFieldElement extends LitElement {
+export class MdTextFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
@@ -53,11 +55,6 @@ export class MdTextFieldElement extends LitElement {
 
   @property({ type: String })
   suffixText: string | null = null;
-
-  @property({ type: String })
-  @property$()
-  value: string | null = null;
-  value$!: Observable<string | null>;
 
   @property({ type: Number })
   min: number | null = null;
@@ -139,12 +136,6 @@ export class MdTextFieldElement extends LitElement {
         distinctUntilChanged(),
         filter(() => !!this._input),
         tap((value) => (this._input.value = value ?? ''))
-      )
-      .subscribe();
-    this.value$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
       )
       .subscribe();
   }

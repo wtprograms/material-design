@@ -5,7 +5,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { combineLatest, map, Observable, tap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { attribute } from '../../common/rxjs/operators/attribute';
 import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
@@ -47,6 +47,7 @@ export class MdSwitchElement extends base {
     super.connectedCallback();
     this.value$
       .pipe(
+        distinctUntilChanged(),
         attribute(this, 'checked'),
         tap(() => this.dispatchEvent(new Event('change')))
       )

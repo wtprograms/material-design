@@ -1,18 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
-import { property$ } from '../../common';
+import { mixinValueElement, property$ } from '../../common';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import { MdCalendarMonthYearListPickerElement } from '../calendar-month-year-list-picker';
 
+const base = mixinValueElement(LitElement);
 @customElement('md-date-picker')
-export class MdDatePickerElement extends LitElement {
+export class MdDatePickerElement extends base {
   static override styles = [styles];
-
-  @property({ type: String })
-  @property$()
-  value = '';
-  value$!: Observable<string>;
 
   @property({ type: String })
   locale = 'en';
@@ -62,31 +59,72 @@ export class MdDatePickerElement extends LitElement {
     this._viewValue = date.toISOString();
   }
 
-  override connectedCallback() {
-    super.connectedCallback();
-    this.value$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
-      .subscribe();
-  }
-
   override render() {
     return html`<div class="header">
-      <md-calendar-month-year-picker id="month-picker" locale=${this.locale} min=${this.min} max=${this.max} value=${this._viewValue} @change=${this.changeViewDate}></md-calendar-month-year-picker>
-      <md-button variant="plain" class="today" @click=${this.todayClick}
-        >${this.todayText}</md-button
+        <md-calendar-month-year-picker
+          id="month-picker"
+          locale=${this.locale}
+          min=${this.min}
+          max=${this.max}
+          value=${this._viewValue}
+          @change=${this.changeViewDate}
+        ></md-calendar-month-year-picker>
+        <md-button variant="plain" class="today" @click=${this.todayClick}
+          >${this.todayText}</md-button
+        >
+        <md-calendar-month-year-picker
+          id="year-picker"
+          locale=${this.locale}
+          min=${this.min}
+          max=${this.max}
+          value=${this._viewValue}
+          @change=${this.changeViewDate}
+          year
+        ></md-calendar-month-year-picker>
+      </div>
+      <md-calendar-picker
+        locale=${this.locale}
+        min=${this.min}
+        max=${this.max}
+        value=${this.value}
+        view-value=${this._viewValue}
+        @change=${this.change}
+      ></md-calendar-picker>
+      <md-popover
+        for="month-picker"
+        custom-event="center-click"
+        offset="8"
+        @open=${this.scrollSelectedIntoView}
+        no-elevation
+        close-on-event
       >
-      <md-calendar-month-year-picker id="year-picker" locale=${this.locale} min=${this.min} max=${this.max} value=${this._viewValue} @change=${this.changeViewDate} year></md-calendar-month-year-picker>
-    </div>
-    <md-calendar-picker locale=${this.locale} min=${this.min} max=${this.max} value=${this.value} view-value=${this._viewValue} @change=${this.change}></md-calendar-picker>
-    <md-popover for="month-picker" custom-event="center-click" offset="8" @open=${this.scrollSelectedIntoView} no-elevation close-on-event>
-      <md-calendar-month-year-list-picker locale=${this.locale} min=${this.min} max=${this.max} id="month-list" value=${this._viewValue} @change=${this.changeViewDate}></md-calendar-month-year-list-picker>
-    </md-popover>
-    <md-popover for="year-picker" custom-event="center-click" offset="8" @open=${this.scrollSelectedIntoView} no-elevation close-on-event>
-      <md-calendar-month-year-list-picker locale=${this.locale} min=${this.min} max=${this.max} id="year-list" value=${this._viewValue} @change=${this.changeViewDate} year></md-calendar-month-year-list-picker>
-    </md-popover>`;
+        <md-calendar-month-year-list-picker
+          locale=${this.locale}
+          min=${this.min}
+          max=${this.max}
+          id="month-list"
+          value=${this._viewValue}
+          @change=${this.changeViewDate}
+        ></md-calendar-month-year-list-picker>
+      </md-popover>
+      <md-popover
+        for="year-picker"
+        custom-event="center-click"
+        offset="8"
+        @open=${this.scrollSelectedIntoView}
+        no-elevation
+        close-on-event
+      >
+        <md-calendar-month-year-list-picker
+          locale=${this.locale}
+          min=${this.min}
+          max=${this.max}
+          id="year-list"
+          value=${this._viewValue}
+          @change=${this.changeViewDate}
+          year
+        ></md-calendar-month-year-list-picker>
+      </md-popover>`;
   }
 
   private scrollSelectedIntoView() {
@@ -99,12 +137,10 @@ export class MdDatePickerElement extends LitElement {
   }
 
   private change(event: Event) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.value = (event.target as any).value;
   }
 
   private changeViewDate(event: Event) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this._viewValue = (event.target as any).value;
   }
 }

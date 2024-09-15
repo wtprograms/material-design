@@ -9,14 +9,16 @@ import {
   Observable,
   tap,
 } from 'rxjs';
-import { observe, property$ } from '../../common';
+import { mixinValueElement, observe, property$ } from '../../common';
 import { FieldVariant, MdFieldElement } from '../field';
 import { MdDatePickerElement } from '../date-picker';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { getDateTimeFormatOptions } from '../../common/helpers/format-date';
 
+const base = mixinValueElement(LitElement);
+
 @customElement('md-date-picker-field')
-export class MdDatePickerFieldElement extends LitElement {
+export class MdDatePickerFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
@@ -30,11 +32,6 @@ export class MdDatePickerFieldElement extends LitElement {
 
   @property({ type: String })
   errorText: string | null = null;
-
-  @property({ type: String })
-  @property$()
-  value = '';
-  value$!: Observable<string>;
 
   @property({ type: String })
   selectedValue = this.value;
@@ -97,16 +94,6 @@ export class MdDatePickerFieldElement extends LitElement {
   }
   set selectedValueAsDate(date: Date) {
     this.selectedValue = date.toISOString();
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.value$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
-      .subscribe();
   }
 
   override render() {

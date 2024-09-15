@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import '../badge';
 import { html, LitElement } from 'lit';
 import {
@@ -7,7 +8,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { observe, property$ } from '../../common';
+import { mixinValueElement, observe, property$ } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -20,8 +21,10 @@ import {
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { FieldVariant, MdFieldElement } from '../field';
 
+const base = mixinValueElement(LitElement);
+
 @customElement('md-dropdown-field')
-export class MdDropdownFieldElement extends LitElement {
+export class MdDropdownFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
@@ -41,11 +44,6 @@ export class MdDropdownFieldElement extends LitElement {
 
   @property({ type: String })
   suffixText: string | null = null;
-
-  @property({ type: String })
-  @property$()
-  value: string | null = null;
-  value$!: Observable<string | null>;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
@@ -77,7 +75,6 @@ export class MdDropdownFieldElement extends LitElement {
               item.selected = item.value === value;
             }
           }
-          this.dispatchEvent(new Event('change'));
         })
       )
       .subscribe();

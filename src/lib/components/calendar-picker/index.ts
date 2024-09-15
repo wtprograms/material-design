@@ -2,17 +2,14 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
-import { property$ } from '../../common';
+import { mixinValueElement, property$ } from '../../common';
 import { dateEqual } from '../../common/helpers/date-equal';
 
-@customElement('md-calendar-picker')
-export class MdCalendarPickerElement extends LitElement {
-  static override styles = [styles];
+const base = mixinValueElement(LitElement);
 
-  @property({ type: String })
-  @property$()
-  value = '';
-  value$!: Observable<string>;
+@customElement('md-calendar-picker')
+export class MdCalendarPickerElement extends base {
+  static override styles = [styles];
 
   @property({ type: String, attribute: 'view-value' })
   viewValue = '';
@@ -51,16 +48,6 @@ export class MdCalendarPickerElement extends LitElement {
   }
   set viewValueAsDate(date: Date) {
     this.viewValue = date.toISOString();
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.value$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
-      .subscribe();
   }
 
   private get _dayNames(): string[] {

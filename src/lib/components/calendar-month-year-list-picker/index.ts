@@ -2,17 +2,14 @@ import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { Observable, distinctUntilChanged, tap } from 'rxjs';
-import { property$ } from '../../common';
+import { mixinValueElement, property$ } from '../../common';
 import { repeat } from 'lit/directives/repeat.js';
 
-@customElement('md-calendar-month-year-list-picker')
-export class MdCalendarMonthYearListPickerElement extends LitElement {
-  static override styles = [styles];
+const base = mixinValueElement(LitElement);
 
-  @property({ type: String })
-  @property$()
-  value = '';
-  value$!: Observable<string>;
+@customElement('md-calendar-month-year-list-picker')
+export class MdCalendarMonthYearListPickerElement extends base {
+  static override styles = [styles];
 
   @property({ type: String })
   min: string | null = null;
@@ -52,16 +49,6 @@ export class MdCalendarMonthYearListPickerElement extends LitElement {
       year: startYear + i,
       date: new Date(startYear + i, this.valueAsDate.getMonth()),
     }));
-  }
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.value$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
-      .subscribe();
   }
 
   override render() {
