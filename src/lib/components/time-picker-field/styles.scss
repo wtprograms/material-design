@@ -1,0 +1,18 @@
+@use '../md';
+
+:host {
+  md-field {
+    width: 100%;
+    --md-comp-field-control-cursor: pointer;
+    --md-comp-field-body-cursor: pointer;
+    --md-comp-field-popover-padding-start: 8px;
+    --md-comp-field-popover-padding-end: 8px;
+  }
+
+  .actions {
+    margin-top: 8px;
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}

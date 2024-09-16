@@ -23,3 +23,5 @@ export * from './radio-button';
 export * from './ripple';
 export * from './switch';
 export * from './text-field';
+export * from './time-picker';
+export * from './time-picker-field';

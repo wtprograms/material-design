@@ -14,11 +14,12 @@ import { FieldVariant, MdFieldElement } from '../field';
 import { MdDatePickerElement } from '../date-picker';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { getDateTimeFormatOptions } from '../../common/helpers/date/get-date-time-format-options';
+import { MdTimePickerElement } from '../time-picker';
 
 const base = mixinValueElement(LitElement);
 
-@customElement('md-date-picker-field')
-export class MdDatePickerFieldElement extends base {
+@customElement('md-time-picker-field')
+export class MdTimePickerFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
@@ -48,20 +49,20 @@ export class MdDatePickerFieldElement extends base {
   @property({ type: String })
   max: string | null = null;
 
-  @property({ type: String })
-  format = 'dd MMM yyyy';
+  @property({ type: Boolean })
+  seconds = false;
 
-  @property({ type: String, attribute: 'clear-text' })
-  clearText = 'Clear';
+  @property({ type: String })
+  format = this.seconds ? 'hh mm ss' : 'hh mm';
+
+  @property({ type: String, attribute: 'now-text' })
+  nowText = 'Now';
 
   @property({ type: String, attribute: 'okay-text' })
   okayText = 'Okay';
 
   @property({ type: String, attribute: 'cancel-text' })
   cancelText = 'Cancel';
-
-  @query('md-date-picker')
-  private _datePicker!: MdDatePickerElement;
 
   @query('md-field')
   private _field!: MdFieldElement;
@@ -76,7 +77,7 @@ export class MdDatePickerFieldElement extends base {
   }).pipe(map(({ focused, value, open }) => focused || !!value || open));
 
   override render() {
-    const formattedDate = Date.parseString(this.selectedValue, new Date()).toFormattedDateString(this.locale, this.format);
+    const formattedDate = Date.parseString(this.value, new Date()).toFormattedTimeString(this.locale, this.format);
     return html`<md-field
       variant=${this.variant}
       ?populated=${observe(this._populated$)}
@@ -91,20 +92,20 @@ export class MdDatePickerFieldElement extends base {
     <slot name="leading" slot="leading"></slot>
     <md-icon slot="trailing">arrow_drop_down</md-icon>
     ${formattedDate}
-      <md-date-picker
+      <md-time-picker
         value=${this.selectedValue}
         slot="popover"
         @change=${this.handleChange}
         locale=${this.locale}
         min=${this.min}
         max=${this.max}
-      ></md-date-picker>
+      ></md-time-picker>
       <div slot="popover" class="actions">
       <md-button
           variant="text"
           @click=${this.clearClick}
           style="margin-inline-end: auto"
-          >${this.clearText}</md-button
+          >${this.nowText}</md-button
         >
         <md-button
           variant="text"
@@ -119,13 +120,11 @@ export class MdDatePickerFieldElement extends base {
 
   private okayClick() {
     this.value = this.selectedValue;
-    this._datePicker.viewValue = this.selectedValue;
     this._field.closePopover();
   }
 
   private cancelClick() {
     this.selectedValue = this.value;
-    this._datePicker.viewValue = this.value;
     this._field.closePopover();
   }
 
@@ -134,7 +133,7 @@ export class MdDatePickerFieldElement extends base {
   }
 
   private handleChange(event: Event) {
-    this.selectedValue = (event.target as MdDatePickerElement).value;
+    this.selectedValue = (event.target as MdTimePickerElement).value;
   }
 
   override focus(): void {
@@ -148,6 +147,6 @@ export class MdDatePickerFieldElement extends base {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'md-date-picker-field': MdDatePickerFieldElement;
+    'md-time-picker-field': MdTimePickerFieldElement;
   }
 }

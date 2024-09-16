@@ -32,31 +32,17 @@ export class MdDatePickerElement extends base {
   @query('#year-list')
   private _yearPicker!: MdCalendarMonthYearListPickerElement;
 
-  get valueAsDate() {
-    if (!this.value) {
-      return null;
-    }
-    return new Date(this.value);
-  }
-  set valueAsDate(date: Date | null) {
-    if (!date) {
-      this.value = '';
-    } else {
-      this.value = date.toISOString();
-    }
-  }
-
   @state()
-  private _viewValue = this.value;
+  viewValue = this.value;
 
   private get _viewValueAsDate() {
-    if (!this._viewValue) {
+    if (!this.viewValue) {
       return new Date();
     }
-    return new Date(this._viewValue);
+    return new Date(this.viewValue);
   }
   private set _viewValueAsDate(date: Date) {
-    this._viewValue = date.toISOString();
+    this.viewValue = date.toString();
   }
 
   override render() {
@@ -66,7 +52,7 @@ export class MdDatePickerElement extends base {
           locale=${this.locale}
           min=${this.min}
           max=${this.max}
-          value=${this._viewValue}
+          value=${this.viewValue}
           @change=${this.changeViewDate}
         ></md-calendar-month-year-picker>
         <md-button variant="plain" class="today" @click=${this.todayClick}
@@ -77,7 +63,7 @@ export class MdDatePickerElement extends base {
           locale=${this.locale}
           min=${this.min}
           max=${this.max}
-          value=${this._viewValue}
+          value=${this.viewValue}
           @change=${this.changeViewDate}
           year
         ></md-calendar-month-year-picker>
@@ -87,7 +73,7 @@ export class MdDatePickerElement extends base {
         min=${this.min}
         max=${this.max}
         value=${this.value}
-        view-value=${this._viewValue}
+        view-value=${this.viewValue}
         @change=${this.change}
       ></md-calendar-picker>
       <md-popover
@@ -97,13 +83,14 @@ export class MdDatePickerElement extends base {
         @open=${this.scrollSelectedIntoView}
         no-elevation
         close-on-event
+        stop-close-propegation
       >
         <md-calendar-month-year-list-picker
           locale=${this.locale}
           min=${this.min}
           max=${this.max}
           id="month-list"
-          value=${this._viewValue}
+          value=${this.viewValue}
           @change=${this.changeViewDate}
         ></md-calendar-month-year-list-picker>
       </md-popover>
@@ -114,13 +101,14 @@ export class MdDatePickerElement extends base {
         @open=${this.scrollSelectedIntoView}
         no-elevation
         close-on-event
+        close-stop-propegation
       >
         <md-calendar-month-year-list-picker
           locale=${this.locale}
           min=${this.min}
           max=${this.max}
           id="year-list"
-          value=${this._viewValue}
+          value=${this.viewValue}
           @change=${this.changeViewDate}
           year
         ></md-calendar-month-year-list-picker>
@@ -141,7 +129,7 @@ export class MdDatePickerElement extends base {
   }
 
   private changeViewDate(event: Event) {
-    this._viewValue = (event.target as any).value;
+    this.viewValue = (event.target as any).value;
   }
 }
 

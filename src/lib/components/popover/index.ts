@@ -86,6 +86,9 @@ export class MdPopoverElement extends base {
   @property({ type: Boolean, attribute: 'close-on-event' })
   closeOnEvent = false;
 
+  @property({ type: Boolean, attribute: 'stop-close-propegation' })
+  stopClosePropegation  = false;
+
   @property({ type: Number, attribute: 'delay' })
   delay = 0;
 
@@ -365,7 +368,9 @@ export class MdPopoverElement extends base {
   }
 
   private handleClosePopover(event: Event) {
-    event.stopPropagation();
+    if (this.stopClosePropegation) { 
+      event.stopPropagation();
+    }
     this.closePopover();
   }
 

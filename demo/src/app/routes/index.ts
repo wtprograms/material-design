@@ -97,4 +97,12 @@ export default [
     path: 'text-field',
     loadComponent: () => import('./text-field'),
   },
+  {
+    path: 'time-picker',
+    loadComponent: () => import('./time-picker'),
+  },
+  {
+    path: 'time-picker-field',
+    loadComponent: () => import('./time-picker-field'),
+  },
 ] satisfies Routes;

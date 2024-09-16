@@ -1,8 +1,8 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinValueElement, property$ } from '../../common';
-import { distinctUntilChanged, Observable, tap } from 'rxjs';
+import { mixinValueElement, observe, property$ } from '../../common';
+import { distinctUntilChanged, map, Observable, tap } from 'rxjs';
 
 const base = mixinValueElement(LitElement);
 
@@ -22,35 +22,9 @@ export class MdCalendarMonthYearPickerElement extends base {
   @property({ type: String })
   max: string | null = null;
 
-  get valueAsDate() {
-    if (!this.value) {
-      return new Date();
-    }
-    return new Date(this.value);
-  }
-  set valueAsDate(date: Date) {
-    this.value = date.toISOString();
-  }
-
-  private get _previousDate() {
-    const date = this.valueAsDate;
-    if (this.year) {
-      date.setFullYear(date.getFullYear() - 1);
-    } else {
-      date.setMonth(date.getMonth() - 1);
-    }
-    return date;
-  }
-
-  private get _nextDate() {
-    const date = this.valueAsDate;
-    if (this.year) {
-      date.setFullYear(date.getFullYear() + 1);
-    } else {
-      date.setMonth(date.getMonth() + 1);
-    }
-    return date;
-  }
+  private _date$ = this.value$.pipe(
+    map((x) => Date.parseString(x, new Date()))
+  );
 
   override render() {
     const options: Intl.DateTimeFormatOptions = {};
@@ -59,50 +33,71 @@ export class MdCalendarMonthYearPickerElement extends base {
     } else {
       options.month = 'short';
     }
-    return html`<md-button variant="plain" class="navigate" @click=${this.previousClick} ?disabled=${!this.isInRange(this._previousDate)}>
+    const dateString = this._date$.pipe(
+      map(x => x.toLocaleDateString(this.locale, options))
+    );
+    return html`<md-button
+        variant="plain"
+        class="navigate"
+        @click=${() => this.navigateClick(-1)}
+        ?disabled=${observe(this.isNotInRange(-1))}
+      >
         <md-icon>chevron_left</md-icon>
       </md-button>
       <md-button variant="plain" class="center" @click=${this.centerClick}>
-        ${this.valueAsDate.toLocaleDateString(this.locale, options)}
+        ${observe(dateString)}
         <md-icon size="18">arrow_drop_down</md-icon>
       </md-button>
-      <md-button variant="plain" class="navigate" @click=${this.nextClick} ?disabled=${!this.isInRange(this._nextDate)}>
+      <md-button
+        variant="plain"
+        class="navigate"
+        @click=${() => this.navigateClick(1)}
+        ?disabled=${observe(this.isNotInRange(1))}
+      >
         <md-icon>chevron_right</md-icon>
       </md-button> `;
   }
 
-  private isInRange(date: Date) {
-    if (this.min && date < new Date(this.min)) {
-      return false;
-    }
-    if (this.max && date > new Date(this.max)) {
-      return false;
-    }
-    return true;
+  private isNotInRange(index: -1 | 1) {
+    return this.getDate(index).pipe(
+      map((x) => {
+        if (this.min && x < new Date(this.min)) {
+          return true;
+        }
+        if (this.max && x > new Date(this.max)) {
+          return true;
+        }
+        return false;
+      })
+    );
+  }
+
+  private getDate(index: -1 | 1) {
+    return this._date$.pipe(
+      map((x) => {
+        if (this.year) {
+          x.setFullYear(x.getFullYear() + index);
+        } else {
+          x.setMonth(x.getMonth() + index);
+        }
+        return x;
+      })
+    );
   }
 
   private centerClick() {
     this.dispatchEvent(new Event('center-click'));
   }
 
-  private previousClick() {
-    const date = this.valueAsDate;
+  private navigateClick(index: 1 | -1) {
+    const valueAsDate = Date.parseString(this.value, new Date());
+    const date = valueAsDate;
     if (this.year) {
-      date.setFullYear(date.getFullYear() - 1);
+      date.setFullYear(date.getFullYear() + index);
     } else {
-      date.setMonth(date.getMonth() - 1);
+      date.setMonth(date.getMonth() + index);
     }
-    this.valueAsDate = date;
-  }
-
-  private nextClick() {
-    const date = this.valueAsDate;
-    if (this.year) {
-      date.setFullYear(date.getFullYear() + 1);
-    } else {
-      date.setMonth(date.getMonth() + 1);
-    }
-    this.valueAsDate = date;
+    this.value = date.toString();
   }
 }
 

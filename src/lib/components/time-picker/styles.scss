@@ -1,0 +1,107 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  justify-content: center;
+  
+  input {
+    display: inline-flex;
+    align-self: baseline;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    @include md.typescale('display', 'medium', false);
+    width: 96px;
+    height: 80px;
+    resize: none;
+    overflow: hidden;
+    text-align: center;
+    color: var(--md-sys-color-surface-on);
+    caret-color: var(--md-sys-color-surface-on);
+    background-color: var(--md-sys-color-surface-container-highest);
+    border: 1px solid transparent;
+    @include md.motion('border');
+    border-radius: var(--md-sys-shape-extra-small);
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    &:focus-visible {
+      border: 1px solid var(--md-sys-color-outline);
+    }
+  }
+
+  .hour {
+    color: var(--md-sys-color-primary-container-on);
+    caret-color: var(--md-sys-color-primary);
+    background-color: var(--md-sys-color-primary-container);
+    caret-color: var(--md-sys-color-primary);
+
+    &:focus-visible {
+      border: 1px solid var(--md-sys-color-primary);
+    }
+  }
+
+  md-button {
+    border-left: 1px solid var(--md-sys-color-outline);
+    border-right: 1px solid var(--md-sys-color-outline);
+    border-top: 0.5px solid var(--md-sys-color-outline);
+    border-bottom: 0.5px solid var(--md-sys-color-outline);
+  }
+
+  .am {
+    border-radius: var(--md-sys-shape-extra-small-top);
+    border-top: 1px solid var(--md-sys-color-outline);
+  }
+
+  .pm {
+    border-radius: var(--md-sys-shape-extra-small-bottom);
+    border-bottom: 1px solid var(--md-sys-color-outline);
+  }
+
+  .meridian {
+    display: inline-flex;
+    flex-direction: column;
+    height: 80px;
+    width: 52px;
+    margin-inline-start: 12px;
+  }
+
+  .selected {
+    background-color: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-tertiary-container-on);
+  }
+
+  .colon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    @include md.typescale('display', 'large', false);
+  }
+}
