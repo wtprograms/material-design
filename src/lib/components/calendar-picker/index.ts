@@ -34,7 +34,21 @@ export class MdCalendarPickerElement extends base {
   @property({ type: String })
   max: string | null = null;
 
-  private get _dayNames(): string[] {
+  get valueAsDate() {
+    return Date.parseString(this.value) ?? null;
+  }
+  set valueAsDate(value: Date | null | undefined) {
+    this.value = value?.toString() ?? null;
+  }
+
+  get viewValueAsDate() {
+    return Date.parseString(this.value, new Date());
+  }
+  set viewValueAsDate(value: Date) {
+    this.value = value.toString();
+  }
+
+  get dayNames(): string[] {
     const formatter = new Intl.DateTimeFormat(this.locale, {
       weekday: 'narrow',
     });
@@ -43,50 +57,46 @@ export class MdCalendarPickerElement extends base {
     );
   }
 
-  private readonly _calendarDays = this.viewValue$.pipe(
-    map((x) => Date.parseString(x, new Date())),
-    map((x) => {
-      const firstDayOfMonth = new Date(
-        x.getFullYear(),
-        x.getMonth(),
-        1
-      ).getDay();
-      const startDate = new Date(
-        x.getFullYear(),
-        x.getMonth(),
-        1 - firstDayOfMonth
-      );
-      const calendarDays: Day[] = [];
+  get calendarDays() {
+    const date = this.viewValueAsDate;
+    const firstDayOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      1
+    ).getDay();
+    const startDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      1 - firstDayOfMonth
+    );
+    const calendarDays: Day[] = [];
 
-      for (let i = 0; i < 42; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-        const day = currentDate.getDate();
-        let type = 'current';
+    for (let i = 0; i < 42; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      const day = currentDate.getDate();
+      let type = 'current';
 
-        if (currentDate.getMonth() < x.getMonth()) {
-          type = 'previous';
-        } else if (currentDate.getMonth() > x.getMonth()) {
-          type = 'next';
-        }
-
-        calendarDays.push({ day, type, date: currentDate });
+      if (currentDate.getMonth() < date.getMonth()) {
+        type = 'previous';
+      } else if (currentDate.getMonth() > date.getMonth()) {
+        type = 'next';
       }
 
-      return calendarDays;
-    })
-  );
+      calendarDays.push({ day, type, date: currentDate });
+    }
+
+    return calendarDays;
+  }
 
   override render() {
-    const dayNames = this._dayNames;
-    const days = this._calendarDays.pipe(
-      map((days) => days.map((day) => this.renderDay(day)))
-    );
+    const dayNames = this.dayNames;
+    const days = this.calendarDays.map((day) => this.renderDay(day));
     return html`
       <div class="day-names">
         ${dayNames.map((day) => html`<div class="day-name">${day}</div>`)}
       </div>
-      <div class="days">${observe(days)}</div>
+      <div class="days">${days}</div>
     `;
   }
 
@@ -96,13 +106,17 @@ export class MdCalendarPickerElement extends base {
       today: day.date.isToday(),
       'not-in-range': !day.date.isInRange(this.min, this.max),
     });
-    const variant = day.date.isDateEqual(Date.parseString(this.value, new Date()))
+    const variant = day.date.isDateEqual(
+      Date.parseString(this.value, new Date())
+    )
       ? 'filled'
       : 'standard';
     return html`<md-icon-button
       variant=${variant}
       class=${classes}
-      ?selected=${day.date.isDateEqual(Date.parseString(this.value, new Date()))}
+      ?selected=${day.date.isDateEqual(
+        Date.parseString(this.value, new Date())
+      )}
       @click=${() => this.dayClick(day.date)}
       custom
     >

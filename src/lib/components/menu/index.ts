@@ -59,11 +59,11 @@ export class MdMenuElement extends base {
   }
 
   openMenu() {
-    this._popover.openPopover();
+    this._popover.openComponent();
   }
 
   closeMenu() {
-    this._popover.closePopover();
+    this._popover.closeComponent();
   }
 
   private handleForChange() {

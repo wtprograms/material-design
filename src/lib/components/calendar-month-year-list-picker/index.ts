@@ -23,12 +23,18 @@ export class MdCalendarMonthYearListPickerElement extends base {
   @property({ type: Boolean })
   year = false;
 
+  get valueAsDate() {
+    return Date.parseString(this.value, new Date());
+  }
+  set valueAsDate(value: Date) {
+    this.value = value.toString();
+  }
+
   get months(): { text: string; date: Date }[] {
     const formatter = new Intl.DateTimeFormat(this.locale, { month: 'long' });
-    const date = Date.parseString(this.value, new Date());
     return Array.from({ length: 12 }, (_, i) => ({
       text: formatter.format(new Date(0, i)),
-      date: new Date(date.getFullYear(), i),
+      date: new Date(this.valueAsDate.getFullYear(), i),
     }));
   }
 
@@ -36,15 +42,13 @@ export class MdCalendarMonthYearListPickerElement extends base {
     const currentYear = new Date().getFullYear();
     const startYear = currentYear - 50;
     const endYear = currentYear + 20;
-    const date = Date.parseString(this.value, new Date());
     return Array.from({ length: endYear - startYear + 1 }, (_, i) => ({
       year: startYear + i,
-      date: new Date(startYear + i, date.getMonth()),
+      date: new Date(startYear + i, this.valueAsDate.getMonth()),
     }));
   }
 
   override render() {
-    const dateValue = Date.parseString(this.value, new Date());
     if (this.year) {
       return html`${repeat(
         this.years,
@@ -53,7 +57,7 @@ export class MdCalendarMonthYearListPickerElement extends base {
           html` <md-list-item
             value=${x.year}
             @click=${() => this.handleYearClick(x.year)}
-            ?selected=${x.year === dateValue.getFullYear()}
+            ?selected=${x.year === this.valueAsDate.getFullYear()}
             ?disabled=${!this.isInRange(x.date)}
             >${x.year}</md-list-item
           >`
@@ -66,7 +70,7 @@ export class MdCalendarMonthYearListPickerElement extends base {
           html` <md-list-item
             value=${index}
             @click=${() => this.handleMonthClick(index)}
-            ?selected=${index === dateValue.getMonth()}
+            ?selected=${index === this.valueAsDate.getMonth()}
             ?disabled=${!this.isInRange(x.date)}
             >${x.text}</md-list-item
           >`
@@ -79,7 +83,7 @@ export class MdCalendarMonthYearListPickerElement extends base {
       'md-list-item[selected]'
     );
     if (selectedItem) {
-      selectedItem.scrollIntoView();
+      selectedItem.scrollIntoView({ block: 'center' });
     }
   }
 
@@ -94,14 +98,14 @@ export class MdCalendarMonthYearListPickerElement extends base {
   }
 
   private handleMonthClick(month: number) {
-    const date = Date.parseString(this.value, new Date());
+    const date = this.valueAsDate;
     date.setMonth(month);
     this.value = date.toString();
     this.dispatchEvent(new Event('close-popover', { bubbles: true }));
   }
 
   private handleYearClick(year: number) {
-    const date = Date.parseString(this.value, new Date());
+    const date = this.valueAsDate;
     date.setFullYear(year);
     this.value = date.toString();
     this.dispatchEvent(new Event('close-popover', { bubbles: true }));

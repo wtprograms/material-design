@@ -1,3 +1,8 @@
 <div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
-  <md-time-picker-field></md-time-picker-field>
+  {{ picker1.value }}
+  <md-time-picker-field #picker1></md-time-picker-field>
 </div>
+<div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  {{ picker2.value }}
+  <md-time-picker-field #picker2 time-of-day></md-time-picker-field>
+</div> 

@@ -22,9 +22,12 @@ export class MdCalendarMonthYearPickerElement extends base {
   @property({ type: String })
   max: string | null = null;
 
-  private _date$ = this.value$.pipe(
-    map((x) => Date.parseString(x, new Date()))
-  );
+  get valueAsDate() {
+    return Date.parseString(this.value, new Date());
+  }
+  set valueAsDate(value: Date) {
+    this.value = value.toString();
+  }
 
   override render() {
     const options: Intl.DateTimeFormatOptions = {};
@@ -33,55 +36,38 @@ export class MdCalendarMonthYearPickerElement extends base {
     } else {
       options.month = 'short';
     }
-    const dateString = this._date$.pipe(
-      map(x => x.toLocaleDateString(this.locale, options))
+    const dateString = this.valueAsDate.toLocaleDateString(
+      this.locale,
+      options
     );
     return html`<md-button
         variant="plain"
         class="navigate"
         @click=${() => this.navigateClick(-1)}
-        ?disabled=${observe(this.isNotInRange(-1))}
+        ?disabled=${!this.isInRange(-1)}
       >
         <md-icon>chevron_left</md-icon>
       </md-button>
       <md-button variant="plain" class="center" @click=${this.centerClick}>
-        ${observe(dateString)}
+        ${dateString}
         <md-icon size="18">arrow_drop_down</md-icon>
       </md-button>
       <md-button
         variant="plain"
         class="navigate"
         @click=${() => this.navigateClick(1)}
-        ?disabled=${observe(this.isNotInRange(1))}
+        ?disabled=${!this.isInRange(1)}
       >
         <md-icon>chevron_right</md-icon>
       </md-button> `;
   }
 
-  private isNotInRange(index: -1 | 1) {
-    return this.getDate(index).pipe(
-      map((x) => {
-        if (this.min && x < new Date(this.min)) {
-          return true;
-        }
-        if (this.max && x > new Date(this.max)) {
-          return true;
-        }
-        return false;
-      })
-    );
-  }
-
-  private getDate(index: -1 | 1) {
-    return this._date$.pipe(
-      map((x) => {
-        if (this.year) {
-          x.setFullYear(x.getFullYear() + index);
-        } else {
-          x.setMonth(x.getMonth() + index);
-        }
-        return x;
-      })
+  private isInRange(index: -1 | 1) {
+    return (
+      this.min &&
+      index >= new Date(this.min).getTime() &&
+      this.max &&
+      index <= new Date(this.max).getTime()
     );
   }
 

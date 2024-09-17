@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export function animateObservable(...animations: (() => Animation)[]) {
+export function animateObservable(...animations: (() => Animation | undefined)[]) {
   return new Observable<void>((subscriber) => {
     if (animations.length === 0) {
       subscriber.next();
@@ -8,7 +8,7 @@ export function animateObservable(...animations: (() => Animation)[]) {
     }
     let abortController: AbortController | undefined =
       new AbortController();
-    const _animations = animations.map((animation) => animation());
+    const _animations = animations.map((animation) => animation()).filter((x): x is Animation => !!x);
     for (const animation of _animations) {
       abortController.signal.addEventListener('abort', () =>
         animation.cancel()

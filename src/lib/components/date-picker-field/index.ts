@@ -60,6 +60,20 @@ export class MdDatePickerFieldElement extends base {
   @property({ type: String, attribute: 'cancel-text' })
   cancelText = 'Cancel';
 
+  get valueAsDate() {
+    return Date.parseString(this.value) ?? null;
+  }
+  set valueAsDate(value: Date | null | undefined) {
+    this.value = value?.toString() ?? null;
+  }
+
+  get selectedValueAsDate() {
+    return Date.parseString(this.selectedValue) ?? null;
+  }
+  set selectedValueAsDate(value: Date | null | undefined) {
+    this.selectedValue = value?.toString() ?? null;
+  }
+
   @query('md-date-picker')
   private _datePicker!: MdDatePickerElement;
 
@@ -68,12 +82,14 @@ export class MdDatePickerFieldElement extends base {
 
   private readonly _focused$ = new BehaviorSubject(false);
   private readonly _open$ = new BehaviorSubject(false);
+  private readonly _opening$ = new BehaviorSubject(false);
 
   private readonly _populated$ = combineLatest({
     focused: this._focused$,
     value: this.value$,
     open: this._open$,
-  }).pipe(map(({ focused, value, open }) => focused || !!value || open));
+    opening: this._opening$,
+  }).pipe(map((x) => x.focused || !!x.value || x.opening));
 
   override render() {
     const formattedDate = Date.parseString(this.selectedValue, new Date()).toFormattedDateString(this.locale, this.format);
@@ -86,7 +102,9 @@ export class MdDatePickerFieldElement extends base {
       ?disabled=${this.disabled}
       @body-click=${() => this._field.openPopover()}
       @open=${() => this._open$.next(true)}
+      @opening=${() => this._opening$.next(true)}
       @close=${() => this._open$.next(false)}
+      @closing=${() => this._opening$.next(false)}
     >
     <slot name="leading" slot="leading"></slot>
     <md-icon slot="trailing">arrow_drop_down</md-icon>

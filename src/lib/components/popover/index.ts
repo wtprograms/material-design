@@ -26,6 +26,7 @@ import {
   fromEvent,
   map,
   Observable,
+  of,
   Subject,
   Subscription,
   switchMap,
@@ -34,10 +35,11 @@ import {
   timer,
 } from 'rxjs';
 import { animateElement } from '../../common/rxjs/operators/animate-element';
+import { mixinOpenClose } from '../../common/mixins/mixin-open-close';
 
 export type PopoverTrigger = 'click' | 'hover' | 'contextmenu' | 'manual';
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(mixinOpenClose(LitElement));
 
 interface Position {
   top?: string;
@@ -87,10 +89,50 @@ export class MdPopoverElement extends base {
   closeOnEvent = false;
 
   @property({ type: Boolean, attribute: 'stop-close-propegation' })
-  stopClosePropegation  = false;
+  stopClosePropegation = false;
 
   @property({ type: Number, attribute: 'delay' })
   delay = 0;
+
+  override get openComponent$(): Observable<unknown> {
+    return of({}).pipe(
+      tap(() => {
+        this.dispatchEvent(new Event('opening', { bubbles: true }));
+        this._cleanUpPositioningEvents = autoUpdate(
+          this.control!,
+          this,
+          this.updatePosition.bind(this)
+        );
+        this._display$.next('inline-flex');
+        if (this.native) {
+          this.showPopover();
+        }
+        this._opacity$.next('1');
+      }),
+      animateElement(
+        () => this.animateContainer(true),
+        () => this.animateBody(true)
+      )
+    );
+  }
+
+  override get closeComponent$(): Observable<unknown> {
+    return of({}).pipe(
+      animateElement(
+        () => this.animateContainer(false),
+        () => this.animateBody(false)
+      ),
+      map(() => {
+        this._cleanUpPositioningEvents?.();
+        this._opacity$.next('');
+        this._display$.next('');
+        if (this.native) {
+          this.hidePopover();
+        }
+        return false;
+      })
+    );
+  }
 
   @query('.container')
   private _container!: HTMLElement;
@@ -98,24 +140,6 @@ export class MdPopoverElement extends base {
   @query('.body')
   private _body!: HTMLElement;
 
-  get open() {
-    return this._open$.value;
-  }
-  set open(value: boolean) {
-    if (value) {
-      this.openPopover();
-    } else {
-      this.closePopover();
-    }
-  }
-
-  get open$(): Observable<boolean> {
-    return this._open$.asObservable();
-  }
-
-  private readonly _open$ = new BehaviorSubject<boolean>(false);
-  private readonly _opening$ = new Subject<boolean>();
-  private readonly _closing$ = new Subject<boolean>();
   private readonly _position$ = new Subject<Position>();
   private readonly _opacity$ = new Subject<'1' | ''>();
   private readonly _display$ = new Subject<'inline-flex' | ''>();
@@ -149,10 +173,6 @@ export class MdPopoverElement extends base {
   private readonly _cancelOpen$ = new Subject<void>();
   private _documentClickSubscription?: Subscription;
 
-  constructor() {
-    super();
-  }
-
   protected override firstUpdated(_changedProperties: PropertyValues): void {
     super.firstUpdated(_changedProperties);
     const events = [
@@ -175,66 +195,6 @@ export class MdPopoverElement extends base {
     if (this.native) {
       this.popover = 'manual';
     }
-    this._opening$
-      .pipe(
-        filter(() => !this.open),
-        attribute(this, 'opening'),
-        tap(() => {
-          this.dispatchEvent(new CustomEvent('opening'));
-          this._cleanUpPositioningEvents = autoUpdate(
-            this.control!,
-            this,
-            this.updatePosition.bind(this)
-          );
-          this._display$.next('inline-flex');
-          if (this.native) {
-            this.showPopover();
-          }
-          this._opacity$.next('1');
-        }),
-        animateElement(
-          () => this.animateContainer(true),
-          () => this.animateBody(true)
-        ),
-        map(() => false),
-        attribute(this, 'opening'),
-        tap(() => this._open$.next(true))
-      )
-      .subscribe();
-    this._closing$
-      .pipe(
-        attribute(this, 'closing'),
-        tap(() => this.dispatchEvent(new CustomEvent('closing'))),
-        animateElement(
-          () => this.animateContainer(false),
-          () => this.animateBody(false)
-        ),
-        map(() => {
-          this._cleanUpPositioningEvents?.();
-          this._opacity$.next('');
-          this._display$.next('');
-          if (this.native) {
-            this.hidePopover();
-          }
-          return false;
-        }),
-        attribute(this, 'closing'),
-        tap(() => this._open$.next(false))
-      )
-      .subscribe();
-    this._open$
-      .pipe(
-        attribute(this, 'open'),
-        distinctUntilChanged(),
-        tap((x) => {
-          if (x) {
-            this.dispatchEvent(new Event('open'));
-          } else {
-            this.dispatchEvent(new Event('close'));
-          }
-        })
-      )
-      .subscribe();
     this._opacity$.pipe(cssProperty(this, 'opacity')).subscribe();
     this._display$.pipe(cssProperty(this, 'display')).subscribe();
     this.event$
@@ -248,9 +208,9 @@ export class MdPopoverElement extends base {
         filterEvent('click'),
         tap(() => {
           if (this.closeOnEvent && this.open) {
-            this.closePopover();
+            this.closeComponent();
           } else {
-            this.openPopover();
+            this.openComponent();
           }
         })
       )
@@ -270,7 +230,7 @@ export class MdPopoverElement extends base {
             map(() => x)
           )
         ),
-        tap(() => this.openPopover())
+        tap(() => this.openComponent())
       )
       .subscribe();
     this.event$
@@ -280,7 +240,7 @@ export class MdPopoverElement extends base {
         filterEvent('pointerleave'),
         tap(() => {
           this._cancelOpen$.next();
-          this.closePopover();
+          this.closeComponent();
         })
       )
       .subscribe();
@@ -295,7 +255,7 @@ export class MdPopoverElement extends base {
         filterEvent('contextmenu'),
         tap((x) => {
           x.preventDefault();
-          this.openPopover();
+          this.openComponent();
         })
       )
       .subscribe();
@@ -318,7 +278,7 @@ export class MdPopoverElement extends base {
           if (path.includes(this) || path.includes(this.control!)) {
             return;
           }
-          this.closePopover();
+          this.closeComponent();
         })
       )
       .subscribe();
@@ -328,9 +288,9 @@ export class MdPopoverElement extends base {
           filterAnyEvent(this.customEvent),
           tap(() => {
             if (this.closeOnEvent && this.open) {
-              this.closePopover();
+              this.closeComponent();
             } else {
-              this.openPopover();
+              this.openComponent();
             }
           })
         )
@@ -342,14 +302,6 @@ export class MdPopoverElement extends base {
     super.disconnectedCallback();
     this._documentClickSubscription?.unsubscribe();
     this._cleanUpPositioningEvents?.();
-  }
-
-  openPopover() {
-    this._opening$.next(true);
-  }
-
-  closePopover() {
-    this._closing$.next(true);
   }
 
   override render() {
@@ -368,10 +320,10 @@ export class MdPopoverElement extends base {
   }
 
   private handleClosePopover(event: Event) {
-    if (this.stopClosePropegation) { 
+    if (this.stopClosePropegation) {
       event.stopPropagation();
     }
-    this.closePopover();
+    this.closeComponent();
   }
 
   private async updatePosition() {

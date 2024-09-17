@@ -35,14 +35,18 @@ export class MdDatePickerElement extends base {
   @state()
   viewValue = this.value;
 
-  private get _viewValueAsDate() {
-    if (!this.viewValue) {
-      return new Date();
-    }
-    return new Date(this.viewValue);
+  get valueAsDate() {
+    return Date.parseString(this.value) ?? null;
   }
-  private set _viewValueAsDate(date: Date) {
-    this.viewValue = date.toString();
+  set valueAsDate(value: Date | null | undefined) {
+    this.value = value?.toString() ?? null;
+  }
+
+  get viewValueAsDate() {
+    return Date.parseString(this.value, new Date());
+  }
+  set viewValueAsDate(value: Date) {
+    this.value = value.toString();
   }
 
   override render() {
@@ -121,7 +125,7 @@ export class MdDatePickerElement extends base {
   }
 
   private todayClick() {
-    this._viewValueAsDate = new Date();
+    this.viewValueAsDate = new Date();
   }
 
   private change(event: Event) {

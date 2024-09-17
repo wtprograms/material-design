@@ -18,7 +18,6 @@ $tokens: (
   display: none;
   flex-direction: column;
   inset: auto;
-  isolation: isolate;
   opacity: 0;
   margin: 0;
   background-color: transparent;
@@ -27,6 +26,7 @@ $tokens: (
   border: 0;
   padding: 0;
   z-index: var(--md-sys-z-index-popover);
+  isolation: isolate;
 
   .container {
     position: absolute;
@@ -34,6 +34,7 @@ $tokens: (
     inset: 0;
     border-radius: inherit;
     transform-origin: top;
+    z-index: -1;
   }
 
   .body {

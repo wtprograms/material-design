@@ -1,9 +1,13 @@
 <div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
   {{ picker1.value }}
-  <md-time-picker #picker1 [value]="today"></md-time-picker>
+  <md-time-picker #picker1></md-time-picker>
 </div>
 <div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
   {{ picker2.value }}
-  <md-time-picker #picker2 seconds [value]="today"></md-time-picker>
+  <md-time-picker #picker2 has-seconds></md-time-picker>
 </div>
-  
+<div class="flex flex-col gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
+  {{ picker3.valueAsTimeOfDay }}
+  <md-time-picker #picker3 time-of-day></md-time-picker>
+</div>
+   

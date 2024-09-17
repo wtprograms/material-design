@@ -7,6 +7,7 @@ export * from './calendar-picker';
 export * from './check-box';
 export * from './date-picker';
 export * from './date-picker-field';
+export * from './dialog';
 export * from './divider';
 export * from './dropdown-field';
 export * from './elevation';

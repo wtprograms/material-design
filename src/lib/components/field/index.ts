@@ -145,7 +145,14 @@ export class MdFieldElement extends LitElement {
         ></slot>
       </div>
       <div class="popover">
-        <md-popover triggers="manual" offset="4" @open=${this.popoverOpen} @close=${this.popoverClose}>
+        <md-popover
+          triggers="manual"
+          offset="4"
+          @open=${this.redispatchEvent}
+          @close=${this.redispatchEvent}
+          @opening=${this.redispatchEvent}
+          @closing=${this.redispatchEvent}
+        >
           <slot name="popover"></slot>
         </md-popover>
       </div>
@@ -156,11 +163,7 @@ export class MdFieldElement extends LitElement {
       </div>`;
   }
 
-  private popoverOpen(event: Event) {
-    redispatchEvent(this, event);
-  }
-
-  private popoverClose(event: Event) {
+  private redispatchEvent(event: Event) {
     redispatchEvent(this, event);
   }
 
@@ -173,11 +176,11 @@ export class MdFieldElement extends LitElement {
   }
 
   openPopover() {
-    this._popover.openPopover();
+    this._popover.openComponent();
   }
 
   closePopover() {
-    this._popover.closePopover();
+    this._popover.closeComponent();
   }
 
   protected override firstUpdated(_changedProperties: PropertyValues): void {

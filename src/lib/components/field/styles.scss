@@ -102,7 +102,6 @@ $variants: ('filled', 'outlined');
   display: inline-flex;
   flex-direction: column;
   position: relative;
-  isolation: isolate;
 
   .body {
     display: inline-flex;

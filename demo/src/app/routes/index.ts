@@ -34,6 +34,10 @@ export default [
     loadComponent: () => import('./date-picker'),
   },
   {
+    path: 'dialog',
+    loadComponent: () => import('./dialog'),
+  },
+  {
     path: 'date-picker-field',
     loadComponent: () => import('./date-picker-field'),
   },

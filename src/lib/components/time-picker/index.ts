@@ -1,9 +1,8 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { attribute, mixinValueElement, observe } from '../../common';
-import { BehaviorSubject, distinctUntilChanged, map, Subject, tap } from 'rxjs';
-import { getMeridianValues } from '../../common/helpers/date/get-meridian-values';
+import { getMeridianValues, mixinValueElement } from '../../common';
+import { TimeSpan } from '../../common/helpers/time-span';
 import { classMap } from 'lit/directives/class-map.js';
 
 const base = mixinValueElement(LitElement);
@@ -15,59 +14,83 @@ export class MdTimePickerElement extends base {
   @property({ type: Boolean, attribute: 'has-seconds' })
   hasSeconds = false;
 
+  @property({ type: Boolean, attribute: 'time-of-day' })
+  timeOfDay = false;
+
   @property({ type: String })
   locale = 'en';
 
-  get hours() {
-    const hours = Date.parseString(this.value, new Date()).getHours();
-    return hours % 12 === 0 ? 12 : hours % 12;
+  @property({ type: String })
+  min: string | null = null;
+
+  @property({ type: String })
+  max: string | null = null;
+
+  get minAsTimeSpan() {
+    return this.min ? TimeSpan.parse(this.min) : null;
   }
-  set hours(value: number) {
-    const date = Date.parseString(this.value, new Date());
-    date.setHours(value);
-    this.value = date.toString();
+  set minAsTimeSpan(value: TimeSpan | null) {
+    this.min = value?.toString() ?? null;
   }
 
-  get minutes() {
-    return Date.parseString(this.value, new Date()).getMinutes();
+  get maxAsTimeSpan() {
+    return this.max ? TimeSpan.parse(this.max) : null;
   }
-  set minutes(value: number) {
-    const date = Date.parseString(this.value, new Date());
-    date.setMinutes(value);
-    this.value = date.toString();
-  }
-
-  get seconds() {
-    return Date.parseString(this.value, new Date()).getSeconds();
-  }
-  set seconds(value: number) {
-    const date = Date.parseString(this.value, new Date());
-    date.setSeconds(value);
-    this.value = date.toString();
+  set maxAsTimeSpan(value: TimeSpan | null) {
+    this.max = value?.toString() ?? null;
   }
 
   get meridian() {
-    return this.hours >= 12 ? 'pm' : 'am';
+    return this.valueAsTimeOfDay.getHours() < 12 ? 'AM' : 'PM';
   }
   set meridian(value: string) {
-    if (value === 'am') {
-      this.hours = this.hours % 12;
-    } else {
-      this.hours = this.hours % 12 + 12;
+    const date = this.valueAsTimeOfDay;
+    const hours = date.getHours();
+    if (value.toUpperCase() === 'AM') {
+      date.setHours(hours + 12);
+    } else if (value.toUpperCase() === 'PM') {
+      date.setHours(hours - 12);
     }
+    this.valueAsTimeOfDay = date;
+  }
+
+  get valueAsTimeSpan() {
+    if (!this.value) {
+      return new TimeSpan();
+    }
+    return TimeSpan.parse(this.value);
+  }
+  set valueAsTimeSpan(value: TimeSpan) {
+    this.value = value.toString();
+  }
+
+  get valueAsTimeOfDay() {
+    const date = new Date();
+    const timeSpan = this.valueAsTimeSpan;
+    date.setHours(timeSpan.hours);
+    date.setMinutes(timeSpan.minutes);
+    date.setSeconds(timeSpan.seconds);
+    return date;
+  }
+  set valueAsTimeOfDay(value: Date) {
+    const timeSpan = new TimeSpan(
+      value.getHours(),
+      value.getMinutes(),
+      value.getSeconds()
+    );
+    this.valueAsTimeSpan = timeSpan;
   }
 
   override render() {
-    const meridianValues = getMeridianValues(this.locale);
-
+    const hourMax = this.timeOfDay ? 12 : nothing;
     const seconds = this.hasSeconds
       ? html`<span class="colon">:</span>
           <input
             type="number"
+            autocomplete="off"
             min="0"
             max="59"
-            autocomplete="off"
-            .value=${this.seconds}
+            .value=${this.valueAsTimeSpan.seconds}
             @input=${this.setSeconds}
             @keyup=${this.enforceMinMax}
           />`
@@ -76,83 +99,102 @@ export class MdTimePickerElement extends base {
       <input
         class="hour"
         type="number"
-        min="0"
-        max="12"
         autocomplete="off"
-        .value=${this.hours}
+        min="0"
+        max=${hourMax}
+        .value=${this.valueAsTimeSpan.hours}
         @input=${this.setHours}
         @keyup=${this.enforceMinMax}
       />
       <span class="colon">:</span>
       <input
         type="number"
+        autocomplete="off"
+        .value=${this.valueAsTimeSpan.minutes}
         min="0"
         max="59"
-        autocomplete="off"
-        .value=${this.minutes}
         @input=${this.setMinutes}
         @keyup=${this.enforceMinMax}
       />
-      ${seconds}
-      <div class="meridian">
-        ${this.renderMeridianButton('am', meridianValues[0])}
-        ${this.renderMeridianButton('pm', meridianValues[1])}
-      </div>
+      ${seconds} ${this.renderMeridianButtons()}
     `;
   }
 
-  private renderMeridianButton(meridian: string, meridianValue: string) {
-    const hours = Date.parseString(this.value, new Date()).getHours();
+  private renderMeridianButtons() {
+    return this.timeOfDay
+      ? html`
+          <div class="meridian">
+            ${this.renderMeridianButton('AM')}
+            ${this.renderMeridianButton('PM')}
+          </div>
+        `
+      : nothing;
+  }
+
+  private renderMeridianButton(meridian: string) {
     const classes = classMap({
-      am: meridian === 'am',
-      pm: meridian === 'pm',
-      selected: meridian === 'am' ? hours < 12 : hours >= 12,
+      am: meridian === 'AM',
+      pm: meridian === 'PM',
+      selected: this.meridian === meridian,
     });
+    const text = getMeridianValues(this.locale)[meridian.toLowerCase()];
     return html`<md-button
       variant="plain"
+      @click=${() => (this.meridian = meridian)}
       class=${classes}
-      @click=${() => this.meridian = meridian}
-      >${meridianValue}</md-button
+      >${text}</md-button
     >`;
   }
 
   private setHours(event: Event) {
-    const value = this.getRanged(event);
-    const date = Date.parseString(this.value, new Date());
-    date.setHours(value);
-    this.value = date.toString();
+    const target = event.target as HTMLInputElement;
+    const timeSpan = this.valueAsTimeSpan;
+    let hours = parseInt(target.value, 10);
+    if (this.timeOfDay) {
+      hours = hours > 12 ? 12 : hours;
+    }
+    timeSpan.hours = hours;
+    this.valueAsTimeSpan = this.compare(timeSpan);
   }
 
   private setMinutes(event: Event) {
-    const value = this.getRanged(event);
-    const date = Date.parseString(this.value, new Date());
-    date.setMinutes(value);
-    this.value = date.toString();
+    const target = event.target as HTMLInputElement;
+    const timeSpan = this.valueAsTimeSpan;
+    timeSpan.minutes = parseInt(target.value, 10);
+    if (this.timeOfDay) {
+      timeSpan.hours = timeSpan.hours > 12 ? 12 : timeSpan.hours;
+    }
+   this.valueAsTimeSpan = this.compare(timeSpan);
   }
 
   private setSeconds(event: Event) {
-    const value = this.getRanged(event);
-    const date = Date.parseString(this.value, new Date());
-    date.setSeconds(value);
-    this.value = date.toString();
+    const target = event.target as HTMLInputElement;
+    let timeSpan = this.valueAsTimeSpan;
+    timeSpan.seconds = parseInt(target.value, 10);
+    if (this.timeOfDay) {
+      timeSpan.hours = timeSpan.hours > 12 ? 12 : timeSpan.hours;
+    }
+    this.valueAsTimeSpan = this.compare(timeSpan);
   }
 
-  private getRanged(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = !target.value ? 0 : parseInt(target.value, 10);
-    const _min = parseInt(target.min, 10);
-    const _max = parseInt(target.max, 10);
-    return Math.min(Math.max(value, _min), _max);
+  private compare(timeSpan: TimeSpan): TimeSpan {
+    if (this.minAsTimeSpan) {
+      timeSpan = timeSpan.min(this.minAsTimeSpan);
+    }
+    if (this.maxAsTimeSpan) {
+      timeSpan = timeSpan.max(this.maxAsTimeSpan);
+    }
+    return timeSpan;
   }
 
   private enforceMinMax(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.value != "") {
-      if (parseInt(target.value) < parseInt(target.min)) {
-        target.value = target.min;
+    const el = event.target as HTMLInputElement;
+    if (el.value != '') {
+      if (parseInt(el.value) < parseInt(el.min)) {
+        el.value = el.min;
       }
-      if (parseInt(target.value) > parseInt(target.max)) {
-        target.value = target.max;
+      if (parseInt(el.value) > parseInt(el.max)) {
+        el.value = el.max;
       }
     }
   }

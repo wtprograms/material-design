@@ -55,7 +55,8 @@ export class TimeSpan {
 
   toString(): string {
     const pad = (num: number) => num.toString().padStart(2, '0');
-    return `${pad(this._hours)}:${pad(this._minutes)}:${pad(this._seconds)}`;
+    const result = `${pad(this._hours)}:${pad(this._minutes)}:${pad(this._seconds)}`;
+    return result;
   }
 
   static parse(timeString: string): TimeSpan {
@@ -68,5 +69,26 @@ export class TimeSpan {
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
     return new TimeSpan(hours, minutes, remainingSeconds);
+  }
+
+  static fromDate(date: Date) {
+    return new TimeSpan(date.getHours(), date.getMinutes(), date.getSeconds());
+  }
+
+  compare(other: TimeSpan) {
+    if (this.totalSeconds < other.totalSeconds) {
+      return -1;
+    } else if (this.totalSeconds > other.totalSeconds) {
+      return 1;
+    }
+    return 0;
+  }
+
+  min(other: TimeSpan): TimeSpan {
+    return this.compare(other) < 0 ? this : other;
+  }
+
+  max(other: TimeSpan): TimeSpan {
+    return this.compare(other) > 0 ? this : other;
   }
 }

@@ -58,11 +58,15 @@ export class MdDropdownFieldElement extends base {
   hasItems = false;
 
   private readonly _focused$ = new BehaviorSubject(false);
+  private readonly _open$ = new BehaviorSubject(false);
+  private readonly _opening$ = new BehaviorSubject(false);
 
   private readonly _populated$ = combineLatest({
     focused: this._focused$,
     value: this.value$,
-  }).pipe(map(({ focused, value }) => focused || !!value));
+    open: this._open$,
+    opening: this._opening$,
+  }).pipe(map((x) => x.focused || !!x.value || x.opening));
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -91,6 +95,10 @@ export class MdDropdownFieldElement extends base {
       suffix-text=${ifDefined(this.suffixText)}
       ?disabled=${this.disabled}
       @body-click=${this.bodyClick}
+      @open=${() => this._open$.next(true)}
+      @opening=${() => this._opening$.next(true)}
+      @close=${() => this._open$.next(false)}
+      @closing=${() => this._opening$.next(false)}
     >
       ${this.value}
       <slot name="leading" slot="leading"></slot>
