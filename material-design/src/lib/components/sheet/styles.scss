@@ -3,8 +3,9 @@
 
 $tokens: (
   "container": (
-    "color": var(--md-sys-color-surface-container-high),
+    "color": var(--md-sys-color-surface-container),
     "shape": var(--md-sys-shape-extra-large),
+    'content-padding': 24px
   ),
   'icon-color': var(--md-sys-color-secondary),
   'headline-color': var(--md-sys-color-surface-on),
@@ -119,13 +120,15 @@ $docks: ('top', 'end', 'bottom', 'start');
     border-radius: var(--_container-shape);
     flex-direction: column;
     gap: 24px;
-    padding: 24px;
+    padding-inline: var(--_container-content-padding);
+    padding-top: var(--_container-content-padding);
+    padding-bottom: var(--_container-content-padding);
     height: 100%;
 
   }
 
   .header {
-    display: inline-flex;
+    display: none;
     flex-direction: column;
     width: 100%;
     gap: 16px;
@@ -134,7 +137,7 @@ $docks: ('top', 'end', 'bottom', 'start');
   .headline {
     @include md.typescale("headline", "small");
     color: var(--_headline-color);
-    display: inline-flex;
+    display: none;
     flex-direction: row;
     align-items: flex-start;
     gap: 16px;
@@ -182,6 +185,9 @@ $docks: ('top', 'end', 'bottom', 'start');
   .content {
     height: 100%;
     position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -207,9 +213,21 @@ $docks: ('top', 'end', 'bottom', 'start');
   }
 }
 
+:host([headline]), :host([supporting-text]) {
+  .header {
+    display: inline-flex;
+  }
+}
+
+:host([headline]) {
+  .headline {
+    display: inline-flex;
+  }
+}
+
 :host([supporting-text]) {
   .supporting-text {
-    display: block;
+    display: inline-flex;
   }
 }
 

@@ -46,9 +46,11 @@ $tokens: (
   color: var(--_color);
   padding-inline-start: 12px;
   padding-inline-end: 12px;
+  gap: 12px;
   align-items: center;
   border: var(--_border);
   @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, opacity');
 
   button, a {
     background-color: transparent;
@@ -81,10 +83,6 @@ $tokens: (
 
   md-icon {
     z-index: -1;
-  }
-
-  ::slotted(md-icon) {
-    --md-comp-icon-size: 18;
   }
 
   md-ripple {

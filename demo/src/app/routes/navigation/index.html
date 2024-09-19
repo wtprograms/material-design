@@ -1,0 +1,33 @@
+<md-card class="flex flex-row p-4 gap-4">
+  <md-button (click)="next()">{{ layout() }}</md-button>
+  <md-button (click)="embedded.set(!embedded())">embedded: {{ embedded() }}</md-button>
+  <md-button (click)="navigation.open = !navigation.open">open: {{ navigation.open }}</md-button>
+  <md-button (click)="embed()">embed</md-button>
+</md-card>
+
+<div class="flex border border-solid border-outline-variant h-[600px] w-[600px]">
+  <md-navigation #navigation [layout]="layout()" [embedded]="embedded()">
+    <md-navigation-headline>Main</md-navigation-headline>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-divider></md-divider>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-navigation-item>
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+    <md-navigation-item class="mt-auto">
+      <md-icon slot="icon">home</md-icon>
+      Home
+    </md-navigation-item>
+  </md-navigation>
+</div>

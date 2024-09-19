@@ -55,6 +55,7 @@ $tokens: (
   display: inline-flex;
   gap: 16px;
   background-color: var(--_container-color);
+  @include md.motion('background-color, color, opacity');
 
   .body {
     position: relative;

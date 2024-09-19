@@ -31,9 +31,21 @@ jobs:
       with:
         version: ${{ steps.get_version.outputs.version }}
 
+    - name: Install @wtprograms/material-design
+      working-directory: ./material-design
+      run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
     - name: Publish @wtprograms/material-design
       working-directory: ./material-design
       run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Install @wtprograms/material-design-tailwind
+      working-directory: ./material-design-tailwind
+      run: npm ci
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

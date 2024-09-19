@@ -27,6 +27,7 @@ $tokens: (
   padding: 0;
   z-index: var(--md-sys-z-index-popover);
   isolation: isolate;
+  color: inherit;
 
   .container {
     position: absolute;
@@ -35,6 +36,7 @@ $tokens: (
     border-radius: inherit;
     transform-origin: top;
     z-index: -1;
+    color: inherit;
   }
 
   .body {
@@ -47,6 +49,7 @@ $tokens: (
     padding-bottom: var(--_body-padding-bottom);
     max-height: var(--_body-max-height);
     overflow-y: auto;
+    color: inherit;
   }
 }
 

@@ -68,6 +68,13 @@ export class MdFieldElement extends LitElement {
 
   @query('md-popover')
   private _popover!: MdPopoverElement;
+    
+  get open() {
+    return this._popover.open;
+  }
+  set open(value: boolean) {
+    this._popover.open = value;
+  }
 
   @property({ type: Boolean, reflect: true })
   @property$()

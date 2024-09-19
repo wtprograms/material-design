@@ -1,0 +1,143 @@
+@use '../md';
+
+$tokens: (
+  'indicator-width': 64px,
+  'background-color': transparent,
+  'color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'color': md.disabled('color'),
+  ),
+  'selected': (
+    'background-color': var(--md-sys-color-secondary-container),
+    'color': var(--md-sys-color-secondary-container-on),
+    'icon-filled': 1,
+    'disabled': (
+      'background-color': md.disabled('background-color'),
+      'color': md.disabled('color'),
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'navigation-item');
+}
+
+:host([disabled]) {
+  @include md.set-properties(
+    map-get($tokens, 'disabled'),
+    'navigation-item-disabled'
+  );
+}
+
+:host([selected]) {
+  @include md.set-properties(
+    map-get($tokens, 'selected'),
+    'navigation-item-selected'
+  );
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(
+    map-get(map-get($tokens, 'selected'), 'disabled'),
+    'navigation-item-selected-disabled'
+  );
+}
+
+:host {
+  --__color: var(--_color);
+  position: relative;
+  color: var(--_color);
+  cursor: pointer;
+  isolation: isolate;
+  @include md.typescale('label', 'small');
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  @include md.motion('background-color, width, height, color, font');
+
+  .indicator {
+    position: relative;
+    background-color: var(--_background-color);
+    border-radius: var(--md-sys-shape-full);
+    width: var(--_indicator-width);
+    height: 32px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: -1;
+
+    @include md.motion('background-color, width, height, color');
+  }
+
+  button,
+  a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--__color);
+    --md-comp-ripple-transform-default: scaleX(0);
+    --md-comp-ripple-transform-hover: scaleX(1);
+  }
+
+  md-badge {
+    margin-inline-start: auto;
+  }
+}
+
+:host([hide-label]:not([drawer])) {
+  .label {
+    display: none;
+  }
+}
+
+:host([drawer]) {
+  flex-direction: row;
+  height: 56px;
+  gap: 12px;
+  @include md.typescale('label', 'large');
+  padding-inline-start: 16px;
+  padding-inline-end: 24px;
+
+  .indicator {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+  }
+
+  button,
+  a {
+    justify-content: flex-start;
+  }
+
+  md-ripple {
+    --md-comp-ripple-transform-default: scaleX(1);
+    --md-comp-ripple-transform-hover: scaleX(1);
+  }
+}
+
+@include md.disabled-component;

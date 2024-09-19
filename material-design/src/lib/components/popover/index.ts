@@ -11,7 +11,6 @@ import {
   Strategy,
 } from '@floating-ui/dom';
 import {
-  attribute,
   cssProperty,
   EASING,
   filterAnyEvent,
@@ -20,8 +19,6 @@ import {
   observe,
 } from '../../common';
 import {
-  BehaviorSubject,
-  distinctUntilChanged,
   filter,
   fromEvent,
   map,
@@ -181,8 +178,6 @@ export class MdPopoverElement extends base {
       'pointerenter',
       'pointerleave',
       'contextmenu',
-      'focusin',
-      'focusout',
     ];
     if (this.customEvent) {
       events.push(this.customEvent);
@@ -224,23 +219,23 @@ export class MdPopoverElement extends base {
             !this.customEvent
         ),
         filterEvent('pointerenter'),
-        switchMap((x) =>
+        switchMap(() =>
           timer(this.delay).pipe(
             takeUntil(this._cancelOpen$),
-            map(() => x)
+            tap(() => this.openComponent())
           )
-        ),
-        tap(() => this.openComponent())
+        )
       )
       .subscribe();
     this.event$
       .pipe(
-        filter(() => !this.manualClose),
         filter(() => this.triggers.includes('hover')),
         filterEvent('pointerleave'),
         tap(() => {
           this._cancelOpen$.next();
-          this.closeComponent();
+          if (!this.manualClose) {
+            this.closeComponent();
+          }
         })
       )
       .subscribe();

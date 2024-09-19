@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "index",
+			"path": "material-design",
+			"problemMatcher": [],
+			"label": "npm: index - material-design",
+			"detail": "node indexer",
+			"options": {
+				"cwd": "${workspaceFolder}/material-design"
+			}
+		}
+	]
+}

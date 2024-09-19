@@ -82,6 +82,14 @@ export default [
     loadComponent: () => import('./menu-item'),
   },
   {
+    path: 'navigation',
+    loadComponent: () => import('./navigation'),
+  },
+  {
+    path: 'navigation-item',
+    loadComponent: () => import('./navigation-item'),
+  },
+  {
     path: 'popover',
     loadComponent: () => import('./popover'),
   },
@@ -124,5 +132,9 @@ export default [
   {
     path: 'time-picker-field',
     loadComponent: () => import('./time-picker-field'),
+  },
+  {
+    path: 'tooltip',
+    loadComponent: () => import('./tooltip'),
   },
 ] satisfies Routes;

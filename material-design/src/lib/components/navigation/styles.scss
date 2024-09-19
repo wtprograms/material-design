@@ -1,0 +1,91 @@
+@use '../md';
+
+$tokens: (
+  'background-color': var(--md-sys-color-surface-container),
+  'direction': row,
+  'indicator-width': 64px,
+  'item-width': 100%,
+  'spacing': (
+    'padding': 12px 0 16px 0,
+    'gap': 8px,
+  ),
+  'rail': (
+    'background-color': transparent,
+    'indicator-width': 56px,
+    'direction': column,
+    'item-width': fit-content,
+    'spacing': (
+      'padding': 16px 12px,
+      'gap': 12px,
+    ),
+  ),
+  'drawer': (
+    'background-color': transparent,
+    'indicator-width': unset,
+    'direction': column,
+    'item-width': 100%,
+    'spacing': (
+      'padding': 16px 12px,
+      'gap': 0px,
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'navigation');
+}
+
+:host([layout='rail']) {
+  @include md.set-properties(map-get($tokens, 'rail'), 'navigation-rail');
+}
+
+:host([layout='drawer']) {
+  @include md.set-properties(map-get($tokens, 'drawer'), 'navigation-drawer');
+}
+
+:host {
+  --_decoration-display: none;
+  --__indicator-width: var(--_indicator-width);
+  position: relative;
+  display: inline-flex;
+  flex-direction: var(--_direction);
+  background-color: var(--_background-color);
+  width: 100%;
+  padding: var(--_spacing-padding);
+  gap: var(--_spacing-gap);
+  z-index: var(--md-sys-z-index-navigation);
+  height: 80px;
+
+  ::slotted(md-navigation-item) {
+    --md-comp-navigation-item-indicator-width: var(--__indicator-width);
+    width: var(--_item-width);
+  }
+
+  ::slotted(md-divider) {
+    display: var(--_decoration-display);
+    margin-inline: 14px 8px;
+    align-self: stretch;
+  }
+
+  ::slotted(md-navigation-headline) {
+    display: var(--_decoration-display);
+  }
+
+  md-sheet {
+    --md-comp-sheet-container-content-padding: 12px;
+  }
+}
+
+:host([layout='drawer']) {
+  --_decoration-display: inline-flex;
+  height: 100%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: 280px;
+  --_item-width: 280px;
+}
+
+:host([layout='rail']) {
+  height: 100%;
+  width: 80px;
+}

@@ -1,0 +1,84 @@
+@use '../md';
+
+$tokens: (
+  'min-width': auto,
+  'max-width': 280px,
+  'width': auto,
+  'padding-top': 4px,
+  'padding-bottom': 4px,
+  'padding-start': 8px,
+  'padding-end': 8px,
+  'color': var(--md-sys-color-surface-inverse-on),
+  'background-color': var(--md-sys-color-surface-inverse),
+  'shape': var(--md-sys-shape-extra-small),
+  'rich': (
+    'padding-top': 12px,
+    'padding-bottom': 8px,
+    'padding-start': 16px,
+    'padding-end': 16px,
+    'color': var(--md-sys-color-surface-variant-on),
+    'background-color': var(--md-sys-color-surface-container),
+    'shape': var(--md-sys-shape-medium),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'tooltip');
+}
+
+:host([rich]) {
+  @include md.set-properties(map-get($tokens, 'rich'), 'tooltip-rich');
+}
+
+:host {
+  --__background-color: var(--_background-color);
+  color: var(--_color);
+  pointer-events: none;
+  md-popover {
+    min-width: 112px;
+    max-width: 280px;
+    --md-comp-popover-background-color: var(--__background-color);
+    --md-comp-popover-body-padding-top: var(--_padding-top);
+    --md-comp-popover-body-padding-bottom: var(--_padding-bottom);
+    --md-comp-popover-body-padding-start: var(--_padding-start);
+    --md-comp-popover-body-padding-end: var(--_padding-end);
+  }
+
+  .popover-body {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .headline {
+    display: none;
+    @include md.typescale('title', 'small');
+    margin-bottom: 4px;
+  }
+
+  .supporting-text {
+    @include md.typescale('body', 'medium');
+    margin-bottom: 12px;
+  }
+
+  .actions {
+    display: none;
+    gap: 8px;
+  }
+}
+
+:host([rich]) {
+  pointer-events: all;
+}
+
+:host([headline]) {
+  .headline {
+    display: inline-flex;
+  }
+}
+
+:host([actions]) {
+  .actions {
+    display: inline-flex;
+  }
+}
+

@@ -1,0 +1,16 @@
+@use '../md';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on)
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'navigation-headline');
+  display: inline-flex;
+  align-items: center;
+  color: var(--_color);
+  height: 56px;
+  padding-inline: 16px 24px;
+
+  @include md.typescale('title', 'small');
+}
