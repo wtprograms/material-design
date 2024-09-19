@@ -4,26 +4,26 @@
   <md-button (click)="busy.set(!busy())">Toggle busy</md-button>
 </div>
 <div class="flex flex-col items-start col-span-2 gap-4 rounded-medium border border-solid border-outline-variant p-2">
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
     button
   </md-button>
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" href="#">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()" href="#">
     anchor
   </md-button>
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
     <md-icon slot="leading">home</md-icon>
     button
   </md-button>
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
     button
     <md-icon slot="trailing">home</md-icon>
   </md-button>
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
     <md-icon slot="leading">home</md-icon>
     button
     <md-icon slot="trailing">home</md-icon>
   </md-button>
-  <md-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" class="w-full">
+  <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()" class="w-full">
     <md-icon slot="leading">home</md-icon>
     button
     <md-icon slot="trailing">home</md-icon>

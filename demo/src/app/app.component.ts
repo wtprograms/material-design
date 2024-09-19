@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
+import {Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import routes from './routes';
 
@@ -8,7 +8,6 @@ import routes from './routes';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './app.component.html',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   host: {
     class: 'tw flex gap-4 relative'
   }

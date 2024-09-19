@@ -1,0 +1,127 @@
+@use "../md";
+
+$tokens: (
+  "size": 40,
+  "disabled": (
+    "color": md.disabled("color"),
+    "background-color": md.disabled("background-color"),
+    "border-color": md.disabled("border"),
+  ),
+  "surface": (
+    "background-color": var(--md-sys-color-surface-container-low),
+    "border-color": var(--md-sys-color-outline),
+    "color": var(--md-sys-color-surface-variant-on),
+  ),
+  "primary": (
+    "background-color": var(--md-sys-color-primary-container),
+    "border-color": var(--md-sys-color-primary-container-on),
+    "color": var(--md-sys-color-primary-container-on),
+  ),
+  "secondary": (
+    "background-color": var(--md-sys-color-secondary-container),
+    "border-color": var(--md-sys-color-secondary-container-on),
+    "color": var(--md-sys-color-secondary-container-on),
+  ),
+  "tertiary": (
+    "background-color": var(--md-sys-color-tertiary-container),
+    "border-color": var(--md-sys-color-tertiary-container-on),
+    "color": var(--md-sys-color-tertiary-container-on),
+  ),
+  "plain": (
+    "background-color": transparent,
+    "border-color": transparent,
+    "color": var(--md-sys-color-surface-variant-on),
+    "disabled": (
+      "background-color": transparent,
+      "border-color": transparent,
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, "avatar");
+}
+
+$palettes: ("surface", "primary", "secondary", "tertiary", "plain");
+
+@each $palette in $palettes {
+  :host([palette="#{$palette}"]) {
+    @include md.set-properties(
+      map-get($tokens, $palette),
+      "avatar-#{$palette}"
+    );
+  }
+
+  :host([palette="#{$palette}"][disabled]) {
+    @include md.set-properties(
+      map-get(map-get($tokens, $palette), "disabled"),
+      "avatar-#{$palette}-disabled"
+    );
+  }
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, "disabled"), "avatar-disabled");
+}
+
+:host {
+  --_size-px: calc(var(--_size) * 1px);
+  --__color: var(--_color);
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  color: var(--_color);
+  height: var(--_size-px);
+  width: var(--_size-px);
+  flex-shrink: 0;
+  @include md.typescale("label", "large");
+  font-size: calc(var(--_size-px) * 0.45);
+  background-color: var(--_background-color);
+  border: 1px solid var(--_border-color);
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  overflow: hidden;
+
+  img {
+    height: var(--_size-px);
+    width: var(--_size-px);
+  }
+
+  button,
+  a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion("opacity");
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--__color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+    z-index: 1;
+  }
+}
+
+:host([interactive]) {
+  cursor: pointer;
+}
+
+@include md.disabled-component;

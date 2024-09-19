@@ -30,6 +30,14 @@ export default [
     loadComponent: () => import('./check-box'),
   },
   {
+    path: 'chip',
+    loadComponent: () => import('./chip'),
+  },
+  {
+    path: 'card',
+    loadComponent: () => import('./card'),
+  },
+  {
     path: 'date-picker',
     loadComponent: () => import('./date-picker'),
   },
@@ -48,6 +56,10 @@ export default [
   {
     path: 'elevation',
     loadComponent: () => import('./elevation'),
+  },
+  {
+    path: 'fab',
+    loadComponent: () => import('./fab'),
   },
   {
     path: 'field',
@@ -92,6 +104,10 @@ export default [
   {
     path: 'ripple',
     loadComponent: () => import('./ripple'),
+  },
+  {
+    path: 'sheet',
+    loadComponent: () => import('./sheet'),
   },
   {
     path: 'switch',

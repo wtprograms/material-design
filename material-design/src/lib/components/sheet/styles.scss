@@ -1,0 +1,220 @@
+@use "../md";
+
+
+$tokens: (
+  "container": (
+    "color": var(--md-sys-color-surface-container-high),
+    "shape": var(--md-sys-shape-extra-large),
+  ),
+  'icon-color': var(--md-sys-color-secondary),
+  'headline-color': var(--md-sys-color-surface-on),
+  'supporting-text-color': var(--md-sys-color-surface-variant-on),
+  'top': (
+    'container-shape': var(--md-sys-shape-extra-large-bottom),
+    'container-max-height': calc(100dvh - 72px),
+    'max-width': min(640px, 100%),
+    'max-height': 100px,
+    'margin': 0 auto auto auto,
+    'actions-justify': flex-end
+  ),
+  'end': (
+    'container-shape': var(--md-sys-shape-extra-large-start),
+    'container-height': 100dvh,
+    'max-width': min(400px, calc(100% - 48px)),
+    'max-height': 100%,
+    'margin': 0 0 0 auto,
+    'actions-justify': flex-start
+  ),
+  'bottom': (
+    'container-shape': var(--md-sys-shape-extra-large-top),
+    'container-max-height': calc(100dvh - 72px),
+    'max-width': min(640px, 100%),
+    'max-height': revert,
+    'margin': auto auto 0 auto,
+    'actions-justify': flex-end
+  ),
+  'start': (
+    'container-shape': var(--md-sys-shape-extra-large-end),
+    'container-height': 100dvh,
+    'max-width': min(400px, calc(100% - 48px)),
+    'max-height': 100%,
+    'margin': 0 auto 0 0,
+    'actions-justify': flex-end
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'sheet');
+}
+
+$docks: ('top', 'end', 'bottom', 'start');
+@each $dock in $docks {
+  :host([dock='#{$dock}']) {
+    @include md.set-properties(map-get($tokens, $dock), 'sheet-#{$dock}');
+  }
+}
+
+:host {
+  max-height: var(--_max-height);
+  max-width: var(--_max-width);
+  min-height: 140px;
+  min-width: 280px;
+  display: contents;
+  margin: var(--_margin);
+  position: fixed;
+  height: fit-content;
+  width: fit-content;
+
+  dialog {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+    color: var(--md-sys-color-surface-on);
+  }
+
+  dialog[open] {
+    display: inline-flex;
+  }
+
+  ::backdrop {
+    background: none;
+  }
+
+  .container {
+    position: relative;
+    border-radius: inherit;
+    display: inline-flex;
+    border-radius: var(--_container-shape);
+    flex-direction: column;
+
+    height: var(--_container-height);
+    max-height: var(--_container-max-height);
+
+
+    &::before {
+      content: "";
+      background-color: var(--_container-color);
+      border-radius: inherit;
+      inset: 0;
+      position: absolute;
+    }
+  }
+
+  .container-content {
+    overflow-y: auto;
+    position: relative;
+    border-radius: inherit;
+    display: inline-flex;
+    border-radius: var(--_container-shape);
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    height: 100%;
+
+  }
+
+  .header {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .headline {
+    @include md.typescale("headline", "small");
+    color: var(--_headline-color);
+    display: inline-flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .supporting-text {
+    display: none;
+    @include md.typescale("body", "medium");
+    color: var(--_supporting-text-color);
+  }
+
+  .icon {
+    display: none;
+    color: var(--_icon-color);
+
+    ::slotted(md-icon) {
+      --md-sys-icon-size: 24;
+    }
+  }
+
+  .scrim {
+    background: var(--md-sys-color-scrim);
+    display: none;
+    inset: 0;
+    opacity: 32%;
+    pointer-events: none;
+    position: fixed;
+    z-index: var(--md-sys-z-index-scrim);
+  }
+
+  .actions {
+    display: none;
+    gap: 8px;
+    margin-top: auto;
+    justify-content: var(--_actions-justify);
+  }
+
+  .scroller {
+    display: inline-flex;
+    overflow-y: auto;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .content {
+    height: 100%;
+    position: relative;
+  }
+}
+
+:host([open]),
+:host([opening]) {
+  .scrim {
+    display: block;
+  }
+}
+
+:host([icon]) {
+  .icon {
+    display: inline;
+  }
+
+  .headline {
+    flex-direction: column;
+  }
+
+  .headline,
+  .header {
+    align-items: center;
+  }
+}
+
+:host([supporting-text]) {
+  .supporting-text {
+    display: block;
+  }
+}
+
+:host([actions]) {
+  .actions {
+    display: inline-flex;
+  }
+}

@@ -1,9 +1,6 @@
-<h1>
-  md-dialog
-</h1>
-<md-card class="flex flex-row p-4 gap-4">
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
   <md-button (click)="dialog.openComponent()">Open</md-button>
-</md-card>
+</div>
 
 <md-dialog #dialog headline="Delete?" supporting-text="Are you sure you want to delete?">
   <md-icon slot="icon">home</md-icon>

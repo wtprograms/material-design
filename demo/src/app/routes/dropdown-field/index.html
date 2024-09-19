@@ -10,7 +10,7 @@
   </md-button>
 </div>
 <div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant mb-4">
-  <md-dropdown-field label="Label" [variant]="variant()" [errorText]="errorText()" prefix="$" suffix=".00"
+  <md-dropdown-field label="Label" [variant]="variant()" [attr.error-text]="errorText()" prefix="$" suffix=".00"
     [disabled]="disabled()">
     <md-icon slot="leading">home</md-icon>
     <md-icon slot="trailing">home</md-icon>

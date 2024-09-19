@@ -1,4 +1,4 @@
-import '../../dist';
+import '../../material-design/dist';
 
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';

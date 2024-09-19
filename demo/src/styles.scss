@@ -1,4 +1,4 @@
-@use '../../dist/styles/index' as md;
+@use '../../material-design/src/index' as md;
 
 @include md.import;
 @include md.reboot;

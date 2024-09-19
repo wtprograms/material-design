@@ -5,13 +5,13 @@
   <md-button (click)="selected.set(!selected())">Toggle selected</md-button>
 </div>
 <div class="flex items-start col-span-2 gap-4 rounded-medium border border-solid border-outline-variant p-2">
-  <md-icon-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" [selected]="selected()">
+  <md-icon-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()" [selected]="selected()">
     home
   </md-icon-button>
-  <md-icon-button [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" href="#" [selected]="selected()">
+  <md-icon-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()" href="#" [selected]="selected()">
     link
   </md-icon-button>
-  <md-icon-button custom [variant]="variant()" [disabled]="disabled() || null" [busy]="busy() || null" [selected]="selected()">
+  <md-icon-button custom [variant]="variant()" [disabled]="disabled()" [busy]="busy()" [selected]="selected()">
     1
   </md-icon-button>
 </div>

@@ -1,13 +1,15 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { IconButtonVariant } from '../../../../../material-design/dist';
 
 @Component({
   templateUrl: './index.html',
   standalone: true,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export default class Page {
-  readonly variants: string[] = ['filled' , 'tonal' , 'outlined' , 'standard'];
-  readonly variant = signal<string>('filled');
+  readonly variants: IconButtonVariant[] = ['filled', 'tonal', 'outlined', 'standard'];
+  readonly variant = signal<IconButtonVariant>('filled');
   readonly disabled = signal(false);
   readonly selected = signal(false);
   readonly busy = signal(false);

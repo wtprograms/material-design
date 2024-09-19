@@ -1,4 +1,4 @@
-const md = require('../tailwind');
+const md = require('../material-design-tailwind');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
