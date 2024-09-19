@@ -85,6 +85,10 @@ $tokens: (
   --_item-width: 280px;
 }
 
+:host([layout='drawer']:not([embedded])) {
+  position: absolute;
+}
+
 :host([layout='rail']) {
   height: 100%;
   width: 80px;

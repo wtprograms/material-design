@@ -8,7 +8,8 @@ $tokens: (
     'end': 0,
     'bottom': 0
   ),
-  'body-max-height': unset
+  'body-max-height': unset,
+  'body-gap': 0
 );
 
 :host {
@@ -50,6 +51,7 @@ $tokens: (
     max-height: var(--_body-max-height);
     overflow-y: auto;
     color: inherit;
+    gap: var(--_body-gap);
   }
 }
 

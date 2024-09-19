@@ -1,0 +1,89 @@
+@use '../md';
+
+$tokens: (
+  'background-color': var(--md-sys-color-surface-inverse),
+  'color': var(--md-sys-color-surface-inverse-on),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'snack-bar');
+
+  --__background-color: var(--_background-color);
+  --__color: var(--_color);
+  min-width: min(500px, calc(100% - 48px));
+  max-width: min(500px, calc(100% - 48px));
+  display: contents;
+  margin: auto;
+  position: fixed;
+  height: fit-content;
+  width: fit-content;
+
+  .popover {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+    color: var(--_color);
+  }
+
+  .container {
+    position: absolute;
+    background-color: var(--_background-color);
+    border-radius: var(--md-sys-shape-extra-small);
+    inset: 0;
+    z-index: -1;
+    color: inherit;
+    transform-origin: bottom;
+  }
+
+  .body {
+    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 4px;
+    padding-inline-end: 12px;
+    padding-bottom: 4px;
+    padding-inline-start: 16px;
+
+    display: inline-flex;
+    opacity: 0;
+    color: inherit;
+
+  }
+
+  .actions {
+    display: none;
+    margin-inline-start: auto;
+  }
+
+  ::slotted(md-button) {
+    --md-comp-button-text-color: var(--md-sys-color-primary-inverse-on);
+  }
+}
+
+:host([actions]) {
+  .actions {
+    display: inline-flex;
+  }
+}
+
+:host([multiline]) {
+  .body {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .actions {
+    justify-content: flex-end;
+  }
+}

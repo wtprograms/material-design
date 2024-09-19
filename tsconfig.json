@@ -25,6 +25,7 @@
     ]
   },
   "exclude": [
-    "dist"
+    "dist",
+    "demo"
   ]
 }

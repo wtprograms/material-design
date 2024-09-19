@@ -30,6 +30,7 @@ export * from './progress-indicator';
 export * from './radio-button';
 export * from './ripple';
 export * from './sheet';
+export * from './snackbar';
 export * from './switch';
 export * from './text-field';
 export * from './time-picker';

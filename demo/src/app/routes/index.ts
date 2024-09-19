@@ -118,6 +118,10 @@ export default [
     loadComponent: () => import('./sheet'),
   },
   {
+    path: 'snack-bar',
+    loadComponent: () => import('./snack-bar'),
+  },
+  {
     path: 'switch',
     loadComponent: () => import('./switch'),
   },

@@ -94,12 +94,13 @@ export class MdPopoverElement extends base {
   override get openComponent$(): Observable<unknown> {
     return of({}).pipe(
       tap(() => {
-        this.dispatchEvent(new Event('opening', { bubbles: true }));
-        this._cleanUpPositioningEvents = autoUpdate(
-          this.control!,
-          this,
-          this.updatePosition.bind(this)
-        );
+        if (this.control) {
+          this._cleanUpPositioningEvents = autoUpdate(
+            this.control!,
+            this,
+            this.updatePosition.bind(this)
+          );
+        }
         this._display$.next('inline-flex');
         if (this.native) {
           this.showPopover();
@@ -119,14 +120,13 @@ export class MdPopoverElement extends base {
         () => this.animateContainer(false),
         () => this.animateBody(false)
       ),
-      map(() => {
+      tap(() => {
         this._cleanUpPositioningEvents?.();
         this._opacity$.next('');
         this._display$.next('');
         if (this.native) {
           this.hidePopover();
         }
-        return false;
       })
     );
   }
@@ -304,12 +304,13 @@ export class MdPopoverElement extends base {
       ? nothing
       : html`<md-elevation level="2"></md-elevation>`;
     return html`<div
+        part="container"
         class="container"
         style="transformOrigin: ${observe(this._transformOrigin$)}"
       >
         ${elevation}
       </div>
-      <div class="body">
+      <div part="body" class="body">
         <slot @close-popover=${this.handleClosePopover}></slot>
       </div>`;
   }
@@ -322,6 +323,9 @@ export class MdPopoverElement extends base {
   }
 
   private async updatePosition() {
+    if (!this.control) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const middleware: any[] = [offset(this.offset)];
     if (this.flip) {
