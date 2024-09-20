@@ -29,19 +29,19 @@ export function mixinField<T extends MixinBase<LitElement>>(
     label: string | null = null;
     label$!: Observable<string | null>;
 
-    @property({ type: String })
+    @property({ type: String, attribute: 'supporting-text' })
     supportingText: string | null = null;
 
-    @property({ type: String })
+    @property({ type: String, attribute: 'error-text' })
     errorText: string | null = null;
  
     @property({ type: Boolean, reflect: true })
     disabled = false;
 
-    @property({ type: String })
+    @property({ type: String, attribute: 'prefix-text' })
     prefixText: string | null = null;
   
-    @property({ type: String })
+    @property({ type: String, attribute: 'suffix-text' })
     suffixText: string | null = null;
    }
 

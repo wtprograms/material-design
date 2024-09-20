@@ -47,7 +47,7 @@ export class MdTextFieldElement extends base {
   @property({ type: Number, attribute: 'min-length' })
   minLength: number | null = null;
 
-  @property({ type: Number, attribute: 'max-length'  })
+  @property({ type: Number, attribute: 'max-length' })
   maxLength: number | null = null;
 
   @property({ type: Boolean })
@@ -77,7 +77,14 @@ export class MdTextFieldElement extends base {
 
   private readonly _count$ = this.value$.pipe(
     map((value) => value?.length ?? 0),
-    map((value) => (this.counter ? `${value}/${this.maxLength}` : nothing))
+    map((value) => {
+      if (this.maxLength && this.counter) {
+        return this.counter ? `${value}/${this.maxLength}` : nothing;
+      } else if (this.counter) {
+        return this.counter;
+      }
+      return nothing;
+    })
   );
 
   override connectedCallback(): void {

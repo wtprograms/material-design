@@ -1,4 +1,4 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import {
   customElement,
   property,
@@ -6,14 +6,13 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { property$, tapIf } from '../../common';
+import { property$ } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
   filter,
   map,
   Observable,
-  Subscription,
   switchMap,
   tap,
 } from 'rxjs';
