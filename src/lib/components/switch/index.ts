@@ -1,26 +1,21 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import {
   customElement,
   property,
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
+import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import { attribute } from '../../common/rxjs/operators/attribute';
-import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
+import { mixinBooleanValue } from '../../common';
 
-const base = mixinParentActivation(LitElement);
+const base = mixinParentActivation(mixinBooleanValue(LitElement));
 
 @customElement('md-switch')
 export class MdSwitchElement extends base {
   static override styles = [styles];
-
-  @property({ type: Boolean, reflect: true })
-  @property$()
-  value = false;
-  value$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;

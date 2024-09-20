@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ButtonVariant, FieldVariant } from '../../../../../material-design/dist';
+import { FieldVariant } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',

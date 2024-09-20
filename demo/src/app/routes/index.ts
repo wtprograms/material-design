@@ -114,6 +114,14 @@ export default [
     loadComponent: () => import('./ripple'),
   },
   {
+    path: 'segmented-button',
+    loadComponent: () => import('./segmented-button'),
+  },
+  {
+    path: 'segmented-button-set',
+    loadComponent: () => import('./segmented-button-set'),
+  },
+  {
     path: 'sheet',
     loadComponent: () => import('./sheet'),
   },
@@ -124,6 +132,14 @@ export default [
   {
     path: 'switch',
     loadComponent: () => import('./switch'),
+  },
+  {
+    path: 'tab',
+    loadComponent: () => import('./tab'),
+  },
+  {
+    path: 'tabs',
+    loadComponent: () => import('./tabs'),
   },
   {
     path: 'text-field',

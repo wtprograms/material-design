@@ -1,0 +1,50 @@
+@use '../md';
+
+$tokens: (
+  'indicator': (
+    'shape': 3 3 0 0,
+    'height': 3px
+  ),
+  'secondary': (
+    'indicator': (
+      'shape': 0,
+      'height': 2px
+    )
+  )
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'tabs');
+}
+
+:host([secondary]) {
+  @include md.set-properties(map-get($tokens, 'secondary'), 'tabs-secondary');
+}
+
+:host {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .items {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .indicator {
+    background-color: var(--md-sys-color-primary);
+    border-radius: var(--_indicator-shape);
+    height: var(--_indicator-height);
+
+    @include md.motion('margin-inline-start, width');
+  }
+}
+
+:host([secondary]) {
+  .indicator {
+    background-color: var(--md-sys-color-secondary);
+    border-radius: var(--_indicator-shape);
+    height: var(--_indicator-height);
+  }
+}

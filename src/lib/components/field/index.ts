@@ -8,26 +8,18 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import {
-  BehaviorSubject,
   combineLatest,
-  distinctUntilChanged,
   map,
   Observable,
-  startWith,
-  Subject,
-  tap,
 } from 'rxjs';
-import { observe, property$, redispatchEvent } from '../../common';
+import { mixinField, observe, property$, redispatchEvent } from '../../common';
 import { MdPopoverElement } from '../popover';
 
-export type FieldVariant = 'filled' | 'outlined';
+const base = mixinField(LitElement);
 
 @customElement('md-field')
-export class MdFieldElement extends LitElement {
+export class MdFieldElement extends base {
   static override styles = [styles];
-
-  @property({ type: String, reflect: true })
-  variant: FieldVariant = 'filled';
 
   @property({ type: Boolean, reflect: true })
   @property$()
@@ -35,27 +27,7 @@ export class MdFieldElement extends LitElement {
   populated$!: Observable<boolean>;
 
   @property({ type: String, reflect: true })
-  @property$()
-  label: string | null = null;
-  label$!: Observable<string | null>;
-
-  @property({ type: String, reflect: true, attribute: 'supporting-text' })
-  supportingText: string | null = null;
-
-  @property({ type: String, reflect: true, attribute: 'error-text' })
-  errorText: string | null = null;
-
-  @property({ type: String })
-  prefixText: string | null = null;
-
-  @property({ type: String })
-  suffixText: string | null = null;
-
-  @property({ type: String, reflect: true })
   counter: string | null = null;
-
-  @property({ type: Boolean, reflect: true })
-  disabled = false;
 
   @queryAssignedElements({ slot: 'leading', flatten: true })
   private _leadingElements!: HTMLElement[];

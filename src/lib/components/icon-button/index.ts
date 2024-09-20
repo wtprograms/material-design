@@ -1,20 +1,17 @@
-import '../icon';
-import '../focus-ring';
-import '../ripple';
-import '../progress-indicator';
 import { html, LitElement } from 'lit';
-import {
-  customElement,
-  property,
-} from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinBusyButton } from '../../common/mixins/mixin-busy-button';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
+import { mixinSelected } from '../../common/mixins/mixin-selected';
+import { mixinBadge } from '../../common/mixins/mixin-badge';
 
 export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 
-const base = mixinBusyButton(mixinParentActivation(LitElement));
+const base = mixinBusyButton(
+  mixinParentActivation(mixinSelected(mixinBadge(LitElement)))
+);
 
 @customElement('md-icon-button')
 export class MdIconButtonElement extends base {
@@ -25,15 +22,6 @@ export class MdIconButtonElement extends base {
 
   @property({ type: Boolean, reflect: true })
   custom = false;
-
-  @property({ type: Boolean, reflect: true })
-  selected = false;
-
-  @property({ type: Boolean, attribute: 'badge-dot' })
-  badgeDot = false;
-
-  @property({ type: Number, attribute: 'badge-number' })
-  badgeNumber: number | null = null;
 
   protected override render(): unknown {
     return html`${this.renderAttachables()}

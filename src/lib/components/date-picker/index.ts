@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinValueElement, property$ } from '../../common';
-import { distinctUntilChanged, Observable, tap } from 'rxjs';
+import { mixinStringValue } from '../../common';
 import { MdCalendarMonthYearListPickerElement } from '../calendar-month-year-list-picker';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(LitElement);
 @customElement('md-date-picker')
 export class MdDatePickerElement extends base {
   static override styles = [styles];

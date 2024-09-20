@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { IconButtonVariant } from '../../../../../material-design/dist';
+import { IconButtonVariant } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',

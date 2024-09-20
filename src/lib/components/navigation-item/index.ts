@@ -3,21 +3,19 @@ import {
   customElement,
   property,
   queryAssignedElements,
-  queryAssignedNodes,
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinButton, property$ } from '../../common';
 import { combineLatest, Observable, tap } from 'rxjs';
 import { MdIconElement } from '../icon';
+import { mixinSelected } from '../../common/mixins/mixin-selected';
+import { mixinBadge } from '../../common/mixins/mixin-badge';
 
-const base = mixinButton(LitElement);
+const base = mixinButton(mixinSelected(mixinBadge(LitElement)));
 
 @customElement('md-navigation-item')
 export class MdNavigationItemElement extends base {
   static override styles = [styles];
-
-  @property({ type: Boolean, reflect: true })
-  selected = false;
 
   @property({ type: Boolean, reflect: true })
   @property$()
@@ -26,16 +24,6 @@ export class MdNavigationItemElement extends base {
 
   @property({ type: Boolean, reflect: true, attribute: 'hide-label' })
   hideLabel = false;
-
-  @property({ type: Boolean, attribute: 'badge-dot' })
-  @property$()
-  badgeDot = false;
-  badgeDot$!: Observable<boolean>;
-
-  @property({ type: Number, attribute: 'badge-number' })
-  @property$()
-  badgeNumber: number | null = null;
-  badgeNumber$!: Observable<number | null>;
 
   @queryAssignedElements({ slot: 'icon', flatten: true })
   private _iconElements!: MdIconElement[];
@@ -64,19 +52,13 @@ export class MdNavigationItemElement extends base {
   override render() {
     const prefix = html`<slot name="icon"></slot>`;
     const indicator = this.drawer ? nothing : prefix;
-    const badge = this.drawer
-      ? html`<md-badge
-          ?dot=${this.badgeDot}
-          number=${this.badgeNumber ?? nothing}
-          embedded
-        ></md-badge>`
-      : nothing;
     const drawer = !this.drawer ? nothing : prefix;
     return html`<div class="indicator">
         <md-focus-ring for="control" focus-visible></md-focus-ring>
         <md-ripple for="control" interactive></md-ripple>${indicator}
       </div>
-      ${drawer} ${this.renderAnchorOrButton(this.renderContent())}${badge}`;
+      ${drawer}
+      ${this.renderAnchorOrButton(this.renderContent())}${this.drawer ? this.renderBadge(true) : nothing}`;
   }
 
   private renderContent() {

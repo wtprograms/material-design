@@ -1,11 +1,11 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { getMeridianValues, mixinValueElement } from '../../common';
+import { getMeridianValues, mixinStringValue } from '../../common';
 import { TimeSpan } from '../../common/helpers/time-span';
 import { classMap } from 'lit/directives/class-map.js';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(LitElement);
 
 @customElement('md-time-picker')
 export class MdTimePickerElement extends base {

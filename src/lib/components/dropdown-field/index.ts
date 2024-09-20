@@ -8,45 +8,23 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinValueElement, observe, property$ } from '../../common';
+import { mixinStringValue, observe } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
-  filter,
   map,
-  Observable,
   tap,
 } from 'rxjs';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { FieldVariant, MdFieldElement } from '../field';
+import { MdFieldElement } from '../field';
+import { mixinField } from '../../common/mixins/mixin-field';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(mixinField(LitElement));
 
 @customElement('md-dropdown-field')
 export class MdDropdownFieldElement extends base {
   static override styles = [styles];
-
-  @property({ type: String })
-  variant: FieldVariant = 'filled';
-
-  @property({ type: String })
-  label: string | null = null;
-
-  @property({ type: String })
-  supportingText: string | null = null;
-
-  @property({ type: String })
-  errorText: string | null = null;
-
-  @property({ type: String })
-  prefixText: string | null = null;
-
-  @property({ type: String })
-  suffixText: string | null = null;
-
-  @property({ type: Boolean, reflect: true })
-  disabled = false;
 
   @query('md-field')
   private _field!: MdFieldElement;

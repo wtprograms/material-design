@@ -50,6 +50,7 @@ export function mixinDialog<T extends MixinBase<LitElement>>(
       NodeFilter.SHOW_ELEMENT
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any[]) {
       super(args);
       this.addEventListener('submit', this.handleSubmit);

@@ -7,18 +7,18 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinValueElement, observe, property$, redispatchEvent } from '../../common';
+import { mixinStringValue, observe, redispatchEvent } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
   filter,
   map,
-  Observable,
   tap,
 } from 'rxjs';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { FieldVariant, MdFieldElement } from '../field';
+import { MdFieldElement } from '../field';
+import { mixinField } from '../../common/mixins/mixin-field';
 
 export type TextFieldType =
   | 'text'
@@ -29,7 +29,7 @@ export type TextFieldType =
   | 'url'
   | 'textarea';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(mixinField(LitElement));
 
 @customElement('md-text-field')
 export class MdTextFieldElement extends base {
@@ -37,24 +37,6 @@ export class MdTextFieldElement extends base {
 
   @property({ type: String })
   type: TextFieldType = 'text';
-
-  @property({ type: String })
-  variant: FieldVariant = 'filled';
-
-  @property({ type: String })
-  label: string | null = null;
-
-  @property({ type: String, attribute: 'supporting-text'   })
-  supportingText: string | null = null;
-
-  @property({ type: String, attribute: 'error-text'   })
-  errorText: string | null = null;
-
-  @property({ type: String, attribute: 'prefix-text'   })
-  prefixText: string | null = null;
-
-  @property({ type: String, attribute: 'suffix-text'   })
-  suffixText: string | null = null;
 
   @property({ type: Number })
   min: number | null = null;
@@ -70,9 +52,6 @@ export class MdTextFieldElement extends base {
 
   @property({ type: Boolean })
   counter = false;
-
-  @property({ type: Boolean, reflect: true })
-  disabled = false;
 
   @property({ type: String })
   autocomplete: string | null = 'off';

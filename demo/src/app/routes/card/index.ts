@@ -5,7 +5,7 @@ import {
   effect,
   viewChild,
 } from '@angular/core';
-import { MdCardElement } from '../../../../../material-design/dist';
+import { MdCardElement } from '../../../../../dist';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({

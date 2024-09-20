@@ -1,43 +1,25 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import {
   BehaviorSubject,
   combineLatest,
-  distinctUntilChanged,
   map,
-  Observable,
-  tap,
 } from 'rxjs';
-import { mixinValueElement, observe, property$ } from '../../common';
-import { FieldVariant, MdFieldElement } from '../field';
+import { mixinStringValue, observe } from '../../common';
+import { MdFieldElement } from '../field';
 import { MdDatePickerElement } from '../date-picker';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { getDateTimeFormatOptions } from '../../common/helpers/date/get-date-time-format-options';
+import { mixinField } from '../../common/mixins/mixin-field';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(mixinField(LitElement));
 
 @customElement('md-date-picker-field')
 export class MdDatePickerFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
-  variant: FieldVariant = 'filled';
-
-  @property({ type: String })
-  label: string | null = null;
-
-  @property({ type: String })
-  supportingText: string | null = null;
-
-  @property({ type: String })
-  errorText: string | null = null;
-
-  @property({ type: String })
   selectedValue = this.value;
-
-  @property({ type: Boolean, reflect: true })
-  disabled = false;
 
   @property({ type: String })
   locale = 'en';

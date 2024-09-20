@@ -7,7 +7,6 @@ import {
   customElement,
   property,
   query,
-  queryAssignedElements,
   queryAssignedNodes,
 } from 'lit/decorators.js';
 import { styles } from './styles';

@@ -1,4 +1,4 @@
-import { LitElement, html, nothing } from 'lit';
+import { LitElement, html } from 'lit';
 import {
   customElement,
   property,
@@ -6,8 +6,9 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinButton } from '../../common';
+import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(LitElement);
+const base = mixinButton(mixinSelected(LitElement));
 
 @customElement('md-chip')
 export class MdChipElement extends base {

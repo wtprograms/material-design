@@ -106,6 +106,10 @@ $tokens: (
   md-badge {
     margin-inline-start: auto;
   }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
 }
 
 :host([hide-label]:not([drawer])) {

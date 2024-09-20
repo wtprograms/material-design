@@ -1,0 +1,120 @@
+@use '../md';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'color': md.disabled('color'),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-primary),
+    'icon-filled': 1,
+    'disabled': (
+      'color': md.disabled('color'),
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'tab');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'tab-disabled');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($tokens, 'selected'), 'tab-selected');
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(
+    map-get(map-get($tokens, 'selected'), 'disabled'),
+    'tab-selected-disabled'
+  );
+}
+
+:host {
+  --__color: var(--_color);
+  position: relative;
+  color: var(--_color);
+  cursor: pointer;
+  isolation: isolate;
+  @include md.typescale('label', 'small');
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 64px;
+
+  @include md.motion('background-color, width, height, color, font');
+
+  button,
+  a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--__color);
+  }
+
+  ::slotted(md-icon) {
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
+
+  .icon {
+    display: none;
+  }
+}
+
+:host([icon]) {
+  .icon {
+    display: inline-flex;
+  }
+}
+
+:host([hide-label]:not([drawer])) {
+  .label {
+    display: none;
+  }
+}
+
+:host([secondary]) {
+  --md-comp-tab-selected-color: var(--md-comp-tab-color);
+  flex-direction: row;
+  height: 48px;
+  gap: 0;
+  @include md.typescale('label', 'large');
+  padding-inline-start: 16px;
+  padding-inline-end: 24px;
+  .label {
+    margin-inline-start: 8px;
+  }
+
+  md-badge {
+    margin-inline-start: 4px;
+  }
+}
+
+@include md.disabled-component;

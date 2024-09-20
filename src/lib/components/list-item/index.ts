@@ -8,17 +8,15 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { dispatchActivationClick, mixinButton, property$, redispatchEvent } from '../../common';
-import { combineLatest, filter, Observable, tap } from 'rxjs';
+import { dispatchActivationClick, mixinButton, property$ } from '../../common';
+import { combineLatest, Observable, tap } from 'rxjs';
+import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(LitElement);
+const base = mixinButton(mixinSelected(LitElement));
 
 @customElement('md-list-item')
 export class MdListItemElement extends base {
   static override styles = [styles];
-
-  @property({ type: Boolean, reflect: true })
-  selected = false;
 
   @property({ type: Boolean, reflect: true })
   split = false;

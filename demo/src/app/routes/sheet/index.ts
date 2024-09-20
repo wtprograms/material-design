@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { SheetDock } from '../../../../../material-design/dist';
+import { SheetDock } from '../../../../../dist';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({

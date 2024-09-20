@@ -12,17 +12,13 @@ import { attribute } from '../../common/rxjs/operators/attribute';
 import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
+import { mixinBooleanValue } from '../../common';
 
-const base = mixinParentActivation(LitElement);
+const base = mixinParentActivation(mixinBooleanValue(LitElement));
 
 @customElement('md-check-box')
 export class MdCheckBoxElement extends base {
   static override styles = [styles];
-
-  @property({ type: Boolean, reflect: true })
-  @property$()
-  value = false;
-  value$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
   @property$()

@@ -1,0 +1,37 @@
+<h1>
+  md-segmented-button
+</h1>
+<md-card class="flex flex-row p-4">
+  <md-segmented-button (click)="click($event)" badge-dot>
+    <md-icon slot="icon">home</md-icon>
+    One
+  </md-segmented-button>
+</md-card>
+<md-card class="flex flex-row p-4">
+  <md-segmented-button (click)="click($event)">
+    One
+  </md-segmented-button>
+  <md-segmented-button (click)="click($event)">
+    Two
+  </md-segmented-button>
+</md-card>
+<md-card class="flex flex-row p-4">
+  <md-segmented-button (click)="click($event)">
+    <md-icon slot="icon">home</md-icon>
+    One
+  </md-segmented-button>
+  <md-segmented-button (click)="click($event)">
+    Two
+  </md-segmented-button>
+  <md-segmented-button (click)="click($event)">
+    Three
+  </md-segmented-button>
+</md-card>
+<md-card class="flex flex-row p-4">
+  <md-segmented-button disabled>
+    One
+  </md-segmented-button>
+  <md-segmented-button checked disabled>
+    One
+  </md-segmented-button>
+</md-card>

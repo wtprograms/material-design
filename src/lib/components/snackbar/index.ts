@@ -1,4 +1,4 @@
-import { html, LitElement, nothing, PropertyValues } from 'lit';
+import { html, LitElement, PropertyValues } from 'lit';
 import {
   customElement,
   property,
@@ -6,9 +6,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { MdPopoverElement } from '../popover';
 import {
-  delay,
   filter,
   map,
   Observable,
@@ -26,7 +24,6 @@ import {
   mixinOpenClose,
   property$,
 } from '../../common';
-import { offset, flip, shift, computePosition } from '@floating-ui/dom';
 
 const base = mixinOpenClose(LitElement);
 

@@ -1,8 +1,8 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { mixinValueElement, observe, property$ } from '../../common';
+import { Observable } from 'rxjs';
+import { mixinStringValue, property$ } from '../../common';
 import { classMap } from 'lit/directives/class-map.js';
 
 type Day = {
@@ -11,7 +11,7 @@ type Day = {
   date: Date;
 };
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(LitElement);
 
 @customElement('md-calendar-picker')
 export class MdCalendarPickerElement extends base {

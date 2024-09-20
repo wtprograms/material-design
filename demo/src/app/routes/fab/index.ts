@@ -2,7 +2,7 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
   FabPalette,
   FabSize,
-} from '../../../../../material-design/dist';
+} from '../../../../../dist';
 import { CommonModule } from '@angular/common';
 
 @Component({

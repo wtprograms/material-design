@@ -1,6 +1,3 @@
-import '../icon';
-import '../focus-ring';
-import '../ripple';
 import { html, LitElement, PropertyValues } from 'lit';
 import {
   customElement,
@@ -12,15 +9,13 @@ import {
 import { styles } from './styles';
 import { mixinButton } from '../../common';
 import { MdMenuElement } from '../menu';
+import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(LitElement);
+const base = mixinButton(mixinSelected(LitElement));
 
 @customElement('md-menu-item')
 export class MdMenuItemElement extends base {
   static override styles = [styles];
-
-  @property({ type: Boolean, reflect: true })
-  selected = false;
 
   @queryAssignedElements({ slot: 'item' })
   private _items!: HTMLElement[];

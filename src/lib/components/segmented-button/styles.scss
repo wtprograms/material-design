@@ -1,0 +1,123 @@
+@use '../md';
+
+$tokens: (
+  'background-color': transparent,
+  'border-color': var(--md-sys-color-outline),
+  'color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'background-color': transparent,
+    'border-color': md.disabled('border-color'),
+    'color': md.disabled('color'),
+  ),
+  'selected': (
+    'background-color': var(--md-sys-color-secondary-container),
+    'border-color': var(--md-sys-color-outline),
+    'color': var(--md-sys-color-secondary-container-on),
+    'disabled': (
+      'background-color': md.disabled('background-color'),
+      'border-color': md.disabled('border-color'),
+      'color': md.disabled('color'),
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'segmented-button');
+}
+
+:host([disabled]) {
+  @include md.set-properties(
+    map-get($tokens, 'disabled'),
+    'segmented-button-disabled'
+  );
+}
+
+:host([selected]) {
+  @include md.set-properties(
+    map-get($tokens, 'selected'),
+    'segmented-button-selected'
+  );
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(
+    map-get(map-get($tokens, 'selected'), 'disabled'),
+    'segmented-button-selected-disabled'
+  );
+}
+
+:host {
+  --__color: var(--_color);
+  position: relative;
+  color: var(--_color);
+  height: 40px;
+  width: 100%;
+  cursor: pointer;
+  isolation: isolate;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  @include md.typescale('label', 'large');
+  background-color: var(--_background-color);
+  border-top: 1px solid var(--_border-color);
+  border-bottom: 1px solid var(--_border-color);
+  border-left: 0.5px solid var(--_border-color);
+  border-right: 0.5px solid var(--_border-color);
+
+  button, a {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+
+    @include md.motion('opacity');
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    cursor: pointer;
+  }
+
+  ::slotted(md-icon),
+  md-icon {
+    pointer-events: none;
+    --md-comp-icon-size: 18;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--__color);
+  }
+}
+
+:host(:first-child) {
+  border-top-left-radius: var(--md-sys-shape-full);
+  border-bottom-left-radius: var(--md-sys-shape-full);
+  border-left-width: 1px;
+}
+
+:host(:last-child) {
+  border-top-right-radius: var(--md-sys-shape-full);
+  border-bottom-right-radius: var(--md-sys-shape-full);
+  border-right-width: 1px;
+}
+
+@include md.disabled-component;

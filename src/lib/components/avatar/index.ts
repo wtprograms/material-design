@@ -1,7 +1,3 @@
-import '../elevation';
-import '../focus-ring';
-import '../ripple';
-import '../progress-indicator';
 import { html, LitElement } from 'lit';
 import {
   customElement,

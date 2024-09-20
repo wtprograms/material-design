@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, ElementRef, signal, viewChild } from '@angular/core';
-import { MdNavigationElement, NavigationLayout } from '../../../../../material-design/dist';
+import { MdNavigationElement, NavigationLayout } from '../../../../../dist';
 
 @Component({
   templateUrl: './index.html',

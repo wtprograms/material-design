@@ -1,7 +1,4 @@
-import '../icon';
-import '../focus-ring';
-import '../ripple';
-import { html, LitElement, PropertyValueMap, PropertyValues } from 'lit';
+import { html, LitElement, PropertyValues } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinAttachable } from '../../common';

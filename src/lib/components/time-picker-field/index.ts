@@ -2,34 +2,20 @@ import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
-import { mixinValueElement, observe, TimeSpan } from '../../common';
-import { FieldVariant, MdFieldElement } from '../field';
+import { mixinStringValue, observe, TimeSpan } from '../../common';
+import { MdFieldElement } from '../field';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdTimePickerElement } from '../time-picker';
+import { mixinField } from '../../common/mixins/mixin-field';
 
-const base = mixinValueElement(LitElement);
+const base = mixinStringValue(mixinField(LitElement));
 
 @customElement('md-time-picker-field')
 export class MdTimePickerFieldElement extends base {
   static override styles = [styles];
 
-  @property({ type: String })
-  variant: FieldVariant = 'filled';
-
-  @property({ type: String })
-  label: string | null = null;
-
-  @property({ type: String })
-  supportingText: string | null = null;
-
-  @property({ type: String })
-  errorText: string | null = null;
-
   @property({ type: String, attribute: 'selected-value' })
   selectedValue = this.value;
-
-  @property({ type: Boolean, reflect: true })
-  disabled = false;
 
   @property({ type: Boolean })
   seconds = false;
