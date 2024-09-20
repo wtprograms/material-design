@@ -60,7 +60,7 @@ export function mixinButton<T extends MixinBase<LitElement>>(
     }
 
     private renderButton(content: unknown = nothing) {
-      return html`<button id="control" type="${this.type}" value=${this.value}>
+      return html`<button id="control" type=${this.type} value=${this.value}>
         <div class="touch"></div>
         ${content}
       </button>`;
