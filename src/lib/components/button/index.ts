@@ -7,6 +7,7 @@ import {
 import { styles } from './styles';
 import { mixinBusyButton } from '../../common/mixins/mixin-busy-button';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
+import { FormSubmitter, mixinElementInternals, setupFormSubmitter } from '../../common';
 
 export type ButtonVariant =
   | 'elevated'
@@ -16,11 +17,17 @@ export type ButtonVariant =
   | 'text'
   | 'plain';
 
-const base = mixinBusyButton(mixinParentActivation(LitElement));
+const base = mixinElementInternals(mixinBusyButton(mixinParentActivation(LitElement)));
 
 @customElement('md-button')
-export class MdButtonElement extends base {
+export class MdButtonElement extends base implements FormSubmitter {
   static override styles = [styles];
+
+  static {
+    setupFormSubmitter(MdButtonElement);
+  }
+
+  static readonly formAssociated = true;
 
   @property({ type: String, reflect: true })
   variant: ButtonVariant = 'filled';
