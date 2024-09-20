@@ -23,6 +23,8 @@ export function mixinButton<T extends MixinBase<LitElement>>(
 ): MixinReturn<T, Button> {
   const _base = mixinElementInternals(base);
   abstract class Mixin extends _base implements Button {
+    static readonly formAssociated = true;
+
     @property({ type: String })
     type: FormSubmitterType = 'button';
 
