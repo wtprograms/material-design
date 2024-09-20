@@ -24,11 +24,11 @@ $tokens: (
 :host {
   position: relative;
   width: 100%;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
 
   .items {
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
   }
 

@@ -38,7 +38,7 @@ $variants: ('elevated', 'filled', 'outlined');
 
 :host {
   position: relative;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   border-radius: var(--md-sys-shape-medium);
   isolation: isolate;
