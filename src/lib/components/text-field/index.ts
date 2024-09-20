@@ -109,6 +109,7 @@ export class MdTextFieldElement extends base {
               item.style.display = '';
             }
           }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           for (const item of this._items as any[]) {
             if (!!item.value) {
               item.selected = item.value === value;

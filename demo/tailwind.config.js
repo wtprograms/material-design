@@ -6,6 +6,6 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: md.theme,
-  plugins: [],
+  plugins: [md.plugins.typescale],
 }
 
