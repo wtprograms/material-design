@@ -64,8 +64,8 @@ export class MdAvatarElement extends base {
   }
 
   private renderAttachables() {
-    return html` <md-focus-ring for="control" focus-visible></md-focus-ring>
-      <md-ripple for="control" interactive></md-ripple>`;
+    return html` <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
+      <md-ripple for=${this.idName} interactive></md-ripple>`;
   }
 }
 

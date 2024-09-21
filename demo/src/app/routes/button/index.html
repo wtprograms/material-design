@@ -2,6 +2,7 @@
   <md-button (click)="nextVariant()">{{ variant() }}</md-button>
   <md-button (click)="disabled.set(!disabled())">Toggle disabled</md-button>
   <md-button (click)="busy.set(!busy())">Toggle busy</md-button>
+  <md-button (click)="test.href = '#'">Set href</md-button>
 </div>
 <div class="flex flex-col items-start col-span-2 gap-4 rounded-medium border border-solid border-outline-variant p-2">
   <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
@@ -9,6 +10,9 @@
   </md-button>
   <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()" href="#">
     anchor
+  </md-button>
+  <md-button #test [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
+    test
   </md-button>
   <md-button [variant]="variant()" [disabled]="disabled()" [busy]="busy()">
     <md-icon slot="leading">home</md-icon>

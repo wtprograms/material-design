@@ -61,14 +61,14 @@ export class MdButtonElement extends base implements FormSubmitter {
     const level = this.variant === 'elevated' ? 1 : 0;
     const elevation = elevatedVariants.includes(this.variant)
       ? html`<md-elevation
-          for="control"
+          for=${this.idName}
           interactive
           level=${level}
         ></md-elevation>`
       : nothing;
     return html`${elevation}
-      <md-focus-ring for="control" focus-visible></md-focus-ring>
-      <md-ripple for="control" interactive></md-ripple>`;
+      <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
+      <md-ripple for=${this.idName} interactive></md-ripple>`;
   }
 }
 

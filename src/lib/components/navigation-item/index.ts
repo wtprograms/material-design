@@ -54,8 +54,8 @@ export class MdNavigationItemElement extends base {
     const indicator = this.drawer ? nothing : prefix;
     const drawer = !this.drawer ? nothing : prefix;
     return html`<div class="indicator">
-        <md-focus-ring for="control" focus-visible></md-focus-ring>
-        <md-ripple for="control" interactive></md-ripple>${indicator}
+        <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
+        <md-ripple for=${this.idName} interactive></md-ripple>${indicator}
       </div>
       ${drawer}
       ${this.renderAnchorOrButton(this.renderContent())}${this.drawer ? this.renderBadge(true) : nothing}`;
