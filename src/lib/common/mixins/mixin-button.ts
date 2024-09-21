@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 
 export type AnchorTarget = '' | '_blank' | '_self' | '_parent' | '_top';
 
-export interface Button {
+export interface ButtonElement {
   type: FormSubmitterType;
   href: string | null;
   target: AnchorTarget;
@@ -20,8 +20,8 @@ export interface Button {
 
 export function mixinButton<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, Button> {
-  abstract class Mixin extends base implements Button {
+): MixinReturn<T, ButtonElement> {
+  abstract class Mixin extends base implements ButtonElement {
     @property({ type: String })
     type: FormSubmitterType = 'button';
 

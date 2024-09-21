@@ -6,13 +6,14 @@ import {
   combineLatest,
   map,
 } from 'rxjs';
-import { mixinStringValue, observe } from '../../common';
+import { observe } from '../../common';
 import { MdFieldElement } from '../field';
 import { MdDatePickerElement } from '../date-picker';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { mixinField } from '../../common/mixins/mixin-field';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinStringValue(mixinField(LitElement));
+const base = mixinInternalsValue(mixinField(LitElement));
 
 @customElement('md-date-picker-field')
 export class MdDatePickerFieldElement extends base {

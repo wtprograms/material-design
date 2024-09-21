@@ -8,19 +8,21 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinStringValue, observe } from '../../common';
+import { observe } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
   map,
+  Subject,
   tap,
 } from 'rxjs';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdFieldElement } from '../field';
 import { mixinField } from '../../common/mixins/mixin-field';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinStringValue(mixinField(LitElement));
+const base = mixinInternalsValue(mixinField(LitElement));
 
 @customElement('md-dropdown-field')
 export class MdDropdownFieldElement extends base {
@@ -36,8 +38,8 @@ export class MdDropdownFieldElement extends base {
   hasItems = false;
 
   private readonly _focused$ = new BehaviorSubject(false);
-  private readonly _open$ = new BehaviorSubject(false);
-  private readonly _opening$ = new BehaviorSubject(false);
+  private readonly _open$ = new Subject<boolean>();
+  private readonly _opening$ = new Subject<boolean>();
 
   private readonly _populated$ = combineLatest({
     focused: this._focused$,

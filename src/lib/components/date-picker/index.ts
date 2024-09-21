@@ -2,10 +2,10 @@
 import { html, LitElement } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinStringValue } from '../../common';
 import { MdCalendarMonthYearListPickerElement } from '../calendar-month-year-list-picker';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinStringValue(LitElement);
+const base = mixinInternalsValue(LitElement);
 @customElement('md-date-picker')
 export class MdDatePickerElement extends base {
   static override styles = [styles];

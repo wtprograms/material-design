@@ -22,6 +22,9 @@ export class MdFieldElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  @property({ type: Boolean, reflect: true })
   @property$()
   populated = false;
   populated$!: Observable<boolean>;

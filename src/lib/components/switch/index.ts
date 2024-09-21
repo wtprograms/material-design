@@ -6,19 +6,20 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
-import { attribute } from '../../common/rxjs/operators/attribute';
 import { property$ } from '../../common/lit/property$.decorator';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
-import { mixinBooleanValue } from '../../common';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinParentActivation(mixinBooleanValue(LitElement));
+const base = mixinParentActivation(mixinInternalsValue(LitElement));
 
 @customElement('md-switch')
 export class MdSwitchElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
-  disabled = false;
+  @property$()
+  checked = false;
+  checked$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
   error = false;
@@ -41,12 +42,14 @@ export class MdSwitchElement extends base {
   override connectedCallback(): void {
     super.connectedCallback();
     this.value$
-      .pipe(
-        distinctUntilChanged(),
-        attribute(this, 'checked'),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
-      .subscribe();  }
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.checked = x === '')))
+      .subscribe();
+    this.checked$
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.value = x ? '' : null)))
+      .subscribe();
+  }
 
   override render() {
     return html`<div class="track">
@@ -75,7 +78,7 @@ export class MdSwitchElement extends base {
         id="control"
         type="checkbox"
         ?disabled="${this.disabled}"
-        ?checked="${this.value}"
+        ?checked="${this.checked}"
         @change=${this.onChange}
       />
       <span class="label">${this.label}</span>`;
@@ -83,10 +86,10 @@ export class MdSwitchElement extends base {
 
   onChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input?.checked === this.value) {
+    if (input?.checked === this.checked) {
       return;
     }
-    this.value = input?.checked ?? false;
+    this.checked = input?.checked ?? false;
   }
 }
 

@@ -1,13 +1,13 @@
 import { html, LitElement, nothing } from 'lit';
 import { property, query } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
-import { mixinOpenClose, OpenClose } from './mixin-open-close';
+import { mixinOpenClose, OpenCloseElement } from './mixin-open-close';
 import { redispatchEvent } from '../events/redispatch-event';
 import { DURATION } from '../motion/duration';
 import { EASING } from '../motion/easing';
 import { MdElevationElement } from '../../components';
 
-export interface Dialog extends OpenClose {
+export interface DialogElement extends OpenCloseElement {
   returnValue: string | null;
   dialog: HTMLDialogElement;
   noFocusTrap: boolean;
@@ -21,9 +21,9 @@ export interface Dialog extends OpenClose {
 
 export function mixinDialog<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, Dialog> {
+): MixinReturn<T, DialogElement> {
   const _base = mixinOpenClose(base);
-  abstract class Mixin extends _base implements Dialog {
+  abstract class Mixin extends _base implements DialogElement {
     @property({ type: String, attribute: 'return-value' })
     returnValue: string | null = null;
 

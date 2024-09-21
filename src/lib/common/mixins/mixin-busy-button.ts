@@ -1,18 +1,18 @@
 import { html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
-import { Button, mixinButton } from './mixin-button';
+import { ButtonElement, mixinButton } from './mixin-button';
 
-export interface BusyButton extends Button {
+export interface BusyButtonElement extends ButtonElement {
   busy: boolean;
   renderProgressIndicator(): unknown;
 }
 
 export function mixinBusyButton<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, BusyButton> {
+): MixinReturn<T, BusyButtonElement> {
   const _base = mixinButton(base);
-  abstract class Mixin extends _base implements BusyButton {
+  abstract class Mixin extends _base implements BusyButtonElement {
     @property({ type: Boolean, reflect: true })
     busy = false;
 

@@ -7,7 +7,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinStringValue, observe, redispatchEvent } from '../../common';
+import { observe, redispatchEvent } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -19,6 +19,7 @@ import {
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdFieldElement } from '../field';
 import { mixinField } from '../../common/mixins/mixin-field';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
 export type TextFieldType =
   | 'text'
@@ -29,7 +30,7 @@ export type TextFieldType =
   | 'url'
   | 'textarea';
 
-const base = mixinStringValue(mixinField(LitElement));
+const base = mixinInternalsValue(mixinField(LitElement));
 
 @customElement('md-text-field')
 export class MdTextFieldElement extends base {
@@ -222,6 +223,7 @@ export class MdTextFieldElement extends base {
   private onItemsSlotChange() {
     this.hasItems = !!this._items.length;
     for (const element of this._items) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       element.addEventListener('click', (event: any) => {
         this.value = event.target.value;
       });

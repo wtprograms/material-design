@@ -2,13 +2,14 @@ import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
-import { mixinStringValue, observe, TimeSpan } from '../../common';
+import { observe, TimeSpan } from '../../common';
 import { MdFieldElement } from '../field';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdTimePickerElement } from '../time-picker';
 import { mixinField } from '../../common/mixins/mixin-field';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinStringValue(mixinField(LitElement));
+const base = mixinInternalsValue(mixinField(LitElement));
 
 @customElement('md-time-picker-field')
 export class MdTimePickerFieldElement extends base {

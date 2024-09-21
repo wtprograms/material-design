@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinStringValue } from '../../common';
 import { repeat } from 'lit/directives/repeat.js';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinStringValue(LitElement);
+const base = mixinInternalsValue(LitElement);
 
 @customElement('md-calendar-month-year-list-picker')
 export class MdCalendarMonthYearListPickerElement extends base {

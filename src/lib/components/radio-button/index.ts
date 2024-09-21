@@ -2,26 +2,27 @@ import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { attribute } from '../../common/rxjs/operators/attribute';
 import { observe } from '../../common/lit/observable-directive';
-import { property$ } from '../../common/lit/property$.decorator';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
-import { mixinBooleanValue } from '../../common';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import { property$ } from '../../common';
 
-const base = mixinParentActivation(mixinBooleanValue(LitElement));
+const base = mixinParentActivation(mixinInternalsValue(LitElement));
 
 @customElement('md-radio-button')
 export class MdRadioButtonElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
-  disabled = false;
-
-  @property({ type: Boolean, reflect: true })
   error = false;
 
   @property({ type: String, reflect: true })
   label: string | null = null;
+
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  checked = false;
+  checked$!: Observable<boolean>;
 
   private readonly _icon$ = this.value$.pipe(
     map((value) => (value ? 'radio_button_checked' : 'radio_button_unchecked'))
@@ -30,11 +31,12 @@ export class MdRadioButtonElement extends base {
   override connectedCallback(): void {
     super.connectedCallback();
     this.value$
-      .pipe(
-        distinctUntilChanged(),
-        attribute(this, 'checked'),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.checked = x === '')))
+      .subscribe();
+    this.checked$
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.value = x ? '' : null)))
       .subscribe();
   }
 
@@ -42,13 +44,13 @@ export class MdRadioButtonElement extends base {
     return html`<div class="container">
         <md-ripple for="control" interactive></md-ripple>
         <md-focus-ring for="control" focus-visible></md-focus-ring>
-        <md-icon ?filled="${this.value}">${observe(this._icon$)}</md-icon>
+        <md-icon ?filled="${this.checked}">${observe(this._icon$)}</md-icon>
       </div>
       <input
         id="control"
         type="radio"
         ?disabled="${this.disabled}"
-        ?checked="${this.value}"
+        ?checked="${this.checked}"
         @change=${this.onChange}
       />
       <span class="label">${this.label}</span>`;
@@ -56,10 +58,10 @@ export class MdRadioButtonElement extends base {
 
   onChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input?.checked === this.value) {
+    if (input?.checked === this.checked) {
       return;
     }
-    this.value = input?.checked ?? false;
+    this.checked = input?.checked ?? false;
   }
 }
 

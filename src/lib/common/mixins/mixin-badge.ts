@@ -5,7 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { Observable } from 'rxjs';
 import { property$ } from '../lit/property$.decorator';
 
-export interface Badge {
+export interface BadgeElement {
   badgeDot: boolean;
   badgeDot$: Observable<boolean>;
   badgeNumber: number | null;
@@ -16,8 +16,8 @@ export interface Badge {
 
 export function mixinBadge<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, Badge> {
-  abstract class Mixin extends base implements Badge {
+): MixinReturn<T, BadgeElement> {
+  abstract class Mixin extends base implements BadgeElement {
     @property({ type: Boolean, attribute: 'badge-dot' })
     @property$()
     badgeDot = false;

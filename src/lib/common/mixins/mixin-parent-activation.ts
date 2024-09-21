@@ -4,14 +4,14 @@ import { dispatchActivationClick } from '../events/dispatch-activation-click';
 import { isActivationClick } from '../events/is-activation-click';
 import { MixinBase, MixinReturn } from './mixin';
 
-export interface ParentActivation {
+export interface ParentActivationElement {
   handleActivationClick(event: MouseEvent): void;
 }
 
 export function mixinParentActivation<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, ParentActivation> {
-  abstract class Mixin extends base implements ParentActivation {
+): MixinReturn<T, ParentActivationElement> {
+  abstract class Mixin extends base implements ParentActivationElement {
     @query('#control')
     readonly controlElement!: HTMLElement;
 

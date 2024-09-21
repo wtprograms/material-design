@@ -1,7 +1,7 @@
 import { html, LitElement, nothing, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
-import { Button, mixinButton } from './mixin-button';
+import { ButtonElement, mixinButton } from './mixin-button';
 import {
   BehaviorSubject,
   distinctUntilChanged,
@@ -15,7 +15,7 @@ import {
 } from 'rxjs';
 import { attribute } from '../rxjs/operators/attribute';
 
-export interface OpenClose {
+export interface OpenCloseElement {
   open: boolean;
   open$: Observable<boolean>;
   opening$: Observable<boolean>;
@@ -24,13 +24,14 @@ export interface OpenClose {
   get openComponent$(): Observable<unknown>
   get closeComponent$(): Observable<unknown>
   openComponent(): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   closeComponent(...args: any[]): void;
 }
 
 export function mixinOpenClose<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, OpenClose> {
-  abstract class Mixin extends base implements OpenClose {
+): MixinReturn<T, OpenCloseElement> {
+  abstract class Mixin extends base implements OpenCloseElement {
     @property({ type: Boolean, attribute: 'open-on-first-update'})
     openOnFirstUpdate = false;
     
@@ -75,7 +76,7 @@ export function mixinOpenClose<T extends MixinBase<LitElement>>(
         .subscribe();
       this._closing$
         .pipe(
-          tap(() => this.dispatchEvent(new Event('opening', { bubbles: true })))
+          tap(() => this.dispatchEvent(new Event('closing', { bubbles: true })))
         )
         .subscribe();
       this._open$

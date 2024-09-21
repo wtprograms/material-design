@@ -6,21 +6,20 @@ import { property$ } from '../lit/property$.decorator';
 
 export type FieldVariant = 'filled' | 'outlined';
 
-export interface Field {
+export interface FieldElement {
   variant: FieldVariant;
   label: string | null;
   label$: Observable<string | null>;
   supportingText: string | null;
   errorText: string | null;
-  disabled: boolean;
   prefixText: string | null;
   suffixText: string | null;
 }
 
 export function mixinField<T extends MixinBase<LitElement>>(
   base: T
-): MixinReturn<T, Field> {
-  abstract class Mixin extends base implements Field {
+): MixinReturn<T, FieldElement> {
+  abstract class Mixin extends base implements FieldElement {
     @property({ type: String })
     variant: FieldVariant = 'filled';
 
@@ -35,9 +34,6 @@ export function mixinField<T extends MixinBase<LitElement>>(
     @property({ type: String, attribute: 'error-text' })
     errorText: string | null = null;
  
-    @property({ type: Boolean, reflect: true })
-    disabled = false;
-
     @property({ type: String, attribute: 'prefix-text' })
     prefixText: string | null = null;
   

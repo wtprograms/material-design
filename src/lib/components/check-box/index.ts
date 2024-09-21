@@ -1,4 +1,4 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import {
@@ -8,13 +8,12 @@ import {
   Observable,
   tap,
 } from 'rxjs';
-import { attribute } from '../../common/rxjs/operators/attribute';
 import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
-import { mixinBooleanValue } from '../../common';
+import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinParentActivation(mixinBooleanValue(LitElement));
+const base = mixinParentActivation(mixinInternalsValue(LitElement));
 
 @customElement('md-check-box')
 export class MdCheckBoxElement extends base {
@@ -26,13 +25,15 @@ export class MdCheckBoxElement extends base {
   indeterminate$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
-  disabled = false;
-
-  @property({ type: Boolean, reflect: true })
   error = false;
 
   @property({ type: String, reflect: true })
   label: string | null = null;
+
+  @property({ type: Boolean, reflect: true })
+  @property$()
+  checked = false;
+  checked$!: Observable<boolean>;
 
   private readonly _icon$ = combineLatest({
     value: this.value$,
@@ -50,12 +51,13 @@ export class MdCheckBoxElement extends base {
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.value$.pipe(attribute(this, 'checked')).subscribe();
-    combineLatest([this.value$, this.indeterminate$])
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => this.dispatchEvent(new Event('change')))
-      )
+    this.value$
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.checked = x === '')))
+      .subscribe();
+    this.checked$
+      .pipe(distinctUntilChanged())
+      .pipe(tap((x) => (this.value = x ? '' : null)))
       .subscribe();
   }
 
@@ -63,13 +65,13 @@ export class MdCheckBoxElement extends base {
     return html`<div class="container">
         <md-ripple for="control" interactive></md-ripple>
         <md-focus-ring for="control" focus-visible></md-focus-ring>
-        <md-icon ?filled="${this.value}">${observe(this._icon$)}</md-icon>
+        <md-icon ?filled="${this.checked}">${observe(this._icon$)}</md-icon>
       </div>
       <input
         id="control"
         type="checkbox"
         ?disabled="${this.disabled}"
-        ?checked="${this.value}"
+        ?checked="${this.checked}"
         @change=${this.onChange}
         ?indeterminate=${this.indeterminate}
       />
@@ -78,10 +80,10 @@ export class MdCheckBoxElement extends base {
 
   onChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input?.checked === this.value) {
+    if (input?.checked === this.checked) {
       return;
     }
-    this.value = input?.checked ?? false;
+    this.checked = input?.checked ?? false;
   }
 }
 
