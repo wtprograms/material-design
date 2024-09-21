@@ -75,9 +75,7 @@ export class MdNavigationElement extends LitElement {
     ) {
       this.embedded = false;
       this.layout = 'rail';
-    } else if (
-      window.matchMedia(`(min-width: ${SCREENS.large}px)`).matches
-    ) {
+    } else if (window.matchMedia(`(min-width: ${SCREENS.large}px)`).matches) {
       this.embedded = true;
       this.layout = 'drawer';
     }
@@ -85,15 +83,13 @@ export class MdNavigationElement extends LitElement {
 
   protected override firstUpdated(_changedProperties: PropertyValues): void {
     super.firstUpdated(_changedProperties);
-    this.layout$
-      .pipe(
-        tap((x) => {
-          for (const item of this.items) {
-            item.drawer = x === 'drawer';
-          }
-        })
-      )
-      .subscribe();
+    this.layout$.pipe(tap(() => this.updateItemsLayout())).subscribe();
+  }
+
+  private updateItemsLayout() {
+    for (const item of this.items) {
+      item.drawer = this.layout === 'drawer';
+    }
   }
 
   override render() {
@@ -106,7 +102,7 @@ export class MdNavigationElement extends LitElement {
       this.layout === 'bar'
         ? html`<md-elevation level="2"></md-elevation>`
         : nothing;
-    return html`${elevation}<slot></slot>`;
+    return html`${elevation}<slot @slotchange=${this.updateItemsLayout}></slot>`;
   }
 }
 
