@@ -7,7 +7,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { observe, redispatchEvent } from '../../common';
+import { internals, observe, redispatchEvent } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -177,6 +177,7 @@ export class MdTextFieldElement extends base {
       @blur=${this.handleBlur}
       @input=${this.handleInput}
       ?disabled=${this.disabled}
+      @keyup=${this.handleKeyUp}
     />`;
   }
 
@@ -198,6 +199,13 @@ export class MdTextFieldElement extends base {
 
   override blur(): void {
     this._input.blur();
+  }
+
+  private handleKeyUp(event: KeyboardEvent) {
+    redispatchEvent(this, event);
+    if (this.type !== 'textarea' && event.key === 'Enter') {
+      this[internals].form?.dispatchEvent(new Event('submit'));
+    }
   }
 
   private handleFocus() {
