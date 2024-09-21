@@ -33,15 +33,15 @@ export class MdAvatarElement extends base {
   @property({ type: String })
   src: string | null = null;
 
-  @property({ type: String })
+  @property({ type: String, attribute: 'full-name' })
   @property$()
-  name: string | null = null;
-  name$!: Observable<string | null>;
+  fullName: string | null = null;
+  fullName$!: Observable<string | null>;
 
   @property({ type: Boolean, reflect: true })
   interactive = false;
 
-  private readonly _initial$ = this.name$.pipe(
+  private readonly _initial$ = this.fullName$.pipe(
     map((name) => (name ? name[0].toUpperCase() : ''))
   );
 
@@ -59,7 +59,7 @@ export class MdAvatarElement extends base {
 
   private renderContent() {
     return this.src
-      ? html`<img src=${this.src} alt=${ifDefined(this.name)} />`
+      ? html`<img src=${this.src} alt=${ifDefined(this.fullName)} />`
       : html`${observe(this._initial$)}`;
   }
 
