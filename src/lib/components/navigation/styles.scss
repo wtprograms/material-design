@@ -87,9 +87,31 @@ $tokens: (
 
 :host([layout='drawer']:not([embedded])) {
   position: absolute;
+  width: 0;
 }
 
 :host([layout='rail']) {
   height: 100%;
   width: 80px;
+}
+
+:host([media][layout='bar']) {
+  position: fixed;
+  bottom: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+}
+
+:host([media][layout='rail']) {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+}
+
+:host([media][layout='drawer'][embedded]) {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
 }

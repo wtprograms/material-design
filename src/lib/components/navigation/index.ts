@@ -7,7 +7,7 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { MdNavigationItemElement } from '../navigation-item';
-import { property$ } from '../../common';
+import { property$, SCREENS } from '../../common';
 import { Observable, tap } from 'rxjs';
 import { MdSheetElement } from '../sheet';
 
@@ -28,12 +28,15 @@ export class MdNavigationElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   vertical = false;
 
+  @property({ type: Boolean })
+  media = false;
+
   @queryAssignedElements()
   private _items!: HTMLElement[];
 
   @query('md-sheet')
   private _sheet!: MdSheetElement;
-    
+
   get open() {
     return this._sheet?.open ?? false;
   }
@@ -49,6 +52,35 @@ export class MdNavigationElement extends LitElement {
       (item): item is MdNavigationItemElement =>
         item instanceof MdNavigationItemElement
     );
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    if (this.media) {
+      this.updateLayout();
+      window.addEventListener('resize', this.updateLayout.bind(this));
+    }
+  }
+
+  private updateLayout() {
+    if (window.matchMedia(`(max-width: ${SCREENS.medium - 1}px)`).matches) {
+      this.embedded = false;
+      this.layout = 'bar';
+    } else if (
+      window.matchMedia(
+        `(min-width: ${SCREENS.medium}px) and (max-width: ${
+          SCREENS.large - 1
+        }px)`
+      ).matches
+    ) {
+      this.embedded = false;
+      this.layout = 'rail';
+    } else if (
+      window.matchMedia(`(min-width: ${SCREENS.large}px)`).matches
+    ) {
+      this.embedded = true;
+      this.layout = 'drawer';
+    }
   }
 
   protected override firstUpdated(_changedProperties: PropertyValues): void {
@@ -67,10 +99,13 @@ export class MdNavigationElement extends LitElement {
   override render() {
     if (this.layout === 'drawer' && !this.embedded) {
       return html`<md-sheet dock="start">
-        <slot></slot>
+        <slot @click=${() => (this.open = false)}></slot>
       </md-sheet>`;
     }
-    const elevation = this.layout === 'bar' ? html`<md-elevation level="2"></md-elevation>` : nothing;
+    const elevation =
+      this.layout === 'bar'
+        ? html`<md-elevation level="2"></md-elevation>`
+        : nothing;
     return html`${elevation}<slot></slot>`;
   }
 }

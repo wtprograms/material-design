@@ -1,7 +1,7 @@
 @use '../md';
 
 $tokens: (
-  'background-color': var(--md-sys-color-surface-container-low),
+  'background-color': var(--md-sys-color-surface-container),
   'body-padding': (
     'top': 0,
     'start': 0,
