@@ -165,21 +165,33 @@ $variants: ('elevated', 'filled', 'tonal', 'outlined', 'text', 'plain');
     --md-comp-progress-indicator-circular-indicator-width: 8;
     --md-comp-progress-indicator-indicator-color: var(--__color);
   }
+
+  .leading, .trailing {
+    display: none;
+  }
 }
 
 :host([leading]) {
   --_padding-start: var(--_padding-addon);
+
+  .leading {
+    display: inline-flex;
+  }
 }
 
 :host([trailing]) {
   --_padding-end: var(--_padding-addon);
+
+  .trailing {
+    display: inline-flex;
+  }
 }
 
 :host([busy]:not([disabled])) {
   pointer-events: none;
   opacity: 0.5;
 
-  #button {
+  .leading, .trailing, button, a {
     opacity: 0;
   }
 }

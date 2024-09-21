@@ -174,7 +174,7 @@ $variants: ('filled', 'tonal', 'outlined', 'standard');
   pointer-events: none;
   opacity: 0.5;
 
-  #button {
+  button, a {
     opacity: 0;
   }
 }

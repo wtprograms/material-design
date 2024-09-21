@@ -23,6 +23,7 @@ export * from './mixins/mixin-busy-button';
 export * from './mixins/mixin-button';
 export * from './mixins/mixin-dialog';
 export * from './mixins/mixin-field';
+export * from './mixins/mixin-internals-value';
 export * from './mixins/mixin-internals';
 export * from './mixins/mixin-open-close';
 export * from './mixins/mixin-parent-activation';

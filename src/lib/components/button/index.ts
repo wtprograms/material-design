@@ -46,9 +46,9 @@ export class MdButtonElement extends base implements FormSubmitter {
 
   protected override render(): unknown {
     return html`${this.renderAttachables()}
-    <slot name="leading" @slotchange=${() => this.leading = !!this._leadingElements.length}></slot>
+    <span class="leading"><slot name="leading" @slotchange=${() => this.leading = !!this._leadingElements.length}></slot></span>
     ${this.renderAnchorOrButton(this.renderContent())}
-    <slot name="trailing" @slotchange=${() => this.trailing = !!this._trailingElements.length}></slot>
+    <span class="trailing"><slot name="trailing" @slotchange=${() => this.trailing = !!this._trailingElements.length}></slot></span>
     ${this.renderProgressIndicator()}`;
   }
 
