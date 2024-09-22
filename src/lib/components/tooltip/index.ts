@@ -17,7 +17,7 @@ export class MdTooltipElement extends base {
   static override styles = [styles];
 
   @property({ type: String })
-  placement: Placement = 'bottom-start';
+  placement: Placement = 'bottom';
 
   @property({ type: String })
   trigger: PopoverTrigger = 'hover';
