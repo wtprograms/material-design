@@ -1,0 +1,17 @@
+:host {
+  list-style: none;
+  display: inline-flex;
+  padding: 0;
+  margin: 0;
+
+  ::slotted(*) {
+    display: inline;
+
+    &::after {
+      content: '/';
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-inline: 8px;
+    }
+  }
+}

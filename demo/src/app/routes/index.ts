@@ -14,6 +14,10 @@ export default [
     loadComponent: () => import('./button'),
   },
   {
+    path: 'breadcrumb',
+    loadComponent: () => import('./breadcrumb'),
+  },
+  {
     path: 'calendar-picker',
     loadComponent: () => import('./calendar-picker'),
   },

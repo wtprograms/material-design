@@ -1,5 +1,6 @@
 export * from './avatar';
 export * from './badge';
+export * from './breadcrumb';
 export * from './button';
 export * from './calendar-month-year-list-picker';
 export * from './calendar-month-year-picker';
