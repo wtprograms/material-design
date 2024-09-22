@@ -4,6 +4,7 @@ import {
   property,
   query,
   queryAssignedElements,
+  queryAssignedNodes,
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinDialog } from '../../common/mixins/mixin-dialog';
@@ -16,11 +17,17 @@ const base = mixinDialog(LitElement);
 export class MdDialogElement extends base {
   static override styles = [styles];
 
-  @property({ type: String })
-  headline = '';
+  @property({ type: Boolean, reflect: true })
+  headline = false;
 
-  @property({ type: String, reflect: true, attribute: 'supporting-text' })
-  supportingText: string | null = null;
+  @queryAssignedNodes({ slot: 'supporting-text' })
+  private _headlineNodes!: Node[];
+
+  @property({ type: Boolean, reflect: true, attribute: 'supporting-text' })
+  supportingText = false;
+
+  @queryAssignedNodes({ slot: 'supporting-text' })
+  private _supportingTextNodes!: Node[];
 
   @queryAssignedElements({ slot: 'action', flatten: true })
   private _actionSlots!: HTMLElement[];
@@ -101,9 +108,11 @@ export class MdDialogElement extends base {
             @slotchange=${() => (this.icon = !!this._icon.length)}
           ></slot>
         </div>
-        ${this.headline}
+        <slot name="headline" @slotchange=${() => this.headline = !!this._headlineNodes.length}></slot>
       </div>
-      <div class="supporting-text">${this.supportingText}</div>
+      <div class="supporting-text">
+        <slot name="supporting-text" @slotchange=${() => this.supportingText = !!this._supportingTextNodes.length}></slot>
+      </div>
     </div>`;
   }
 

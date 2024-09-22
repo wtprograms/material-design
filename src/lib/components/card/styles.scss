@@ -48,6 +48,14 @@ $variants: ('elevated', 'filled', 'outlined');
   text-align: left;
   align-items: flex-start;
 
+  .container {
+    display: inherit;
+    flex-direction: inherit;
+    border-radius: inherit;
+    overflow: hidden;
+    width: 100%;
+  }
+
   button, a {
     background-color: transparent;
     display: inherit;

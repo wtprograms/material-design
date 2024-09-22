@@ -39,7 +39,7 @@ export class MdCardElement extends base {
   }
 
   private renderContent() {
-    return html`<slot></slot>`;
+    return html`<div class="container"><slot></slot></div>`;
   }
 
   private renderAttachables() {
