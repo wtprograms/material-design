@@ -1,4 +1,4 @@
-import {  LitElement, nothing } from 'lit';
+import {  html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styles } from './styles';
 
@@ -7,7 +7,7 @@ export class MdListElement extends LitElement {
   static override styles = [styles];
 
   override render() {
-    return nothing;
+    return html`<slot></slot>`;
   }
 }
 

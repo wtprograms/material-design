@@ -28,12 +28,12 @@ export class MdCardElement extends base {
     const level = this.variant === 'elevated' ? 1 : 0;
     const elevation = elevatedVariants.includes(this.variant)
       ? html`<md-elevation
-          for="control"
-          ?interactive=${this.interactive}
+          for=${this.idName}
+          ?interactive=${this.interactive || !!this.href}
           level=${level}
         ></md-elevation>`
       : nothing;
-    return this.interactive
+    return this.interactive || !!this.href
       ? html`${elevation}${this.renderAttachables()}${this.renderAnchorOrButton(nothing)}${this.renderContent()}`
       : html`${elevation}${this.renderContent()}`;
   }
@@ -44,8 +44,8 @@ export class MdCardElement extends base {
 
   private renderAttachables() {
     return html`
-      <md-focus-ring for="control" focus-visible></md-focus-ring>
-      <md-ripple for="control" interactive></md-ripple>`;
+      <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
+      <md-ripple for=${this.idName} interactive></md-ripple>`;
   }
 }
 
