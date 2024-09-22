@@ -24,8 +24,8 @@ export class MdRadioButtonElement extends base {
   checked = false;
   checked$!: Observable<boolean>;
 
-  private readonly _icon$ = this.value$.pipe(
-    map((value) => (value ? 'radio_button_checked' : 'radio_button_unchecked'))
+  private readonly _icon$ = this.checked$.pipe(
+    map((checked) => (checked ? 'radio_button_checked' : 'radio_button_unchecked'))
   );
 
   override connectedCallback(): void {

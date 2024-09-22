@@ -36,13 +36,13 @@ export class MdCheckBoxElement extends base {
   checked$!: Observable<boolean>;
 
   private readonly _icon$ = combineLatest({
-    value: this.value$,
+    checked: this.checked$,
     indeterminate: this.indeterminate$,
   }).pipe(
-    map(({ value, indeterminate }) => {
-      if (!value) {
+    map(({ checked, indeterminate }) => {
+      if (!checked) {
         return 'check_box_outline_blank';
-      } else if (value && !indeterminate) {
+      } else if (checked && !indeterminate) {
         return 'check_box';
       }
       return 'indeterminate_check_box';
