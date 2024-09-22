@@ -20,6 +20,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdFieldElement } from '../field';
 import { mixinField } from '../../common/mixins/mixin-field';
 import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import {live} from 'lit/directives/live.js';
 
 export type TextFieldType =
   | 'text'
@@ -178,6 +179,7 @@ export class MdTextFieldElement extends base {
       @input=${this.handleInput}
       ?disabled=${this.disabled}
       @keyup=${this.handleKeyUp}
+      .value=${live(this.value)}
     />`;
   }
 
@@ -190,7 +192,8 @@ export class MdTextFieldElement extends base {
       @blur=${this.handleBlur}
       @input=${this.handleInput}
       ?disabled=${this.disabled}
-    ></textarea>`;
+      .value=${live(this.value)}
+      ></textarea>`;
   }
 
   override focus(options?: FocusOptions): void {

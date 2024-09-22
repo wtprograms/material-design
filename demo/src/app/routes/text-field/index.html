@@ -43,4 +43,9 @@
     <md-list-item slot="item" value="two">Two</md-list-item>
     <md-list-item slot="item" value="three">Three</md-list-item>
   </md-text-field>
+  <md-text-field label="Label" type="textarea" value="one" [variant]="variant()" [attr.error-text]="errorText()" prefix="$" suffix=".00"
+    [disabled]="disabled()">
+    <md-icon slot="leading">home</md-icon>
+    <md-icon slot="trailing">home</md-icon>
+  </md-text-field>
 </div>

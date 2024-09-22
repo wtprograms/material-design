@@ -5,6 +5,7 @@ import { getMeridianValues } from '../../common';
 import { TimeSpan } from '../../common/helpers/time-span';
 import { classMap } from 'lit/directives/class-map.js';
 import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import {live} from 'lit/directives/live.js';
 
 const base = mixinInternalsValue(LitElement);
 
@@ -91,7 +92,7 @@ export class MdTimePickerElement extends base {
             autocomplete="off"
             min="0"
             max="59"
-            .value=${this.valueAsTimeSpan.seconds}
+            .value=${live(this.valueAsTimeSpan.seconds)}
             @input=${this.setSeconds}
             @keyup=${this.enforceMinMax}
           />`
@@ -103,7 +104,7 @@ export class MdTimePickerElement extends base {
         autocomplete="off"
         min="0"
         max=${hourMax}
-        .value=${this.valueAsTimeSpan.hours}
+        .value=${live(this.valueAsTimeSpan.hours)}
         @input=${this.setHours}
         @keyup=${this.enforceMinMax}
       />
@@ -111,7 +112,7 @@ export class MdTimePickerElement extends base {
       <input
         type="number"
         autocomplete="off"
-        .value=${this.valueAsTimeSpan.minutes}
+        .value=${live(this.valueAsTimeSpan.minutes)}
         min="0"
         max="59"
         @input=${this.setMinutes}
