@@ -18,6 +18,7 @@
     caret-color: var(--_color-label);
     resize: none;
     overflow: hidden;
+    isolation: isolate;
 
     &::placeholder {
       color: currentColor;

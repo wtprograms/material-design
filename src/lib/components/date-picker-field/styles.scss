@@ -1,6 +1,8 @@
 @use '../md';
 
 :host {
+  isolation: isolate;
+  
   md-field {
     width: 100%;
     --md-comp-field-control-cursor: pointer;
