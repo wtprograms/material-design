@@ -1,6 +1,7 @@
 @use '../md';
 
 :host {
+  isolation: isolate;
   input, textarea {
     display: inline-flex;
     align-self: baseline;
@@ -18,7 +19,6 @@
     caret-color: var(--_color-label);
     resize: none;
     overflow: hidden;
-    isolation: isolate;
 
     &::placeholder {
       color: currentColor;
