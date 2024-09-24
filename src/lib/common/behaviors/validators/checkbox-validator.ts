@@ -1,30 +1,10 @@
-/**
- * @license
- * Copyright 2023 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import {Validator} from './validator.js';
 
-/**
- * Constraint validation properties for a checkbox.
- */
 export interface CheckboxState {
-  /**
-   * Whether the checkbox is checked.
-   */
   readonly checked: boolean;
-
-  /**
-   * Whether the checkbox is required.
-   */
   readonly required: boolean;
 }
 
-/**
- * A validator that provides constraint validation that emulates
- * `<input type="checkbox">` validation.
- */
 export class CheckboxValidator extends Validator<CheckboxState> {
   private checkboxControl?: HTMLInputElement;
 

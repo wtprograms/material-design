@@ -3,9 +3,9 @@ import { html, LitElement } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import { MdCalendarMonthYearListPickerElement } from '../calendar-month-year-list-picker';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue } from '../../common';
 
-const base = mixinInternalsValue(LitElement);
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
 @customElement('md-date-picker')
 export class MdDatePickerElement extends base {
   static override styles = [styles];
@@ -38,7 +38,7 @@ export class MdDatePickerElement extends base {
     return Date.parseString(this.value) ?? null;
   }
   set valueAsDate(value: Date | null | undefined) {
-    this.value = value?.toString() ?? null;
+    this.value = value?.toString() ?? '';
   }
 
   get viewValueAsDate() {
@@ -133,6 +133,22 @@ export class MdDatePickerElement extends base {
 
   private changeViewDate(event: Event) {
     this.viewValue = (event.target as any).value;
+  }
+
+  override [getFormValue]() {
+    return this.value || null;
+  }
+
+  override [getFormState]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.value = '';
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
   }
 }
 

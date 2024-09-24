@@ -5,20 +5,20 @@ import { distinctUntilChanged, Observable, tap } from 'rxjs';
 import { property$ } from '../lit/property$.decorator';
 
 export interface ValueElement<TValue> {
-  value: TValue | null;
-  value$: Observable<TValue | null>;
+  value: TValue;
+  value$: Observable<TValue>;
 }
 
-function mixinValue<TValue, T extends MixinBase<LitElement>>(
-  initialValue: TValue | null,
+export function mixinValue<TValue, T extends MixinBase<LitElement>>(
+  initialValue: TValue,
   type: typeof String | typeof Number | typeof Boolean,
   base: T
 ): MixinReturn<T, ValueElement<TValue>> {
   abstract class Mixin extends base implements ValueElement<TValue> {
     @property({ type, reflect: true })
     @property$()
-    value: TValue | null = initialValue;
-    value$!: Observable<TValue | null>;
+    value: TValue = initialValue;
+    value$!: Observable<TValue>;
 
     override connectedCallback(): void {
       super.connectedCallback();
@@ -34,26 +34,9 @@ function mixinValue<TValue, T extends MixinBase<LitElement>>(
   return Mixin;
 }
 
-export function mixinStringValue<T extends MixinBase<LitElement>>(
-  base: T
-): MixinReturn<T, ValueElement<string | null>> {
-  const _base = mixinValue<string, T>(null, String, base);
-  abstract class Mixin extends _base implements ValueElement<string> {}
-  return Mixin;
-}
+export const mixinStringValue = <T extends MixinBase<LitElement>>(base: T, initialValue = '') => mixinValue(initialValue, String, base);
 
-export function mixinNumberValue<T extends MixinBase<LitElement>>(
-  base: T
-): MixinReturn<T, ValueElement<number | null>> {
-  const _base = mixinValue<number, T>(null, Number, base);
-  abstract class Mixin extends _base implements ValueElement<number> {}
-  return Mixin;
-}
+export const mixinNumberValue = <T extends MixinBase<LitElement>>(base: T, initialValue = 0) => mixinValue(initialValue, Number, base);
 
-export function mixinBooleanValue<T extends MixinBase<LitElement>>(
-  base: T
-): MixinReturn<T, ValueElement<boolean>> {
-  const _base = mixinValue<boolean, T>(false, Number, base);
-  abstract class Mixin extends _base implements ValueElement<boolean> {}
-  return Mixin;
-}
+export const mixinBooleanValue = <T extends MixinBase<LitElement>>(base: T, initialValue = false) => mixinValue(initialValue, Boolean, base);
+

@@ -1,5 +1,5 @@
 import { ReactiveElement, isServer } from 'lit';
-import { WithElementInternals, internals } from '../mixins/mixin-internals';
+import { WithElementInternals, internals } from '../mixins/mixin-element-internals';
 
 export type FormSubmitterConstructor =
   | (new () => FormSubmitter)

@@ -1,6 +1,6 @@
 <div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant mb-4">
   <md-switch></md-switch>
-  <md-switch value></md-switch>
+  <md-switch checked></md-switch>
 </div>
 <div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
   <md-switch>
@@ -15,28 +15,31 @@
   </md-switch>
 </div>
 <div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
-  <md-switch label="This is the switch's label.">
+  <md-switch>
+    This is the switch's label.
   </md-switch>
 </div>
 <div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
   <md-switch [error]="true"></md-switch>
-  <md-switch [error]="true" value></md-switch>
+  <md-switch [error]="true" checked></md-switch>
 </div>
 <div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
-  <md-switch [error]="true" label="This is the switch's label.">
+  <md-switch [error]="true" label="">
+    This is the switch's label.
   </md-switch>
 </div>
 <div class="flex flex-row gap-4 p-2 border border-solid border-outline-variant">
   <md-switch [disabled]="true"></md-switch>
-  <md-switch [disabled]="true" value></md-switch>
+  <md-switch [disabled]="true" checked></md-switch>
   <md-switch [disabled]="true">
     <md-icon slot="unchecked-icon">close</md-icon>
   </md-switch>
-  <md-switch [disabled]="true" value>
+  <md-switch [disabled]="true" checked>
     <md-icon slot="checked-icon">check</md-icon>
   </md-switch>
 </div>
 <div class="flex flex-col gap-4 p-2 border border-solid border-outline-variant">
-  <md-switch [disabled]="true" label="This is the switch's label.">
+  <md-switch [disabled]="true">
+    This is the switch's label.
   </md-switch>
 </div>

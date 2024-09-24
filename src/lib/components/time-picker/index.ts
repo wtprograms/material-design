@@ -1,13 +1,12 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { getMeridianValues } from '../../common';
+import { getFormState, getFormValue, getMeridianValues, mixinElementInternals, mixinFormAssociated, mixinStringValue } from '../../common';
 import { TimeSpan } from '../../common/helpers/time-span';
 import { classMap } from 'lit/directives/class-map.js';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 import {live} from 'lit/directives/live.js';
 
-const base = mixinInternalsValue(LitElement);
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
 
 @customElement('md-time-picker')
 export class MdTimePickerElement extends base {
@@ -199,6 +198,22 @@ export class MdTimePickerElement extends base {
         el.value = el.max;
       }
     }
+  }
+
+  override [getFormValue]() {
+    return this.value || null;
+  }
+
+  override [getFormState]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.value = '';
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
   }
 }
 

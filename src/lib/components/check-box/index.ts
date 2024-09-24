@@ -1,19 +1,39 @@
 import { html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { styles } from './styles';
 import {
-  combineLatest,
-  distinctUntilChanged,
-  map,
-  Observable,
-  tap,
-} from 'rxjs';
+  customElement,
+  property,
+  query,
+  queryAssignedNodes,
+} from 'lit/decorators.js';
+import { styles } from './styles';
+import { combineLatest, map, Observable } from 'rxjs';
 import { observe } from '../../common/lit/observable-directive';
 import { property$ } from '../../common/lit/property$.decorator';
-import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import {
+  CheckboxValidator,
+  getFormState,
+  getFormValue,
+  mixinElementInternals,
+  mixinFormAssociated,
+  mixinParentActivation,
+  mixinStringValue,
+  redispatchEvent,
+} from '../../common';
+import {
+  createValidator,
+  getValidityAnchor,
+  mixinConstraintValidation,
+} from '../../common/mixins/mixin-constraint-validation';
+import { live } from 'lit/directives/live.js';
 
-const base = mixinParentActivation(mixinInternalsValue(LitElement));
+const base = mixinParentActivation(
+  mixinStringValue(
+    mixinConstraintValidation(
+      mixinFormAssociated(mixinElementInternals(LitElement))
+    ),
+    'on'
+  )
+);
 
 @customElement('md-check-box')
 export class MdCheckBoxElement extends base {
@@ -25,15 +45,24 @@ export class MdCheckBoxElement extends base {
   indeterminate$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
-  error = false;
-
-  @property({ type: String, reflect: true })
-  label: string | null = null;
+  label = false;
 
   @property({ type: Boolean, reflect: true })
   @property$()
   checked = false;
   checked$!: Observable<boolean>;
+
+  @property({ type: Boolean })
+  required = false;
+
+  @query('input')
+  private readonly _input!: HTMLInputElement;
+
+  @property({ type: Boolean, reflect: true })
+  error = false;
+
+  @queryAssignedNodes()
+  private readonly _slotElements!: NodeListOf<HTMLElement>;
 
   private readonly _icon$ = combineLatest({
     checked: this.checked$,
@@ -49,18 +78,6 @@ export class MdCheckBoxElement extends base {
     })
   );
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.value$
-      .pipe(distinctUntilChanged())
-      .pipe(tap((x) => (this.checked = x === '')))
-      .subscribe();
-    this.checked$
-      .pipe(distinctUntilChanged())
-      .pipe(tap((x) => (this.value = x ? '' : null)))
-      .subscribe();
-  }
-
   override render() {
     return html`<div class="container">
         <md-ripple for="control" interactive></md-ripple>
@@ -71,19 +88,57 @@ export class MdCheckBoxElement extends base {
         id="control"
         type="checkbox"
         ?disabled="${this.disabled}"
-        ?checked="${this.checked}"
+        ?required=${this.required}
+        .checked="${live(this.checked)}"
+        @input=${this.onInput}
         @change=${this.onChange}
-        ?indeterminate=${this.indeterminate}
+        .indeterminate=${this.indeterminate}
       />
-      <span class="label">${this.label}</span>`;
+      <span class="label"
+        ><slot
+          @slotchange=${() => (this.label = !!this._slotElements.length)}
+        ></slot
+      ></span>`;
   }
 
-  onChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input?.checked === this.checked) {
-      return;
+  private onInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.checked = target.checked;
+    this.indeterminate = target.indeterminate;
+  }
+
+  private onChange(event: Event) {
+    redispatchEvent(this, event);
+  }
+
+  override [getFormValue]() {
+    if (!this.checked || this.indeterminate) {
+      return null;
     }
-    this.checked = input?.checked ?? false;
+
+    return this.value;
+  }
+
+  override [getFormState]() {
+    return String(this.checked);
+  }
+
+  override formResetCallback() {
+    // The checked property does not reflect, so the original attribute set by
+    // the user is used to determine the default value.
+    this.checked = this.hasAttribute('checked');
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.checked = state === 'true';
+  }
+
+  override [createValidator]() {
+    return new CheckboxValidator(() => this);
+  }
+
+  override [getValidityAnchor]() {
+    return this._input;
   }
 }
 

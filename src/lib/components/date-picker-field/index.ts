@@ -1,19 +1,23 @@
 import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-} from 'rxjs';
-import { observe } from '../../common';
+  getFormState,
+  getFormValue,
+  mixinElementInternals,
+  mixinField,
+  mixinFormAssociated,
+  mixinStringValue,
+  observe,
+} from '../../common';
 import { MdFieldElement } from '../field';
 import { MdDatePickerElement } from '../date-picker';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { mixinField } from '../../common/mixins/mixin-field';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinInternalsValue(mixinField(LitElement));
+const base = mixinField(
+  mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)))
+);
 
 @customElement('md-date-picker-field')
 export class MdDatePickerFieldElement extends base {
@@ -50,14 +54,14 @@ export class MdDatePickerFieldElement extends base {
     return Date.parseString(this.value) ?? null;
   }
   set valueAsDate(value: Date | null | undefined) {
-    this.value = value?.toString() ?? null;
+    this.value = value?.toString() ?? '';
   }
 
   get selectedValueAsDate() {
     return Date.parseString(this.selectedValue) ?? null;
   }
   set selectedValueAsDate(value: Date | null | undefined) {
-    this.selectedValue = value?.toString() ?? null;
+    this.selectedValue = value?.toString() ?? '';
   }
 
   @query('md-date-picker')
@@ -78,7 +82,10 @@ export class MdDatePickerFieldElement extends base {
   }).pipe(map((x) => x.focused || !!x.value || x.opening));
 
   override render() {
-    const formattedDate = Date.parseString(this.selectedValue, new Date()).toFormattedDateString(this.locale, this.format);
+    const formattedDate = Date.parseString(
+      this.selectedValue,
+      new Date()
+    ).toFormattedDateString(this.locale, this.format);
     return html`<md-field
       variant=${this.variant}
       ?populated=${observe(this._populated$)}
@@ -93,9 +100,9 @@ export class MdDatePickerFieldElement extends base {
       @close=${() => this._open$.next(false)}
       @closing=${() => this._opening$.next(false)}
     >
-    <slot name="leading" slot="leading"></slot>
-    <md-icon slot="trailing">arrow_drop_down</md-icon>
-    ${formattedDate}
+      <slot name="leading" slot="leading"></slot>
+      <md-icon slot="trailing">arrow_drop_down</md-icon>
+      ${formattedDate}
       <md-date-picker
         value=${this.selectedValue}
         slot="popover"
@@ -105,7 +112,7 @@ export class MdDatePickerFieldElement extends base {
         max=${this.max}
       ></md-date-picker>
       <div slot="popover" class="actions">
-      <md-button
+        <md-button
           variant="text"
           @click=${this.clearClick}
           style="margin-inline-end: auto"
@@ -117,7 +124,9 @@ export class MdDatePickerFieldElement extends base {
           ?disabled=${this.value === this.selectedValue}
           >${this.okayText}</md-button
         >
-        <md-button variant="text" @click=${this.cancelClick}>${this.cancelText}</md-button>
+        <md-button variant="text" @click=${this.cancelClick}
+          >${this.cancelText}</md-button
+        >
       </div>
     </md-field>`;
   }
@@ -148,6 +157,22 @@ export class MdDatePickerFieldElement extends base {
 
   override blur(): void {
     this._focused$.next(false);
+  }
+
+  override [getFormValue]() {
+    return this.value || null;
+  }
+
+  override [getFormState]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.value = '';
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
   }
 }
 

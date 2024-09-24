@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
+import { mixinFormAssociated, mixinElementInternals, mixinStringValue, getFormState, getFormValue } from '../../common';
 
-const base = mixinInternalsValue(LitElement);
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
 
 @customElement('md-calendar-month-year-picker')
 export class MdCalendarMonthYearPickerElement extends base {
@@ -83,6 +83,22 @@ export class MdCalendarMonthYearPickerElement extends base {
       date.setMonth(date.getMonth() + index);
     }
     this.value = date.toString();
+  }
+
+  override [getFormValue]() {
+    return this.value || null;
+  }
+
+  override [getFormState]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.value = '';
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
   }
 }
 

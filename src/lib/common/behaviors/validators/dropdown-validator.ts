@@ -1,36 +1,16 @@
-/**
- * @license
- * Copyright 2023 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import {html, render} from 'lit';
 
 import {Validator} from './validator.js';
 
-/**
- * Constraint validation properties for a select dropdown.
- */
-export interface SelectState {
-  /**
-   * The current selected value.
-   */
+export interface DropdownState {
   readonly value: string;
-
-  /**
-   * Whether the select is required.
-   */
   readonly required: boolean;
 }
 
-/**
- * A validator that provides constraint validation that emulates `<select>`
- * validation.
- */
-export class SelectValidator extends Validator<SelectState> {
+export class DropdownValidator extends Validator<DropdownState> {
   private selectControl?: HTMLSelectElement;
 
-  protected override computeValidity(state: SelectState) {
+  protected override computeValidity(state: DropdownState) {
     if (!this.selectControl) {
       // Lazily create the platform select
       this.selectControl = document.createElement('select');
@@ -46,11 +26,11 @@ export class SelectValidator extends Validator<SelectState> {
     };
   }
 
-  protected override equals(prev: SelectState, next: SelectState) {
+  protected override equals(prev: DropdownState, next: DropdownState) {
     return prev.value === next.value && prev.required === next.required;
   }
 
-  protected override copy({value, required}: SelectState) {
+  protected override copy({value, required}: DropdownState) {
     return {value, required};
   }
 }

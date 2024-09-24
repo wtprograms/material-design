@@ -2,14 +2,13 @@ import { html, LitElement } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
-import { observe, TimeSpan } from '../../common';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, observe, TimeSpan } from '../../common';
 import { MdFieldElement } from '../field';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { MdTimePickerElement } from '../time-picker';
 import { mixinField } from '../../common/mixins/mixin-field';
-import { mixinInternalsValue } from '../../common/mixins/mixin-internals-value';
 
-const base = mixinInternalsValue(mixinField(LitElement));
+const base = mixinField(mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement))));
 
 @customElement('md-time-picker-field')
 export class MdTimePickerFieldElement extends base {
@@ -56,7 +55,7 @@ export class MdTimePickerFieldElement extends base {
     return this.selectedValue ? TimeSpan.parse(this.selectedValue) : null;
   }
   set selectedValueAsTimeSpan(value: TimeSpan | null | undefined) {
-    this.selectedValue = value?.toString() ?? null;
+    this.selectedValue = value?.toString() ?? '';
   }
 
   get valueAsTimeOfDay() {
@@ -163,6 +162,22 @@ export class MdTimePickerFieldElement extends base {
 
   override blur(): void {
     this._focused$.next(false);
+  }
+
+  override [getFormValue]() {
+    return this.value || null;
+  }
+
+  override [getFormState]() {
+    return this.value;
+  }
+
+  override formResetCallback() {
+    this.value = '';
+  }
+
+  override formStateRestoreCallback(state: string) {
+    this.value = state;
   }
 }
 
