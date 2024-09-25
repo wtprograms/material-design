@@ -66,6 +66,7 @@ $palettes: ("surface", "primary", "secondary", "tertiary", "plain");
 
 :host {
   --_size-px: calc(var(--_size) * 1px);
+  --__size: var(--_size);
   --__color: var(--_color);
   position: relative;
   border-radius: var(--md-sys-shape-full);
@@ -118,10 +119,33 @@ $palettes: ("surface", "primary", "secondary", "tertiary", "plain");
     --md-comp-ripple-transform-hover: scale(1);
     z-index: 1;
   }
+
+  .progress-indicator {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  md-progress-indicator {
+    --md-comp-progress-indicator-circular-size: calc(var(--__size) * 0.6);
+    --md-comp-progress-indicator-circular-indicator-width: 8;
+    --md-comp-progress-indicator-indicator-color: var(--__color);
+  }
 }
 
 :host([interactive]) {
   cursor: pointer;
+}
+
+:host([busy]:not([disabled])) {
+  pointer-events: none;
+  opacity: 0.5;
+
+  button, a, img, span {
+    opacity: 0;
+  }
 }
 
 @include md.disabled-component;

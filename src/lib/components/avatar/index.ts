@@ -5,7 +5,7 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
-import { cssProperty, mixinButton, observe, property$ } from '../../common';
+import { cssProperty, mixinBusyButton, observe, property$ } from '../../common';
 import { map, Observable } from 'rxjs';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
@@ -16,7 +16,7 @@ export type AvatarPalette =
   | 'tertiary'
   | 'plain';
 
-const base = mixinButton(mixinParentActivation(LitElement));
+const base = mixinBusyButton(mixinParentActivation(LitElement));
 
 @customElement('md-avatar')
 export class MdAvatarElement extends base {
@@ -51,16 +51,17 @@ export class MdAvatarElement extends base {
   }
 
   protected override render(): unknown {
-    return this.interactive
+    const _html = this.interactive
       ? html`${this.renderAttachables()}
         ${this.renderAnchorOrButton(this.renderContent())}`
       : html`${this.renderContent()}`;
+    return html`${_html}${this.renderProgressIndicator()}`
   }
 
   private renderContent() {
     return this.src
       ? html`<img src=${this.src} alt=${ifDefined(this.fullName)} />`
-      : html`${observe(this._initial$)}`;
+      : html`<span>${observe(this._initial$)}</span>`;
   }
 
   private renderAttachables() {
