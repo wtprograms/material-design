@@ -5,6 +5,11 @@ import { ButtonElement, mixinButton } from './mixin-button';
 
 export interface BusyButtonElement extends ButtonElement {
   busy: boolean;
+  progress: number;
+  max: number;
+  fourColor: boolean;
+  indeterminate: boolean;
+  buffer: number;
   renderProgressIndicator(): unknown;
 }
 
