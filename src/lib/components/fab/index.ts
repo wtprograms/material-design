@@ -98,12 +98,12 @@ export class MdFabElement extends base {
 
   private renderAttachables() {
     return html`<md-elevation
-        for="control"
+        for=${this.idName}
         interactive
         level=${this.lowered ? 1 : 3}
       ></md-elevation>
-      <md-focus-ring for="control" focus-visible></md-focus-ring>
-      <md-ripple for="control" interactive></md-ripple>`;
+      <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
+      <md-ripple for=${this.idName} interactive></md-ripple>`;
   }
 
   private animateLabel(opening: boolean) {
