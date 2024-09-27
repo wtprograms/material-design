@@ -1,9 +1,9 @@
 import { html, LitElement, PropertyValues } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinAttachable, ObservableElement } from '../../common';
+import { mixinAttachable, ObservableElement, PopoverTrigger } from '../../common';
 import { Placement } from '@floating-ui/dom';
-import { MdPopoverElement, PopoverTrigger } from '../popover';
+import { MdPopoverElement } from '../popover';
 
 const base = mixinAttachable(ObservableElement);
 

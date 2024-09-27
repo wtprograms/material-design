@@ -4,7 +4,7 @@
   padding: 0;
   margin: 0;
 
-  ::slotted(*:not(:last-child))::after {
+  ::slotted(*:not(:last-child))::before {
     content: '/';
     margin-top: 0;
     margin-bottom: 0;
