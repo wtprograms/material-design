@@ -81,7 +81,7 @@ export class MdFabElement extends base {
 
   protected override render(): unknown {
     return html`${this.renderAttachables()}
-    ${this.renderAnchorOrButton(this.renderContent())} <md-popover for=${this.idName} triggers="manual" placement="bottom" native><slot name="action"></slot></md-popover>`;
+    ${this.renderAnchorOrButton(this.renderContent())} <md-popover for=${this.idName} triggers="manual" placement="top" native><slot name="action"></slot></md-popover>`;
   }
 
   private renderContent() {
