@@ -93,17 +93,17 @@ export class MdSnackBarElement extends base {
     super.connectedCallback();
     this._opacity$.pipe(cssProperty(this, 'opacity')).subscribe();
     this._display$.pipe(cssProperty(this, 'display')).subscribe();
-    // this.open$
-    //   .pipe(
-    //     filter((x) => x),
-    //     switchMap(() =>
-    //       timer(this.timeout).pipe(
-    //         takeUntil(this._dismiss$),
-    //         tap(() => this.closeComponent())
-    //       )
-    //     )
-    //   )
-    //   .subscribe();
+    this.open$
+      .pipe(
+        filter((x) => x),
+        switchMap(() =>
+          timer(this.timeout).pipe(
+            takeUntil(this._dismiss$),
+            tap(() => this.closeComponent())
+          )
+        )
+      )
+      .subscribe();
     this.open$
       .pipe(
         filter((x) => !x),
