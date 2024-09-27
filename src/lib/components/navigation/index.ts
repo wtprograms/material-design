@@ -84,6 +84,7 @@ export class MdNavigationElement extends LitElement {
   protected override firstUpdated(_changedProperties: PropertyValues): void {
     super.firstUpdated(_changedProperties);
     this.layout$.pipe(tap(() => this.updateItemsLayout())).subscribe();
+    this.updateItemsLayout();
   }
 
   private updateItemsLayout() {
