@@ -28,6 +28,7 @@ export * from './mixins/mixin-field';
 export * from './mixins/mixin-on-report-validity';
 export * from './mixins/mixin-open-close';
 export * from './mixins/mixin-parent-activation';
+export * from './mixins/mixin-popover';
 export * from './mixins/mixin-selected';
 export * from './mixins/mixin-value';
 export * from './mixins/mixin';

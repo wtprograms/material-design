@@ -93,17 +93,17 @@ export class MdSnackBarElement extends base {
     super.connectedCallback();
     this._opacity$.pipe(cssProperty(this, 'opacity')).subscribe();
     this._display$.pipe(cssProperty(this, 'display')).subscribe();
-    this.open$
-      .pipe(
-        filter((x) => x),
-        switchMap(() =>
-          timer(this.timeout).pipe(
-            takeUntil(this._dismiss$),
-            tap(() => this.closeComponent())
-          )
-        )
-      )
-      .subscribe();
+    // this.open$
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() =>
+    //       timer(this.timeout).pipe(
+    //         takeUntil(this._dismiss$),
+    //         tap(() => this.closeComponent())
+    //       )
+    //     )
+    //   )
+    //   .subscribe();
     this.open$
       .pipe(
         filter((x) => !x),
@@ -129,13 +129,16 @@ export class MdSnackBarElement extends base {
         <md-elevation level="2"></md-elevation>
       </div>
       <div class="body">
-        <slot></slot>
-        <div class="actions">
-          <slot
-            name="action"
-            @slotchange=${() => (this.actions = !!this._actionElements.length)}
-            @click=${() => this.closeComponent()}
-          ></slot>
+        <div class="contents">
+          <slot></slot>
+          <div class="actions">
+            <slot
+              name="action"
+              @slotchange=${() =>
+                (this.actions = !!this._actionElements.length)}
+              @click=${() => this.closeComponent()}
+            ></slot>
+          </div>
         </div>
       </div>
     </div>`;

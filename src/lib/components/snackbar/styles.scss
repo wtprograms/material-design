@@ -47,18 +47,27 @@ $tokens: (
   }
 
   .body {
-    gap: 12px;
-    flex-direction: row;
-    align-items: center;
-    padding-top: 4px;
-    padding-inline-end: 12px;
-    padding-bottom: 4px;
-    padding-inline-start: 16px;
+    width: 100%;
+
 
     display: inline-flex;
     opacity: 0;
     color: inherit;
 
+  }
+
+  .contents {
+    gap: 12px;
+    flex-direction: row;
+    padding-top: 4px;
+    padding-inline-end: 12px;
+    padding-bottom: 4px;
+    padding-inline-start: 16px;
+    width: 100%;
+    align-items: center;
+
+    display: inline-flex;
+    color: inherit;
   }
 
   .actions {
@@ -78,7 +87,8 @@ $tokens: (
 }
 
 :host([multiline]) {
-  .body {
+  .contents {
+    align-items: flex-start;
     flex-direction: column;
     gap: 8px;
   }
