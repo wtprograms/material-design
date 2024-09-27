@@ -58,9 +58,13 @@ export class MdFabElement extends base {
   @query('.hidden-label')
   private _hiddenLabel!: HTMLElement;
 
+  @query('md-fab-actions')
+  private _fabActions!: MdFabActionsElement;
+
   constructor() {
     super();
     this.openOnFirstUpdate = true;
+    this.addEventListener('click', () => this.handleClick());
   }
 
   override get openComponent$() {
@@ -80,7 +84,7 @@ export class MdFabElement extends base {
 
   protected override render(): unknown {
     return html`${this.renderAttachables()}
-    ${this.renderAnchorOrButton(this.renderContent())}`;
+    ${this.renderAnchorOrButton(this.renderContent())} <md-fab-actions for=${this.idName}><slot name="action"></slot></md-fab-actions>`;
   }
 
   private renderContent() {
@@ -128,6 +132,12 @@ export class MdFabElement extends base {
         fill: 'forwards',
       }
     );
+  }
+
+  private handleClick() {
+    if (this._fabActions.buttons) {
+      this._fabActions.openComponent();
+    }
   }
 }
 
