@@ -6,6 +6,7 @@ import {LitElement, isServer} from 'lit';
 import {ConstraintValidation} from './mixin-constraint-validation.js';
 import {MixinBase, MixinReturn} from './mixin.js';
 import { internals, WithElementInternals } from './mixin-element-internals.js';
+import { ObservableElement } from '../lit/observable-element.js';
 
 export interface OnReportValidity extends ConstraintValidation {
   [onReportValidity](invalidEvent: Event | null): void;
@@ -25,7 +26,7 @@ const privateIsSelfReportingValidity = Symbol('privateIsSelfReportingValidity');
 const privateCallOnReportValidity = Symbol('privateCallOnReportValidity');
 
 export function mixinOnReportValidity<
-  T extends MixinBase<LitElement & ConstraintValidation & WithElementInternals>,
+  T extends MixinBase<ObservableElement & ConstraintValidation & WithElementInternals>,
 >(base: T): MixinReturn<T, OnReportValidity> {
   abstract class OnReportValidityElement
     extends base

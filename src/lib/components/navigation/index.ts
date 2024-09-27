@@ -7,18 +7,17 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { MdNavigationItemElement } from '../navigation-item';
-import { property$, SCREENS } from '../../common';
+import { ObservableElement, SCREENS } from '../../common';
 import { Observable, tap } from 'rxjs';
 import { MdSheetElement } from '../sheet';
 
 export type NavigationLayout = 'rail' | 'bar' | 'drawer';
 
 @customElement('md-navigation')
-export class MdNavigationElement extends LitElement {
+export class MdNavigationElement extends ObservableElement {
   static override styles = [styles];
 
   @property({ type: String, reflect: true })
-  @property$()
   layout: NavigationLayout = 'bar';
   layout$!: Observable<NavigationLayout>;
 

@@ -2,7 +2,7 @@ import { html, isServer, LitElement } from 'lit';
 import { customElement, property, query, queryAssignedNodes } from 'lit/decorators.js';
 import { styles } from './styles';
 import { BehaviorSubject, map } from 'rxjs';
-import { observe } from '../../common/lit/observable-directive';
+import { observe } from '../../common/lit/observe-directive';
 import {
   getFormState,
   getFormValue,
@@ -11,6 +11,7 @@ import {
   mixinElementInternals,
   mixinFormAssociated,
   mixinStringValue,
+  ObservableElement,
   RadioValidator,
 } from '../../common';
 import { createValidator, getValidityAnchor, mixinConstraintValidation } from '../../common/mixins/mixin-constraint-validation';
@@ -21,7 +22,7 @@ let maskId = 0;
 
 const base = mixinStringValue(
   mixinConstraintValidation(
-    mixinFormAssociated(mixinElementInternals(LitElement))
+    mixinFormAssociated(mixinElementInternals(ObservableElement))
   ),
   'on'
 );

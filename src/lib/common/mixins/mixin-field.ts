@@ -2,7 +2,7 @@ import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
 import { Observable } from 'rxjs';
-import { property$ } from '../lit/property$.decorator';
+import { ObservableElement } from '../lit/observable-element';
 
 export type FieldVariant = 'filled' | 'outlined';
 
@@ -16,7 +16,7 @@ export interface FieldElement {
   suffixText: string | null;
 }
 
-export function mixinField<T extends MixinBase<LitElement>>(
+export function mixinField<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, FieldElement> {
   abstract class Mixin extends base implements FieldElement {
@@ -24,7 +24,6 @@ export function mixinField<T extends MixinBase<LitElement>>(
     variant: FieldVariant = 'filled';
 
     @property({ type: String })
-    @property$()
     label: string | null = null;
     label$!: Observable<string | null>;
 

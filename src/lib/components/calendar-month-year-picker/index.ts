@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinFormAssociated, mixinElementInternals, mixinStringValue, getFormState, getFormValue } from '../../common';
+import { mixinFormAssociated, mixinElementInternals, mixinStringValue, getFormState, getFormValue, ObservableElement } from '../../common';
 
-const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)));
 
 @customElement('md-calendar-month-year-picker')
 export class MdCalendarMonthYearPickerElement extends base {

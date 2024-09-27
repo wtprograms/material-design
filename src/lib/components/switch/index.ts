@@ -7,14 +7,13 @@ import {
   queryAssignedNodes,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { distinctUntilChanged, Observable, tap } from 'rxjs';
-import { property$ } from '../../common/lit/property$.decorator';
-import { mixinStringValue, mixinFormAssociated, mixinElementInternals, CheckboxValidator, getFormState, getFormValue } from '../../common';
+import { Observable } from 'rxjs';
+import { mixinStringValue, mixinFormAssociated, mixinElementInternals, CheckboxValidator, getFormState, getFormValue, ObservableElement } from '../../common';
 import { createValidator, getValidityAnchor, mixinConstraintValidation } from '../../common/mixins/mixin-constraint-validation';
 
 const base = mixinStringValue(
   mixinConstraintValidation(
-    mixinFormAssociated(mixinElementInternals(LitElement))
+    mixinFormAssociated(mixinElementInternals(ObservableElement))
   ),
   'on'
 );
@@ -23,7 +22,6 @@ export class MdSwitchElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   checked = false;
   checked$!: Observable<boolean>;
 

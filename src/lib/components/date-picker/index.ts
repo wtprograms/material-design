@@ -3,9 +3,9 @@ import { html, LitElement } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { styles } from './styles';
 import { MdCalendarMonthYearListPickerElement } from '../calendar-month-year-list-picker';
-import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue } from '../../common';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, ObservableElement } from '../../common';
 
-const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)));
 @customElement('md-date-picker')
 export class MdDatePickerElement extends base {
   static override styles = [styles];

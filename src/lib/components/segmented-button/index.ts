@@ -5,9 +5,9 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinBadge, mixinButton, mixinSelected } from '../../common';
+import { mixinBadge, mixinButton, mixinSelected, ObservableElement } from '../../common';
 
-const base = mixinButton(mixinSelected(mixinBadge(LitElement)));
+const base = mixinButton(mixinSelected(mixinBadge(ObservableElement)));
 
 @customElement('md-segmented-button')
 export class MdSegmentedButtonElement extends base {

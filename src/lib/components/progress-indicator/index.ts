@@ -3,13 +3,13 @@ import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { classMap } from 'lit/directives/class-map.js';
 import {styleMap} from 'lit/directives/style-map.js';
-import { cssProperty, property$ } from '../../common';
+import { cssProperty, ObservableElement } from '../../common';
 import { Observable } from 'rxjs';
 
 export type ProgressIndicatorVariant = 'circular' | 'linear';
 
 @customElement('md-progress-indicator')
-export class MdProgressIndicatorElement extends LitElement {
+export class MdProgressIndicatorElement extends ObservableElement {
   static override styles = [styles];
 
   @property({ type: String, reflect: true })
@@ -31,7 +31,6 @@ export class MdProgressIndicatorElement extends LitElement {
   buffer = 0;
 
   @property({ type: Number, reflect: true })
-  @property$()
   size: number | null = null;
   size$!: Observable<number | null>;
 

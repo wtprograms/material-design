@@ -6,12 +6,12 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { mixinParentActivation } from '../../common/mixins/mixin-parent-activation';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 import { mixinBadge } from '../../common/mixins/mixin-badge';
-import { FormSubmitter, mixinElementInternals, setupFormSubmitter } from '../../common';
+import { FormSubmitter, mixinElementInternals, ObservableElement, setupFormSubmitter } from '../../common';
 
 export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 
 const base = mixinElementInternals(mixinBusyButton(
-  mixinParentActivation(mixinSelected(mixinBadge(LitElement)))
+  mixinParentActivation(mixinSelected(mixinBadge(ObservableElement)))
 ));
 
 @customElement('md-icon-button')

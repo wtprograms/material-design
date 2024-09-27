@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styles } from './styles';
+import { ObservableElement } from '../../common';
 
 @customElement('md-segmented-button-set')
-export class MdSegmentedButtonSetElement extends LitElement {
+export class MdSegmentedButtonSetElement extends ObservableElement {
   static override styles = [styles];
 
   override render() {

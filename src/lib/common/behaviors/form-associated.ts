@@ -2,6 +2,7 @@ import {LitElement, PropertyDeclaration} from 'lit';
 import {property} from 'lit/decorators.js';
 import { internals, WithElementInternals } from '../mixins/mixin-element-internals';
 import { MixinBase, MixinReturn } from '../mixins/mixin';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface FormAssociated {
   readonly form: HTMLFormElement | null;
@@ -28,7 +29,7 @@ export const getFormValue = Symbol('getFormValue');
 export const getFormState = Symbol('getFormState');
 
 export function mixinFormAssociated<
-  T extends MixinBase<LitElement & WithElementInternals>,
+  T extends MixinBase<ObservableElement & WithElementInternals>,
 >(base: T): MixinReturn<T & FormAssociatedConstructor, FormAssociated> {
   abstract class FormAssociatedElement extends base implements FormAssociated {
     /** @nocollapse */

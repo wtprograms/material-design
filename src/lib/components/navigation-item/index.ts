@@ -5,20 +5,19 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton, property$ } from '../../common';
+import { mixinButton, ObservableElement } from '../../common';
 import { combineLatest, Observable, tap } from 'rxjs';
 import { MdIconElement } from '../icon';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 import { mixinBadge } from '../../common/mixins/mixin-badge';
 
-const base = mixinButton(mixinSelected(mixinBadge(LitElement)));
+const base = mixinButton(mixinSelected(mixinBadge(ObservableElement)));
 
 @customElement('md-navigation-item')
 export class MdNavigationItemElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   drawer = false;
   drawer$!: Observable<boolean>;
 

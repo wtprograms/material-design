@@ -2,9 +2,9 @@ import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { repeat } from 'lit/directives/repeat.js';
-import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue } from '../../common';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, ObservableElement } from '../../common';
 
-const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)));
 
 @customElement('md-calendar-month-year-list-picker')
 export class MdCalendarMonthYearListPickerElement extends base {

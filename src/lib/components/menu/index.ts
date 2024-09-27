@@ -1,11 +1,11 @@
 import { html, LitElement, PropertyValues } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinAttachable } from '../../common';
+import { mixinAttachable, ObservableElement } from '../../common';
 import { Placement } from '@floating-ui/dom';
 import { MdPopoverElement, PopoverTrigger } from '../popover';
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(ObservableElement);
 
 @customElement('md-menu')
 export class MdMenuElement extends base {
@@ -56,7 +56,7 @@ export class MdMenuElement extends base {
       flip
       native
       placement=${this.placement}
-      triggers=${this.trigger}
+      trigger=${this.trigger}
     >
       <slot></slot>
     </md-popover>`;

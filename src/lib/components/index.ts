@@ -15,6 +15,7 @@ export * from './divider';
 export * from './dropdown-field';
 export * from './elevation';
 export * from './fab';
+export * from './fab-actions';
 export * from './field';
 export * from './focus-ring';
 export * from './icon';

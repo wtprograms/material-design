@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { Observable } from 'rxjs';
-import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, property$ } from '../../common';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, ObservableElement } from '../../common';
 import { classMap } from 'lit/directives/class-map.js';
 
 type Day = {
@@ -11,14 +11,13 @@ type Day = {
   date: Date;
 };
 
-const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)));
 
 @customElement('md-calendar-picker')
 export class MdCalendarPickerElement extends base {
   static override styles = [styles];
 
   @property({ type: String, attribute: 'view-value' })
-  @property$()
   viewValue: string | null = null;
   viewValue$!: Observable<string | null>;
 

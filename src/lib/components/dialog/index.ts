@@ -9,9 +9,9 @@ import {
 import { styles } from './styles';
 import { mixinDialog } from '../../common/mixins/mixin-dialog';
 import { of, tap } from 'rxjs';
-import { EASING, DURATION, animateElement } from '../../common';
+import { EASING, DURATION, animateElement, ObservableElement } from '../../common';
 
-const base = mixinDialog(LitElement);
+const base = mixinDialog(ObservableElement);
 
 @customElement('md-dialog')
 export class MdDialogElement extends base {

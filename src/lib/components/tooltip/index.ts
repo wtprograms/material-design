@@ -6,11 +6,11 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinAttachable } from '../../common';
+import { mixinAttachable, ObservableElement } from '../../common';
 import { MdPopoverElement, PopoverTrigger } from '../popover';
 import { Placement } from '@floating-ui/dom';
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(ObservableElement);
 
 @customElement('md-tooltip')
 export class MdTooltipElement extends base {
@@ -82,7 +82,7 @@ export class MdTooltipElement extends base {
       flip
       native
       placement=${this.placement}
-      triggers=${this.trigger}
+      trigger=${this.trigger}
       ?manual-close=${this.manualClose}
       delay=${this.delay}
     >

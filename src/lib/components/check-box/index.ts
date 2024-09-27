@@ -7,8 +7,7 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { combineLatest, map, Observable } from 'rxjs';
-import { observe } from '../../common/lit/observable-directive';
-import { property$ } from '../../common/lit/property$.decorator';
+import { observe } from '../../common/lit/observe-directive';
 import {
   CheckboxValidator,
   getFormState,
@@ -17,6 +16,7 @@ import {
   mixinFormAssociated,
   mixinParentActivation,
   mixinStringValue,
+  ObservableElement,
   redispatchEvent,
 } from '../../common';
 import {
@@ -29,7 +29,7 @@ import { live } from 'lit/directives/live.js';
 const base = mixinParentActivation(
   mixinStringValue(
     mixinConstraintValidation(
-      mixinFormAssociated(mixinElementInternals(LitElement))
+      mixinFormAssociated(mixinElementInternals(ObservableElement))
     ),
     'on'
   )
@@ -40,7 +40,6 @@ export class MdCheckBoxElement extends base {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   indeterminate = false;
   indeterminate$!: Observable<boolean>;
 
@@ -48,7 +47,6 @@ export class MdCheckBoxElement extends base {
   label = false;
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   checked = false;
   checked$!: Observable<boolean>;
 

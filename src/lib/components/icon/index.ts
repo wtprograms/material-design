@@ -1,13 +1,11 @@
-import { html, LitElement, nothing } from 'lit';
+import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { Observable } from 'rxjs';
-import { property$ } from '../../common/lit/property$.decorator';
-import { cssProperty } from '../../common';
-import { ifDefined } from 'lit/directives/if-defined.js';
+import { cssProperty, ObservableElement } from '../../common';
 import { mixinBadge } from '../../common/mixins/mixin-badge';
 
-const base = mixinBadge(LitElement);
+const base = mixinBadge(ObservableElement);
 
 @customElement('md-icon')
 export class MdIconElement extends base {
@@ -17,7 +15,6 @@ export class MdIconElement extends base {
   filled = false;
 
   @property({ type: Number })
-  @property$()
   size: number | null = null;
   size$!: Observable<number | null>;
 

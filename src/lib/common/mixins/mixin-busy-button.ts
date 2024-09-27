@@ -1,7 +1,8 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
 import { ButtonElement, mixinButton } from './mixin-button';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface BusyButtonElement extends ButtonElement {
   busy: boolean;
@@ -13,7 +14,7 @@ export interface BusyButtonElement extends ButtonElement {
   renderProgressIndicator(): unknown;
 }
 
-export function mixinBusyButton<T extends MixinBase<LitElement>>(
+export function mixinBusyButton<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, BusyButtonElement> {
   const _base = mixinButton(base);

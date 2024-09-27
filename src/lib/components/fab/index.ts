@@ -7,7 +7,9 @@ import {
   customElement,
   property,
   query,
+  queryAssignedElements,
   queryAssignedNodes,
+  state,
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import {
@@ -15,14 +17,16 @@ import {
   EASING,
   mixinButton,
   mixinOpenClose,
+  ObservableElement,
 } from '../../common';
 import { of, switchMap } from 'rxjs';
+import { MdFabActionsElement } from '../fab-actions';
 
 export type FabPalette = 'surface' | 'primary' | 'secondary' | 'tertiary';
 
 export type FabSize = 'small' | 'medium' | 'large';
 
-const base = mixinButton(mixinOpenClose(LitElement));
+const base = mixinButton(mixinOpenClose(ObservableElement));
 
 @customElement('md-fab')
 export class MdFabElement extends base {
@@ -58,10 +62,18 @@ export class MdFabElement extends base {
   @query('.hidden-label')
   private _hiddenLabel!: HTMLElement;
 
+  @queryAssignedElements({ slot: 'action' })
+  private _actionElements!: HTMLElement[];
+
+  @query('md-fab-actions')
+  private _fabActions!: MdFabActionsElement[];
+
+  @state()
+  private _actions = false;
+
   constructor() {
     super();
     this.openOnFirstUpdate = true;
-    this.addEventListener('click', () => this.handleClick());
   }
 
   override get openComponent$() {
@@ -81,7 +93,16 @@ export class MdFabElement extends base {
 
   protected override render(): unknown {
     return html`${this.renderAttachables()}
-    ${this.renderAnchorOrButton(this.renderContent())} <md-popover for=${this.idName} triggers="manual" placement="top" native><slot name="action"></slot></md-popover>`;
+    ${this.renderAnchorOrButton(this.renderContent())} ${this.renderActions()}`;
+  }
+
+  private renderActions() {
+    return html`<md-fab-actions>
+      <slot
+        name="action"
+        @slotchange=${() => (this._actions = !!this._actionElements.length)}
+      ></slot>
+    </md-fab-actions>`;
   }
 
   private renderContent() {
@@ -92,7 +113,8 @@ export class MdFabElement extends base {
       ? html`<div class="icon">${slot}</div>`
       : html`<md-icon class="icon" ?filled=${this.filled}>${slot}</md-icon>`;
     const label = this.label
-      ? html`<div class="label">${this.label}</div><div class="hidden-label">${this.label}</div>`
+      ? html`<div class="label">${this.label}</div>
+          <div class="hidden-label">${this.label}</div>`
       : nothing;
     return html`${leading} ${label}`;
   }

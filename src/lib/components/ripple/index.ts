@@ -1,7 +1,7 @@
 import { customElement, property, query } from 'lit/decorators.js';
 import { styles } from './styles';
 import { html, LitElement, PropertyValues } from 'lit';
-import { attribute, EASING, mixinAttachable } from '../../common';
+import { attribute, EASING, mixinAttachable, ObservableElement } from '../../common';
 import { filter, map, switchMap, tap } from 'rxjs';
 import { isEvent } from '../../common/events/is-event';
 import { tapIf } from '../../common/rxjs/operators/tap-if';
@@ -67,7 +67,7 @@ enum State {
  */
 const TOUCH_DELAY_MS = 150;
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(ObservableElement);
 
 @customElement('md-ripple')
 export class MdRippleElement extends base {

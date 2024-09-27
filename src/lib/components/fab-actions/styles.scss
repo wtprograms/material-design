@@ -1,0 +1,25 @@
+@use '../md';
+
+:host {
+  position: absolute;
+  cursor: auto;
+  display: none;
+  flex-direction: column;
+  inset: auto;
+  opacity: 0;
+  margin: 0;
+  background-color: transparent;
+  overflow: visible;
+  border: 0;
+  padding: 0;
+  z-index: var(--md-sys-z-index-popover);
+  isolation: isolate;
+  color: inherit;
+  gap: 8px;
+  align-items: center;
+
+  ::slotted(md-fab) {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+}

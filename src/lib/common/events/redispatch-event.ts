@@ -11,7 +11,7 @@
  * events.
  *
  * @example
- * class MyInput extends LitElement {
+ * class MyInput extends ObservableElement {
  *   render() {
  *     return html`<input @change=${this.redispatchEvent}>`;
  *   }

@@ -15,6 +15,7 @@ import {
   mixinElementInternals,
   mixinFormAssociated,
   mixinStringValue,
+  ObservableElement,
   observe,
   redispatchEvent,
   TextFieldValidator,
@@ -75,7 +76,7 @@ const base = mixinStringValue(
   mixinField(
     mixinOnReportValidity(
       mixinConstraintValidation(
-        mixinFormAssociated(mixinElementInternals(LitElement))
+        mixinFormAssociated(mixinElementInternals(ObservableElement))
       )
     )
   )

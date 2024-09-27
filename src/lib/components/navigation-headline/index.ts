@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styles } from './styles';
+import { ObservableElement } from '../../common';
 
 @customElement('md-navigation-headline')
-export class MdNavigationHeadlineElement extends LitElement {
+export class MdNavigationHeadlineElement extends ObservableElement {
   static override styles = [styles];
 
   override render() {

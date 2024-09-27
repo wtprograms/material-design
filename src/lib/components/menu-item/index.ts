@@ -7,11 +7,11 @@ import {
   state,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton } from '../../common';
+import { mixinButton, ObservableElement } from '../../common';
 import { MdMenuElement } from '../menu';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(mixinSelected(LitElement));
+const base = mixinButton(mixinSelected(ObservableElement));
 
 @customElement('md-menu-item')
 export class MdMenuItemElement extends base {

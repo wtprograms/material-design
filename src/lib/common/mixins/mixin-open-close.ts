@@ -1,7 +1,6 @@
-import { html, LitElement, nothing, PropertyValues } from 'lit';
+import { PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
-import { ButtonElement, mixinButton } from './mixin-button';
 import {
   BehaviorSubject,
   distinctUntilChanged,
@@ -14,6 +13,7 @@ import {
   tap,
 } from 'rxjs';
 import { attribute } from '../rxjs/operators/attribute';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface OpenCloseElement {
   open: boolean;
@@ -28,7 +28,7 @@ export interface OpenCloseElement {
   closeComponent(...args: any[]): void;
 }
 
-export function mixinOpenClose<T extends MixinBase<LitElement>>(
+export function mixinOpenClose<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, OpenCloseElement> {
   abstract class Mixin extends base implements OpenCloseElement {

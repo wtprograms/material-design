@@ -1,9 +1,9 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { Observable } from 'rxjs';
-import { property$ } from '../lit/property$.decorator';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface BadgeElement {
   badgeDot: boolean;
@@ -14,17 +14,15 @@ export interface BadgeElement {
   renderBadge(embedded: boolean): unknown;
 }
 
-export function mixinBadge<T extends MixinBase<LitElement>>(
+export function mixinBadge<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, BadgeElement> {
   abstract class Mixin extends base implements BadgeElement {
     @property({ type: Boolean, attribute: 'badge-dot' })
-    @property$()
     badgeDot = false;
     badgeDot$!: Observable<boolean>;
 
     @property({ type: Number, attribute: 'badge-number' })
-    @property$()
     badgeNumber: number | null = null;
     badgeNumber$!: Observable<number | null>;
 

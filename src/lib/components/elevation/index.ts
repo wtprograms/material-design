@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit';
+import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import {
@@ -6,19 +6,17 @@ import {
   map,
   Observable,
 } from 'rxjs';
-import { property$ } from '../../common/lit/property$.decorator';
-import { attribute, cssProperty, mixinAttachable } from '../../common';
+import { attribute, cssProperty, mixinAttachable, ObservableElement } from '../../common';
 import { filterAnyEvent } from '../../common/rxjs/operators/filter-any-event';
 
 export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(ObservableElement);
 
 @customElement('md-elevation')
 export class MdElevationElement extends base {
   static override styles = [styles];
 
-  @property$()
   @property({ type: Number })
   level: ElevationLevel = 0;
   level$!: Observable<ElevationLevel>;

@@ -1,14 +1,14 @@
-import { LitElement } from 'lit';
 import { query } from 'lit/decorators.js';
 import { dispatchActivationClick } from '../events/dispatch-activation-click';
 import { isActivationClick } from '../events/is-activation-click';
 import { MixinBase, MixinReturn } from './mixin';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface ParentActivationElement {
   handleActivationClick(event: MouseEvent): void;
 }
 
-export function mixinParentActivation<T extends MixinBase<LitElement>>(
+export function mixinParentActivation<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, ParentActivationElement> {
   abstract class Mixin extends base implements ParentActivationElement {

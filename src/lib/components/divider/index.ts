@@ -1,9 +1,10 @@
 import {  LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
+import { ObservableElement } from '../../common';
 
 @customElement('md-divider')
-export class MdDividerElement extends LitElement {
+export class MdDividerElement extends ObservableElement {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true })

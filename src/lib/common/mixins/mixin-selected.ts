@@ -2,19 +2,18 @@ import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MixinBase, MixinReturn } from './mixin';
 import { distinctUntilChanged, Observable, tap } from 'rxjs';
-import { property$ } from '../lit/property$.decorator';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface SelectedElement {
   selected: boolean;
   selected$: Observable<boolean>;
 }
 
-export function mixinSelected<T extends MixinBase<LitElement>>(
+export function mixinSelected<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, SelectedElement> {
   abstract class Mixin extends base implements SelectedElement {
     @property({ type: Boolean, reflect: true })
-    @property$()
     selected = false
     selected$!: Observable<boolean>;
 

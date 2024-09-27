@@ -7,13 +7,13 @@ import {
 } from 'lit/decorators.js';
 import { styles } from './styles';
 import { combineLatest, map, Observable, tap } from 'rxjs';
-import { mixinButton, property$ } from '../../common';
+import { mixinButton, ObservableElement } from '../../common';
 import { MdIconElement } from '../icon';
 import { MdBadgeElement } from '../badge';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 import { mixinBadge } from '../../common/mixins/mixin-badge';
 
-const base = mixinButton(mixinSelected(mixinBadge(LitElement)));
+const base = mixinButton(mixinSelected(mixinBadge(ObservableElement)));
 
 @customElement('md-tab')
 export class MdTabElement extends base {
@@ -23,12 +23,10 @@ export class MdTabElement extends base {
   hideLabel = false;
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   secondary = false;
   secondary$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   icon = false;
   icon$!: Observable<boolean>;
 

@@ -8,11 +8,11 @@ import {
 import { styles } from './styles';
 import { mixinDialog } from '../../common/mixins/mixin-dialog';
 import { of, tap } from 'rxjs';
-import { EASING, DURATION, animateElement } from '../../common';
+import { EASING, DURATION, animateElement, ObservableElement } from '../../common';
 
 export type SheetDock = 'top' | 'end' | 'bottom' | 'start';
 
-const base = mixinDialog(LitElement);
+const base = mixinDialog(ObservableElement);
 
 @customElement('md-sheet')
 export class MdSheetElement extends base {

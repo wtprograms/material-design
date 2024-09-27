@@ -1,5 +1,6 @@
 import { LitElement } from 'lit';
 import { MixinBase, MixinReturn } from './mixin';
+import { ObservableElement } from '../lit/observable-element';
 
 export const internals = Symbol('internals');
 
@@ -9,7 +10,7 @@ export interface WithElementInternals {
 
 const privateInternals = Symbol('privateInternals');
 
-export function mixinElementInternals<T extends MixinBase<LitElement>>(
+export function mixinElementInternals<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, WithElementInternals> {
   abstract class Mixin extends base implements WithElementInternals {

@@ -3,20 +3,18 @@ import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
 import { combineLatest, map, Observable } from 'rxjs';
 import { attribute } from '../../common/rxjs/operators/attribute';
-import { observe } from '../../common/lit/observable-directive';
-import { property$ } from '../../common/lit/property$.decorator';
+import { observe } from '../../common/lit/observe-directive';
+import { ObservableElement } from '../../common/lit/observable-element';
 
 @customElement('md-badge')
-export class MdBadgeElement extends LitElement {
+export class MdBadgeElement extends ObservableElement {
   static override styles = [styles];
 
   @property({ type: Boolean })
-  @property$()
   dot = false;
   dot$!: Observable<boolean>;
 
   @property({ type: Number })
-  @property$()
   number: number | null = null;
   number$!: Observable<number | null>;
 

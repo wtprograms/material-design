@@ -8,11 +8,11 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { dispatchActivationClick, mixinButton, property$ } from '../../common';
+import { dispatchActivationClick, mixinButton, ObservableElement } from '../../common';
 import { combineLatest, Observable, tap } from 'rxjs';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(mixinSelected(LitElement));
+const base = mixinButton(mixinSelected(ObservableElement));
 
 @customElement('md-list-item')
 export class MdListItemElement extends base {
@@ -31,7 +31,6 @@ export class MdListItemElement extends base {
   private _leadingElements!: HTMLElement[];
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   leading = false;
   leading$!: Observable<boolean>;
 
@@ -45,7 +44,6 @@ export class MdListItemElement extends base {
   private _trailingElements!: HTMLElement[];
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   trailing = false;
   trailing$!: Observable<boolean>;
 

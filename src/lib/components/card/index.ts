@@ -4,14 +4,14 @@ import {
   property,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton } from '../../common';
+import { mixinButton, ObservableElement } from '../../common';
 
 export type CardVariant =
   | 'elevated'
   | 'filled'
   | 'outlined';
 
-const base = mixinButton(LitElement);
+const base = mixinButton(ObservableElement);
 
 @customElement('md-card')
 export class MdCardElement extends base {

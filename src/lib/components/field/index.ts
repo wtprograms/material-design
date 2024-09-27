@@ -12,10 +12,10 @@ import {
   map,
   Observable,
 } from 'rxjs';
-import { mixinField, observe, property$, redispatchEvent } from '../../common';
+import { mixinField, ObservableElement, observe, redispatchEvent } from '../../common';
 import { MdPopoverElement } from '../popover';
 
-const base = mixinField(LitElement);
+const base = mixinField(ObservableElement);
 
 @customElement('md-field')
 export class MdFieldElement extends base {
@@ -25,7 +25,6 @@ export class MdFieldElement extends base {
   disabled = false;
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   populated = false;
   populated$!: Observable<boolean>;
 
@@ -52,7 +51,6 @@ export class MdFieldElement extends base {
   }
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   leading = false;
   leading$!: Observable<boolean>;
 
@@ -128,7 +126,7 @@ export class MdFieldElement extends base {
       </div>
       <div class="popover">
         <md-popover
-          triggers="manual"
+          trigger="manual"
           offset="4"
           @open=${this.redispatchEvent}
           @close=${this.redispatchEvent}

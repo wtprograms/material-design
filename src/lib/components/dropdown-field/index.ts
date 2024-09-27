@@ -8,7 +8,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, observe } from '../../common';
+import { getFormState, getFormValue, mixinElementInternals, mixinFormAssociated, mixinStringValue, ObservableElement, observe } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -22,7 +22,7 @@ import { MdFieldElement } from '../field';
 import { mixinField } from '../../common/mixins/mixin-field';
 
 const base = mixinField(
-  mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)))
+  mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)))
 );
 
 @customElement('md-dropdown-field')

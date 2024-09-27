@@ -1,6 +1,6 @@
 <div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4">
   <md-button id="click">click</md-button>
-  <md-popover for="click">
+  <md-popover for="click" native>
     Magna eiusmod ad deserunt aliqua commodo. Nisi sunt magna aute voluptate ex laboris proident nostrud minim do amet
     laborum dolore duis. Nulla sint laborum id ut Lorem ipsum labore laboris eu sunt ad tempor nisi. Nisi tempor
     occaecat minim aliqua exercitation aliqua ex ipsum aute dolore ut. Adipisicing commodo ipsum Lorem nostrud quis
@@ -8,7 +8,7 @@
     reprehenderit dolore excepteur et. Cupidatat esse voluptate ut adipisicing dolore fugiat.
   </md-popover>
   <md-button id="hover">hover</md-button>
-  <md-popover for="hover" triggers="hover" delay="1000">
+  <md-popover for="hover" trigger="hover" delay="1000">
     Magna eiusmod ad deserunt aliqua commodo. Nisi sunt magna aute voluptate ex laboris proident nostrud minim do amet
     laborum dolore duis. Nulla sint laborum id ut Lorem ipsum labore laboris eu sunt ad tempor nisi. Nisi tempor
     occaecat minim aliqua exercitation aliqua ex ipsum aute dolore ut. Adipisicing commodo ipsum Lorem nostrud quis
@@ -16,7 +16,7 @@
     reprehenderit dolore excepteur et. Cupidatat esse voluptate ut adipisicing dolore fugiat.
   </md-popover>
   <md-button id="manual">manual</md-button>
-  <md-popover for="manual" triggers="hover" delay="1000" manual-close>
+  <md-popover for="manual" trigger="hover" delay="1000" manual-close>
     Magna eiusmod ad deserunt aliqua commodo. Nisi sunt magna aute voluptate ex laboris proident nostrud minim do amet
     laborum dolore duis. Nulla sint laborum id ut Lorem ipsum labore laboris eu sunt ad tempor nisi. Nisi tempor
     occaecat minim aliqua exercitation aliqua ex ipsum aute dolore ut. Adipisicing commodo ipsum Lorem nostrud quis
@@ -24,15 +24,7 @@
     reprehenderit dolore excepteur et. Cupidatat esse voluptate ut adipisicing dolore fugiat.
   </md-popover>
   <md-button id="contextmenu">contextmenu</md-button>
-  <md-popover for="contextmenu" triggers="contextmenu">
-    Magna eiusmod ad deserunt aliqua commodo. Nisi sunt magna aute voluptate ex laboris proident nostrud minim do amet
-    laborum dolore duis. Nulla sint laborum id ut Lorem ipsum labore laboris eu sunt ad tempor nisi. Nisi tempor
-    occaecat minim aliqua exercitation aliqua ex ipsum aute dolore ut. Adipisicing commodo ipsum Lorem nostrud quis
-    aliqua cillum do consectetur ad eiusmod id nulla enim. Ex mollit do et cillum consectetur nostrud aliquip aliqua id
-    reprehenderit dolore excepteur et. Cupidatat esse voluptate ut adipisicing dolore fugiat.
-  </md-popover>
-  <md-button id="triggers">triggers</md-button>
-  <md-popover for="triggers" triggers="contextmenu click">
+  <md-popover for="contextmenu" trigger="contextmenu">
     Magna eiusmod ad deserunt aliqua commodo. Nisi sunt magna aute voluptate ex laboris proident nostrud minim do amet
     laborum dolore duis. Nulla sint laborum id ut Lorem ipsum labore laboris eu sunt ad tempor nisi. Nisi tempor
     occaecat minim aliqua exercitation aliqua ex ipsum aute dolore ut. Adipisicing commodo ipsum Lorem nostrud quis

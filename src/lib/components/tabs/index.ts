@@ -6,7 +6,7 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { property$ } from '../../common';
+import { ObservableElement } from '../../common';
 import {
   BehaviorSubject,
   combineLatest,
@@ -19,16 +19,14 @@ import {
 import { MdTabElement } from '../tab';
 
 @customElement('md-tabs')
-export class MdTabsElement extends LitElement {
+export class MdTabsElement extends ObservableElement {
   static override styles = [styles];
 
   @property({ type: Boolean, reflect: true, attribute: 'hide-label' })
-  @property$()
   hideLabel = false;
   hideLabel$!: Observable<boolean>;
 
   @property({ type: Boolean, reflect: true })
-  @property$()
   secondary = false;
   secondary$!: Observable<boolean>;
 

@@ -6,6 +6,7 @@ import { redispatchEvent } from '../events/redispatch-event';
 import { DURATION } from '../motion/duration';
 import { EASING } from '../motion/easing';
 import { MdElevationElement } from '../../components';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface DialogElement extends OpenCloseElement {
   returnValue: string | null;
@@ -19,7 +20,7 @@ export interface DialogElement extends OpenCloseElement {
   renderContent(): unknown;
 }
 
-export function mixinDialog<T extends MixinBase<LitElement>>(
+export function mixinDialog<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, DialogElement> {
   const _base = mixinOpenClose(base);

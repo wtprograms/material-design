@@ -1,6 +1,6 @@
-import { LitElement } from 'lit';
 import { MixinBase, MixinReturn } from './mixin';
 import { Observable, Subject } from 'rxjs';
+import { ObservableElement } from '../lit/observable-element';
 
 export interface Attachable {
   htmlFor: string | null;
@@ -12,7 +12,7 @@ export interface Attachable {
   event$: Observable<Event>;
 }
 
-export function mixinAttachable<T extends MixinBase<LitElement>>(
+export function mixinAttachable<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, Attachable> {
   abstract class Mixin extends base implements Attachable {
@@ -57,6 +57,9 @@ export function mixinAttachable<T extends MixinBase<LitElement>>(
 
     initialize(...events: string[]) {
       this._events = events;
+      if (!this._currentControl) {
+        this._currentControl = this.parentElement ?? (this.getRootNode() as any).host;
+      }
       this.reattach();
     }
 

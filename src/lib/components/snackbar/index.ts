@@ -22,10 +22,10 @@ import {
   cssProperty,
   EASING,
   mixinOpenClose,
-  property$,
+  ObservableElement,
 } from '../../common';
 
-const base = mixinOpenClose(LitElement);
+const base = mixinOpenClose(ObservableElement);
 
 @customElement('md-snack-bar')
 export class MdSnackBarElement extends base {
@@ -44,7 +44,6 @@ export class MdSnackBarElement extends base {
   timeout = 5000;
 
   @property({ type: Number, attribute: 'offset-top' })
-  @property$()
   offsetBottom = 24;
   offsetBottom$!: Observable<number>;
 

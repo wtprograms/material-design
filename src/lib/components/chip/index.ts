@@ -5,10 +5,10 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { mixinButton } from '../../common';
+import { mixinButton, ObservableElement } from '../../common';
 import { mixinSelected } from '../../common/mixins/mixin-selected';
 
-const base = mixinButton(mixinSelected(LitElement));
+const base = mixinButton(mixinSelected(ObservableElement));
 
 @customElement('md-chip')
 export class MdChipElement extends base {

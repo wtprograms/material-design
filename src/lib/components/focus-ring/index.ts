@@ -4,9 +4,9 @@ import { styles } from './styles';
 import {
   map,
 } from 'rxjs';
-import { attribute, mixinAttachable } from '../../common';
+import { attribute, mixinAttachable, ObservableElement } from '../../common';
 
-const base = mixinAttachable(LitElement);
+const base = mixinAttachable(ObservableElement);
 
 @customElement('md-focus-ring')
 export class MdFocusRingElement extends base {

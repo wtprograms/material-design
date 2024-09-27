@@ -1,9 +1,9 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { FormSubmitterType } from '../behaviors/form-submission';
 import { MixinBase, MixinReturn } from './mixin';
-import { property$ } from '../lit/property$.decorator';
 import { Observable } from 'rxjs';
+import { ObservableElement } from '../lit/observable-element';
 
 export type AnchorTarget = '' | '_blank' | '_self' | '_parent' | '_top';
 
@@ -19,7 +19,7 @@ export interface ButtonElement {
   renderAnchorOrButton(content: unknown): unknown;
 }
 
-export function mixinButton<T extends MixinBase<LitElement>>(
+export function mixinButton<T extends MixinBase<ObservableElement>>(
   base: T
 ): MixinReturn<T, ButtonElement> {
   abstract class Mixin extends base implements ButtonElement {
@@ -39,7 +39,6 @@ export function mixinButton<T extends MixinBase<LitElement>>(
     name = '';
 
     @property({ type: Boolean, reflect: true })
-    @property$()
     disabled = false;
     disabled$!: Observable<boolean>;
 

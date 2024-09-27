@@ -1,12 +1,12 @@
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styles } from './styles';
-import { getFormState, getFormValue, getMeridianValues, mixinElementInternals, mixinFormAssociated, mixinStringValue } from '../../common';
+import { getFormState, getFormValue, getMeridianValues, mixinElementInternals, mixinFormAssociated, mixinStringValue, ObservableElement } from '../../common';
 import { TimeSpan } from '../../common/helpers/time-span';
 import { classMap } from 'lit/directives/class-map.js';
 import {live} from 'lit/directives/live.js';
 
-const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(LitElement)));
+const base = mixinStringValue(mixinFormAssociated(mixinElementInternals(ObservableElement)));
 
 @customElement('md-time-picker')
 export class MdTimePickerElement extends base {

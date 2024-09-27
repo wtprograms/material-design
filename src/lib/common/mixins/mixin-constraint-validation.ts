@@ -4,6 +4,7 @@ import {MixinBase, MixinReturn} from './mixin.js';
 import { FormAssociated } from '../behaviors/form-associated.js';
 import { Validator } from '../behaviors/validators/validator.js';
 import { WithElementInternals, internals } from './mixin-element-internals.js';
+import { ObservableElement } from '../lit/observable-element.js';
 
 export interface ConstraintValidation extends FormAssociated {
   readonly validity: ValidityState;
@@ -26,7 +27,7 @@ const privateSyncValidity = Symbol('privateSyncValidity');
 const privateCustomValidationMessage = Symbol('privateCustomValidationMessage');
 
 export function mixinConstraintValidation<
-  T extends MixinBase<LitElement & FormAssociated & WithElementInternals>,
+  T extends MixinBase<ObservableElement & FormAssociated & WithElementInternals>,
 >(base: T): MixinReturn<T, ConstraintValidation> {
   abstract class ConstraintValidationElement
     extends base
