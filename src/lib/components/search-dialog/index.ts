@@ -42,7 +42,7 @@ export class MdSearchDialogElement extends base {
     return of({}).pipe(
       tap(() => {
         document.body.style.overflow = 'hidden';
-        this.dialog.showModal();
+        this.dialog?.showModal();
         this._input.focus();
       }),
       animateElement(
@@ -60,7 +60,7 @@ export class MdSearchDialogElement extends base {
       ),
       tap(() => {
         document.body.style.overflow = '';
-        this.dialog.close();
+        this.dialog?.close();
       })
     );
   }
