@@ -48,7 +48,7 @@ export class MdIconButtonElement extends base implements FormSubmitter {
   }
 
   private renderAttachables() {
-    return html` <md-focus-ring for=${this.idName}focus-visible></md-focus-ring>
+    return html` <md-focus-ring for=${this.idName} focus-visible></md-focus-ring>
       <md-ripple for=${this.idName} interactive></md-ripple>`;
   }
 }

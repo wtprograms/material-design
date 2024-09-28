@@ -1,0 +1,42 @@
+<ng-template #contents>
+  <div slot="header" class="inline-flex gap-2">
+    <md-chip>One</md-chip>
+    <md-chip>Two</md-chip>
+  </div>
+  Deserunt velit cupidatat aute ut cupidatat anim non non. Fugiat nisi ad officia amet tempor et cupidatat nulla
+  commodo minim ullamco. Eiusmod proident eu ut pariatur esse enim sint ad. Exercitation culpa tempor consequat
+  laborum consectetur laborum anim elit nostrud nisi. Incididunt nisi nisi laboris veniam nulla adipisicing officia
+  aliquip irure nostrud mollit.
+  Deserunt velit cupidatat aute ut cupidatat anim non non. Fugiat nisi ad officia amet tempor et cupidatat nulla
+  commodo minim ullamco. Eiusmod proident eu ut pariatur esse enim sint ad. Exercitation culpa tempor consequat
+  laborum consectetur laborum anim elit nostrud nisi. Incididunt nisi nisi laboris veniam nulla adipisicing officia
+  aliquip irure nostrud mollit.
+  Deserunt velit cupidatat aute ut cupidatat anim non non. Fugiat nisi ad officia amet tempor et cupidatat nulla
+  commodo minim ullamco. Eiusmod proident eu ut pariatur esse enim sint ad. Exercitation culpa tempor consequat
+  laborum consectetur laborum anim elit nostrud nisi. Incididunt nisi nisi laboris veniam nulla adipisicing officia
+  aliquip irure nostrud mollit.
+  Deserunt velit cupidatat aute ut cupidatat anim non non. Fugiat nisi ad officia amet tempor et cupidatat nulla
+  commodo minim ullamco. Eiusmod proident eu ut pariatur esse enim sint ad. Exercitation culpa tempor consequat
+  laborum consectetur laborum anim elit nostrud nisi. Incididunt nisi nisi laboris veniam nulla adipisicing officia
+  aliquip irure nostrud mollit.
+  Deserunt velit cupidatat aute ut cupidatat anim non non. Fugiat nisi ad officia amet tempor et cupidatat nulla
+  commodo minim ullamco. Eiusmod proident eu ut pariatur esse enim sint ad. Exercitation culpa tempor consequat
+  laborum consectetur laborum anim elit nostrud nisi. Incididunt nisi nisi laboris veniam nulla adipisicing officia
+  aliquip irure nostrud mollit.
+</ng-template>
+
+<div class="flex gap-4 rounded-medium border border-solid border-outline-variant p-2 mb-4 bg-surface-container">
+  <md-search-bar #bar>
+    <ng-container *ngTemplateOutlet="contents"></ng-container>
+  </md-search-bar>
+  <md-button (click)="bar.value = '1234'">
+    set
+  </md-button>
+  <md-button id="search">
+    Search
+  </md-button>
+  <md-search-dialog for="search">
+    <ng-container *ngTemplateOutlet="contents"></ng-container>
+  </md-search-dialog>
+  value {{ bar.value }}</div>
+

@@ -49,11 +49,11 @@ export class MdChipElement extends base {
 
   private renderAttachables() {
     return html`<md-ripple
-        for="control"
+        for=${this.idName}
         interactive
       ></md-ripple>
       <md-focus-ring
-        for="control"
+        for=${this.idName}
         focus-visible
       ></md-focus-ring>`;
   }

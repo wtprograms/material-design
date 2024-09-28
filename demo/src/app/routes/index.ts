@@ -122,6 +122,10 @@ export default [
     loadComponent: () => import('./segmented-button'),
   },
   {
+    path: 'search',
+    loadComponent: () => import('./search'),
+  },
+  {
     path: 'segmented-button-set',
     loadComponent: () => import('./segmented-button-set'),
   },

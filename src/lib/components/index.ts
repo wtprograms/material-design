@@ -32,6 +32,8 @@ export * from './progress-indicator';
 export * from './radio-button';
 export * from './radio-button/single-selection-controller';
 export * from './ripple';
+export * from './search-bar';
+export * from './search-dialog';
 export * from './segmented-button';
 export * from './segmented-button-set';
 export * from './sheet';
