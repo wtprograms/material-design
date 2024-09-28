@@ -69,6 +69,7 @@
   }
 
   md-popover {
+    width: 100%;
     top: 0 !important;
     border-radius: var(--md-sys-shape-extra-large);
     z-index: calc(var(--md-sys-z-index-popover) - 1);
