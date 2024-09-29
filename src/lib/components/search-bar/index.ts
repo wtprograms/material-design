@@ -6,7 +6,13 @@ import {
   queryAssignedElements,
 } from 'lit/decorators.js';
 import { styles } from './styles';
-import { attribute, mixinStringValue, ObservableElement, redispatchEvent, TimeSpan } from '../../common';
+import {
+  attribute,
+  mixinStringValue,
+  ObservableElement,
+  redispatchEvent,
+  TimeSpan,
+} from '../../common';
 import { MdPopoverElement } from '../popover';
 import { BehaviorSubject, combineLatest, filter, map, tap } from 'rxjs';
 import { live } from 'lit/directives/live.js';
@@ -74,7 +80,11 @@ export class MdSearchBarElement extends base {
           .value=${live(this.value)}
         />
       </div>
-      <md-popover trigger="manual" @opening=${() => this._opening = true} @closing=${() => this._opening = false}>
+      <md-popover
+        trigger="manual"
+        @opening=${(e) => this.handleOpening(true, e)}
+        @closing=${(e) => this.handleOpening(false, e)}
+      >
         <div class="header">
           <slot
             name="header"
@@ -87,12 +97,18 @@ export class MdSearchBarElement extends base {
       </md-popover>`;
   }
 
+  private handleOpening(opening: boolean, event: Event) {
+    this._opening = opening;
+    redispatchEvent(this, event);
+  }
+
   private handleKeydown(event: KeyboardEvent) {
     if (event.key !== 'Escape') {
       return;
     }
     this.value = '';
     this._popover.closeComponent();
+    this.dispatchEvent(new Event('cleared'));
   }
 
   private handleInput(event: InputEvent) {
@@ -105,6 +121,9 @@ export class MdSearchBarElement extends base {
 
   private handleFocus(event: FocusEvent) {
     this._focused$.next(true);
+    if (!this._popover.open && !this._opening) {
+      this._popover.open = true;
+    }
     redispatchEvent(this, event);
   }
 

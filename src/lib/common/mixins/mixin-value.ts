@@ -24,7 +24,7 @@ export function mixinValue<TValue, T extends MixinBase<ObservableElement>>(
       this.value$
         .pipe(
           distinctUntilChanged(),
-          tap(() => this.dispatchEvent(new Event('change')))
+          tap(() => this.dispatchEvent(new Event('change', { bubbles: true})))
         )
         .subscribe();
     }

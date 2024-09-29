@@ -68,6 +68,7 @@ export class MdSearchDialogElement extends base {
   constructor() {
     super();
     this.initialize('click');
+    this.addEventListener('cancel', () => this._handleCancel());
   }
 
   protected override firstUpdated(_changedProperties: PropertyValues): void {
@@ -111,6 +112,11 @@ export class MdSearchDialogElement extends base {
           <slot></slot>
         </div>
       </div>`;
+  }
+
+  private _handleCancel() {
+    this.value = '';
+    this.dispatchEvent(new Event('cleared'));
   }
 
   private animateContainer(opening: boolean): Animation {
