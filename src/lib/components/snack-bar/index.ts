@@ -1,4 +1,4 @@
-import { html, LitElement, PropertyValues } from 'lit';
+import { html, PropertyValues } from 'lit';
 import {
   customElement,
   property,
@@ -43,7 +43,7 @@ export class MdSnackBarElement extends base {
   @property({ type: Number })
   timeout = 5000;
 
-  @property({ type: Number, attribute: 'offset-top' })
+  @property({ type: Number, attribute: 'offset-bottom' })
   offsetBottom = 24;
   offsetBottom$!: Observable<number>;
 

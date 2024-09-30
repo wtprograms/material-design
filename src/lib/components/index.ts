@@ -37,7 +37,7 @@ export * from './search-dialog';
 export * from './segmented-button';
 export * from './segmented-button-set';
 export * from './sheet';
-export * from './snackbar';
+export * from './snac-kbar';
 export * from './switch';
 export * from './tab';
 export * from './tabs';

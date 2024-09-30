@@ -18,6 +18,8 @@ $tokens: (
   height: fit-content;
   width: fit-content;
 
+  @include md.motion('margin-bottom');
+
   .popover {
     background: transparent;
     border: none;
