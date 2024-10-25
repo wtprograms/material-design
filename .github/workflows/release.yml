@@ -30,6 +30,7 @@ jobs:
       uses: HarmvZ/set-package-json-version-action@v0.2.5
       with:
         version: ${{ steps.get_version.outputs.version }}
+        path: ./dist/wtprograms/material-design/package.json
 
     - name: Publish
       run: npm publish --access public
