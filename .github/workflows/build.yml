@@ -12,18 +12,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-
-    - uses: pnpm/action-setup@v4
-      name: Install pnpm
-      with:
-        version: 9
-        run_install: false
-
-    - name: Install Node.js
+      
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: 20
-        cache: 'pnpm'
+        node-version: 22.x
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
         
-    - run: pnpm install
-    - run: pnpm run build
+    - run: npm ci
+    - run: npm run build
