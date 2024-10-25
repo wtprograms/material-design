@@ -1,8 +1,10 @@
+@use 'sass:meta';
+
 @mixin declare-tokens($tokens, $prefix: '') {
   @each $key, $value in $tokens {
     $dash: if($prefix == '_', '', '-');
     $token-name: if($key == '', $prefix, '#{$prefix}#{$dash}#{$key}');
-    @if type-of($value) == 'map' {
+    @if meta.type-of($value) == 'map' {
       @include declare-tokens($value, $token-name);
     } @else {
       --#{$token-name}: #{$value};
