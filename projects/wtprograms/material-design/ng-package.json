@@ -3,5 +3,9 @@
   "dest": "../../../dist/wtprograms/material-design",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [
+    "styles",
+    "tailwind"
+  ]
 }

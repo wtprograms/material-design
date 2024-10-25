@@ -21,9 +21,11 @@ export type TypescaleSize = 'large' | 'medium' | 'small';
   host: {
     '[attr.scale]': 'scale()',
     '[attr.size]': 'size()',
+    '[attr.rfs]': 'rfs() ?? null',
   },
 })
 export class TypescaleComponent extends MaterialDesignComponent {
   readonly scale = model<Typescale>('body');
   readonly size = model<TypescaleSize>('medium');
+  readonly rfs = model(true);
 }

@@ -6,8 +6,11 @@ $sizes: ('large', 'medium', 'small');
 
 @each $scale in $scales {
   @each $size in $sizes {
-    :host([scale='#{$scale}'][size='#{$size}']) {
+    :host([scale='#{$scale}'][size='#{$size}'][rfs='true']) {
       @include md.typescale($scale, $size);
+    }
+    :host([scale='#{$scale}'][size='#{$size}']:not([rfs='true'])) {
+      @include md.typescale($scale, $size, false);
     }
   }
 }
