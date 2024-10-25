@@ -135,21 +135,11 @@
               "zone.js/testing"
             ]
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/wtprograms/material-design/**/*.ts",
-              "projects/wtprograms/material-design/**/*.html"
-            ],
-            "eslintConfig": "projects/wtprograms/material-design/eslint.config.js"
-          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "ee555c95-2daa-49a6-8d8c-cb50dcef674d"
+    "analytics": "f3f33dac-7e1c-4b1b-8cb1-5bd06a5c6a70"
   }
 }
