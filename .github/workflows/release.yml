@@ -24,7 +24,7 @@ jobs:
     #     cache: 'npm'
     #     registry-url: 'https://registry.npmjs.org'
         
-    - run: pnpm ci
+    - run: pnpm install
     - run: pnpm run build
     
     - id: get_version
