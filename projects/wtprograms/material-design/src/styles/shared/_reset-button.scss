@@ -1,0 +1,24 @@
+@use '../methods' as md;
+
+@mixin reset-button($selector: 'button, a') {
+  #{$selector} {
+    background-color: transparent;
+    display: inherit;
+    font: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+    appearance: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    align-items: center;
+
+    @include md.motion('opacity');
+
+    @content;
+  }
+}

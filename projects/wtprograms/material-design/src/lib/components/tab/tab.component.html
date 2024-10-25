@@ -1,0 +1,21 @@
+<ng-template #content>
+  <md-touch-area />
+  <slot></slot>
+  <span #label part="label">
+    <slot name="label"></slot>
+  </span>
+</ng-template>
+
+<md-focus-ring part="focus-ring" [target]="button()" />
+<md-ripple part="ripple" [target]="button()" />
+@if (href()) {
+<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+  [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else {
+<button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}

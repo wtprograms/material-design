@@ -1,0 +1,57 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="buttons" [options]="buttons.values">
+    Buttons
+  </app-selector-list-item>
+  <app-selector-list-item [(selectedValue)]="type" [options]="type.values">
+    Type
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Leading
+    <md-check [switch]="true" [(value)]="leading" />
+  </md-list-item>
+  <md-list-item>
+    Trailing
+    <md-check [switch]="true" [(value)]="trailing" />
+  </md-list-item>
+  <md-list-item>
+    Selected
+    <md-check [switch]="true" [(value)]="selected" />
+  </md-list-item>
+  <md-list-item>
+    CheckOnSelected
+    <md-check [switch]="true" [(value)]="checkOnSelected" />
+  </md-list-item>
+  <md-list-item>
+    Badge Dot
+    <md-check [switch]="true" [(value)]="dot" />
+  </md-list-item>
+  <app-selector-list-item [(selectedValue)]="number" [options]="number.values">
+    Badge Number
+  </app-selector-list-item>
+
+  <md-card class="[&::part(body)]:gap-4">
+    <div>
+      <md-segmented-button [selected]="selected()" [disabled]="disabled()" [checkOnSelected]="checkOnSelected()"
+        [badgeDot]="dot()" [badgeNumber]="number()" [type]="type()">
+        @if (leading()) {
+        <md-icon slot="leading">Home</md-icon>
+        }
+        Segmented Button
+        @if (trailing()) {
+        <md-icon slot="trailing">Home</md-icon>
+        }
+      </md-segmented-button>
+    </div>
+    <md-segmented-button-set [type]="type()">
+      @for (x of buttons(); track $index) {
+      <md-segmented-button [checkOnSelected]="checkOnSelected()">
+        Segmented Button
+      </md-segmented-button>
+      }
+    </md-segmented-button-set>
+  </md-card>
+</app-page>

@@ -1,0 +1,7 @@
+@mixin reboot {
+  hr {
+    margin: 8px 0;
+    border-style: none;
+    border-top: 1px solid var(--md-sys-color-outline);
+  }
+}

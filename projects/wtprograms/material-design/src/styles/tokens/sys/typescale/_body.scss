@@ -1,0 +1,7 @@
+@use 'to-typescale';
+
+$tokens: (
+  'large': to-typescale.to-typescale('body-large', 16px, 'plain', 'regular'),
+  'medium': to-typescale.to-typescale('body-medium', 14px, 'plain', 'regular'),
+  'small': to-typescale.to-typescale('body-small', 12px, 'plain', 'regular')
+);

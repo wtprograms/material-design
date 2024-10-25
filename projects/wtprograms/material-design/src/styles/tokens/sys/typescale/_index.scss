@@ -1,0 +1,13 @@
+@use 'body';
+@use 'display';
+@use 'headline';
+@use 'label';
+@use 'title';
+
+$tokens: (
+  'body': body.$tokens,
+  'display': display.$tokens,
+  'headline': headline.$tokens,
+  'label': label.$tokens,
+  'title': title.$tokens
+);

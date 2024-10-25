@@ -1,0 +1,52 @@
+<ng-template #content>
+  <md-touch-area />
+  @if (parentLayout() === 'drawer') {
+  <md-focus-ring [target]="button()" />
+  <md-ripple [target]="button()" />
+  @if (custom()) {
+  <slot></slot>
+  } @else {
+  <md-icon part="icon" [filled]="selected()">
+    <slot></slot>
+  </md-icon>
+  }
+  } @else {
+  <div part="indicator" class="indicator">
+    <md-focus-ring [target]="button()" />
+    <md-ripple [target]="button()" />
+    @if (custom()) {
+    <slot></slot>
+    } @else {
+    @if (disabled()) {
+    <md-icon part="icon" [filled]="selected()">
+      <slot></slot>
+    </md-icon>
+    } @else {
+    <md-icon part="icon" [filled]="selected()" [badgeDot]="badgeDot()" [badgeNumber]="badgeNumber()">
+      <slot></slot>
+    </md-icon>
+    }
+    }
+  </div>
+  }
+  <span class="label">
+    <slot name="label"></slot>
+  </span>
+  @if (parentLayout() === 'drawer') {
+  @if (!disabled()) {
+  <md-badge [embedded]="true" [dot]="badgeDot()" [number]="badgeNumber()" />
+  }
+  }
+</ng-template>
+
+@if (href()) {
+<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+  [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else {
+<button part="button" #button [type]="type()" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}

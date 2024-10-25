@@ -1,0 +1,37 @@
+<ng-template #content>
+  <md-touch-area />
+  @if (src()) {
+  @defer {
+  <img [src]="src()" [alt]="fullName()" />
+  }
+  } @else {
+  <span class="initials">
+    {{ initial() }}
+  </span>
+  }
+</ng-template>
+
+@if (this.type() || this.href()) {
+<md-focus-ring part="focus-ring" [target]="button()" />
+<md-ripple part="ripple" [target]="button()" />
+@if (href()) {
+<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+  [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="content" class="content" />
+</a>
+} @else {
+<button part="button" #button [type]="type()" [disabled]="disabled()" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}
+} @else {
+<ng-container *ngTemplateOutlet="content" />
+}
+@if (badgeDot() || badgeNumber()) {
+<md-badge part="badge" [dot]="badgeDot()" [number]="badgeNumber()" />
+}
+
+@if (!disabled() && (progressValue() || progressIndeterminate())) {
+<md-progress-indicator [value]="progressValue()" [indeterminate]="progressIndeterminate()" />
+}

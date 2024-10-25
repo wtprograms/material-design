@@ -1,0 +1,22 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  pointer-events: none;
+  border-radius: inherit;
+  inset: 0;
+  position: absolute;
+  opacity: 0;
+
+  outline-width: 0;
+  outline-offset: 3px;
+  outline-color: var(--md-sys-color-outline-variant);
+  outline-style: solid;
+
+  @include md.motion('opacity, outline-width');
+}
+
+:host([focused='true']) {
+  outline-width: 3px;
+  opacity: 1;
+}

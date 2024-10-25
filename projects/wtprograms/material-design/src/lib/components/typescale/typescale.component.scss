@@ -1,0 +1,13 @@
+@use '../md';
+
+$scales: ('display', 'headline', 'body', 'title', 'label');
+
+$sizes: ('large', 'medium', 'small');
+
+@each $scale in $scales {
+  @each $size in $sizes {
+    :host([scale='#{$scale}'][size='#{$size}']) {
+      @include md.typescale($scale, $size);
+    }
+  }
+}

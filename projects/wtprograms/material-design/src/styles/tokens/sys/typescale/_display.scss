@@ -1,0 +1,11 @@
+@use '../../../methods';
+@use 'to-typescale';
+
+$tokens: (
+  'large': to-typescale.to-typescale('display-large', methods.rfs(57, 31), 'brand', 'regular'),
+  'large-no-rfs': to-typescale.to-typescale('display-large', 57px, 'brand', 'regular'),
+  'medium': to-typescale.to-typescale('display-medium', methods.rfs(45, 27), 'brand', 'regular'),
+  'medium-no-rfs': to-typescale.to-typescale('display-medium', 45px, 'brand', 'regular'),
+  'small': to-typescale.to-typescale('display-small', methods.rfs(36, 24), 'brand', 'regular'),
+  'small-no-rfs': to-typescale.to-typescale('display-small', 36px, 'brand', 'regular'),
+);

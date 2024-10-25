@@ -1,0 +1,46 @@
+@mixin reset-input($selector: 'input, textarea') {
+  #{$selector} {
+    display: inline-flex;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    caret-color: inherit;
+    resize: none;
+    overflow: hidden;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    @content;
+  }
+}

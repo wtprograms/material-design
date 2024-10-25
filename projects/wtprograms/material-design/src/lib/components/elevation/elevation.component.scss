@@ -1,0 +1,9 @@
+@use '../md';
+
+:host {
+  position: absolute;
+  border-radius: inherit;
+  inset: 0;
+
+  @include md.motion('box-shadow');
+}

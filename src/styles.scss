@@ -1,0 +1,7 @@
+@use '../projects/wtprograms/material-design/src/styles/index' as md;
+
+@include md.import;
+@include md.reboot;
+
+@tailwind components;
+@tailwind utilities;

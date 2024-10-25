@@ -1,0 +1,15 @@
+@function _calc($diff) {
+  @return calc(var(--md-ref-palette-hue-base) + #{$diff});
+}
+
+$tokens: (
+  'base': 270,
+  'danger': 3,
+  'warning': 40,
+  'success': 140,
+  'neutral': _calc(-30),
+  'neutral-variant': _calc(-30),
+  'primary': var(--md-ref-palette-hue-base),
+  'secondary': _calc(-30),
+  'tertiary': _calc(70)
+);

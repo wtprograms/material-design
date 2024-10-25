@@ -1,0 +1,9 @@
+@use '../methods/palette';
+
+@function color($palette-name, $light, $dark) {
+  @return (
+    '': unset,
+    'light': palette.palette($palette-name, $light * 1%),
+    'dark': palette.palette($palette-name, $dark * 1%)
+  );
+}

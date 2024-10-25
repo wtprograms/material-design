@@ -1,0 +1,13 @@
+@function _sides($size) {
+  @return ('': $size, 'top': $size $size 0 0, 'end': 0 $size $size 0, 'bottom': 0 0 $size $size, 'start': $size 0 0 $size);
+}
+
+$tokens: (
+  'none': _sides(0px),
+  'extra-small': _sides(4px),
+  'small': _sides(8px),
+  'medium': _sides(12px),
+  'large': _sides(16px),
+  'extra-large': _sides(28px),
+  'full': _sides(9999px)
+);

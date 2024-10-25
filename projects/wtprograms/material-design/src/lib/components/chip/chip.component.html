@@ -1,0 +1,27 @@
+<ng-template #content>
+  <md-touch-area />
+  <slot name="leading"></slot>
+  <slot></slot>
+  <slot name="trailing"></slot>
+</ng-template>
+
+<md-focus-ring part="focus-ring" [target]="button()" />
+<md-ripple part="ripple" [target]="button()" />
+@if (closable()) {
+<ng-container *ngTemplateOutlet="content" />
+<md-button variant="plain" (click)="close.emit()">
+  <md-icon>close</md-icon>
+</md-button>
+} @else {
+@if (href()) {
+<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+  [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else {
+<button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}
+}

@@ -1,0 +1,16 @@
+<div mdAnimation="container" [mdAnimationState]="state()" class="container">
+  <md-elevation part="elevation" [level]="2" />
+  <div mdAnimation="body" [mdAnimationState]="state()" class="body">
+    <div>
+      <slot></slot>
+    </div>
+    <div class="actions">
+      <slot #actionSlot name="action" (click)="onActionClick()"></slot>
+      @if (closeButton()) {
+      <md-icon-button (click)="open.set(false)">
+        close
+      </md-icon-button>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+
+  md-icon {
+    margin-inline-start: auto;
+    transform: rotate(0);
+
+    @include md.motion('transform');
+  }
+
+  .body {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+    height: 0;
+    visibility: hidden;
+    padding-inline: 8px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    @include md.motion('height, visibility, padding');
+  }
+
+  md-button {
+    --md-comp-button-icon-size: 24;
+    justify-content: flex-start;
+    @include md.typescale('title', 'large');
+    padding: 8px;
+
+    &::part(button) {
+      flex-grow: 1;
+    }
+  }
+}
+
+:host(:not([state='closed'])) .body {
+  visibility: visible;
+}
+
+:host([state='opening']),
+:host([state='opened']) {
+  .body {
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  md-icon {
+    transform: rotate(-180deg);
+  }
+}

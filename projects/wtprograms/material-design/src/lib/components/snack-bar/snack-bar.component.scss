@@ -1,0 +1,78 @@
+@use '../md';
+
+:host {
+  max-width: 100%;
+  min-width: 280px;
+  display: contents;
+  margin: auto 0 0 0;
+  position: fixed;
+  height: fit-content;
+  width: 100%;
+  z-index: var(--md-sys-z-index-snack-bar);
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  padding-inline: 16px;
+  padding-bottom: 16px;
+
+  .container {
+    position: relative;
+    background-color: var(--md-sys-color-surface-inverse);
+    color: var(--md-sys-color-surface-inverse-on);
+    border-radius: var(--md-sys-shape-extra-small);
+    padding: 0;
+    margin: 0;
+    gap: inherit;
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    transform-origin: bottom;
+    transform: scaleY(0);
+  }
+
+  .body {
+    display: inline-flex;
+    flex-direction: row;
+    opacity: 0;
+    color: inherit;
+    align-items: center;
+    gap: inherit;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-inline: 16px;
+    min-height: 48px;
+  }
+
+  .actions {
+    gap: 8px;
+    display: inline-flex;
+    margin-inline-start: auto;
+  }
+
+  md-icon-button {
+    color: inherit;
+  }
+
+  ::slotted(md-button) {
+    color: var(--md-sys-color-primary-inverse-on);
+  }
+
+  @include md.screen('small') {
+    max-width: min(560px, calc(100% - 48px));
+    margin: auto auto 0 auto;
+  }
+}
+
+:host([closeButton='true']) {
+  .body {
+    padding-inline-end: 4px;
+  }
+}
+
+:host([multiline='true']) {
+  .body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

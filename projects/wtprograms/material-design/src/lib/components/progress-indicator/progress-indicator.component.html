@@ -1,0 +1,29 @@
+<div class="progress" [class.indeterminate]="this.indeterminate()" [class.four-color]="this.fourColor()"
+  role="progressbar">
+  @if (variant() === 'linear') {
+  <div class="dots" [hidden]="hideDots()"></div>
+  <div class="inactive-track" [style]="dotStyle()"></div>
+  <div class="bar primary-bar" [style]="progressStyle()">
+    <div class="bar-inner"></div>
+  </div>
+  <div class="bar secondary-bar">
+    <div class="bar-inner"></div>
+  </div>
+  } @else {
+  @if (indeterminate()) {
+  <div class="spinner">
+    <div class="left">
+      <div class="circle"></div>
+    </div>
+    <div class="right">
+      <div class="circle"></div>
+    </div>
+  </div>
+  } @else {
+  <svg viewBox="0 0 4800 4800">
+    <circle class="track" pathLength="100"></circle>
+    <circle class="active-track" pathLength="100" [attr.stroke-dashoffset]="dashOffset()"></circle>
+  </svg>
+  }
+  }
+</div>

@@ -1,0 +1,87 @@
+@use '../md';
+
+:host {
+  --_color: currentColor;
+  position: relative;
+  display: inline-flex;
+  height: 40px;
+  gap: 8px;
+  cursor: pointer;
+  place-content: center;
+  place-items: center;
+  user-select: none;
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, border-color');
+  padding-inline: 24px;
+  background-color: transparent;
+  color: var(--md-sys-color-surface-variant-on);
+  border-color: var(--md-sys-color-outline);
+  border-style: solid;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+
+  md-icon,
+  ::slotted(md-icon) {
+    --md-comp-icon-size: 18;
+  }
+
+  @include md.reset-button;
+
+  .label {
+    text-wrap: nowrap;
+  }
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    outline: 0;
+    cursor: pointer;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+}
+
+:host(:first-child:last-child) {
+  border-radius: var(--md-sys-shape-full);
+  border-inline-width: 1px;
+}
+
+:host(:first-child:not(:last-child)) {
+  border-radius: var(--md-sys-shape-full-start);
+  border-inline-start-width: 1px;
+  border-inline-end-width: 0.5px;
+}
+
+:host(:not(:first-child):not(:last-child)) {
+  border-inline-width: 0.5px;
+}
+
+:host(:not(:first-child):last-child) {
+  border-radius: var(--md-sys-shape-full-end);
+  border-inline-start-width: 0.5px;
+  border-inline-end-width: 1px;
+}
+
+:host([leading='true']) {
+  padding-inline-start: 16px;
+}
+:host([trailing='true']) {
+  padding-inline-end: 16px;
+}
+
+:host([selected='true']) {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-secondary-container-on);
+}
+:host([selected='true'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+
+@include md.disabled-component {
+  color: #{md.disabled('color')};
+  border-color: #{md.disabled('border-color')};
+}

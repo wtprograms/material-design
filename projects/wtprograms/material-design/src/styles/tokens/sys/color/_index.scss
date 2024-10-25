@@ -1,0 +1,18 @@
+@use '../../../methods/color';
+@use 'theme-palette';
+@use 'background';
+@use 'surface';
+@use 'outline';
+
+$tokens: (
+  'primary': theme-palette.theme-palette('primary'),
+  'secondary': theme-palette.theme-palette('secondary'),
+  'tertiary': theme-palette.theme-palette('tertiary'),
+  'danger': theme-palette.theme-palette('danger'),
+  'success': theme-palette.theme-palette('success'),
+  'warning': theme-palette.theme-palette('warning'),
+  'background': background.$tokens,
+  'surface': surface.$tokens,
+  'outline': outline.$tokens,
+  'scrim': color.color('neutral', 0, 0)
+);

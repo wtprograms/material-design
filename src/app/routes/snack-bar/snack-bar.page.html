@@ -1,0 +1,25 @@
+<app-page>
+  <md-list-item>
+    Close Button
+    <md-check [switch]="true" [(value)]="closeButton" />
+  </md-list-item>
+  <md-list-item>
+    Multiline
+    <md-check [switch]="true" [(value)]="multiline" />
+  </md-list-item>
+  <md-list-item>
+    Action
+    <md-check [switch]="true" [(value)]="action" />
+  </md-list-item>
+
+  <md-card class="w-[400px] h-[400px] relative">
+    <md-button (click)="snackBar.open.set(true)">Open</md-button>
+
+    <md-snack-bar #snackBar [closeButton]="closeButton()" [multiline]="multiline()">
+      You have a new notification here.
+      @if (action()) {
+        <md-button>Action</md-button>
+      }
+    </md-snack-bar>
+  </md-card>
+</app-page>

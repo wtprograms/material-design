@@ -1,0 +1,79 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="variant" [options]="variant.values">
+    Variant
+  </app-selector-list-item>
+  <app-selector-list-item [(selectedValue)]="fieldVariant" [options]="fieldVariant.values">
+    Field Variant
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Error
+    <md-check [switch]="true" [(value)]="error" />
+  </md-list-item>
+  <md-list-item>
+    Prefix
+    <md-check [switch]="true" [(value)]="prefix" />
+  </md-list-item>
+  <md-list-item>
+    Suffix
+    <md-check [switch]="true" [(value)]="suffix" />
+  </md-list-item>
+  <md-list-item>
+    Label
+    <md-check [switch]="true" [(value)]="label" />
+  </md-list-item>
+  <md-list-item>
+    Supporting Text
+    <md-check [switch]="true" [(value)]="supportingText" />
+  </md-list-item>
+  <md-list-item>
+    Counter
+    <md-check [switch]="true" [(value)]="counter" />
+  </md-list-item>
+  <md-list-item>
+    Leading
+    <md-check [switch]="true" [(value)]="leading" />
+  </md-list-item>
+  <md-list-item>
+    Time of Day
+    <md-check [switch]="true" [(value)]="timeOfDay" />
+  </md-list-item>
+  <md-list-item>
+    Hours
+    <md-check [switch]="true" [(value)]="hours" />
+  </md-list-item>
+  <md-list-item>
+    Seconds
+    <md-check [switch]="true" [(value)]="seconds" />
+  </md-list-item>
+
+  <ng-template #contents>
+    @if (prefix()) {
+    <span slot="prefix">$</span>
+    }
+    @if (suffix()) {
+    <span slot="suffix">.00</span>
+    }
+    @if (leading()) {
+    <md-icon slot="leading">home</md-icon>
+    }
+    @if (supportingText()) {
+    <span slot="supporting-text">Supporting Text</span>
+    }
+    @if (counter()) {
+    <span slot="counter">Counter</span>
+    }
+  </ng-template>
+
+  <md-card class="w-[500px] [&::part(body)]:items-stretch [&::part(body)]:gap-4">
+    <md-time-picker #picker [variant]="variant()" [fieldVariant]="fieldVariant()" [disabled]="disabled()"
+      [errorText]="error() ? 'Error' : undefined" [label]="label() ? 'Label' : undefined" [timeOfDay]="timeOfDay()"
+      [hours]="hours()" [seconds]="seconds()">
+      <ng-container *ngTemplateOutlet="contents" />
+    </md-time-picker>
+  </md-card>
+  {{ picker.displayText() }}
+</app-page>

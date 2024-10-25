@@ -1,0 +1,81 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="variant" [options]="variant.values">
+    Variant
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Error
+    <md-check [switch]="true" [(value)]="error" />
+  </md-list-item>
+  <md-list-item>
+    Prefix
+    <md-check [switch]="true" [(value)]="prefix" />
+  </md-list-item>
+  <md-list-item>
+    Suffix
+    <md-check [switch]="true" [(value)]="suffix" />
+  </md-list-item>
+  <md-list-item>
+    Label
+    <md-check [switch]="true" [(value)]="label" />
+  </md-list-item>
+  <md-list-item>
+    Supporting Text
+    <md-check [switch]="true" [(value)]="supportingText" />
+  </md-list-item>
+  <md-list-item>
+    Counter
+    <md-check [switch]="true" [(value)]="counter" />
+  </md-list-item>
+  <md-list-item>
+    Leading
+    <md-check [switch]="true" [(value)]="leading" />
+  </md-list-item>
+
+  <ng-template #contents>
+    @if (prefix()) {
+      <span slot="prefix">$</span>
+    }
+    @if (suffix()) {
+      <span slot="suffix">.00</span>
+    }
+    @if (leading()) {
+      <md-icon slot="leading">home</md-icon>
+    }
+    @if (supportingText()) {
+      <span slot="supporting-text">Supporting Text</span>
+    }
+    @if (counter()) {
+      <span slot="counter">Counter</span>
+    }
+  </ng-template>
+
+  <md-card class="w-[400px] [&::part(body)]:items-stretch [&::part(body)]:gap-4">
+    <md-dropdown [variant]="variant()" [disabled]="disabled()" [label]="label() ? 'Label' : undefined"
+      [errorText]="error() ? 'Error' : undefined">
+      
+      <ng-container *ngTemplateOutlet="contents" />
+
+      <md-list-item>None</md-list-item>
+      <md-list-item value="One">Item 1</md-list-item>
+      <md-list-item value="Two">Item 2</md-list-item>
+      <md-list-item value="Three">Item 3</md-list-item>
+    </md-dropdown>
+    
+    <md-dropdown [variant]="variant()" [disabled]="disabled()" [label]="label() ? 'Label' : undefined"
+      [errorText]="error() ? 'Error' : undefined" [(value)]="selectedValue">
+
+      <span slot="selected-value">{{ selectedValueText() }}</span>
+      
+      <ng-container *ngTemplateOutlet="contents" />
+
+      <md-list-item>None</md-list-item>
+      <md-list-item value="One">Item 1</md-list-item>
+      <md-list-item value="Two">Item 2</md-list-item>
+      <md-list-item value="Three">Item 3</md-list-item>
+    </md-dropdown>
+  </md-card>
+</app-page>

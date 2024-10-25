@@ -1,0 +1,14 @@
+<app-page>
+  <md-list-item>
+    Vertical
+    <md-check [switch]="true" [(value)]="vertical" />
+  </md-list-item>
+
+  <div class="h-28 w-28 inline-flex rounded-medium p-4 border border-solid border-outline-variant" [class.flex-col]="vertical()">
+    @if (vertical()) {
+      <md-divider [vertical]="true" class="h-full" />
+    } @else {
+    <md-divider class="w-full" />
+    }
+  </div>
+</app-page>

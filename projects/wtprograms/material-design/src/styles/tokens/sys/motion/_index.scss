@@ -1,0 +1,7 @@
+@use 'duration';
+@use 'easing';
+
+$tokens: (
+  'duration': duration.$tokens,
+  'easing': easing.$tokens
+);

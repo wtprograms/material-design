@@ -1,0 +1,133 @@
+@use '../md';
+
+$tokens: (
+  'background-color': transparent,
+  'border': 1px solid var(--md-sys-color-outline),
+  'color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'background-color': transparent,
+    'border': 1px solid md.disabled('border-color'),
+    'color': md.disabled('color'),
+  ),
+  'selected': (
+    'background-color': var(--md-sys-color-primary-container),
+    'border': 1px solid var(--md-sys-color-outline),
+    'color': var(--md-sys-color-primary-container-on),
+    'disabled': (
+      'background-color': md.disabled('background-color'),
+      'border': 1px solid md.disabled('border-color'),
+      'color': md.disabled('color'),
+    ),
+  ),
+);
+
+:host {
+  @include md.declare-component-tokens($tokens, 'chip');
+}
+
+:host([disabled]) {
+  @include md.set-properties(map-get($tokens, 'disabled'), 'chip-disabled');
+}
+
+:host([selected]) {
+  @include md.set-properties(map-get($tokens, 'selected'), 'chip-selected');
+}
+
+:host([selected][disabled]) {
+  @include md.set-properties(
+    map-get(map-get($tokens, 'selected'), 'disabled'),
+    'chip-selected-disabled'
+  );
+}
+
+:host {
+  --_color: currentColor;
+  position: relative;
+  border-radius: var(--md-sys-shape-extra-small);
+  color: var(--md-sys-color-surface-variant-on);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  flex-shrink: 0;
+  cursor: pointer;
+  isolation: isolate;
+  @include md.typescale('label', 'large');
+  gap: 8px;
+  background-color: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  padding-inline-start: 8px;
+  padding-inline-end: 8px;
+  overflow: hidden;
+  @include md.motion('background-color, color, opacity');
+
+  @include md.reset-button;
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  ::slotted(md-icon) {
+    pointer-events: none;
+    --md-comp-icon-size: 18;
+  }
+
+  ::slotted(md-avatar) {
+    margin-inline-start: -4px;
+    --md-comp-avatar-size: 24;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  md-button {
+    height: 100%;
+    padding-inline-start: 4px;
+    padding-inline-end: 4px;
+  }
+}
+
+:host([closable='true']) {
+  padding-inline-start: 16px;
+  cursor: default;
+  button,
+  a {
+    margin-left: -4px;
+    cursor: pointer;
+    position: relative;
+    padding-inline-start: 8px;
+    padding-inline-end: 8px;
+  }
+}
+
+:host([pill='true']) {
+  border-radius: var(--md-sys-shape-full);
+}
+
+:host([leading='true']) {
+  padding-inline-start: 8px;
+}
+
+:host([pill='true'][trailing='true']) {
+  padding-inline-end: 4px;
+}
+
+:host([closable='true']) {
+  padding-inline-end: 0px;
+}
+
+:host([selected='true']) {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-secondary-container-on);
+}
+
+:host([selected='true'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+
+@include md.disabled-component {
+  color: #{md.disabled('color')};
+}

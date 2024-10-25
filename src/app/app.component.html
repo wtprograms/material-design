@@ -1,0 +1,14 @@
+<div class="inline-flex flex-col">
+  <md-sheet [open]="true">
+    <md-navigation layout="drawer">
+      @for (route of routes; track route) {
+      <md-navigation-item [mdLink]="route.path">
+        <span slot="label">
+          {{ route.title }}
+        </span>
+      </md-navigation-item>
+      }
+    </md-navigation>
+  </md-sheet>
+</div>
+<router-outlet />

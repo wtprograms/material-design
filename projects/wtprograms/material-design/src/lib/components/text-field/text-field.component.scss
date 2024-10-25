@@ -1,0 +1,11 @@
+@use '../md';
+
+:host {
+  @include md.reset-input;
+
+  md-field::part(content) {
+    cursor: text;
+  }
+}
+
+@include md.disabled-component;

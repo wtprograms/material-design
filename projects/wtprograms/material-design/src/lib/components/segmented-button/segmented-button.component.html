@@ -1,0 +1,31 @@
+<ng-template #content>
+  <md-touch-area />
+  @if (selectedOrChecked() && checkOnSelected()) {
+  <md-icon [filled]="true">check</md-icon>
+  } @else {
+  <slot name="leading"></slot>
+  }
+  <span class="label">
+    <slot></slot>
+  </span>
+  @if (!disabled() && (badgeDot() || !!badgeNumber())) {
+  <md-badge [embedded]="true" [dot]="badgeDot()" [number]="badgeNumber()" />
+  } @else {
+  <slot name="trailing"></slot>
+  }
+</ng-template>
+
+<md-focus-ring part="focus-ring" [target]="input()" />
+<md-ripple part="ripple" [target]="input()" />
+
+@if (type() === 'button') {
+<button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}
+
+@if (type() !== 'button') {
+<ng-container *ngTemplateOutlet="content" />
+<input #input [type]="type()" [disabled]="disabled()" [checked]="checked()" (change)="onInput($event)">
+}

@@ -1,0 +1,17 @@
+@use '../methods';
+
+@mixin reboot {
+  body {
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-background-on);
+    box-sizing: border-box;
+    line-height: 1.3;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: var(--md-ref-palette-transparent);
+    @include methods.typescale('body', 'medium');
+
+    @include methods.motion('background-color, color, filter');
+  }
+}

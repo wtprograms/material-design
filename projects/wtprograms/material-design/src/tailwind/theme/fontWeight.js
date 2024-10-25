@@ -1,0 +1,18 @@
+module.exports = {
+  bold: 'var(--md-ref-font-weight-bold)',
+  medium: 'var(--md-ref-font-weight-medium)',
+  regular: 'var(--md-ref-font-weight-regular)',
+  light: 'var(--md-ref-font-weight-light)',
+  'display-large': 'var(--md-sys-typescale-display-large-weight)',
+  'display-medium': 'var(--md-sys-typescale-display-medium-weight)',
+  'display-small': 'var(--md-sys-typescale-display-small-weight)',
+  'headline-large': 'var(--md-sys-typescale-headline-large-weight)',
+  'headline-medium': 'var(--md-sys-typescale-headline-medium-weight)',
+  'headline-small': 'var(--md-sys-typescale-headline-small-weight)',
+  'body-large': 'var(--md-sys-typescale-body-large-weight)',
+  'body-medium': 'var(--md-sys-typescale-body-medium-weight)',
+  'body-small': 'var(--md-sys-typescale-body-small-weight)',
+  'title-large': 'var(--md-sys-typescale-title-large-weight)',
+  'title-medium': 'var(--md-sys-typescale-title-medium-weight)',
+  'title-small': 'var(--md-sys-typescale-title-small-weight)',
+};

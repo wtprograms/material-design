@@ -1,0 +1,20 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="size" [options]="size.values">
+    Size
+  </app-selector-list-item>
+  <md-list-item>
+    Filled
+    <md-check [switch]="true" [(value)]="filled" />
+  </md-list-item>
+  <md-list-item>
+    Badge Dot
+    <md-check [switch]="true" [(value)]="dot" />
+  </md-list-item>
+  <app-selector-list-item [(selectedValue)]="number" [options]="number.values">
+    Badge Number
+  </app-selector-list-item>
+
+  <md-card>
+    <md-icon [size]="size()" [filled]="filled()" [badgeDot]="dot()" [badgeNumber]="number()">home</md-icon>
+  </md-card>
+</app-page>

@@ -1,0 +1,38 @@
+@use '../methods';
+@use '../tokens';
+
+@mixin reboot {
+  *[hidden],
+  [hidden] {
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    interpolate-size: allow-keywords;
+
+    @include methods.declare-tokens(tokens.$tokens, 'md');
+    @include methods.set-mode('light');
+
+    @media (prefers-color-scheme: dark) {
+      @include methods.set-mode('dark');
+    }
+
+    @media (prefers-color-scheme: light) {
+      @include methods.set-mode('light');
+    }
+  }
+
+  .md-dark {
+    @include methods.set-mode('dark');
+  }
+
+  .md-light {
+    @include methods.set-mode('light');
+  }
+}

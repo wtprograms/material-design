@@ -1,0 +1,44 @@
+@use '../md';
+
+:host {
+  display: none;
+  flex-direction: column;
+  inset: auto;
+  opacity: 0;
+  margin: 0;
+  background-color: transparent;
+  overflow: visible;
+  border-radius: var(--md-sys-shape-extra-small);
+  border: 0;
+  padding: 0;
+  z-index: var(--md-sys-z-index-popover);
+  isolation: isolate;
+  color: inherit;
+
+  .container {
+    position: absolute;
+    background-color: var(--md-sys-color-surface-container);
+    inset: 0;
+    border-radius: inherit;
+    transform-origin: top;
+    z-index: -1;
+    color: inherit;
+    height: 0;
+  }
+
+  .body {
+    display: inline-flex;
+    flex-direction: column;
+    opacity: 0;
+    overflow-y: auto;
+    color: inherit;
+  }
+}
+
+:host([strategy='fixed']) {
+  position: fixed;
+}
+
+:host([strategy='absolute']) {
+  position: absolute;
+}

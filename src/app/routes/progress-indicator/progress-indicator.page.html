@@ -1,0 +1,15 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="variant" [options]="variant.values">
+    Variant
+  </app-selector-list-item>
+  <md-list-item>
+    Four Color
+    <md-check [switch]="true" [(value)]="fourColor" />
+  </md-list-item>
+
+  <md-card class="w-[400px] [&::part(body)]:gap-2 [&::part(body)]:items-stretch">
+    <md-progress-indicator [variant]="variant()" [indeterminate]="true" [fourColor]="fourColor()" />
+    <md-progress-indicator [variant]="variant()" [value]="0.7" />
+    <md-progress-indicator [variant]="variant()" [value]="0.4" [buffer]="0.7"  />
+  </md-card>
+</app-page>

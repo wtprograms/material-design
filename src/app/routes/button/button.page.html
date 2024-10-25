@@ -1,0 +1,33 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="variant" [options]="variant.values">
+    Variant
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Progress
+    <md-check [switch]="true" [(value)]="progressIndeterminate" />
+  </md-list-item>
+  <md-list-item>
+    Leading
+    <md-check [switch]="true" [(value)]="leading" />
+  </md-list-item>
+  <md-list-item>
+    Trailing
+    <md-check [switch]="true" [(value)]="trailing" />
+  </md-list-item>
+
+  <md-card>
+    <md-button [variant]="variant()" [disabled]="disabled()" [progressIndeterminate]="progressIndeterminate()">
+      @if (leading()) {
+      <md-icon slot="leading">Home</md-icon>
+      }
+      Button
+      @if (trailing()) {
+      <md-icon slot="trailing">Home</md-icon>
+      }
+    </md-button>
+  </md-card>
+</app-page>

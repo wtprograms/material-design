@@ -1,0 +1,27 @@
+@if (switch()) {
+<div class="track">
+  <div class="container">
+    <md-ripple [target]="input" />
+    <md-focus-ring [target]="input" />
+    <div class="handle">
+      <span class="unchecked-icon">
+        <slot name="unchecked-icon"></slot>
+      </span>
+      <span class="checked-icon">
+        <slot name="checked-icon"></slot>
+      </span>
+    </div>
+  </div>
+</div>
+} @else {
+<div part="container" class="container">
+  <md-ripple [target]="input" />
+  <md-focus-ring [target]="input" />
+  <md-icon [filled]="checked() || indeterminate()">{{ icon() }}</md-icon>
+</div>
+}
+<input #input [type]="type()" [disabled]="disabled()" [checked]="checked()" [indeterminate]="indeterminate()"
+  (change)="onInput($event)">
+<span class="label">
+  <slot></slot>
+</span>

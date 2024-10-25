@@ -1,0 +1,233 @@
+@use '../md';
+
+:host {
+  --_motion-easing: var(--md-sys-motion-easing-emphasized-decelerate);
+  --_motion-duration: var(--md-sys-motion-duration-long-1);
+
+  max-height: min(560px, calc(100% - 48px));
+  max-width: min(560px, calc(100% - 48px));
+  min-height: 140px;
+  min-width: 280px;
+  display: contents;
+  margin: auto;
+  position: fixed;
+  height: fit-content;
+  width: fit-content;
+
+  dialog {
+    background: transparent;
+    border: none;
+    border-radius: inherit;
+    flex-direction: column;
+    height: inherit;
+    margin: inherit;
+    max-height: inherit;
+    max-width: inherit;
+    min-height: inherit;
+    min-width: inherit;
+    outline: none;
+    overflow: visible;
+    padding: 0;
+    width: inherit;
+    opacity: 0;
+    transform: translateY(-200px);
+    color: var(--md-sys-color-surface-on);
+    transition-property: (opacity, transform);
+    transition-timing-function: var(--_motion-easing);
+    transition-duration: var(--_motion-duration);
+  }
+
+  dialog[open] {
+    display: inline-flex;
+  }
+
+  ::backdrop {
+    background: none;
+  }
+
+  .container {
+    position: relative;
+    border-radius: inherit;
+    display: inline-flex;
+    border-radius: var(--md-sys-shape-extra-large);
+    flex-direction: column;
+    background-color: var(--md-sys-color-surface-container);
+    max-height: 670px;
+  }
+
+  .container-content {
+    position: relative;
+    border-radius: inherit;
+    display: inline-flex;
+    border-radius: var(--md-sys-shape-extra-large);
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    transform-origin: top;
+    overflow: hidden;
+    height: auto;
+    opacity: 0;
+    transition-property: (opacity);
+    transition-timing-function: var(--_motion-easing);
+    transition-duration: var(--_motion-duration);
+    transition-delay: 100ms;
+  }
+
+  .scrim {
+    visibility: hidden;
+    inset: 0;
+    position: fixed;
+    z-index: -1;
+    background: var(--md-sys-color-scrim);
+    opacity: 0;
+    transition-property: (opacity, visibility);
+    transition-timing-function: var(--_motion-easing);
+    transition-duration: var(--_motion-duration);
+  }
+
+  .header {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .actions {
+    display: none;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .scroller {
+    display: none;
+    overflow-y: hidden;
+    flex-direction: column;
+  }
+
+  .content {
+    height: min-content;
+    position: relative;
+  }
+
+  .headline {
+    @include md.typescale('headline', 'small');
+    color: var(--md-sys-color-surface-on);
+    display: none;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .supporting-text {
+    display: none;
+    @include md.typescale('body', 'medium');
+    color: var(--md-sys-color-surface-variant-on);
+  }
+
+  .icon {
+    display: none;
+    color: var(--md-sys-color-secondary);
+
+    ::slotted(md-icon) {
+      --md-sys-icon-size: 24;
+    }
+  }
+}
+
+:host([state='opening']),
+:host([state='opened']) {
+  dialog {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scrim {
+    opacity: 0.32;
+  }
+
+  .container-content {
+    opacity: 1;
+  }
+}
+
+:host([state='opened']) {
+  .scroller {
+    overflow-y: auto;
+  }
+}
+
+:host(:not([state='closed'])) .scrim {
+  visibility: visible;
+  z-index: var(--md-sys-z-index-scrim);
+}
+
+:host([state='closing']) {
+  --_motion-easing: var(--md-sys-motion-easing-emphasized-accelerate);
+  --_motion-duration: var(--md-sys-motion-duration-short-4);
+  dialog {
+    opacity: 0;
+    transform: translateY(-200px);
+  }
+
+  .scrim {
+    opacity: 0;
+  }
+
+  .container-content {
+    opacity: 0;
+  }
+}
+
+:host([body='true']) {
+  .scroller {
+    display: inline-flex;
+  }
+}
+
+:host([header='true']) {
+  .header {
+    display: inline-flex;
+  }
+}
+
+:host([actions='true']) {
+  .actions {
+    margin-top: auto;
+    display: inline-flex;
+  }
+}
+
+:host([icon='true']),
+:host([headline='true']),
+:host([supportingText='true']) {
+  .header {
+    display: inline-flex;
+  }
+}
+
+:host([icon='true']) {
+  .icon {
+    display: inline-flex;
+  }
+
+  .headline {
+    flex-direction: column;
+  }
+
+  .headline,
+  .header {
+    align-items: center;
+  }
+}
+
+:host([headline='true']) {
+  .headline {
+    display: inline-flex;
+  }
+}
+
+:host([supportingText='true']) {
+  .supporting-text {
+    display: inline-flex;
+  }
+}

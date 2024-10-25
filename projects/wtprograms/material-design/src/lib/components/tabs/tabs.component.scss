@@ -1,0 +1,23 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+
+  .tabs {
+    display: inline-flex;
+    width: 100%;
+  }
+
+  .indicator {
+    background-color: var(--md-sys-color-primary);
+    border-radius: 3 3 0 0;
+    height: 3px;
+    @include md.motion('margin-inline-start, width, opacity');
+  }
+}
+
+:host([secondary='true']) .indicator {
+  border-radius: 0;
+  height: 2px;
+}

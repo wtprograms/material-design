@@ -1,0 +1,25 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="trigger" [options]="trigger.values">
+    Trigger
+  </app-selector-list-item>
+  <app-selector-list-item [(selectedValue)]="placement" [options]="placement.values">
+    Placement
+  </app-selector-list-item>
+  <md-list-item>
+    Native
+    <md-check [switch]="true" [(value)]="native" />
+  </md-list-item>
+  <md-list-item>
+    Offset
+    <md-check [switch]="true" [(value)]="offset" />
+  </md-list-item>
+
+  <md-card class="[&::part(body)]:gap-2">
+    <md-button #button>Open</md-button>
+    <md-popover [target]="button" [trigger]="trigger()" [placement]="placement()" [offset]="offset() ? 8 : 0" class="min-w-28 max-w-72">
+      Culpa minim sunt anim do tempor esse ex labore et ad. Do fugiat excepteur sint dolore. Deserunt proident laboris
+      anim sit magna nostrud. Quis dolore aute cillum irure cillum Lorem magna non. Occaecat est ea Lorem ex fugiat
+      veniam id velit.
+    </md-popover>
+  </md-card>
+</app-page>

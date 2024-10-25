@@ -1,0 +1,26 @@
+<md-field [variant]="variant()" [populated]="!!populated()" [errorText]="errorText()" [label]="label()"
+  (contentClick)="onContentClick()" [disabled]="disabled()" popoverTrigger="manual" [maxPopoverHeight]="300">
+  <slot name="leading" slot="leading"></slot>
+
+  <slot name="prefix" slot="prefix"></slot>
+  <slot name="suffix" slot="suffix"></slot>
+  <slot name="supporting-text" slot="supporting-text"></slot>
+
+  @if (counterText()) {
+  <span slot="counter">{{ counterText() }}</span>
+  }
+
+  @if (type() === 'text-area') {
+  <textarea #input [ngModel]="value()" (ngModelChange)="value.set($event)" rows="1" (input)="onInput($event)"
+    [disabled]="disabled()"></textarea>
+  } @else {
+  <input #input [ngModel]="value()" (ngModelChange)="value.set($event)" [type]="type()" [disabled]="disabled()"
+    (input)="onInput($event)">
+  }
+  <slot name="trailing" slot="trailing"></slot>
+  @if (hasDropdown()) {
+  <md-list slot="popover">
+    <slot (click)="onItemClick($event)"></slot>
+  </md-list>
+  }
+</md-field>

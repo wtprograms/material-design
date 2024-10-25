@@ -1,0 +1,9 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  height: 56px;
+  align-items: center;
+  margin-inline-start: 16px;
+  @include md.typescale('title', 'small');
+}

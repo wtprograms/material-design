@@ -1,0 +1,28 @@
+@use '../../../methods/color';
+
+@function theme-palette($name) {
+  @return (
+    '': color.color($name, 40, 80),
+    'on': color.color($name, 100, 20),
+    'container': (
+      '': color.color($name, 90, 30),
+      'on': color.color($name, 10, 90),
+    ),
+    'fixed': (
+      '': color.color($name, 90, 80),
+      'on': color.color($name, 10, 10),
+      'dim': (
+        '': color.color($name, 80, 80),
+        'on': color.color($name, 10, 10),
+      ),
+      'variant': (
+        '': color.color($name, 30, 30),
+        'on': color.color($name, 80, 80),
+      ),
+    ),
+    'inverse': (
+      '': color.color($name, 100, 20),
+      'on': color.color($name, 80, 40),
+    )
+  );
+}

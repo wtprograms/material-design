@@ -1,0 +1,549 @@
+@use '../md';
+
+:host {
+  --md-comp-progress-indicator-color: var(--md-sys-color-primary);
+  --md-comp-progress-indicator-color-one: var(--md-sys-color-primary);
+  --md-comp-progress-indicator-color-two: var(--md-sys-color-primary-container);
+  --md-comp-progress-indicator-color-three: var(--md-sys-color-tertiary);
+  --md-comp-progress-indicator-color-four: var(
+    --md-sys-color-tertiary-container
+  );
+  --md-comp-progress-indicator-size: 48;
+  --md-comp-progress-indicator-width: 4;
+  --md-comp-progress-indicator-track-color: var(
+    --md-sys-color-surface-container-highest
+  );
+  --md-comp-progress-indicator-track-height: 4px;
+  --md-comp-progress-indicator-height: 4px;
+}
+
+// CIRCULAR
+:host([variant='circular']) {
+  --_size-px: calc(var(--md-comp-progress-indicator-size) * 1px);
+  // If changing this value, make sure to change $size-without-padding in the
+  // circular-progress tokens.
+  $container-padding: 4px;
+
+  // note, these value come from the m2 version but match current gm3 values.
+  // Constants:
+  //       ARCSIZE     = 270 degrees (amount of circle the arc takes up)
+  //       ARCTIME     = 1333ms (time it takes to expand and contract arc)
+  //       ARCSTARTROT = 216 degrees (how much the start location of the arc
+  //                                 should rotate each time, 216 gives us a
+  //                                 5 pointed star shape (it's 360/5 * 3).
+  //                                 For a 7 pointed star, we might do
+  //                                 360/7 * 3 = 154.286)
+  // ARCTIME
+  $arc-duration: 1333ms;
+  // 4 * ARCTIME
+  $cycle-duration: calc(4 * $arc-duration);
+  // ARCTIME * 360 / (ARCSTARTROT + (360-ARCSIZE))
+  $linear-rotate-duration: calc($arc-duration * 360 / 306);
+
+  $indeterminate-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  display: inline-flex;
+  vertical-align: middle;
+  width: var(--_size-px);
+  height: var(--_size-px);
+  position: relative;
+  align-items: center;
+  justify-content: center;
+
+  // `contain` and `content-visibility` are performance optimizations
+  // important here because progress indicators are often used when a cpu
+  // intensive task is underway so it's especially important to minimize
+  // their cpu consumption.
+  contain: strict;
+  content-visibility: auto;
+
+  .progress {
+    flex: 1;
+    align-self: stretch;
+    margin: $container-padding;
+  }
+
+  .progress,
+  .spinner,
+  .left,
+  .right,
+  .circle,
+  svg,
+  .track,
+  .active-track {
+    position: absolute;
+    inset: 0;
+  }
+
+  svg {
+    transform: rotate(-90deg);
+  }
+
+  circle {
+    cx: 50%;
+    cy: 50%;
+    r: calc(50% * (1 - var(--md-comp-progress-indicator-width) / 100));
+    // match size to indeterminate border width
+    stroke-width: calc(var(--md-comp-progress-indicator-width) * 1%);
+    // note, pathLength is set so this can be normalized
+    stroke-dasharray: 100;
+    fill: transparent;
+  }
+
+  .active-track {
+    // note, these value come from the m2 version but match current gm3 values.
+    transition: stroke-dashoffset 500ms cubic-bezier(0, 0, 0.2, 1);
+    stroke: var(--md-comp-progress-indicator-color);
+  }
+
+  .track {
+    stroke: transparent;
+  }
+
+  .progress.indeterminate {
+    animation: linear infinite linear-rotate;
+    animation-duration: $linear-rotate-duration;
+  }
+
+  .spinner {
+    animation: infinite both rotate-arc;
+    animation-duration: $cycle-duration;
+    animation-timing-function: $indeterminate-easing;
+  }
+
+  .left {
+    overflow: hidden;
+    inset: 0 50% 0 0;
+  }
+
+  .right {
+    overflow: hidden;
+    inset: 0 0 0 50%;
+  }
+
+  .circle {
+    box-sizing: border-box;
+    border-radius: 50%;
+    // match size to svg stroke width, which is a fraction of the overall
+    // padding box width.
+    $_padding-box-width: calc(var(--_size-px) - 2 * $container-padding);
+    $_indicator-fraction: calc(var(--md-comp-progress-indicator-width) / 100);
+    border: solid calc($_indicator-fraction * $_padding-box-width);
+    border-color: var(--md-comp-progress-indicator-color)
+      var(--md-comp-progress-indicator-color) transparent transparent;
+    animation: expand-arc;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    animation-duration: $arc-duration, $cycle-duration;
+    animation-timing-function: $indeterminate-easing;
+  }
+
+  .four-color .circle {
+    animation-name: expand-arc, four-color;
+  }
+
+  .left .circle {
+    rotate: 135deg;
+    inset: 0 -100% 0 0;
+  }
+  .right .circle {
+    rotate: 100deg;
+    inset: 0 0 0 -100%;
+    animation-delay: calc(-0.5 * $arc-duration), 0ms;
+  }
+
+  // Indeterminate mode is 3 animations composed together:
+  // 1. expand-arc: an arc is expanded/contracted between 10deg and 270deg.
+  // 2. rotate-arc: at the same time, the arc is rotated in increments
+  // of 270deg.
+  // 3. linear-rotate: that rotating arc is then linearly rotated to produce
+  // a spinning expanding/contracting arc.
+  //
+  // See original implementation:
+  // https://github.com/PolymerElements/paper-spinner/blob/master/paper-spinner-styles.js.
+
+  // 1. expand-arc
+  // This is used on 2 divs which each represent half the desired
+  // 270deg arc with one offset by 50%. This creates an arc which expands from
+  // 10deg to 270deg.
+  @keyframes expand-arc {
+    0% {
+      transform: rotate(265deg);
+    }
+    50% {
+      transform: rotate(130deg);
+    }
+    100% {
+      transform: rotate(265deg);
+    }
+  }
+
+  // 2. rotate-arc
+  // The arc seamlessly travels around the circle indefinitely so it needs to
+  // end at a full rotation of the circle. This rotates the 270 deg
+  // (270/360 = 3/4) arc 4x (4 * 3/4 = 3) so it ends at
+  // (3 * 360 = 1080).
+  // This is sub-divided into increments of 135deg since the arc is rendered
+  // with 2 divs acting together.
+  @keyframes rotate-arc {
+    12.5% {
+      transform: rotate(135deg);
+    }
+    25% {
+      transform: rotate(270deg);
+    }
+    37.5% {
+      transform: rotate(405deg);
+    }
+    50% {
+      transform: rotate(540deg);
+    }
+    62.5% {
+      transform: rotate(675deg);
+    }
+    75% {
+      transform: rotate(810deg);
+    }
+    87.5% {
+      transform: rotate(945deg);
+    }
+    100% {
+      transform: rotate(1080deg);
+    }
+  }
+
+  // 3. linear-rotate
+  // The traveling expanding arc is linearly rotated to produce the spinner
+  // effect.
+  @keyframes linear-rotate {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes four-color {
+    0% {
+      border-top-color: var(--md-comp-progress-indicator-color-one);
+      border-right-color: var(--md-comp-progress-indicator-color-one);
+    }
+    15% {
+      border-top-color: var(--md-comp-progress-indicator-color-one);
+      border-right-color: var(--md-comp-progress-indicator-color-one);
+    }
+    25% {
+      border-top-color: var(--md-comp-progress-indicator-color-two);
+      border-right-color: var(--md-comp-progress-indicator-color-two);
+    }
+    40% {
+      border-top-color: var(--md-comp-progress-indicator-color-two);
+      border-right-color: var(--md-comp-progress-indicator-color-two);
+    }
+    50% {
+      border-top-color: var(--md-comp-progress-indicator-color-three);
+      border-right-color: var(--md-comp-progress-indicator-color-three);
+    }
+    65% {
+      border-top-color: var(--md-comp-progress-indicator-color-three);
+      border-right-color: var(--md-comp-progress-indicator-color-three);
+    }
+    75% {
+      border-top-color: var(--md-comp-progress-indicator-color-four);
+      border-right-color: var(--md-comp-progress-indicator-color-four);
+    }
+    90% {
+      border-top-color: var(--md-comp-progress-indicator-color-four);
+      border-right-color: var(--md-comp-progress-indicator-color-four);
+    }
+    100% {
+      border-top-color: var(--md-comp-progress-indicator-color-one);
+      border-right-color: var(--md-comp-progress-indicator-color-one);
+    }
+  }
+}
+
+:host([variant='linear']) {
+  // note, transition settings match MDC
+  // see https://github.com/material-components/material-components-web/blob/main/packages/mdc-linear-progress/_linear-progress.scss#L79
+  $_determinate-duration: 250ms;
+  $_determinate-easing: cubic-bezier(0.4, 0, 0.6, 1);
+  // see https://github.com/material-components/material-components-web/blob/main/packages/mdc-linear-progress/_linear-progress.scss#L218
+  $_indeterminate-duration: 2s;
+  display: flex;
+  position: relative;
+  // note, this matches the `meter` element and is just done so
+  // there's a default width.
+  min-width: 80px;
+  height: var(--md-comp-progress-indicator-track-height);
+  content-visibility: auto;
+  contain: strict;
+
+  .progress,
+  .dots,
+  .inactive-track,
+  .bar,
+  .bar-inner {
+    position: absolute;
+  }
+
+  .progress {
+    // Animations need to be in LTR. We support RTL by flipping the indicator
+    // with scale(-1).
+    direction: ltr;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .bar {
+    animation: none;
+    // position is offset for indeterminate animation, so we lock the inline size here.
+    width: 100%;
+    height: var(--md-comp-progress-indicator-height);
+    transform-origin: left center;
+    transition: transform $_determinate-duration $_determinate-easing;
+  }
+
+  .secondary-bar {
+    display: none;
+  }
+
+  .bar-inner {
+    inset: 0;
+    animation: none;
+    background: var(--md-comp-progress-indicator-color);
+  }
+
+  .inactive-track {
+    background: var(--md-comp-progress-indicator-track-color);
+    inset: 0;
+    transition: transform $_determinate-duration $_determinate-easing;
+    transform-origin: left center;
+  }
+
+  .dots {
+    inset: 0;
+    animation: linear infinite $_determinate-duration;
+    animation-name: buffering;
+    // The color of the buffer dots, which are masked out of this background
+    // color.
+    background-color: var(--md-comp-progress-indicator-track-color);
+    background-repeat: repeat-x;
+    // SVG is optimized for data URI (https://codepen.io/tigt/post/optimizing-svgs-in-data-uris)
+    // This svg creates a black circle on a transparent background which is used
+    // to mask out the animated buffering dots. This technique allows for dot
+    // color customization via the background-color property, and mask-image
+    // displays when forced-colors are active.
+    $svg: "data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 2' preserveAspectRatio='xMinYMin slice'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E";
+    // required for full support with Chrome, Edge, and Opera.
+    -webkit-mask-image: url($svg);
+    mask-image: url($svg);
+    z-index: -1; // Place behind tracks for Safari
+  }
+
+  // dots are hidden when indeterminate or when there is no visible buffer to
+  // prevent infinite invisible animation.
+  .dots[hidden] {
+    display: none;
+  }
+
+  // indeterminate
+  .indeterminate .bar {
+    transition: none;
+  }
+
+  // note, the numbers here come directly from the mdc implementation.
+  // see https://github.com/material-components/material-components-web/blob/main/packages/mdc-linear-progress/_linear-progress.scss#L208.
+  .indeterminate .primary-bar {
+    inset-inline-start: -145.167%;
+  }
+
+  .indeterminate .secondary-bar {
+    inset-inline-start: -54.8889%;
+    // this is display none by default.
+    display: block;
+  }
+
+  .indeterminate .primary-bar {
+    animation: linear infinite $_indeterminate-duration;
+    animation-name: primary-indeterminate-translate;
+  }
+
+  .indeterminate .primary-bar > .bar-inner {
+    animation: linear infinite $_indeterminate-duration
+      primary-indeterminate-scale;
+  }
+
+  .indeterminate.four-color .primary-bar > .bar-inner {
+    animation-name: primary-indeterminate-scale, linear-four-color;
+    animation-duration: $_indeterminate-duration,
+      calc($_indeterminate-duration * 2);
+  }
+
+  .indeterminate .secondary-bar {
+    animation: linear infinite $_indeterminate-duration;
+    animation-name: secondary-indeterminate-translate;
+  }
+
+  .indeterminate .secondary-bar > .bar-inner {
+    animation: linear infinite $_indeterminate-duration
+      secondary-indeterminate-scale;
+  }
+
+  .indeterminate.four-color .secondary-bar > .bar-inner {
+    animation-name: secondary-indeterminate-scale, linear-four-color;
+    animation-duration: $_indeterminate-duration,
+      calc($_indeterminate-duration * 2);
+  }
+
+  :host(:dir(rtl)) {
+    transform: scale(-1);
+  }
+
+  @keyframes primary-indeterminate-scale {
+    0% {
+      transform: scaleX(0.08);
+    }
+
+    36.65% {
+      animation-timing-function: cubic-bezier(0.334731, 0.12482, 0.785844, 1);
+      transform: scaleX(0.08);
+    }
+
+    69.15% {
+      animation-timing-function: cubic-bezier(0.06, 0.11, 0.6, 1);
+      transform: scaleX(0.661479);
+    }
+
+    100% {
+      transform: scaleX(0.08);
+    }
+  }
+
+  @keyframes secondary-indeterminate-scale {
+    0% {
+      animation-timing-function: cubic-bezier(
+        0.205028,
+        0.057051,
+        0.57661,
+        0.453971
+      );
+      transform: scaleX(0.08);
+    }
+
+    19.15% {
+      animation-timing-function: cubic-bezier(
+        0.152313,
+        0.196432,
+        0.648374,
+        1.00432
+      );
+      transform: scaleX(0.457104);
+    }
+
+    44.15% {
+      animation-timing-function: cubic-bezier(
+        0.257759,
+        -0.003163,
+        0.211762,
+        1.38179
+      );
+      transform: scaleX(0.72796);
+    }
+
+    100% {
+      transform: scaleX(0.08);
+    }
+  }
+
+  @keyframes buffering {
+    0% {
+      $_dot-size: calc(var(--md-comp-progress-indicator-track-height) / 2);
+      // the amount to animate is aligned with the default track background
+      $_dot-background-width: calc($_dot-size * 5);
+      transform: translateX(#{$_dot-background-width});
+    }
+  }
+
+  // note, the numbers here come directly from the mdc implementation.
+  // see https://github.com/material-components/material-components-web/blob/main/packages/mdc-linear-progress/_linear-progress.scss#L208.
+  // keyframes
+  @keyframes primary-indeterminate-translate {
+    0% {
+      transform: translateX(0px);
+    }
+
+    20% {
+      animation-timing-function: cubic-bezier(0.5, 0, 0.701732, 0.495819);
+      transform: translateX(0px);
+    }
+
+    59.15% {
+      animation-timing-function: cubic-bezier(
+        0.302435,
+        0.381352,
+        0.55,
+        0.956352
+      );
+      transform: translateX(83.6714%);
+    }
+
+    100% {
+      transform: translateX(200.611%);
+    }
+  }
+
+  @keyframes secondary-indeterminate-translate {
+    0% {
+      animation-timing-function: cubic-bezier(0.15, 0, 0.515058, 0.409685);
+      transform: translateX(0px);
+    }
+
+    25% {
+      animation-timing-function: cubic-bezier(0.31033, 0.284058, 0.8, 0.733712);
+      transform: translateX(37.6519%);
+    }
+
+    48.35% {
+      animation-timing-function: cubic-bezier(0.4, 0.627035, 0.6, 0.902026);
+      transform: translateX(84.3862%);
+    }
+
+    100% {
+      transform: translateX(160.278%);
+    }
+  }
+
+  @keyframes linear-four-color {
+    0% {
+      background: var(--md-comp-progress-indicator-color-one);
+    }
+
+    15% {
+      background: var(--md-comp-progress-indicator-color-one);
+    }
+    25% {
+      background: var(--md-comp-progress-indicator-color-two);
+    }
+    40% {
+      background: var(--md-comp-progress-indicator-color-two);
+    }
+
+    50% {
+      background: var(--md-comp-progress-indicator-color-three);
+    }
+    65% {
+      background: var(--md-comp-progress-indicator-color-three);
+    }
+    75% {
+      background: var(--md-comp-progress-indicator-color-four);
+    }
+    90% {
+      background: var(--md-comp-progress-indicator-color-four);
+    }
+    100% {
+      background: var(--md-comp-progress-indicator-color-one);
+    }
+  }
+}

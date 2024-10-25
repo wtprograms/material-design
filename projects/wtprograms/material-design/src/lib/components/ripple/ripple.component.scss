@@ -1,0 +1,53 @@
+@use '../md';
+
+:host {
+  --md-comp-ripple-color: var(--md-sys-color-surface-on);
+  --md-comp-ripple-color-activated: var(--md-comp-ripple-color);
+  --md-comp-ripple-transform-default: unset;
+  --md-comp-ripple-transform-hover: unset;
+
+  display: inline-flex;
+  margin: auto;
+  pointer-events: none;
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+
+  &::before,
+  &::after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    border-radius: inherit;
+  }
+
+  &::before {
+    background-color: var(--md-comp-ripple-color);
+    inset: 0;
+    transform: var(--md-comp-ripple-transform-default);
+    @include md.motion('opacity, background-color, transform');
+  }
+
+  &::after {
+    background: radial-gradient(
+      closest-side,
+      var(--md-comp-ripple-color-activated) max(calc(100% - 70px), 65%),
+      transparent 100%
+    );
+    transform-origin: center center;
+    transition: opacity 375ms linear;
+  }
+}
+
+:host([hovering='true'])::before {
+  background-color: var(--md-comp-ripple-color);
+  opacity: var(--md-sys-state-hover);
+  transform: var(--md-comp-ripple-transform-hover);
+}
+
+:host([activated='true'])::after {
+  opacity: var(--md-sys-state-active);
+  transition-duration: 105ms;
+}

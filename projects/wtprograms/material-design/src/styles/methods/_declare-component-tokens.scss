@@ -1,0 +1,23 @@
+@use 'declare-tokens';
+@use 'set-properties';
+
+@mixin _declare-properties($tokens, $name: '', $prefix: '') {
+  @if ($tokens != null) {
+    @each $key, $value in $tokens {
+      $token-name: if($key == '', $prefix, '#{$prefix}-#{$key}');
+      @if type-of($value) == 'map' {
+        @include _declare-properties($value, $name, $token-name);
+      } @else {
+        --md-comp-#{$name}#{$token-name}: #{$value};
+      }
+    }
+  }
+}
+
+@mixin declare-component-tokens($tokens, $name, $internal-tokens: null) {
+  @include _declare-properties($tokens, $name);
+  @include set-properties.set-properties($tokens, $name);
+  @if ($internal-tokens != null) {
+    @include declare-tokens.declare-tokens($internal-tokens, '_');
+  }
+}

@@ -1,0 +1,3 @@
+@function mix($base-color, $mixing-color, $mix-percent) {
+  @return color-mix(in oklab, #{$base-color}, #{$mixing-color} calc(#{$mix-percent} * 100%));
+}

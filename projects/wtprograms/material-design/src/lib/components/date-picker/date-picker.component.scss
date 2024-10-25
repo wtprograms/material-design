@@ -1,0 +1,193 @@
+@use '../md';
+
+:host {
+  md-field::part(body) {
+    cursor: pointer;
+  }
+
+  .popover {
+    display: inline-flex;
+  }
+
+  .container {
+    display: inline-flex;
+    flex-direction: column;
+    isolation: isolate;
+    flex-grow: 1;
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-extra-small);
+    padding-top: 20px;
+    padding-bottom: 12px;
+    padding-inline: 12px;
+
+    .header {
+      display: inline-flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .months,
+    .years {
+      display: inline-flex;
+    }
+
+    .navigate {
+      width: 40px;
+      height: 40px;
+    }
+
+    md-button[variant='plain']:not(.navigate) {
+      padding-inline-start: 12px;
+      padding-inline-end: 4px;
+    }
+
+    .body {
+      position: relative;
+      flex-grow: 1;
+      flex-direction: column;
+      display: inline-flex;
+    }
+
+    .view {
+      display: inline-flex;
+      flex-direction: column;
+      visibility: hidden;
+      position: absolute;
+      inset: 0;
+      background-color: var(--md-sys-color-surface-container);
+      height: 0px;
+      opacity: 0;
+      overflow-y: auto;
+      z-index: 1;
+      @include md.motion('height, opacity, visibility');
+
+      &::before {
+        content: '';
+        position: fixed;
+        inset: 0 0 auto 0;
+        border-top: 1px solid var(--md-sys-color-outline);
+      }
+
+      &:not(.closed) {
+        height: auto;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      &.year-view {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-inline: 16px;
+      }
+    }
+
+    .calendar {
+      display: inline-flex;
+      flex-direction: column;
+
+      .day-names {
+        margin-bottom: 16px;
+      }
+
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+
+        .day-container {
+          position: relative;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          height: 40px;
+        }
+
+        .day-name {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          @include md.typescale('label', 'large');
+          height: 40px;
+          width: 40px;
+          justify-self: center;
+          align-self: center;
+        }
+
+        .today {
+          border: 1px solid var(--md-sys-color-primary);
+        }
+
+        .in-range-indicator {
+          position: absolute;
+          height: 24px;
+          background-color: var(--md-sys-color-primary);
+          inset-inline: 0;
+          z-index: -1;
+
+          &.first {
+            inset-inline-start: 50%;
+          }
+
+          &.last {
+            inset-inline-end: 50%;
+          }
+
+          &.not-current {
+            background: md.mix(
+              var(--md-sys-color-primary),
+              var(--md-sys-color-surface),
+              0.5
+            );
+          }
+        }
+      }
+    }
+
+    md-icon-button {
+      justify-self: center;
+      align-self: center;
+
+      &.in-range {
+        color: var(--md-sys-color-primary-on);
+      }
+
+      &.not-current {
+        color: md.mix(currentColor, var(--md-sys-color-surface), 0.5);
+
+        &[variant='filled'] {
+          color: var(--md-sys-color-primary-on);
+          background: md.mix(
+            var(--md-sys-color-primary),
+            var(--md-sys-color-surface),
+            0.5
+          );
+        }
+      }
+
+      &.in-range.not-current:not([variant='filled']) {
+        color: var(--md-sys-color-primary-on);
+      }
+    }
+  }
+
+  .actions {
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-grow: 1;
+    margin-top: 8px;
+  }
+
+  .clear {
+    margin-inline-end: auto;
+  }
+
+  .selected-value {
+    display: inline-flex;
+    gap: 8px;
+  }
+}

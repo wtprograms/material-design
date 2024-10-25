@@ -1,0 +1,103 @@
+@use '../md';
+
+:host {
+  --_color: currentColor;
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--md-sys-shape-full);
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  @include md.motion('opacity, background-color, color, border-color');
+  flex-shrink: 0;
+  place-content: center;
+  place-items: center;
+  @include md.typescale('label', 'large');
+
+  @include md.reset-button;
+
+  ::slotted(md-icon),
+  md-icon {
+    --md-comp-icon-size: 24;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  md-progress-indicator {
+    --md-comp-progress-indicator-color: var(--_color);
+    position: absolute;
+    display: inline-flex;
+    align-self: center;
+  }
+}
+
+:host([selected='true']) {
+  ::slotted(md-icon),
+  md-icon {
+    --md-comp-icon-filled: 1;
+  }
+}
+
+:host([variant='filled']) {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-primary);
+}
+:host([variant='filled'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+:host([variant='filled'][selected='true']) {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary-on);
+}
+
+:host([variant='tonal']) {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-surface-variant-on);
+}
+:host([variant='tonal'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+:host([variant='tonal'][selected='true']) {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-secondary-container-on);
+}
+
+:host([variant='outlined']) {
+  background-color: transparent;
+  color: var(--md-sys-color-surface-variant-on);
+  border: 1px solid var(--md-sys-color-outline);
+}
+:host([variant='outlined'][disabled='true']) {
+  border: 1px solid #{md.disabled('border-color')};
+}
+:host([variant='outlined'][selected='true']) {
+  background-color: var(--md-sys-color-surface-inverse);
+  color: var(--md-sys-color-surface-inverse-on);
+}
+:host([variant='outlined'][selected='true'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+
+:host([variant='standard']) {
+  color: var(--md-sys-color-surface-variant-on);
+}
+:host([variant='standard'][selected='true']) {
+  color: var(--md-sys-color-primary);
+}
+
+:host([busy='true']:not([disabled='true'])) {
+  pointer-events: none;
+
+  a,
+  button {
+    opacity: 0;
+  }
+}
+
+@include md.disabled-component {
+  color: #{md.disabled('color')};
+}

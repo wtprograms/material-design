@@ -1,0 +1,41 @@
+@use '../md';
+
+:host {
+  --md-comp-icon-filled: 0;
+  --md-comp-icon-weight: var(--md-ref-typeface-weight-regular);
+  --md-comp-icon-size: 24;
+  --_size-px: calc(var(--md-comp-icon-size) * 1px);
+
+  position: relative;
+  font-size: var(--_size-px);
+  width: var(--_size-px);
+  max-width: var(--_size-px);
+  height: var(--_size-px);
+  color: inherit;
+  display: inline-flex;
+  font-style: normal;
+  place-items: center;
+  place-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  user-select: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  flex-shrink: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--md-ref-typeface-font-icon);
+  font-weight: var(--md-comp-icon-weight);
+  font-variation-settings: 'FILL' var(--md-comp-icon-filled),
+    'wght' var(--md-comp-icon-weight), 'GRAD' 0,
+    'opsz' clamp(20, var(--md-comp-icon-size), 48);
+
+  @include md.motion('font-variation-settings');
+
+  md-badge {
+    transform: scale(calc(var(--md-comp-icon-size) / 24));
+  }
+}

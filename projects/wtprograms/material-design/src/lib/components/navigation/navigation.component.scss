@@ -1,0 +1,58 @@
+@use '../md';
+
+:host {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  z-index: var(--md-sys-z-index-navigation);
+
+  ::slotted(md-divider) {
+    display: none;
+  }
+
+  ::slotted(md-navigation-headline) {
+    display: none;
+  }
+}
+
+:host([layout='bar']) {
+  height: 80px;
+  gap: 8px;
+  flex-direction: row;
+  background-color: var(--md-sys-color-surface-container);
+
+  ::slotted(md-navigation-item) {
+    padding: 12px 0 16px 0;
+    width: 100%;
+  }
+}
+
+:host([layout='rail']) {
+  height: 100%;
+  width: auto;
+  align-items: center;
+  padding: 16px 12px;
+  gap: 12px;
+  flex-direction: column;
+}
+
+:host([layout='drawer']) {
+  flex-direction: column;
+
+  ::slotted(md-navigation-headline) {
+    display: none;
+  }
+
+  ::slotted(md-divider) {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: inline-flex;
+    margin-inline-start: 16px;
+    margin-inline-end: 24px;
+    border-color: var(--md-sys-color-outline);
+  }
+
+  ::slotted(md-navigation-headline) {
+    display: inline-flex;
+  }
+}

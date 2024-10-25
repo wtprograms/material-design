@@ -1,0 +1,330 @@
+@use '../md';
+
+:host {
+  --md-comp-field-error-color: var(--md-sys-color-danger);
+  --_error-color: var(--md-comp-field-error-color);
+  --_color: currentColor;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--md-sys-color-surface-variant-on);
+  width: 100%;
+
+  .body {
+    border-radius: inherit;
+    display: inline-flex;
+    position: relative;
+    min-height: 56px;
+    padding-inline-start: 16px;
+    padding-inline-end: 16px;
+    gap: 16px;
+  }
+
+  .leading,
+  .trailing {
+    margin-top: 16px;
+  }
+
+  .content {
+    align-self: stretch;
+    display: inline-flex;
+    flex-direction: column;
+    color: inherit;
+    padding-top: 18px;
+    padding-bottom: 4px;
+    width: 100%;
+    @include md.typescale('body', 'large');
+    @include md.motion('opacity, margin-top');
+  }
+
+  .control {
+    color: inherit;
+    display: inline-flex;
+    caret-color: currentColor;
+  }
+
+  .footer {
+    display: none;
+    color: inherit;
+    padding-inline: 16px;
+    @include md.typescale('body', 'small');
+  }
+
+  .counter {
+    margin-inline-start: auto;
+  }
+
+  .hidden-label {
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    @include md.typescale('label', 'small');
+  }
+
+  .label {
+    position: absolute;
+    color: inherit;
+    inset-inline-start: 0;
+    margin-top: 18px;
+    @include md.typescale('body', 'large');
+    @include md.motion('color, font-size, inset, margin-top');
+  }
+
+  .leading,
+  .trailing {
+    display: none;
+  }
+
+  .leading {
+    color: var(--md-sys-color-surface-variant-on);
+  }
+
+  .trailing {
+    color: var(--md-sys-color-surface-variant-on);
+    margin-inline-start: auto;
+  }
+
+  .border-top-start,
+  .border-top-end,
+  .border-x,
+  .border-bottom {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    @include md.motion('border');
+  }
+
+  md-popover {
+    width: 100%;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  .suffix {
+    display: none;
+    margin-inline-start: auto;
+  }
+
+  .supporting-text {
+    display: none;
+  }
+
+  .counter {
+    display: none;
+  }
+}
+
+:host([supportingText='true']),
+:host([counter='true']),
+:host([error='true']) {
+  .footer {
+    display: inline-flex;
+  }
+}
+
+:host([supportingText='true']:not([error='true'])) .supporting-text {
+  display: inline-flex;
+}
+
+:host([counter='true']) .counter {
+  display: inline-flex;
+}
+
+:host([suffix='true']) .suffix {
+  display: inline-flex;
+}
+
+:host([leading='true']) {
+  .body {
+    padding-inline-start: 12px;
+  }
+  .leading {
+    display: inline-flex;
+  }
+}
+
+:host([trailing='true']) {
+  .body {
+    padding-inline-end: 12px;
+  }
+  .trailing {
+    display: inline-flex;
+  }
+}
+
+:host([error='true']:hover) {
+  --_error-color: #{md.mix(
+      var(--md-comp-field-error-color),
+      var(--md-sys-color-surface-on),
+      0.28
+    )};
+}
+
+:host([label='true']) {
+  .content {
+    opacity: 0;
+  }
+}
+
+:host([populated='true']) {
+  .label {
+    @include md.typescale('label', 'small');
+  }
+}
+
+:host([label='true'][populated='true']) {
+  .content {
+    opacity: 1;
+  }
+
+  .label {
+    color: var(--md-sys-color-primary);
+  }
+
+  .control {
+    caret-color: var(--md-sys-color-primary);
+  }
+}
+
+:host([variant='filled']) {
+  border-radius: var(--md-sys-shape-extra-small-top);
+
+  .body {
+    background-color: var(--md-sys-color-surface-container-high);
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid var(--md-sys-color-outline);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 -1px 0;
+      border-bottom: 2px solid;
+      border-bottom-color: inherit;
+      transform: scaleX(0);
+
+      @include md.motion('transform');
+    }
+  }
+}
+
+:host([variant='filled'][populated='true']) {
+  .label {
+    margin-top: 10px;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid var(--md-sys-color-primary);
+
+    &::after {
+      transform: scaleX(1);
+    }
+  }
+}
+
+:host([variant='filled'][populated='true'][label='true']) {
+  .content {
+    padding-top: 26px;
+  }
+}
+
+:host([variant='outlined']) {
+  border-radius: var(--md-sys-shape-extra-small);
+
+  .border-top-start,
+  .border-top-end {
+    border-top: 1px solid var(--md-sys-color-outline);
+  }
+
+  .border-x {
+    border-inline-start: 1px solid var(--md-sys-color-outline);
+    border-inline-end: 1px solid var(--md-sys-color-outline);
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid var(--md-sys-color-outline);
+  }
+
+  .border-top-start {
+    width: 10px;
+    border-start-end-radius: 0;
+  }
+
+  .border-top-end {
+    margin-inline-start: 10px;
+    border-start-start-radius: 0;
+    @include md.motion('margin-inline-start, border');
+  }
+}
+
+:host([variant='outlined'][populated='true']) {
+  .label {
+    margin-top: -6px;
+  }
+
+  .border-top-start,
+  .border-top-end {
+    border-top: 2px solid var(--md-sys-color-primary);
+  }
+
+  .border-x {
+    border-inline-start: 2px solid var(--md-sys-color-primary);
+    border-inline-end: 2px solid var(--md-sys-color-primary);
+  }
+
+  .border-bottom {
+    border-bottom: 2px solid var(--md-sys-color-primary);
+  }
+}
+
+:host([error='true']),
+:host([error='true'][populated='true']),
+:host([variant='filled'][error='true']:not([populated='true'])) {
+  .label,
+  .trailing,
+  .footer {
+    color: var(--_error-color);
+  }
+
+  .border-top-start,
+  .border-top-end,
+  .border-x,
+  .border-bottom {
+    border-color: var(--_error-color);
+  }
+}
+
+@mixin _disabled {
+  color: #{md.disabled('color')};
+  border-color: #{md.disabled('border-color')};
+
+  .label,
+  .leading,
+  .trailing,
+  .footer,
+  .content {
+    color: inherit;
+  }
+
+  .border-top-start,
+  .border-top-end,
+  .border-x,
+  .border-bottom {
+    border-color: inherit;
+  }
+}
+
+:host([populated='false'][error='true'][disabled='true']),
+:host([populated='true'][disabled='true']),
+:host([populated='true'][disabled='true'][error='true']) {
+  @include _disabled;
+}
+
+@include md.disabled-component {
+  @include _disabled;
+}

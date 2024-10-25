@@ -1,0 +1,5 @@
+@mixin motion($properties: 'all', $easing: 'standard', $duration: 'short-4') {
+  transition-property: #{$properties};
+  transition-duration: var(--md-sys-motion-duration-#{$duration});
+  transition-timing-function: var(--md-sys-motion-easing-#{$easing});
+}

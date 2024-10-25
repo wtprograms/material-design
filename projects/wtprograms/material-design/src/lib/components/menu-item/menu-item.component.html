@@ -1,0 +1,38 @@
+<ng-template #content>
+  <md-touch-area />
+  @if (checkOnSelected() && selected()) {
+  <md-icon [filled]="true">check</md-icon>
+  } @else {
+  <slot name="leading"></slot>
+  }
+  <slot></slot>
+  @if (itemSlot()?.any()) {
+  @if (dir() === 'ltr') {
+  <md-icon class="end">arrow_right</md-icon>
+  } @else {
+  <md-icon class="end">arrow_left</md-icon>
+  }
+  } @else {
+  <span class="trailing">
+    <slot name="trailing"></slot>
+  </span>
+  }
+</ng-template>
+
+<md-focus-ring part="focus-ring" [target]="button()" />
+<md-ripple part="ripple" [target]="button()" />
+@if (href()) {
+<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+  [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else {
+<button part="button" #button [type]="type()" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  [attr.value]="value() ?? null">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+}
+
+<md-menu #menu [target]="hostElement" [placement]="placement()" [offset]="0" trigger="manual">
+  <slot name="item"></slot>
+</md-menu>

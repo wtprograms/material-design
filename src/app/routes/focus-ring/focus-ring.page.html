@@ -1,0 +1,12 @@
+<app-page>
+  <md-list-item>
+    Focus Visible
+    <md-check [switch]="true" [(value)]="focusVisible" />
+  </md-list-item>
+
+  <md-card>
+    <button #host class="w-20 h-20 border border-solid border-outline relative inline-flex items-center justify-center">
+      <md-focus-ring [target]="host" [focusVisible]="focusVisible()" />
+    </button>
+  </md-card>
+</app-page>

@@ -1,0 +1,51 @@
+<ng-template #content>
+  <div part="leading" class="leading">
+    <slot name="leading"></slot>
+  </div>
+  <div part="content" class="content">
+    <slot></slot>
+    <span part="supporting-text" class="supporting-text">
+      <slot #supportingTextSlot name="supporting-text"></slot>
+    </span>
+  </div>
+  @if (!split()) {
+  <div part="trailing" class="trailing">
+    <slot name="trailing"></slot>
+  </div>
+  }
+</ng-template>
+
+<div class="body">
+  <md-elevation part="elevation" [target]="this" [hoverable]="false" [interactive]="false" [dragging]="dragging()" />
+  @if (interactive()) {
+  <md-focus-ring part="focus-ring" [target]="button()" />
+  <md-ripple part="ripple" [target]="button()" />
+  @if (href()) {
+  <a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
+    [tabIndex]="disabled() ? -1 : 0">
+    <md-touch-area />
+    <ng-container *ngTemplateOutlet="content" />
+  </a>
+  } @else {
+  <button part="button" #button [type]="type()" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+    [attr.value]="value() ?? null">
+    <md-touch-area />
+    <ng-container *ngTemplateOutlet="content" />
+  </button>
+  }
+  } @else {
+  <ng-container *ngTemplateOutlet="content" />
+  }
+</div>
+
+@if (split()) {
+<div part="trailing" class="trailing">
+  <md-divider part="divider" [vertical]="true" />
+  <slot name="trailing"></slot>
+</div>
+}
+
+@if (!disabled() && (progressValue() || progressIndeterminate())) {
+<md-progress-indicator part="progress-indicator" variant="linear" [value]="progressValue()" [max]="progressMax()"
+  [indeterminate]="progressIndeterminate()" [buffer]="progressBuffer()" />
+}

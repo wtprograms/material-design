@@ -1,0 +1,49 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="layout" [options]="layout.values">
+    Variant
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Selected
+    <md-check [switch]="true" [(value)]="selected" />
+  </md-list-item>
+  <md-list-item>
+    Icon
+    <md-check [switch]="true" [(value)]="icon" />
+  </md-list-item>
+  <md-list-item>
+    Label
+    <md-check [switch]="true" [(value)]="label" />
+  </md-list-item>
+
+  <ng-template #content>
+    @if (icon()) {
+    home
+    }
+    @if (label()) {
+    <span slot="label">Label</span>
+    }
+  </ng-template>
+
+  <div class="w-96 h-96 relative border border-solid border-outline-variant">
+    <md-navigation [layout]="layout()" [class]="layout() === 'bar' ? 'absolute left-0 bottom-0 right-0' : ''">
+      <md-navigation-headline>Headline</md-navigation-headline>
+      <md-navigation-item [disabled]="disabled()" [selected]="selected()">
+        <ng-container *ngTemplateOutlet="content" />
+      </md-navigation-item>
+      <md-navigation-item [disabled]="disabled()" [badgeDot]="true">
+        <ng-container *ngTemplateOutlet="content" />
+      </md-navigation-item>
+      <md-divider />
+      <md-navigation-item [disabled]="disabled()" [badgeNumber]="999">
+        <ng-container *ngTemplateOutlet="content" />
+      </md-navigation-item>
+      <md-navigation-item [disabled]="disabled()">
+        <ng-container *ngTemplateOutlet="content" />
+      </md-navigation-item>
+    </md-navigation>
+  </div>
+</app-page>

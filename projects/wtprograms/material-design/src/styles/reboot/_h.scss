@@ -1,0 +1,19 @@
+@use '../methods/typescale';
+
+$_map: (
+  1: 'display-large',
+  2: 'display-medium',
+  3: 'display-small',
+  4: 'headline-large',
+  5: 'headline-medium',
+  6: 'headline-small'
+);
+
+@mixin reboot {
+  @each $key, $value in $_map {
+    h#{$key} {
+      @include typescale.typescale($value);
+      margin: 0;
+    }
+  }
+}

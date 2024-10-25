@@ -1,0 +1,19 @@
+@use 'color';
+@use 'disabled';
+@use 'elevation';
+@use 'motion';
+@use 'shape';
+@use 'state';
+@use 'typescale';
+@use 'z-index';
+
+$tokens: (
+  'color': color.$tokens,
+  'disabled': disabled.$tokens,
+  'elevation': elevation.$tokens,
+  'motion': motion.$tokens,
+  'shape': shape.$tokens,
+  'state': state.$tokens,
+  'typescale': typescale.$tokens,
+  'z-index': z-index.$tokens
+);

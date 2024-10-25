@@ -1,0 +1,8 @@
+@mixin disabled-component {
+  :host([disabled=true]) {
+    pointer-events: none;
+    cursor: default;
+
+    @content;
+  }
+}

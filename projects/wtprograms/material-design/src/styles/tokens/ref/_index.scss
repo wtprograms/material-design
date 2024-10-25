@@ -1,0 +1,7 @@
+@use 'palette';
+@use 'typeface';
+
+$tokens: (
+  'palette': palette.$tokens,
+  'typeface': typeface.$tokens
+);

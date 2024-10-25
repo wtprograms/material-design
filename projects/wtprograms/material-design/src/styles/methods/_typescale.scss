@@ -1,0 +1,12 @@
+@mixin typescale($scale, $size: null, $rfs: true) {
+  $rfs-str: '';
+  @if ($rfs == false) {
+    @if ($scale == 'display' or ($scale == 'headline' and $size == 'large')) {
+      $rfs-str: '-no-rfs';
+    }
+  }
+  $typescale: if($size == null, $scale, '#{$scale}-#{$size}');
+  font-size: var(--md-sys-typescale-#{$typescale}#{$rfs-str}-size);
+  font-weight: var(--md-sys-typescale-#{$typescale}#{$rfs-str}-weight);
+  font-family: var(--md-sys-typescale-#{$typescale}#{$rfs-str}-font);
+}

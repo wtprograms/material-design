@@ -1,0 +1,13 @@
+@use '../md';
+
+:host {
+  margin: 8px 0;
+}
+
+:host([vertical='false']) {
+  border-top: 1px solid currentColor;
+}
+
+:host([vertical='true']) {
+  border-inline-start: 1px solid currentColor;
+}

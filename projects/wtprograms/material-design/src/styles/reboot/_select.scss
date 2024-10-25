@@ -1,0 +1,13 @@
+@mixin reboot {
+  select {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    outline: none;
+    cursor: pointer;
+    color: var(--md-sys-color-primary);
+  }
+}

@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
+        
+    - run: npm ci
+    - run: npm run build
+    
+    - id: get_version
+      name: Get Version
+      uses: jannemattila/get-version-from-tag@v3
+    
+    - name: Set package.json version
+      uses: HarmvZ/set-package-json-version-action@v0.2.5
+      with:
+        version: ${{ steps.get_version.outputs.version }}
+
+    - name: Publish
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist/wtprograms/material-design
+
+    # - name: Publish
+    #   run: npm publish --access public
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

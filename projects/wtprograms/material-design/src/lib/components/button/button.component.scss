@@ -1,0 +1,111 @@
+@use '../md';
+
+:host {
+  --md-comp-button-icon-size: 18;
+  --_color: currentColor;
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--md-sys-shape-full);
+  height: 40px;
+  cursor: pointer;
+  @include md.motion('background-color, color, border-color');
+  flex-shrink: 0;
+  place-content: center;
+  place-items: center;
+  gap: 8px;
+  @include md.typescale('label', 'large');
+
+  @include md.reset-button;
+
+  ::slotted(md-icon) {
+    --md-comp-icon-size: var(--md-comp-button-icon-size);
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  .progress {
+    position: absolute;
+    display: inline-flex;
+    align-self: center;
+    justify-content: center;
+    inset: 0;
+  }
+
+  md-progress-indicator {
+    --md-comp-progress-indicator-color: var(--_color);
+  }
+
+  .leading,
+  .trailing {
+    display: none;
+  }
+}
+
+:host([variant='elevated']) {
+  background-color: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-primary);
+}
+
+:host([variant='filled']) {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary-on);
+}
+
+:host([variant='tonal']) {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-secondary-container-on);
+}
+
+:host([variant='outlined']) {
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-primary);
+}
+
+:host([variant='text']) {
+  color: var(--md-sys-color-primary);
+}
+
+:host([variant='plain']) {
+  border-radius: 0;
+  color: var(--md-sys-color-surface-variant-on);
+}
+
+$_24-padding: 24px;
+$_24-addon: 16px;
+$_24-variants: ('elevated', 'filled', 'tonal', 'outlined');
+@each $variant in $_24-variants {
+  :host([variant='#{$variant}']) {
+    padding-inline: $_24-padding;
+  }
+  :host([variant='#{$variant}'][leading='true']) {
+    padding-inline-start: $_24-addon;
+  }
+  :host([variant='#{$variant}'][trailing='true']) {
+    padding-inline-end: $_24-addon;
+  }
+}
+
+:host([variant='text']) {
+  padding-inline: 16px;
+}
+:host([variant='text'][leading='true']) {
+  padding-inline-start: 12px;
+}
+:host([variant='text'][trailing='true']) {
+  padding-inline-end: 12px;
+}
+
+:host([busy='true']:not([disabled='true'])) {
+  pointer-events: none;
+
+  a,
+  button {
+    opacity: 0;
+  }
+}
+
+@include md.disabled-component {
+  color: #{md.disabled('color')};
+}

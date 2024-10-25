@@ -1,0 +1,40 @@
+<app-page>
+  <app-selector-list-item [(selectedValue)]="leading" [options]="leading.values">
+    Leading
+  </app-selector-list-item>
+  <md-list-item>
+    Disabled
+    <md-check [switch]="true" [(value)]="disabled" />
+  </md-list-item>
+  <md-list-item>
+    Selected
+    <md-check [switch]="true" [(value)]="selected" />
+  </md-list-item>
+  <md-list-item>
+    Trailing
+    <md-check [switch]="true" [(value)]="trailing" />
+  </md-list-item>
+  <md-list-item>
+    Closable
+    <md-check [switch]="true" [(value)]="closable" />
+  </md-list-item>
+  <md-list-item>
+    Pill
+    <md-check [switch]="true" [(value)]="pill" />
+  </md-list-item>
+
+  <md-card>
+    <md-chip [closable]="closable()" [disabled]="disabled()" [selected]="selected()" [pill]="pill()">
+      @if (leading() === 'icon') {
+      <md-icon slot="leading">Home</md-icon>
+      }
+      @if (leading() === 'avatar') {
+      <md-avatar slot="leading" />
+      }
+      Button
+      @if (trailing()) {
+      <md-icon slot="trailing">Home</md-icon>
+      }
+    </md-chip>
+  </md-card>
+</app-page>

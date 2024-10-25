@@ -1,0 +1,11 @@
+@use '../md';
+
+:host {
+  position: relative;
+
+  md-field::part(body) {
+    cursor: pointer;
+  }
+}
+
+@include md.disabled-component;

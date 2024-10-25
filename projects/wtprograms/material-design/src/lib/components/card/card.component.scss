@@ -1,0 +1,103 @@
+@use '../md';
+
+:host {
+  --__color: currentColor;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  isolation: isolate;
+  text-align: left;
+  align-items: flex-start;
+  border-radius: var(--md-sys-shape-medium);
+  @include md.motion('opacity, background-color, color, border-color');
+
+  @include md.reset-button {
+    display: inherit;
+    flex-direction: inherit;
+  }
+
+  md-elevation {
+    z-index: -1;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--__color);
+  }
+
+  .leading,
+  .body,
+  .trailing {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .body {
+    align-self: stretch;
+    display: inline-flex;
+    text-align: inherit;
+    align-items: flex-start;
+  }
+
+  .leading,
+  .trailing {
+    align-self: stretch;
+    border-radius: inherit;
+    display: none;
+    background-color: var(--md-sys-color-secondary-container);
+    text-align: inherit;
+    align-items: flex-start;
+  }
+
+  .progress {
+    border-radius: inherit;
+    position: absolute;
+    overflow: hidden;
+    position: absolute;
+    inset: 0;
+  }
+}
+
+:host([leading='true']) {
+  .leading {
+    display: inline-flex;
+  }
+}
+
+:host([trailing='true']) {
+  .trailing {
+    display: inline-flex;
+  }
+}
+
+:host([interactive='true']) {
+  cursor: pointer;
+}
+
+:host([variant='elevated']) {
+  background-color: var(--md-sys-color-surface-container-low);
+}
+:host([variant='elevated'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+
+:host([variant='filled']) {
+  background-color: var(--md-sys-color-surface-container-highest);
+}
+:host([variant='filled'][disabled='true']) {
+  background-color: #{md.disabled('background-color')};
+}
+
+:host([variant='outlined']) {
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+:host([variant='outlined'][disabled='true']) {
+  border-color: #{md.disabled('border-color')};
+}
+
+:host([busy='true']:not([disabled='true'])) {
+  pointer-events: none;
+}
+
+@include md.disabled-component {
+  color: #{md.disabled('color')};
+}
