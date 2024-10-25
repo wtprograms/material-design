@@ -36,6 +36,9 @@ jobs:
       with:
         version: ${{ steps.get_version.outputs.version }}
 
+    - name: Authenticate to npm
+      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
     - name: Publish
       if: success()
       run: pnpm publish --access public --no-git-checks
