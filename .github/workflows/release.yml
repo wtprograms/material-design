@@ -38,7 +38,7 @@ jobs:
 
     - name: Publish
       if: success()
-      run: pnpm publish --access public
+      run: pnpm publish --access public --no-git-checks
       working-directory: ./dist/wtprograms/material-design
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
