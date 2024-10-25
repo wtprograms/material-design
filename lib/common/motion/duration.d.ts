@@ -1,0 +1,20 @@
+export declare const DURATION: {
+    short1: number;
+    short2: number;
+    short3: number;
+    short4: number;
+    medium1: number;
+    medium2: number;
+    medium3: number;
+    medium4: number;
+    long1: number;
+    long2: number;
+    long3: number;
+    long4: number;
+    extraLong1: number;
+    extraLong2: number;
+    extraLong3: number;
+    extraLong4: number;
+};
+export type Duration = keyof typeof DURATION;
+export declare function durationToMilliseconds(duration?: Duration | number): number | undefined;

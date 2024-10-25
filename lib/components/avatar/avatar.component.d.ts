@@ -1,0 +1,30 @@
+import { ElementRef } from '@angular/core';
+import { MaterialDesignComponent } from '../material-design.component';
+import { FormSubmitterType } from '../../common/forms/form-submitted-type';
+import * as i0 from "@angular/core";
+import * as i1 from "../../directives/forward-focus.directive";
+import * as i2 from "../../directives/parent-activation.directive";
+export type AvatarPalette = 'surface' | 'primary' | 'secondary' | 'tertiary' | 'plain';
+export declare class AvatarComponent extends MaterialDesignComponent {
+    readonly disabled: import("@angular/core").ModelSignal<boolean>;
+    readonly type: import("@angular/core").ModelSignal<FormSubmitterType | undefined>;
+    readonly href: import("@angular/core").ModelSignal<string | undefined>;
+    readonly anchorTarget: import("@angular/core").ModelSignal<string | undefined>;
+    readonly name: import("@angular/core").ModelSignal<string | undefined>;
+    readonly value: import("@angular/core").ModelSignal<string | undefined>;
+    readonly progressIndeterminate: import("@angular/core").ModelSignal<boolean>;
+    readonly progressValue: import("@angular/core").ModelSignal<number>;
+    readonly progressMax: import("@angular/core").ModelSignal<number>;
+    readonly badgeDot: import("@angular/core").ModelSignal<boolean>;
+    readonly badgeNumber: import("@angular/core").ModelSignal<number | undefined>;
+    readonly src: import("@angular/core").ModelSignal<string | undefined>;
+    readonly palette: import("@angular/core").ModelSignal<AvatarPalette>;
+    readonly fullName: import("@angular/core").ModelSignal<string | undefined>;
+    readonly size: import("@angular/core").ModelSignal<number | undefined>;
+    readonly slot: import("@angular/core").ModelSignal<string | undefined>;
+    readonly button: import("@angular/core").Signal<ElementRef<HTMLButtonElement | HTMLAnchorElement> | undefined>;
+    readonly initial: import("@angular/core").Signal<string>;
+    constructor();
+    static ɵfac: i0.ɵɵFactoryDeclaration<AvatarComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AvatarComponent, "md-avatar", never, { "disabled": { "alias": "disabled"; "required": false; "isSignal": true; }; "type": { "alias": "type"; "required": false; "isSignal": true; }; "href": { "alias": "href"; "required": false; "isSignal": true; }; "anchorTarget": { "alias": "anchorTarget"; "required": false; "isSignal": true; }; "name": { "alias": "name"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "progressIndeterminate": { "alias": "progressIndeterminate"; "required": false; "isSignal": true; }; "progressValue": { "alias": "progressValue"; "required": false; "isSignal": true; }; "progressMax": { "alias": "progressMax"; "required": false; "isSignal": true; }; "badgeDot": { "alias": "badgeDot"; "required": false; "isSignal": true; }; "badgeNumber": { "alias": "badgeNumber"; "required": false; "isSignal": true; }; "src": { "alias": "src"; "required": false; "isSignal": true; }; "palette": { "alias": "palette"; "required": false; "isSignal": true; }; "fullName": { "alias": "fullName"; "required": false; "isSignal": true; }; "size": { "alias": "size"; "required": false; "isSignal": true; }; "slot": { "alias": "slot"; "required": false; "isSignal": true; }; }, { "disabled": "disabledChange"; "type": "typeChange"; "href": "hrefChange"; "anchorTarget": "anchorTargetChange"; "name": "nameChange"; "value": "valueChange"; "progressIndeterminate": "progressIndeterminateChange"; "progressValue": "progressValueChange"; "progressMax": "progressMaxChange"; "badgeDot": "badgeDotChange"; "badgeNumber": "badgeNumberChange"; "src": "srcChange"; "palette": "paletteChange"; "fullName": "fullNameChange"; "size": "sizeChange"; "slot": "slotChange"; }, never, never, true, [{ directive: typeof i1.ForwardFocusDirective; inputs: {}; outputs: {}; }, { directive: typeof i2.ParentActivationDirective; inputs: {}; outputs: {}; }]>;
+}

@@ -1,0 +1,43 @@
+import { MaterialDesignValueAccessorComponent } from '../material-design-value-accessor.component';
+import { FieldComponent, FieldVariant } from '../field/field.component';
+import { DialogComponent } from '../dialog/dialog.component';
+import { TimeSpan } from '../../common/time-span';
+import { OpenCloseState } from '../../common/rxjs/open-close';
+import * as i0 from "@angular/core";
+export type TimePickerVariant = 'embedded' | 'dropdown' | 'dialog';
+export declare class TimePickerComponent extends MaterialDesignValueAccessorComponent<string | undefined> {
+    readonly variant: import("@angular/core").ModelSignal<TimePickerVariant>;
+    readonly fieldVariant: import("@angular/core").ModelSignal<FieldVariant>;
+    readonly label: import("@angular/core").ModelSignal<string | undefined>;
+    readonly value: import("@angular/core").ModelSignal<string | undefined>;
+    readonly selectionValue: import("@angular/core").ModelSignal<string | undefined>;
+    readonly field: import("@angular/core").Signal<FieldComponent<string | undefined> | undefined>;
+    readonly dialog: import("@angular/core").Signal<DialogComponent | undefined>;
+    readonly hours: import("@angular/core").ModelSignal<boolean>;
+    readonly seconds: import("@angular/core").ModelSignal<boolean>;
+    readonly timeOfDay: import("@angular/core").ModelSignal<boolean>;
+    readonly locale: import("@angular/core").ModelSignal<string>;
+    readonly meridian: import("@angular/core").ModelSignal<string>;
+    readonly populated: import("@angular/core").Signal<boolean>;
+    get meridianLabels(): {
+        am: string;
+        pm: string;
+    };
+    get valueAsTimeSpan(): TimeSpan | undefined;
+    set valueAsTimeSpan(value: TimeSpan | undefined);
+    get selectedValueAsTimeSpan(): TimeSpan | undefined;
+    set selectedValueAsTimeSpan(value: TimeSpan | undefined);
+    readonly hoursInput: import("@angular/core").WritableSignal<number | undefined>;
+    readonly minutesInput: import("@angular/core").WritableSignal<number | undefined>;
+    readonly secondsInput: import("@angular/core").WritableSignal<number | undefined>;
+    readonly displayText: import("@angular/core").Signal<string>;
+    constructor();
+    clearClick(): void;
+    okayClick(): void;
+    cancelClick(): void;
+    bodyClick(): void;
+    popoverStateChange(state: OpenCloseState): void;
+    onBeforeInput(event: Event, part: 'hours' | 'minutes' | 'seconds'): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<TimePickerComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<TimePickerComponent, "md-time-picker", never, { "variant": { "alias": "variant"; "required": false; "isSignal": true; }; "fieldVariant": { "alias": "fieldVariant"; "required": false; "isSignal": true; }; "label": { "alias": "label"; "required": false; "isSignal": true; }; "value": { "alias": "value"; "required": false; "isSignal": true; }; "selectionValue": { "alias": "selectionValue"; "required": false; "isSignal": true; }; "hours": { "alias": "hours"; "required": false; "isSignal": true; }; "seconds": { "alias": "seconds"; "required": false; "isSignal": true; }; "timeOfDay": { "alias": "timeOfDay"; "required": false; "isSignal": true; }; "locale": { "alias": "locale"; "required": false; "isSignal": true; }; "meridian": { "alias": "meridian"; "required": false; "isSignal": true; }; }, { "variant": "variantChange"; "fieldVariant": "fieldVariantChange"; "label": "labelChange"; "value": "valueChange"; "selectionValue": "selectionValueChange"; "hours": "hoursChange"; "seconds": "secondsChange"; "timeOfDay": "timeOfDayChange"; "locale": "localeChange"; "meridian": "meridianChange"; }, never, never, true, never>;
+}

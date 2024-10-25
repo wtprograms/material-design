@@ -1,0 +1,31 @@
+import { MaterialDesignComponent } from '../material-design.component';
+import { AttachableDirective } from '../../directives/attachable.directive';
+import * as i0 from "@angular/core";
+import * as i1 from "../../directives/attachable.directive";
+export declare class RippleComponent extends MaterialDesignComponent {
+    readonly hoverable: import("@angular/core").ModelSignal<boolean>;
+    readonly interactive: import("@angular/core").ModelSignal<boolean>;
+    readonly attachableDirective: AttachableDirective;
+    readonly hovering: import("@angular/core").Signal<boolean | undefined>;
+    readonly activated: import("@angular/core").WritableSignal<boolean>;
+    private _rippleStartEvent?;
+    private _checkBoundsAfterContextMenu;
+    private _growAnimation?;
+    private _state;
+    private readonly _pointerUp$;
+    private readonly _pointerDown$;
+    private readonly _click$;
+    private readonly _pointerCancel$;
+    private readonly _contextMenu$;
+    constructor();
+    private determineRippleSize;
+    private getNormalizedPointerEventCoords;
+    private getTranslationCoordinates;
+    private startPressAnimation;
+    private endPressAnimation;
+    private shouldReactToEvent;
+    private inBounds;
+    private isTouch;
+    static ɵfac: i0.ɵɵFactoryDeclaration<RippleComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<RippleComponent, "md-ripple, [mdRipple]", never, { "hoverable": { "alias": "hoverable"; "required": false; "isSignal": true; }; "interactive": { "alias": "interactive"; "required": false; "isSignal": true; }; }, { "hoverable": "hoverableChange"; "interactive": "interactiveChange"; }, never, never, true, [{ directive: typeof i1.AttachableDirective; inputs: { "events": "events"; "for": "for"; "target": "target"; }; outputs: {}; }]>;
+}
