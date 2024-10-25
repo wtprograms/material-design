@@ -1,45 +1,5 @@
 @use '../md';
 
-$tokens: (
-  'background-color': transparent,
-  'border': 1px solid var(--md-sys-color-outline),
-  'color': var(--md-sys-color-surface-variant-on),
-  'disabled': (
-    'background-color': transparent,
-    'border': 1px solid md.disabled('border-color'),
-    'color': md.disabled('color'),
-  ),
-  'selected': (
-    'background-color': var(--md-sys-color-primary-container),
-    'border': 1px solid var(--md-sys-color-outline),
-    'color': var(--md-sys-color-primary-container-on),
-    'disabled': (
-      'background-color': md.disabled('background-color'),
-      'border': 1px solid md.disabled('border-color'),
-      'color': md.disabled('color'),
-    ),
-  ),
-);
-
-:host {
-  @include md.declare-component-tokens($tokens, 'chip');
-}
-
-:host([disabled]) {
-  @include md.set-properties(map-get($tokens, 'disabled'), 'chip-disabled');
-}
-
-:host([selected]) {
-  @include md.set-properties(map-get($tokens, 'selected'), 'chip-selected');
-}
-
-:host([selected][disabled]) {
-  @include md.set-properties(
-    map-get(map-get($tokens, 'selected'), 'disabled'),
-    'chip-selected-disabled'
-  );
-}
-
 :host {
   --_color: currentColor;
   position: relative;
