@@ -18,5 +18,5 @@ jobs:
       with:
         version: 6.7.0
         
-    - run: npm ci
-    - run: npm run build
+    - run: pnpm ci
+    - run: pnpm run build
