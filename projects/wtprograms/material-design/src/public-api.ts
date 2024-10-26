@@ -1,5 +1,6 @@
 /// <reference types="@angular/localize" />
 export * from './lib/common/assertions/assert-defined';
+export * from './lib/common/assertions/defined-value';
 export * from './lib/common/assertions/is-defined';
 export * from './lib/common/date-helpers/get-date-time-format-options';
 export * from './lib/common/date-helpers/get-meridian-values';

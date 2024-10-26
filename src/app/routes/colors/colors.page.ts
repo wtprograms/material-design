@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
 import { ColorEntryComponent } from '../../components/color-entry/color-entry.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+} from '@wtprograms/material-design';
+import { PageComponent } from '../../components/page/page.component';
 
 @Component({
   templateUrl: './colors.page.html',

@@ -1,16 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
   input,
   model,
-  ViewEncapsulation,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/material-design.component';
-import { MenuComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/menu/menu.component';
-import { MenuItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/menu-item/menu-item.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
-import { CommonModule } from '@angular/common';
+import {
+  MenuComponent,
+  MenuItemComponent,
+  ListItemComponent,
+  IconComponent,
+  MaterialDesignComponent,
+} from '@wtprograms/material-design';
 
 @Component({
   selector: 'app-selector-list-item',
@@ -19,7 +21,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [MenuComponent, MenuItemComponent, ListItemComponent, IconComponent, CommonModule],
+  imports: [
+    MenuComponent,
+    MenuItemComponent,
+    ListItemComponent,
+    IconComponent,
+    CommonModule,
+  ],
   hostDirectives: [],
   host: {
     slot: 'toggler',

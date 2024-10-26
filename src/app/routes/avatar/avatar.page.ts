@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { options } from '../../common/options';
+import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 import {
   AvatarComponent,
+  CheckComponent,
+  CardComponent,
+  ListItemComponent,
   AvatarPalette,
-} from '../../../../projects/wtprograms/material-design/src/lib/components/avatar/avatar.component';
+} from '@wtprograms/material-design';
 import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
-import { options } from '../../common/options';
 
 @Component({
   templateUrl: './avatar.page.html',

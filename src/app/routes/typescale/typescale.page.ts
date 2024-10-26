@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
-  Typescale,
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
   TypescaleComponent,
+  Typescale,
   TypescaleSize,
-} from '../../../../projects/wtprograms/material-design/src/lib/components/typescale/typescale.component';
+} from '@wtprograms/material-design';
 import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({

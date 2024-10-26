@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import {
-  ButtonComponent,
-  ButtonVariant,
-} from '../../../../projects/wtprograms/material-design/src/lib/components/button/button.component';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
-import { options } from '../../common/options';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  ButtonComponent,
+  IconComponent,
+  ButtonVariant,
+} from '@wtprograms/material-design';
+import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 
 @Component({
   templateUrl: './button.page.html',

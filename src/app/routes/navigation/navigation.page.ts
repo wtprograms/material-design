@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import {
-  NavigationComponent,
-  NavigationLayout,
-} from '../../../../projects/wtprograms/material-design/src/lib/components/navigation/navigation.component';
-import { NavigationItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/navigation-item/navigation-item.component';
-import { options } from '../../common/options';
 import { CommonModule } from '@angular/common';
-import { NavigationHeadlineComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/navigation-headline/navigation-headline.component';
-import { DividerComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/divider/divider.component';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  NavigationComponent,
+  NavigationItemComponent,
+  NavigationHeadlineComponent,
+  DividerComponent,
+  NavigationLayout,
+} from '@wtprograms/material-design';
+import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({

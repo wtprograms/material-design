@@ -1,15 +1,17 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
-import { TimePickerComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/time-picker/time-picker.component';
-import { DatePickerVariant } from '../../../../projects/wtprograms/material-design/src/lib/components/date-picker/date-picker.component';
-import { FieldVariant } from '../../../../projects/wtprograms/material-design/src/lib/components/field/field.component';
-import { options } from '../../common/options';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
 import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  TimePickerComponent,
+  IconComponent,
+  DatePickerVariant,
+  FieldVariant,
+} from '@wtprograms/material-design';
+import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
+import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
   templateUrl: './time-picker.page.html',
@@ -23,7 +25,7 @@ import { CommonModule } from '@angular/common';
     SelectorListItemComponent,
     TimePickerComponent,
     IconComponent,
-    CommonModule
+    CommonModule,
   ],
   host: {
     class: 'tw w-full',

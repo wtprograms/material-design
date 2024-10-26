@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
-import { DatePickerComponent, DatePickerVariant } from '../../../../projects/wtprograms/material-design/src/lib/components/date-picker/date-picker.component';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  DatePickerComponent,
+  IconComponent,
+  DatePickerVariant,
+  FieldVariant,
+} from '@wtprograms/material-design';
 import { options } from '../../common/options';
-import { FieldVariant } from '../../../../projects/wtprograms/material-design/src/lib/components/field/field.component';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
+import { PageComponent } from '../../components/page/page.component';
+import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
   templateUrl: './date-picker.page.html',
@@ -22,14 +25,18 @@ import { IconComponent } from '../../../../projects/wtprograms/material-design/s
     SelectorListItemComponent,
     DatePickerComponent,
     CommonModule,
-    IconComponent
+    IconComponent,
   ],
   host: {
     class: 'tw w-full',
   },
 })
 export default class Page {
-  readonly variant = options<DatePickerVariant>('dropdown', 'dialog', 'embedded');
+  readonly variant = options<DatePickerVariant>(
+    'dropdown',
+    'dialog',
+    'embedded'
+  );
   readonly fieldVariant = options<FieldVariant>('filled', 'outlined');
   readonly prefix = signal(false);
   readonly suffix = signal(false);

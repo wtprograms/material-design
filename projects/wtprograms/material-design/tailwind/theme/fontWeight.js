@@ -1,8 +1,8 @@
 module.exports = {
-  bold: 'var(--md-ref-font-weight-bold)',
-  medium: 'var(--md-ref-font-weight-medium)',
-  regular: 'var(--md-ref-font-weight-regular)',
-  light: 'var(--md-ref-font-weight-light)',
+  bold: 'var(--md-ref-typeface-weight-bold)',
+  medium: 'var(--md-ref-typeface-weight-medium)',
+  regular: 'var(--md-ref-typeface-weight-regular)',
+  light: 'var(--md-ref-typeface-weight-light)',
   'display-large': 'var(--md-sys-typescale-display-large-weight)',
   'display-medium': 'var(--md-sys-typescale-display-medium-weight)',
   'display-small': 'var(--md-sys-typescale-display-small-weight)',

@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
-import { AvatarComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/avatar/avatar.component';
-import { options } from '../../common/options';
-import { ListComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list/list.component';
 import { CommonModule } from '@angular/common';
-import { DividerComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/divider/divider.component';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  IconComponent,
+  AvatarComponent,
+  ListComponent,
+  DividerComponent,
+} from '@wtprograms/material-design';
+import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
@@ -26,7 +28,7 @@ import { SelectorListItemComponent } from '../../components/selector-list-item/s
     ListComponent,
     CommonModule,
     DividerComponent,
-    SelectorListItemComponent
+    SelectorListItemComponent,
   ],
   host: {
     class: 'tw w-full',

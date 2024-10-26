@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { SegmentedButtonComponent, SegmentedButtonType } from '../../../../projects/wtprograms/material-design/src/lib/components/segmented-button/segmented-button.component';
-import { IconComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/icon/icon.component';
-import { SegmentedButtonSetComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/segmented-button-set/segmented-button-set.component';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
+  SegmentedButtonComponent,
+  SegmentedButtonSetComponent,
+  IconComponent,
+  SegmentedButtonType,
+} from '@wtprograms/material-design';
 import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
@@ -35,10 +38,6 @@ export default class Page {
   readonly checkOnSelected = signal(false);
   readonly number = options<number | undefined>(undefined, 1, 12, 123, 1234);
   readonly dot = signal(false);
-  readonly buttons = options(
-    [1],
-    [2, 2],
-    [3, 3, 3]
-  );
+  readonly buttons = options([1], [2, 2], [3, 3, 3]);
   readonly type = options<SegmentedButtonType>('button', 'checkbox', 'radio');
 }

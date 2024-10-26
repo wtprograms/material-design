@@ -14,16 +14,21 @@ import {
 import { SlotDirective } from '../directives/slot.directive';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, merge, switchMap } from 'rxjs';
+import { v4 } from 'uuid';
 
 const ELEMENT_MAP = new WeakMap<HTMLElement, MaterialDesignComponent>();
 
 @Component({
   template: '',
+  host: {
+    '[attr.host-id]': 'id'
+  }
 })
 export abstract class MaterialDesignComponent<
   T extends HTMLElement = HTMLElement
 > implements OnInit, OnDestroy
 {
+  readonly id = v4();
   readonly slots = viewChildren(SlotDirective);
 
   readonly platformId = inject(PLATFORM_ID);

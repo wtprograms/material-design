@@ -6,13 +6,15 @@ import {
   inject,
   model,
 } from '@angular/core';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list/list.component';
-import { MaterialDesignComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/material-design.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
 import { ActivatedRoute } from '@angular/router';
-import { DividerComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/divider/divider.component';
-import { SlotDirective } from '../../../../projects/wtprograms/material-design/src/lib/directives/slot.directive';
+import {
+  CardComponent,
+  ListComponent,
+  SlotDirective,
+  DividerComponent,
+  MaterialDesignComponent,
+  ListItemComponent,
+} from '@wtprograms/material-design';
 
 @Component({
   selector: 'app-page',
@@ -21,12 +23,7 @@ import { SlotDirective } from '../../../../projects/wtprograms/material-design/s
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [
-    CardComponent,
-    ListComponent,
-    SlotDirective,
-    DividerComponent,
-  ],
+  imports: [CardComponent, ListComponent, SlotDirective, DividerComponent],
   host: {
     '[attr.toggler]': 'togglerSlot()?.any() || null',
   },
@@ -34,7 +31,7 @@ import { SlotDirective } from '../../../../projects/wtprograms/material-design/s
 export class PageComponent extends MaterialDesignComponent {
   readonly autoSlot = model(true);
   readonly _activatedRoute = inject(ActivatedRoute);
-  
+
   readonly togglerSlot = this.slotDirective('toggler');
 
   readonly title = this._activatedRoute.snapshot.title;

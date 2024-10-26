@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PageComponent } from '../../components/page/page.component';
-import { CardComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/card/card.component';
-import { ListItemComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/list-item/list-item.component';
-import { CheckComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/check/check.component';
-import { options } from '../../common/options';
-import { ButtonComponent } from '../../../../projects/wtprograms/material-design/src/lib/components/button/button.component';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Placement } from '@floating-ui/dom';
 import {
+  ListItemComponent,
+  CardComponent,
+  CheckComponent,
   TooltipComponent,
+  ButtonComponent,
   TooltipVariant,
-} from '../../../../projects/wtprograms/material-design/src/lib/components/tooltip/tooltip.component';
+} from '@wtprograms/material-design';
+import { options } from '../../common/options';
+import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
