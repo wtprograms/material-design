@@ -1,21 +1,23 @@
 <md-field [variant]="variant()" [populated]="!!populated()" [errorText]="errorText()" [label]="label()"
-  (contentClick)="onContentClick()" [disabled]="disabled()" popoverTrigger="manual" [maxPopoverHeight]="300">
+  (contentClick)="onContentClick()" [disabled]="disabled()" popoverTrigger="manual" [maxPopoverHeight]="300" [hasFooter]="hasFooter()">
   <slot name="leading" slot="leading"></slot>
 
   <slot name="prefix" slot="prefix"></slot>
   <slot name="suffix" slot="suffix"></slot>
   <slot name="supporting-text" slot="supporting-text"></slot>
 
-  @if (counterText()) {
+  @if (counterText() && counter()) {
   <span slot="counter">{{ counterText() }}</span>
   }
 
   @if (type() === 'text-area') {
-  <textarea #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" rows="1" (input)="onInput($event)"
-    [disabled]="disabled()"></textarea>
+  <textarea #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" rows="1"
+    (input)="onInput($event)" [disabled]="disabled()" [maxlength]="maxLength() ?? null"
+    [minLength]="minLength() ?? null" (beforeinput)="onBeforeInput($event)"></textarea>
   } @else {
-  <input #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" [type]="type()" [disabled]="disabled()"
-    (input)="onInput($event)">
+  <input #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" [type]="type()"
+    [disabled]="disabled()" (input)="onInput($event)" [maxlength]="maxLength() ?? null"
+    [minLength]="minLength() ?? null" [min]="min() ?? null" [max]="max() ?? null" (beforeinput)="onBeforeInput($event)">
   }
   <slot name="trailing" slot="trailing"></slot>
   @if (hasDropdown()) {

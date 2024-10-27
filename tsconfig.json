@@ -5,7 +5,8 @@
   "compilerOptions": {
     "paths": {
       "@wtprograms/material-design": [
-        "./dist/wtprograms/material-design"
+        "./dist/wtprograms/material-design",
+        "./projects/wtprograms/material-design/src/public-api.ts"
       ]
     },
     "outDir": "./dist/out-tsc",

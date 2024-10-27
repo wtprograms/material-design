@@ -45,6 +45,14 @@
     Items
     <md-check [switch]="true" [(value)]="items" />
   </md-list-item>
+  <md-list-item>
+    Min 5
+    <md-check [switch]="true" [(value)]="min" />
+  </md-list-item>
+  <md-list-item>
+    Max 30
+    <md-check [switch]="true" [(value)]="max" />
+  </md-list-item>
 
   <ng-template #contents>
     @if (prefix()) {
@@ -74,7 +82,7 @@
   <md-card class="w-[400px] [&::part(body)]:items-stretch [&::part(body)]:gap-4">
     <md-text-field #field [variant]="variant()" [disabled]="disabled()" [label]="label() ? 'Label' : undefined"
       [errorText]="error() ? 'Error' : undefined" [type]="type()" [maxLength]="maxLength() ? 10 : undefined"
-      [hasDropdown]="items()">
+      [hasDropdown]="items()" [min]="min() ? 5 : undefined" [max]="max() ? 30 : undefined">
       <ng-container *ngTemplateOutlet="contents" />
     </md-text-field>
   </md-card>

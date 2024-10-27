@@ -1,7 +1,9 @@
 @use '../md';
 
 :host {
-  @include md.reset-input;
+  @include md.reset-input {
+    flex-grow: 1;
+  }
 
   md-field::part(content) {
     cursor: text;

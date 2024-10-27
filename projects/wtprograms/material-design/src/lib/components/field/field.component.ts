@@ -66,6 +66,7 @@ export class FieldComponent<TValue>
   readonly popoverTrigger = model<PopoverTrigger>('click');
   readonly maxPopoverHeight = model<number>();
   readonly popoverStateChange = output<OpenCloseState>();
+  readonly hasFooter = model(true);
 
   readonly leadingSlot = this.slotDirective('leading');
   readonly popoverSlot = this.slotDirective('popover');

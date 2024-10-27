@@ -21,6 +21,7 @@ import { ListItemComponent } from '../list-item/list-item.component';
 import { SlotDirective } from '../../directives/slot.directive';
 import { CommonModule } from '@angular/common';
 import { MaterialDesignComponent } from '../material-design.component';
+import { redispatchEvent } from '../../common/events/redispatch-event';
 
 export type TextFieldType =
   | 'text'
@@ -47,7 +48,6 @@ export type TextFieldType =
   ],
   host: {
     '[attr.disabled]': 'disabled() || null',
-    tabindex: '0',
   },
   hostDirectives: [ForwardFocusDirective],
   providers: [
@@ -66,8 +66,13 @@ export class TextFieldComponent extends MaterialDesignValueAccessorComponent<str
   readonly suffix = model<string>();
   readonly label = model<string>();
   readonly supportingText = model<string>();
+  readonly minLength = model<number>();
   readonly maxLength = model<number>();
+  readonly min = model<number>();
+  readonly max = model<number>();
   readonly hasDropdown = model(false);
+  readonly counter = model(false);
+  readonly hasFooter = model(true);
 
   @Input()
   selectedItemToTextFn = (value?: string) => value;
@@ -83,25 +88,26 @@ export class TextFieldComponent extends MaterialDesignValueAccessorComponent<str
       : undefined
   );
 
-  readonly populated = toSignal(
-    combineLatest({
-      focused: merge(
-        toObservable(this._input).pipe(
-          filter((x) => !!x?.nativeElement),
-          switchMap((x) =>
-            fromEvent(x!.nativeElement, 'focus').pipe(map(() => true))
-          )
-        ),
-        toObservable(this._input).pipe(
-          filter((x) => !!x?.nativeElement),
-          switchMap((x) =>
-            fromEvent(x!.nativeElement, 'blur').pipe(map(() => false))
-          )
+  readonly focused = toSignal(
+    merge(
+      toObservable(this._input).pipe(
+        filter((x) => !!x?.nativeElement),
+        switchMap((x) =>
+          fromEvent(x!.nativeElement, 'focus').pipe(map(() => true))
         )
       ),
-      hasValue: toObservable(this.value).pipe(map((x) => !!x)),
-    }).pipe(map((x) => x.focused || x.hasValue))
+      toObservable(this._input).pipe(
+        filter((x) => !!x?.nativeElement),
+        switchMap((x) =>
+          fromEvent(x!.nativeElement, 'blur').pipe(map(() => false))
+        )
+      )
+    )
   );
+
+  readonly populated = computed(() => {
+    return this.focused() || !!this.value();
+  });
 
   constructor() {
     super();
@@ -127,10 +133,43 @@ export class TextFieldComponent extends MaterialDesignValueAccessorComponent<str
         this._field()!.popover()!.open.set(true);
       }
     }
+    redispatchEvent(this.hostElement, event);
   }
 
   onItemClick(event: Event) {
     const item = MaterialDesignComponent.get<ListItemComponent>(event.target);
     this.value.set(this.selectedItemToTextFn(item!.value()));
+  }
+
+  onBeforeInput(event: Event) {
+    redispatchEvent(this.hostElement, event);
+    if (this.type() !== 'number') {
+      return;
+    }
+
+    const inputEvent = event as InputEvent;
+    if (inputEvent.inputType === 'insertText') {
+      let textValue =
+        (this._input()?.nativeElement.value ?? '') + (inputEvent.data ?? '0');
+      let numberValue = parseInt(textValue);
+      if (isNaN(numberValue)) {
+        numberValue = 0;
+      }
+
+      if (this.min()) {
+        event.preventDefault();
+        numberValue = Math.max(numberValue, this.min()!);
+      }
+      if (this.max()) {
+        event.preventDefault();
+        numberValue = Math.min(numberValue, this.max()!);
+      }
+
+      this.value.set(numberValue.toString());
+    }
+  }
+
+  focus() {
+    this._input()?.nativeElement.focus();
   }
 }

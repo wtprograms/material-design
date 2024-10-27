@@ -48,6 +48,7 @@ export * from './lib/components/menu-item/menu-item.component';
 export * from './lib/components/navigation/navigation.component';
 export * from './lib/components/navigation-headline/navigation-headline.component';
 export * from './lib/components/navigation-item/navigation-item.component';
+export * from './lib/components/pin-field/pin-field.component';
 export * from './lib/components/popover/popover.component';
 export * from './lib/components/progress-indicator/progress-indicator.component';
 export * from './lib/components/ripple/ripple.component';

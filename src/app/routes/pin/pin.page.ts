@@ -8,13 +8,15 @@ import {
   IconComponent,
   FieldVariant,
   TextFieldType,
+  PinFieldComponent,
+  ButtonComponent,
 } from '@wtprograms/material-design';
 import { options } from '../../common/options';
 import { PageComponent } from '../../components/page/page.component';
 import { SelectorListItemComponent } from '../../components/selector-list-item/selector-list-item.component';
 
 @Component({
-  templateUrl: './text-field.page.html',
+  templateUrl: './pin.page.html',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -22,10 +24,11 @@ import { SelectorListItemComponent } from '../../components/selector-list-item/s
     ListItemComponent,
     CardComponent,
     CheckComponent,
-    TextFieldComponent,
+    PinFieldComponent,
     IconComponent,
     CommonModule,
     SelectorListItemComponent,
+    ButtonComponent
   ],
   host: {
     class: 'tw w-full',
@@ -33,38 +36,8 @@ import { SelectorListItemComponent } from '../../components/selector-list-item/s
 })
 export default class Page {
   readonly variant = options<FieldVariant>('filled', 'outlined');
-  readonly type = options<TextFieldType>(
-    'text',
-    'text-area',
-    'email',
-    'number',
-    'password',
-    'tel',
-    'url'
-  );
-  readonly prefix = signal(false);
-  readonly suffix = signal(false);
-  readonly leading = signal(false);
-  readonly trailing = signal(false);
-  readonly label = signal(false);
   readonly error = signal(false);
   readonly disabled = signal(false);
   readonly supportingText = signal(false);
-  readonly maxLength = signal(false);
-  readonly items = signal(false);
-  readonly min = signal(false);
-  readonly max = signal(false);
-
-  readonly itemValues = [
-    'One',
-    'Two',
-    'Three',
-    'Four',
-    'Five',
-    'Six',
-    'Seven',
-    'Eight',
-    'Nine',
-    'Ten',
-  ];
+  readonly length = options(3, 4, 5, 6);
 }

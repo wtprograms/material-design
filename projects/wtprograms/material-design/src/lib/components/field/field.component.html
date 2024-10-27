@@ -36,6 +36,7 @@
   </span>
 
 </div>
+@if (hasFooter()) {
 <div class="footer">
   @if (errorText()) {
   <span>{{ errorText()}}</span>
@@ -47,6 +48,7 @@
     <slot name="counter"></slot>
   </span>
 </div>
+}
 
 <md-popover #popover [target]="body" [offset]="4" [trigger]="popoverTrigger()" [useContainerWidth]="true"
   [(open)]="open" [style.maxHeight.px]="maxPopoverHeight()" (stateChange)="popoverStateChange.emit($event)">

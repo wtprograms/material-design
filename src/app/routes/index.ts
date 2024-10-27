@@ -112,6 +112,11 @@ export default [
     loadComponent: () => import('./navigation/navigation.page'),
   },
   {
+    path: 'pin',
+    title: 'Pin',
+    loadComponent: () => import('./pin/pin.page'),
+  },
+  {
     path: 'popover',
     title: 'Popover',
     loadComponent: () => import('./popover/popover.page'),
