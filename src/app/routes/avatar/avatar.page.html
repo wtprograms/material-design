@@ -13,11 +13,15 @@
     Interactive
     <md-check [switch]="true" [(value)]="interactive" />
   </md-list-item>
+  <md-list-item>
+    Progress
+    <md-check [switch]="true" [(value)]="progressIndeterminate" />
+  </md-list-item>
 
   <md-card class="[&::part(body)]:flex-row [&::part(body)]:gap-2">
     <md-avatar [palette]="palette()" [size]="size()" [disabled]="disabled()" [interactive]="interactive()"
-      fullName="Willem Toerien" />
+      fullName="Willem Toerien" [progressIndeterminate]="progressIndeterminate()" />
     <md-avatar [palette]="palette()" [size]="size()" [disabled]="disabled()" [interactive]="interactive()"
-      fullName="Willem Toerien" src="avatar.jpg" />
+      fullName="Willem Toerien" src="avatar.jpg" [progressIndeterminate]="progressIndeterminate()" />
   </md-card>
 </app-page>

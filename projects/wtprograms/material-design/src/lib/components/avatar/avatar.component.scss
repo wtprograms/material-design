@@ -40,6 +40,7 @@ $tokens: (
   md-progress-indicator {
     --md-comp-progress-indicator-color: var(--_color);
     --md-comp-progress-indicator-size: calc(var(--md-comp-avatar-size) * 0.6);
+    --md-comp-progress-indicator-width: 8;
     position: absolute;
     display: inline-flex;
     align-self: center;
