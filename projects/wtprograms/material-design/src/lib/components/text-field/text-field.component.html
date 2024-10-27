@@ -11,10 +11,10 @@
   }
 
   @if (type() === 'text-area') {
-  <textarea #input [ngModel]="value()" (ngModelChange)="value.set($event)" rows="1" (input)="onInput($event)"
+  <textarea #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" rows="1" (input)="onInput($event)"
     [disabled]="disabled()"></textarea>
   } @else {
-  <input #input [ngModel]="value()" (ngModelChange)="value.set($event)" [type]="type()" [disabled]="disabled()"
+  <input #input part="input" [ngModel]="value()" (ngModelChange)="value.set($event)" [type]="type()" [disabled]="disabled()"
     (input)="onInput($event)">
   }
   <slot name="trailing" slot="trailing"></slot>
