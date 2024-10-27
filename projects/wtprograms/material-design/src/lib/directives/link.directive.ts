@@ -9,8 +9,8 @@ import {
   effect,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { MaterialDesignComponent } from '@wtprograms/material-design';
 import { Subscription, filter, startWith, map, tap } from 'rxjs';
+import { MaterialDesignComponent } from '../components/material-design.component';
 
 @Directive({
   selector: '[mdLink]',
