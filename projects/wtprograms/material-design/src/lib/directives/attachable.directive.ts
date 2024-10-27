@@ -72,6 +72,8 @@ export class AttachableDirective implements OnDestroy {
           this._subscription.add(observable.subscribe());
         }
       }
+    }, {
+      allowSignalWrites: true
     });
   }
 
