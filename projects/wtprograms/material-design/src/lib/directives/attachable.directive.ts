@@ -62,6 +62,7 @@ export class AttachableDirective {
   readonly event = outputFromObservable(this._event$);
 
   constructor() {
+    // toSignal throws Writing to signals is not allowed in niche cases. :(
     combineLatest({
       target: this.targetElement$,
       events: toObservable(this.events),
