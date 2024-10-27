@@ -14,7 +14,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TextFieldComponent } from '../text-field/text-field.component';
 import { MaterialDesignValueAccessorComponent } from '../material-design-value-accessor.component';
 import { FieldVariant } from '../field/field.component';
-import { SlotDirective } from '@wtprograms/material-design';
+import { SlotDirective } from '../../directives/slot.directive';
 
 @Component({
   selector: 'md-pin-field',
