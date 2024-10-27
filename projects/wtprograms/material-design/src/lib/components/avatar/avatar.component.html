@@ -11,7 +11,7 @@
   }
 </ng-template>
 
-@if (this.type() || this.href()) {
+@if (this.interactive()) {
 <md-focus-ring part="focus-ring" [target]="button()" />
 <md-ripple part="ripple" [target]="button()" />
 @if (href()) {
@@ -20,7 +20,7 @@
   <ng-container *ngTemplateOutlet="content" class="content" />
 </a>
 } @else {
-<button part="button" #button [type]="type()" [disabled]="disabled()" [attr.name]="name() ?? null"
+<button part="button" #button type="button" [disabled]="disabled()" [attr.name]="name() ?? null"
   [attr.value]="value() ?? null">
   <ng-container *ngTemplateOutlet="content" />
 </button>

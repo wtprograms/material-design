@@ -46,7 +46,6 @@ export class PageComponent extends MaterialDesignComponent {
         const items = this.defaultSlot()?.componentsOf(ListItemComponent) ?? [];
         for (const item of items) {
           item.hostElement.slot = 'toggler';
-          item.type.set('button');
         }
       },
       {

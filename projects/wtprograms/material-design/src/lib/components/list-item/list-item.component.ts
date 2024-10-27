@@ -11,7 +11,6 @@ import {
   HostListener,
 } from '@angular/core';
 import { dispatchActivationClick } from '../../common/events/dispatch-activation-click';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
 import { ElevationComponent } from '../elevation/elevation.component';
 import { RippleComponent } from '../ripple/ripple.component';
@@ -55,7 +54,7 @@ import { IconComponent } from '../icon/icon.component';
     '[attr.disabled]': 'disabled() || null',
     '[attr.split]': 'split()',
     '[attr.busy]': 'progressIndeterminate() || !!progressValue() || null',
-    '[attr.interactive]': 'interactive() || null',
+    '[attr.interactive]': 'interactive() ?? null',
   },
 })
 export class ListItemComponent extends MaterialDesignComponent {
@@ -65,7 +64,6 @@ export class ListItemComponent extends MaterialDesignComponent {
   readonly selected = model(false);
   readonly split = model(false);
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType | undefined>(undefined);
   readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();
@@ -74,6 +72,7 @@ export class ListItemComponent extends MaterialDesignComponent {
   readonly progressValue = model(0);
   readonly progressMax = model(0);
   readonly progressBuffer = model(0);
+  readonly interactive = model(true);
 
   readonly leadingSlot = this.slotDirective('leading');
   readonly trailingSlot = this.slotDirective('trailing');
@@ -85,10 +84,6 @@ export class ListItemComponent extends MaterialDesignComponent {
   private readonly _dropdownField = inject(DropdownComponent, {
     optional: true,
   });
-
-  readonly interactive = computed(
-    () => !!this.type() || !!this.href() || !!this._dropdownField
-  );
 
   constructor() {
     super();
@@ -107,7 +102,7 @@ export class ListItemComponent extends MaterialDesignComponent {
     this.hostElement.dispatchEvent(
       new Event('close-popover', { bubbles: true })
     );
-    if (this.split() || (!this.type() && !this.href())) {
+    if (this.split() || !this.interactive) {
       return;
     }
     const allSlottedComponents = [

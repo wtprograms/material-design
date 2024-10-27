@@ -27,7 +27,7 @@
     <ng-container *ngTemplateOutlet="content" />
   </a>
   } @else {
-  <button part="button" #button [type]="type()" [disabled]="disabled() || null" [attr.name]="name() ?? null"
+  <button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
     [attr.value]="value() ?? null">
     <md-touch-area />
     <ng-container *ngTemplateOutlet="content" />

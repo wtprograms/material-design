@@ -9,7 +9,6 @@ import {
   inject,
   computed,
 } from '@angular/core';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { BadgeComponent } from '../badge/badge.component';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { IconComponent } from '../icon/icon.component';
@@ -52,7 +51,6 @@ export class NavigationItemComponent extends MaterialDesignComponent {
   readonly custom = model(false);
   readonly layout = model<NavigationLayout>('bar');
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType>('button');
   readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();

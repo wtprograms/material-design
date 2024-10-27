@@ -113,7 +113,6 @@ export class TextFieldComponent extends MaterialDesignValueAccessorComponent<str
     super();
     attachTarget(ForwardFocusDirective, this._input);
     this.setSlots(ListItemComponent, (x) => {
-      x.type.set('button');
       x.selected.set(x.value() === this.value());
     });
   }

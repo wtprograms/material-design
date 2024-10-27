@@ -24,7 +24,7 @@
   </md-list-item>
 
   <md-card [variant]="variant()" [disabled]="disabled()" [progressIndeterminate]="progressIndeterminate()"
-    [type]="interactive() ? 'button' : undefined">
+    [interactive]="interactive()">
     @if (leading()) {
     <div slot="leading">
       Leading

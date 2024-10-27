@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   ElementRef,
+  HostListener,
   model,
   viewChild,
   ViewEncapsulation,
@@ -87,5 +88,15 @@ export class ButtonComponent extends MaterialDesignComponent {
     super();
     attachTarget(ForwardFocusDirective, this.button);
     attachTarget(ParentActivationDirective, this.button);
+  }
+
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent) {
+    const button = this.button()?.nativeElement;
+    if (!(button instanceof HTMLButtonElement) || this.href()) {
+      return;
+    }
+
+    this.hostElement.closest('form')?.requestSubmit();
   }
 }

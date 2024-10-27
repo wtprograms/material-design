@@ -6,6 +6,7 @@ import {
   model,
   viewChild,
   ElementRef,
+  HostListener,
 } from '@angular/core';
 import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { attachTarget } from '../../directives/attachable.directive';
@@ -64,5 +65,15 @@ export class IconButtonComponent extends MaterialDesignComponent {
   constructor() {
     super();
     attachTarget(ForwardFocusDirective, this.button);
+  }
+
+  @HostListener('click')
+  onClick() {
+    const button = this.button()?.nativeElement;
+    if (!(button instanceof HTMLButtonElement) || this.href()) {
+      return;
+    }
+
+    this.hostElement.closest('form')?.requestSubmit();
   }
 }

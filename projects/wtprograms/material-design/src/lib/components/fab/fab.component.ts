@@ -9,7 +9,6 @@ import {
   computed,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { openClose } from '../../common/rxjs/open-close';
 import { AnimationDirective } from '../../directives/animation/animation.directive';
 import { attachTarget } from '../../directives/attachable.directive';
@@ -67,7 +66,6 @@ export class FabComponent extends MaterialDesignComponent {
   readonly size = model<FabSize>('medium');
   readonly lowered = model(false);
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType>('button');
   readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();

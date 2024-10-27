@@ -9,7 +9,6 @@ import {
   computed,
   HostListener,
 } from '@angular/core';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { textDirection } from '../../common/rxjs/text-direction';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { IconComponent } from '../icon/icon.component';
@@ -47,7 +46,6 @@ import { SlotDirective } from '../../directives/slot.directive';
 export class MenuItemComponent extends MaterialDesignComponent {
   readonly checkOnSelected = model(false);
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType>('button');
   readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();

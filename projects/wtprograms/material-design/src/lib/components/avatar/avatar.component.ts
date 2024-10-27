@@ -13,7 +13,6 @@ import { ForwardFocusDirective } from '../../directives/forward-focus.directive'
 import { CommonModule } from '@angular/common';
 import { TouchAreaComponent } from '../touch-area/touch-area.component';
 import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { BadgeComponent } from '../badge/badge.component';
 import { ProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
 import { attachTarget } from '../../directives/attachable.directive';
@@ -45,7 +44,7 @@ export type AvatarPalette =
   hostDirectives: [ForwardFocusDirective, ParentActivationDirective],
   host: {
     '[attr.palette]': 'palette()',
-    '[attr.interactive]': '!!type() || !!href() || null',
+    '[attr.interactive]': 'interactive() ?? null',
     '[style.--md-comp-avatar-size]': 'size() ?? null',
     '[attr.disabled]': 'disabled() || null',
     '[attr.busy]': 'progressIndeterminate() || !!progressValue() || null',
@@ -53,7 +52,6 @@ export type AvatarPalette =
 })
 export class AvatarComponent extends MaterialDesignComponent {
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType | undefined>(undefined);
   readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();
@@ -68,6 +66,7 @@ export class AvatarComponent extends MaterialDesignComponent {
   readonly fullName = model<string>();
   readonly size = model<number>();
   readonly slot = model<string>();
+  readonly interactive = model(false);
 
   readonly button =
     viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');

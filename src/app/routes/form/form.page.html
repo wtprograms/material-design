@@ -1,13 +1,14 @@
 <app-page>
   <md-card class="self-start">
-    <form [formGroup]="form" class="inline-flex flex-col gap-4">
+    <form [formGroup]="form" class="inline-flex flex-col gap-4" (ngSubmit)="setValue()">
       <md-text-field formControlName="text1" />
       <md-text-field formControlName="text2" />
       <md-pin-field formControlName="pin" />
       <md-check formControlName="checkbox" />
       <md-check type="radio" formControlName="radio" radioValue="one" />
       <md-check type="radio" formControlName="radio" radioValue="two" />
+      <md-button type="submit" (click)="click()">Submit</md-button>
     </form>
   </md-card>
-  {{ form.value | json }}
-</app-page> 
+  {{ value() | json }}
+</app-page>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  ButtonComponent,
   CardComponent,
   CheckComponent,
   DatePickerComponent,
@@ -33,7 +34,8 @@ import { PageComponent } from '../../components/page/page.component';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    CardComponent
+    CardComponent,
+    ButtonComponent
   ],
   host: {
     class: 'tw w-full',
@@ -53,4 +55,15 @@ export default class Page {
     checkbox: new FormControl(false),
     radio: new FormControl()
   });
+
+  readonly value = signal<any>(undefined);
+
+  setValue() {
+    console.log('hey')
+    this.value.set(this.form.value);
+  }
+
+  click() {
+    console.log('click');
+  }
 }

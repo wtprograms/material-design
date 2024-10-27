@@ -40,7 +40,7 @@
 
   <ng-template #item>
     <md-list-item [selected]="selected()" [disabled]="disabled()" [progressIndeterminate]="progressIndeterminate()"
-      [top]="top()" [large]="large()" [split]="split()" [type]="interactive() ? 'button' : undefined">
+      [top]="top()" [large]="large()" [split]="split()" [interactive]="interactive()">
       Headline
       @switch (supportingText()) {
       @case ('short') {
