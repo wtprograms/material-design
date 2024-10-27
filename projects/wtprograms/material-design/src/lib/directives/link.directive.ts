@@ -9,8 +9,8 @@ import {
   effect,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { MaterialDesignComponent } from '@wtprograms/material-design';
 import { Subscription, filter, startWith, map, tap } from 'rxjs';
-import { MaterialDesignComponent } from '../components/material-design.component';
 
 @Directive({
   selector: '[mdLink]',
@@ -42,22 +42,22 @@ export class LinkDirective implements OnDestroy {
   });
 
   private readonly _element = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly _component = computed(() =>
-    MaterialDesignComponent.get(this._element.nativeElement)
-  );
+
+  private get _component() {
+    return MaterialDesignComponent.get(this._element.nativeElement);
+  }
 
   private _subscription?: Subscription;
 
   constructor() {
     effect(
       () => {
-        const component = this._component();
         const href = this.href();
         if (!href) {
           return;
         }
-        if (component) {
-          component.href?.set(href);
+        if (this._component) {
+          this._component.href?.set(href);
         } else {
           this._element.nativeElement.setAttribute('href', href);
         }
@@ -73,8 +73,8 @@ export class LinkDirective implements OnDestroy {
         filter((event) => event instanceof NavigationEnd),
         map(() => this._router.isActive(this.urlTree(), this.mdLinkExact())),
         tap((isActive: boolean) => {
-          if (this._component()) {
-            this._component()!.selected.set(isActive);
+          if (this._component && 'selected' in this._component) {
+            this._component.selected.set(isActive);
           }
           if (isActive && this.mdLinkActiveClass()) {
             this._element.nativeElement.classList.add(
