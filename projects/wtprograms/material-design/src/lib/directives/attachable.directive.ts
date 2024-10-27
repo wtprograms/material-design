@@ -11,7 +11,16 @@ import {
   Type,
 } from '@angular/core';
 import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
-import { fromEvent, Subject, Subscription, tap } from 'rxjs';
+import {
+  combineLatest,
+  filter,
+  fromEvent,
+  merge,
+  Subject,
+  Subscription,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { MaterialDesignComponent } from '../components/material-design.component';
 
 export type TargetType =
@@ -23,7 +32,7 @@ export type TargetType =
 @Directive({
   standalone: true,
 })
-export class AttachableDirective implements OnDestroy {
+export class AttachableDirective {
   readonly events = model<string[]>([]);
   readonly target = model<TargetType>();
   readonly for = model<string>();
@@ -52,33 +61,19 @@ export class AttachableDirective implements OnDestroy {
   private readonly _event$ = new Subject<Event>();
   readonly event = outputFromObservable(this._event$);
 
-  private _subscription?: Subscription;
-
   constructor() {
-    effect(() => {
-      this._subscription?.unsubscribe();
-      this._subscription = undefined;
-      const targetElement = this.targetElement();
-      if (!targetElement) {
-        return;
-      }
-      for (const event of this.events()) {
-        const observable = fromEvent(targetElement, event).pipe(
-          tap((x) => this._event$.next(x))
-        );
-        if (!this._subscription) {
-          this._subscription = observable.subscribe();
-        } else {
-          this._subscription.add(observable.subscribe());
-        }
-      }
-    }, {
-      allowSignalWrites: true
-    });
-  }
-
-  ngOnDestroy(): void {
-    this._subscription?.unsubscribe();
+    combineLatest({
+      target: this.targetElement$,
+      events: toObservable(this.events),
+    })
+      .pipe(
+        filter(({ target }) => !!target),
+        switchMap(({ target, events }) =>
+          merge(...events.map((x) => fromEvent(target!, x)))
+        ),
+        tap((x) => this._event$.next(x))
+      )
+      .subscribe();
   }
 }
 
