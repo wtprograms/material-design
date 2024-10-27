@@ -106,6 +106,13 @@ $_24-variants: ('elevated', 'filled', 'tonal', 'outlined');
   }
 }
 
+$disabled-backgrounds: ('elevated', 'filled', 'tonal');
+@each $background in $disabled-backgrounds {
+  :host([variant='#{$background}'][disabled='true']) {
+    background-color: #{md.disabled('background-color')};
+  }
+}
+
 @include md.disabled-component {
   color: #{md.disabled('color')};
 }
