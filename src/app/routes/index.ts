@@ -87,6 +87,11 @@ export default [
     loadComponent: () => import('./focus-ring/focus-ring.page'),
   },
   {
+    path: 'form',
+    title: 'Form',
+    loadComponent: () => import('./form/form.page'),
+  },
+  {
     path: 'icon',
     title: 'Icon',
     loadComponent: () => import('./icon/icon.page'),

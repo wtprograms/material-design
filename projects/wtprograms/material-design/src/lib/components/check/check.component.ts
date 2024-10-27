@@ -7,6 +7,8 @@ import {
   viewChild,
   ElementRef,
   computed,
+  signal,
+  effect,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { attachTarget } from '../../directives/attachable.directive';
@@ -48,12 +50,13 @@ export type CheckType = 'checkbox' | 'radio';
   ],
 })
 export class CheckComponent extends MaterialDesignValueAccessorComponent<
-  boolean | undefined
+  boolean | undefined | string
 > {
   readonly type = model<CheckType>('checkbox');
   readonly switch = model(false);
   readonly supportingText = model<string>();
-  override readonly value = model<boolean | undefined>(false);
+  override readonly value = model<boolean | undefined | string>(false);
+  readonly radioValue = model<string | undefined>();
 
   private readonly _input = viewChild<ElementRef<HTMLInputElement>>('input');
 
@@ -61,9 +64,7 @@ export class CheckComponent extends MaterialDesignValueAccessorComponent<
   readonly checkedIconSlot = this.slotDirective('checked-icon');
   readonly labelSlot = this.slotDirective();
 
-  readonly checked = computed(
-    () => this.value() === true || this.value() === undefined
-  );
+  readonly checked = signal(false);
   readonly indeterminate = computed(() => this.value() === undefined);
   private readonly _checkboxIcon = computed(() => {
     if (!this.checked() && !this.indeterminate()) {
@@ -84,10 +85,28 @@ export class CheckComponent extends MaterialDesignValueAccessorComponent<
     super();
     attachTarget(ParentActivationDirective, this._input);
     attachTarget(ForwardFocusDirective, this._input);
+    effect(
+      () => {
+        if (this.type() === 'radio') {
+          this.checked.set(this.value() === this.radioValue());
+        }
+      },
+      {
+        allowSignalWrites: true,
+      }
+    );
   }
 
   onInput(event: Event) {
     const target = event.target as HTMLInputElement;
+
+    if (this.type() === 'radio') {
+      this.checked.set(target.checked);
+      this.value.set(this.radioValue());
+      return;
+    }
+
+    this.checked.set(target.checked || target.indeterminate);
     if (!target.checked) {
       this.value.set(false);
     } else if (target.indeterminate) {

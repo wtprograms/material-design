@@ -52,7 +52,7 @@ export class PinFieldComponent extends MaterialDesignValueAccessorComponent<stri
         if (inputs.length === 0) {
           return;
         }
-        const value = inputs.map((x) => x.value ?? '').join('');
+        const value = inputs.map((x) => x.value() ?? '').join('');
         if (value === this.value()) {
           return;
         }

@@ -21,7 +21,7 @@
 </div>
 }
 <input #input [type]="type()" [disabled]="disabled()" [checked]="checked()" [indeterminate]="indeterminate()"
-  (change)="onInput($event)">
+  (change)="onInput($event)" [value]="value()">
 <span class="label">
   <slot></slot>
 </span>

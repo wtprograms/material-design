@@ -31,7 +31,7 @@ export abstract class MaterialDesignValueAccessorComponent<
   private _onChange?: (value: TValue | undefined) => void;
   private _onTouched?: () => void;
   private _control?: FormControl;
-  private _previousValue?: TValue;
+  protected _previousValue?: TValue;
 
   private readonly _formGroup = inject(FormGroupDirective, { optional: true });
   private readonly _getValidationMessage = inject(
@@ -52,7 +52,10 @@ export abstract class MaterialDesignValueAccessorComponent<
     this._control = this._formGroup.control.get(
       this.formControlName
     ) as FormControl;
-    this._control.valueChanges.subscribe(() => this.invalidate());
+    this._control.valueChanges.subscribe((value) => {
+      this.value.set(value);
+      this.invalidate();
+    });
     this._control.statusChanges.subscribe(() => this.invalidate());
     return this._control;
   }
@@ -60,9 +63,14 @@ export abstract class MaterialDesignValueAccessorComponent<
   constructor() {
     super();
     effect(() => {
-      if (this._previousValue !== this.value()) {
-        this._previousValue = this.value();
-        this._onChange?.(this.value());
+      let value = this.value();
+      if (typeof value === 'string' && value === '') {
+        value = undefined;
+      }
+      if (this._previousValue !== value) {
+        this._previousValue = value;
+        this._onChange?.(value);
+        this._control?.markAsDirty();
       }
     });
   }
@@ -86,11 +94,16 @@ export abstract class MaterialDesignValueAccessorComponent<
   @HostListener('focus')
   onFocus() {
     this._onTouched?.();
+  }
+
+  @HostListener('blur')
+  onBlur() {
+    this.control?.markAsTouched();
     this.invalidate();
   }
 
   invalidate() {
-    if (!this.control) {
+    if (!this.control || (!this.control.dirty && !this.control.touched)) {
       return;
     }
     const errors: string[] = [];
