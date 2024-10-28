@@ -69,7 +69,6 @@ export * from './lib/directives/animation/animation.directive';
 export * from './lib/directives/animation/animator';
 export * from './lib/directives/attachable.directive';
 export * from './lib/directives/form-group-resetter.directive';
-export * from './lib/directives/form-submitter.directive';
 export * from './lib/directives/forward-focus.directive';
 export * from './lib/directives/link.directive';
 export * from './lib/directives/md-forms/form-group-reset.directive';

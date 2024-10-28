@@ -3,6 +3,8 @@ import {
   Component,
   computed,
   ElementRef,
+  HostListener,
+  inject,
   model,
   viewChild,
   ViewEncapsulation,
@@ -18,7 +20,8 @@ import { attachTarget } from '../../directives/attachable.directive';
 import { ElevationComponent } from '../elevation/elevation.component';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { SlotDirective } from '../../directives/slot.directive';
-import { formSubmitter, FormSubmitterDirective } from '../../directives/form-submitter.directive';
+import { FormSubmitterType } from '../../common/forms/form-submitted-type';
+import { FormGroupDirective } from '@angular/forms';
 
 export type ButtonVariant =
   | 'elevated'
@@ -44,7 +47,7 @@ export type ButtonVariant =
     CommonModule,
     SlotDirective,
   ],
-  hostDirectives: [ParentActivationDirective, ForwardFocusDirective, FormSubmitterDirective],
+  hostDirectives: [ParentActivationDirective, ForwardFocusDirective],
   host: {
     '[attr.variant]': 'variant()',
     '[attr.disabled]': 'disabled() || null',
@@ -62,14 +65,16 @@ export class ButtonComponent extends MaterialDesignComponent {
   readonly progressIndeterminate = model(false);
   readonly progressValue = model(0);
   readonly progressMax = model(0);
+  readonly type = model<FormSubmitterType>('button');
+  readonly href = model<string>();
+
+  private readonly _formGroup = inject(FormGroupDirective, { optional: true });
 
   readonly button =
     viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
 
   readonly leadingSlot = this.slotDirective('leading');
   readonly trailingSlot = this.slotDirective('trailing');
-
-  readonly formSubmitter = formSubmitter();
 
   readonly hasElevation = computed(
     () =>
@@ -87,5 +92,19 @@ export class ButtonComponent extends MaterialDesignComponent {
     super();
     attachTarget(ForwardFocusDirective, this.button);
     attachTarget(ParentActivationDirective, this.button);
+  }
+
+  @HostListener('click')
+  onClick() {
+    if (this.href()) {
+      return;
+    }
+
+    if (this.type() === 'submit') {
+      const form = this.hostElement.closest('form');
+      form?.requestSubmit();
+    } else if (this.type() === 'reset') {
+      this._formGroup?.reset();
+    }
   }
 }

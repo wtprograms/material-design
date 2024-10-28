@@ -6,6 +6,8 @@ import {
   model,
   viewChild,
   ElementRef,
+  HostListener,
+  inject,
 } from '@angular/core';
 import { attachTarget } from '../../directives/attachable.directive';
 import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
@@ -15,11 +17,9 @@ import { ProgressIndicatorComponent } from '../progress-indicator/progress-indic
 import { TouchAreaComponent } from '../touch-area/touch-area.component';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { RippleComponent } from '../ripple/ripple.component';
-import {
-  formSubmitter,
-  FormSubmitterDirective,
-} from '../../directives/form-submitter.directive';
 import { ParentActivationDirective } from '../../directives/parent-activation.directive';
+import { FormGroupDirective } from '@angular/forms';
+import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 
 export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 
@@ -40,7 +40,6 @@ export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
   ],
   hostDirectives: [
     ForwardFocusDirective,
-    FormSubmitterDirective,
     ParentActivationDirective,
   ],
   host: {
@@ -63,15 +62,31 @@ export class IconButtonComponent extends MaterialDesignComponent {
   readonly custom = model(false);
   readonly badgeDot = model(false);
   readonly badgeNumber = model<number>();
+  readonly type = model<FormSubmitterType>('button');
+  readonly href = model<string>();
 
   readonly button =
     viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
 
-  readonly formSubmitter = formSubmitter();
+    private readonly _formGroup = inject(FormGroupDirective, { optional: true });
 
   constructor() {
     super();
     attachTarget(ForwardFocusDirective, this.button);
     attachTarget(ParentActivationDirective, this.button);
+  }
+
+  @HostListener('click')
+  onClick() {
+    if (this.href()) {
+      return;
+    }
+
+    if (this.type() === 'submit') {
+      const form = this.hostElement.closest('form');
+      form?.requestSubmit();
+    } else if (this.type() === 'reset') {
+      this._formGroup?.reset();
+    }
   }
 }
