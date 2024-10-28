@@ -1,18 +1,23 @@
 import {
+  AfterViewInit,
   Component,
   effect,
   HostListener,
   inject,
   model,
   ModelSignal,
+  OnInit,
 } from '@angular/core';
 import { MaterialDesignComponent } from './material-design.component';
 import {
+  ControlContainer,
   ControlValueAccessor,
   FormControl,
+  FormControlName,
   FormGroupDirective,
 } from '@angular/forms';
 import { GET_VALIDATION_MESSAGE_INJECTION_TOKEN } from '../configuration/get-validation-message.injection-token';
+import { skip, tap } from 'rxjs';
 
 @Component({
   template: '',
@@ -22,7 +27,7 @@ export abstract class MaterialDesignValueAccessorComponent<
     TElement extends HTMLElement = HTMLElement
   >
   extends MaterialDesignComponent<TElement>
-  implements ControlValueAccessor
+  implements ControlValueAccessor, AfterViewInit
 {
   readonly disabled = model(false);
   readonly errorText = model<string>();
@@ -33,7 +38,11 @@ export abstract class MaterialDesignValueAccessorComponent<
   private _control?: FormControl;
   protected _previousValue?: TValue;
 
-  private readonly _formGroup = inject(FormGroupDirective, { optional: true });
+  private readonly _controlContainer = inject(ControlContainer, {
+    optional: true,
+    host: true,
+    skipSelf: true,
+  });
   private readonly _getValidationMessage = inject(
     GET_VALIDATION_MESSAGE_INJECTION_TOKEN
   );
@@ -43,36 +52,43 @@ export abstract class MaterialDesignValueAccessorComponent<
   }
 
   get control() {
-    if (!this._formGroup || !this.formControlName) {
-      return undefined;
-    }
-    if (this._control) {
-      return this._control;
-    }
-    this._control = this._formGroup.control.get(
-      this.formControlName
-    ) as FormControl;
-    this._control.valueChanges.subscribe((value) => {
-      this.value.set(value);
-      this.invalidate();
-    });
-    this._control.statusChanges.subscribe(() => this.invalidate());
     return this._control;
   }
 
   constructor() {
     super();
-    effect(() => {
-      let value = this.value();
-      if (typeof value === 'string' && value === '') {
-        value = undefined;
+    effect(
+      () => {
+        if (!this._control) {
+          return;
+        }
+        let value = this.value();
+        if (typeof value === 'string' && value === '') {
+          value = undefined;
+        }
+        if (this._previousValue != value) {
+          this._previousValue = value;
+          this._onChange?.(value);
+          this._control?.markAsDirty();
+        }
+      },
+      {
+        allowSignalWrites: true,
       }
-      if (this._previousValue !== value) {
-        this._previousValue = value;
-        this._onChange?.(value);
-        this._control?.markAsDirty();
-      }
-    });
+    );
+  }
+
+  ngAfterViewInit(): void {
+    if (!this._controlContainer || !this.formControlName || this._control) {
+      return;
+    }
+    this._control = this._controlContainer?.control?.get(
+      this.formControlName
+    ) as FormControl;
+
+    this._control.valueChanges.subscribe((value) => this.value.set(value));
+    //this._control.statusChanges.subscribe(() => this.invalidate());
+    (this._control as any).invalidate = this.invalidate.bind(this);
   }
 
   writeValue(value: TValue): void {
@@ -102,14 +118,26 @@ export abstract class MaterialDesignValueAccessorComponent<
     this.invalidate();
   }
 
+  private _resetContext = false;
+
   invalidate() {
-    if (!this.control || (!this.control.dirty && !this.control.touched)) {
+    if (!this.control) {
       return;
     }
+
+    if (this.control.pristine && !this._control?.touched || this._resetContext) {
+      this.errorText.set(undefined);
+      return;
+    }
+    
     const errors: string[] = [];
     for (const key in this.control.errors) {
-      const properties = this.control.errors[key];
-      const message = this._getValidationMessage(key, properties);
+      const propertiesOrMessage = this.control.errors[key];
+      if (typeof propertiesOrMessage === 'string') {
+        errors.push(propertiesOrMessage);
+        continue;
+      }
+      const message = this._getValidationMessage(key, propertiesOrMessage);
       if (message) {
         errors.push(message);
       }

@@ -3,21 +3,23 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import {
   ButtonComponent,
   CardComponent,
+  catchFormValidationError,
   CheckComponent,
   DatePickerComponent,
   DropdownComponent,
+  MdFormsModule,
   PinFieldComponent,
   TextFieldComponent,
   TimePickerComponent,
+  ValidationError,
 } from '@wtprograms/material-design';
 import { PageComponent } from '../../components/page/page.component';
+import { delay, of, tap } from 'rxjs';
 
 @Component({
   templateUrl: './form.page.html',
@@ -31,11 +33,10 @@ import { PageComponent } from '../../components/page/page.component';
     DropdownComponent,
     DatePickerComponent,
     TimePickerComponent,
-    FormsModule,
-    ReactiveFormsModule,
     CommonModule,
     CardComponent,
-    ButtonComponent
+    ButtonComponent,
+    MdFormsModule
   ],
   host: {
     class: 'tw w-full',
@@ -57,13 +58,18 @@ export default class Page {
   });
 
   readonly value = signal<any>(undefined);
+  readonly isSubmitting = signal(false);
 
-  setValue() {
-    console.log('hey')
-    this.value.set(this.form.value);
-  }
-
-  click() {
-    console.log('click');
+  submit() {
+    of({}).pipe(
+      tap(() => this.isSubmitting.set(true)),
+      delay(1000),
+      tap(() => { throw new ValidationError('text1', 'This is a custom error message'); }),
+      catchFormValidationError(this.form, () => this.isSubmitting.set(false)),
+      tap(() => {
+        this.value.set(this.form.getRawValue());
+        this.isSubmitting.set(false);
+      }),
+    ).subscribe();
   }
 }

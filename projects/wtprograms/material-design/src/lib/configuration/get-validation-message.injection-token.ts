@@ -17,7 +17,7 @@ const handlers: Record<string, any> = {
 };
 
 export const GET_VALIDATION_MESSAGE_INJECTION_TOKEN = new InjectionToken<
-  (messageOrKey: string, properties?: Record<string, any>) => string
+  (key: string, properties?: Record<string, any>) => string
 >('GET_VALIDATION_MESSAGE_INJECTION_TOKEN', {
   providedIn: 'root',
   factory: () => (messageOrKey: string, properties?: Record<string, any>) => {

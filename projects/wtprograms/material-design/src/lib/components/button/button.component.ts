@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   ElementRef,
-  HostListener,
   model,
   viewChild,
   ViewEncapsulation,
@@ -15,11 +14,11 @@ import { TouchAreaComponent } from '../touch-area/touch-area.component';
 import { RippleComponent } from '../ripple/ripple.component';
 import { CommonModule } from '@angular/common';
 import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { attachTarget } from '../../directives/attachable.directive';
 import { ElevationComponent } from '../elevation/elevation.component';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { SlotDirective } from '../../directives/slot.directive';
+import { formSubmitter, FormSubmitterDirective } from '../../directives/form-submitter.directive';
 
 export type ButtonVariant =
   | 'elevated'
@@ -45,7 +44,7 @@ export type ButtonVariant =
     CommonModule,
     SlotDirective,
   ],
-  hostDirectives: [ParentActivationDirective, ForwardFocusDirective],
+  hostDirectives: [ParentActivationDirective, ForwardFocusDirective, FormSubmitterDirective],
   host: {
     '[attr.variant]': 'variant()',
     '[attr.disabled]': 'disabled() || null',
@@ -57,8 +56,6 @@ export type ButtonVariant =
 export class ButtonComponent extends MaterialDesignComponent {
   readonly variant = model<ButtonVariant>('filled');
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType>('button');
-  readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();
   readonly value = model<string>();
@@ -71,6 +68,8 @@ export class ButtonComponent extends MaterialDesignComponent {
 
   readonly leadingSlot = this.slotDirective('leading');
   readonly trailingSlot = this.slotDirective('trailing');
+
+  readonly formSubmitter = formSubmitter();
 
   readonly hasElevation = computed(
     () =>
@@ -88,15 +87,5 @@ export class ButtonComponent extends MaterialDesignComponent {
     super();
     attachTarget(ForwardFocusDirective, this.button);
     attachTarget(ParentActivationDirective, this.button);
-  }
-
-  @HostListener('click', ['$event'])
-  onClick(event: MouseEvent) {
-    const button = this.button()?.nativeElement;
-    if (!(button instanceof HTMLButtonElement) || this.href()) {
-      return;
-    }
-
-    this.hostElement.closest('form')?.requestSubmit();
   }
 }

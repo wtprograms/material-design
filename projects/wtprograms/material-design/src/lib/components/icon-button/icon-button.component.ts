@@ -6,9 +6,7 @@ import {
   model,
   viewChild,
   ElementRef,
-  HostListener,
 } from '@angular/core';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
 import { attachTarget } from '../../directives/attachable.directive';
 import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
 import { IconComponent } from '../icon/icon.component';
@@ -17,6 +15,11 @@ import { ProgressIndicatorComponent } from '../progress-indicator/progress-indic
 import { TouchAreaComponent } from '../touch-area/touch-area.component';
 import { FocusRingComponent } from '../focus-ring/focus-ring.component';
 import { RippleComponent } from '../ripple/ripple.component';
+import {
+  formSubmitter,
+  FormSubmitterDirective,
+} from '../../directives/form-submitter.directive';
+import { ParentActivationDirective } from '../../directives/parent-activation.directive';
 
 export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 
@@ -35,7 +38,11 @@ export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
     TouchAreaComponent,
     CommonModule,
   ],
-  hostDirectives: [ForwardFocusDirective],
+  hostDirectives: [
+    ForwardFocusDirective,
+    FormSubmitterDirective,
+    ParentActivationDirective,
+  ],
   host: {
     '[attr.variant]': 'variant()',
     '[attr.selected]': 'selected() || null',
@@ -45,8 +52,6 @@ export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
 })
 export class IconButtonComponent extends MaterialDesignComponent {
   readonly disabled = model(false);
-  readonly type = model<FormSubmitterType>('button');
-  readonly href = model<string>();
   readonly anchorTarget = model<string>();
   readonly name = model<string>();
   readonly value = model<string>();
@@ -62,18 +67,11 @@ export class IconButtonComponent extends MaterialDesignComponent {
   readonly button =
     viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
 
+  readonly formSubmitter = formSubmitter();
+
   constructor() {
     super();
     attachTarget(ForwardFocusDirective, this.button);
-  }
-
-  @HostListener('click')
-  onClick() {
-    const button = this.button()?.nativeElement;
-    if (!(button instanceof HTMLButtonElement) || this.href()) {
-      return;
-    }
-
-    this.hostElement.closest('form')?.requestSubmit();
+    attachTarget(ParentActivationDirective, this.button);
   }
 }

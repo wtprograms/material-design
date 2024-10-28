@@ -122,7 +122,7 @@ export class FieldComponent<TValue>
 
   private readonly _destroyRef = inject(DestroyRef);
 
-  ngAfterViewInit(): void {
+  override ngAfterViewInit(): void {
     timer(100)
       .pipe(
         takeUntilDestroyed(this._destroyRef),
