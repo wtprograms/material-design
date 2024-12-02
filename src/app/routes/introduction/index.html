@@ -1,0 +1,37 @@
+<app-page>
+  <h1 class="pb-4" i18n>Introduction</h1>
+  <p i18n>
+    Material Design components is a library of components that follows <a href="https://m3.material.io/"
+      target="_blank">Google's Material Design 3</a> guidelines. This website received some of its contents from <a
+      href="https://material-web.dev/">material-web.dev</a>.
+  </p>
+  <h2 id="what-is-material-design" i18n>What is Material Design?</h2>
+  <p i18n>
+    Material Design is a design system built and supported by Google designers and developers.
+  </p>
+  <p i18n>
+    The latest version, Material 3, enables personal, adaptive, and expressive experiences – from dynamic color and
+    enhanced accessibility, to foundations for large screen layouts and design tokens.
+  </p>
+  <img src="/what-is-material.webp" alt="Material Design 3" class="object-cover rounded-large" />
+  <h2 id="for-whom" i18n>For whom are these components?</h2>
+  <p i18n>
+    These components are for <a href="https://angular.dev/">Angular</a> websites that want to follow <a
+      href="https://m3.material.io/" target="_blank">Google's Material Design 3</a> guidelines.
+  </p>
+  <app-code [code]="forWhom" language="html"></app-code>
+  <p i18n>
+    Many of the components in this library are drop-in replacements for browser elements like <code>button</code> and
+    <code>input</code>.
+  </p>
+  <h2 id="tokens" i18n>What are tokens?</h2>
+  <p i18n>
+    Design tokens are the building blocks of a design system. They are custom CSS properties that store design values
+    like colors, typography, spacing, etc.
+  </p>
+  <app-code [code]="tokens" language="scss"></app-code>
+
+  <li class="navigation"><a mdScrollTo="what-is-material-design">What is Material Design?</a></li>
+  <li class="navigation"><a mdScrollTo="for-whom">For whom are these components?</a></li>
+  <li class="navigation"><a mdScrollTo="tokens">What are tokens?</a></li>
+</app-page>

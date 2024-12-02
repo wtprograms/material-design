@@ -3,6 +3,7 @@
 @use 'background';
 @use 'surface';
 @use 'outline';
+@use 'disabled';
 
 $tokens: (
   'primary': theme-palette.theme-palette('primary'),
@@ -14,5 +15,6 @@ $tokens: (
   'background': background.$tokens,
   'surface': surface.$tokens,
   'outline': outline.$tokens,
-  'scrim': color.color('neutral', 0, 0)
+  'scrim': color.color('neutral', 0, 0),
+  'disabled': disabled.$tokens
 );

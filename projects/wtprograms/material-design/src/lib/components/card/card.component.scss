@@ -1,103 +1,56 @@
-@use '../md';
+@use "../md";
 
 :host {
-  --__color: currentColor;
-  position: relative;
+  --_color: currentColor;
+  -webkit-tap-highlight-color: transparent;
   display: inline-flex;
   flex-direction: column;
-  isolation: isolate;
-  text-align: left;
-  align-items: flex-start;
+  position: relative;
   border-radius: var(--md-sys-shape-medium);
-  @include md.motion('opacity, background-color, color, border-color');
+  flex-shrink: 0;
+  outline: none;
+  padding: 16px;
 
-  @include md.reset-button {
-    display: inherit;
-    flex-direction: inherit;
-  }
+  @include md.motion("background-color", "border-color", "color");
 
-  md-elevation {
-    z-index: -1;
-  }
-
-  md-ripple {
-    --md-comp-ripple-color: var(--__color);
-  }
-
-  .leading,
-  .body,
-  .trailing {
-    flex-direction: column;
-    padding: 1rem;
-  }
-
-  .body {
-    align-self: stretch;
-    display: inline-flex;
-    text-align: inherit;
-    align-items: flex-start;
-  }
-
-  .leading,
-  .trailing {
-    align-self: stretch;
-    border-radius: inherit;
-    display: none;
-    background-color: var(--md-sys-color-secondary-container);
-    text-align: inherit;
-    align-items: flex-start;
-  }
-
-  .progress {
-    border-radius: inherit;
-    position: absolute;
-    overflow: hidden;
+  [mdEmbeddedButton] {
     position: absolute;
     inset: 0;
   }
-}
 
-:host([leading='true']) {
-  .leading {
-    display: inline-flex;
+  &.disabled {
+    &.elevated,
+    &.filled {
+      background-color: var(--md-sys-color-disabled-background);
+    }
   }
-}
 
-:host([trailing='true']) {
-  .trailing {
-    display: inline-flex;
+  &.elevated {
+    background-color: var(--md-sys-color-surface-container-low);
   }
-}
 
-:host([interactive='true']) {
-  cursor: pointer;
-}
+  &.filled {
+    background-color: var(--md-sys-color-surface-container-highest);
+  }
 
-:host([variant='elevated']) {
-  background-color: var(--md-sys-color-surface-container-low);
-}
-:host([variant='elevated'][disabled='true']) {
-  background-color: #{md.disabled('background-color')};
-}
+  &.outlined {
+    border: 1px solid var(--md-sys-color-outline-variant);
 
-:host([variant='filled']) {
-  background-color: var(--md-sys-color-surface-container-highest);
-}
-:host([variant='filled'][disabled='true']) {
-  background-color: #{md.disabled('background-color')};
-}
+    &.disabled {
+      border-color: var(--md-sys-color-disabled-border);
+    }
+  }
 
-:host([variant='outlined']) {
-  border: 1px solid var(--md-sys-color-outline-variant);
-}
-:host([variant='outlined'][disabled='true']) {
-  border-color: #{md.disabled('border-color')};
-}
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+  }
 
-:host([busy='true']:not([disabled='true'])) {
-  pointer-events: none;
-}
+  &:has(> md-progress-indicator) {
+    pointer-events: none;
+  }
 
-@include md.disabled-component {
-  color: #{md.disabled('color')};
+  md-progress-indicator {
+    position: absolute;
+  }
 }

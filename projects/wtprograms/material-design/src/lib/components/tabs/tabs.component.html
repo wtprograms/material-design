@@ -1,4 +1,2 @@
-<div class="tabs">
-  <slot></slot>
-</div>
-<div class="indicator" [ngStyle]="indicatorStyle()"></div>
+<ng-content />
+<div #indicator class="indicator"></div>

@@ -1,0 +1,64 @@
+@use "../md";
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+
+  .headline {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    padding: 8px;
+    background-color: var(--md-sys-color-surface-container);
+    @include md.typescale("title", "large");
+  }
+
+  &.opening,
+  &.closing {
+    .body {
+      overflow: hidden;
+    }
+  }
+
+  md-icon {
+    @include md.motion("transform");
+  }
+
+  &.closing,
+  &.closed {
+    md-icon {
+      transform: rotate(0deg);
+    }
+  }
+
+  &.opening,
+  &.opened {
+    md-icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  .body {
+    padding: 8px;
+    height: 0;
+    display: none;
+    flex-grow: 1;
+  }
+
+  [mdEmbeddedButton] {
+    flex-grow: 1;
+  }
+}
+
+.height {
+  position: absolute;
+  display: inline-flex !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+  height: fit-content !important;
+  pointer-events: none !important;
+}

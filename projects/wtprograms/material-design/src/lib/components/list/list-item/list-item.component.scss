@@ -1,0 +1,138 @@
+@use "../../md";
+
+:host {
+  --_color: currentColor;
+
+  position: relative;
+  display: inline-flex;
+  min-height: 48px;
+  flex-grow: 1;
+  gap: 16px;
+  min-height: 56px;
+  outline: none;
+  user-select: none;
+  color: var(--md-sys-color-surface-variant-on);
+  @include md.typescale("label", "large");
+  @include md.motion("background-color, color, border-color");
+
+  .container {
+    padding-inline: 16px;
+    position: relative;
+    display: inherit;
+    gap: inherit;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  [mdEmbeddedButton],
+  .container {
+    justify-content: flex-start;
+    justify-items: flex-start;
+  }
+
+  [mdEmbeddedButton] {
+    text-align: start;
+    flex-grow: 1;
+  }
+
+  .split {
+    display: inline-flex;
+    gap: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-inline-end: 16px;
+  }
+
+  .content {
+    display: inline-flex;
+    flex-direction: column;
+    color: var(--md-sys-color-surface-on);
+    text-wrap: wrap;
+    flex-grow: 1;
+    @include md.typescale("body", "large");
+  }
+
+  .container .supporting-text {
+    color: var(--md-sys-color-surface-variant-on);
+    @include md.typescale("body", "medium");
+  }
+
+  .leading,
+  .trailing {
+    display: none;
+    --md-comp-icon-size: 24;
+    @include md.typescale("body", "small");
+  }
+
+  &.large {
+    .container {
+      padding-inline-start: 0;
+    }
+
+    .leading ::ng-deep img:not(.avatar) {
+      max-width: revert;
+      max-height: 64px;
+    }
+  }
+
+  &.align-top {
+    .container,
+    .split .trailing {
+      align-items: flex-start;
+    }
+  }
+
+  > .container > .leading ::ng-deep img:not(.avatar) {
+    max-width: 56px;
+    max-height: 56px;
+  }
+
+  &:has(::ng-deep [mdListItemLeading]) .leading {
+    display: inline-flex;
+  }
+
+  &:has(::ng-deep [mdListItemTrailing]) .trailing {
+    display: inline-flex;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  &.large {
+    padding-inline-start: 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-secondary-container-on);
+    background-color: var(--md-sys-color-secondary-container);
+
+    &.disabled {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+
+  &.disabled,
+  &.selected.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+
+    .content,
+    .supporting-text {
+      color: inherit;
+    }
+
+    ::ng-deep img:not(.avatar) {
+      opacity: 0.5;
+    }
+  }
+
+  md-progress-indicator {
+    inset: auto 0 0 0;
+    position: absolute;
+  }
+}

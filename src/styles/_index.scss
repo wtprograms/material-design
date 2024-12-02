@@ -1,0 +1,13 @@
+@use 'inline-code';
+@use 'ng-component';
+@use 'spacing';
+@use 'table';
+
+@forward 'document' as document-*;
+
+@mixin rules {
+  @include inline-code.rules;
+  @include ng-component.rules;
+  @include spacing.rules;
+  @include table.rules;
+}

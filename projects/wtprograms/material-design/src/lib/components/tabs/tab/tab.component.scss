@@ -1,0 +1,53 @@
+@use '../../md';
+
+:host {
+  --_color: currentColor;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  position: relative;
+  height: 64px;
+  flex-shrink: 0;
+  place-content: center;
+  place-items: center;
+  gap: 8px;
+  user-select: none;
+  outline: none;
+  padding-inline: 24px;
+  color: var(--md-sys-color-surface-variant-on);
+
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color', 'color');
+
+  [mdEmbeddedButton] {
+    flex-direction: column;
+  }
+
+  ::ng-deep [mdButtonLeading],
+  ::ng-deep [mdButtonTrailing] {
+    --md-comp-icon-size: 18;
+    max-height: 18px;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-primary);
+    ::ng-deep md-icon {
+      --md-comp-icon-filled: 1;
+    }
+  }
+
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+}
+
+:host-context(md-tabs.secondary) {
+  height: 48px;
+  [mdEmbeddedButton] {
+    flex-direction: row;
+  }
+}

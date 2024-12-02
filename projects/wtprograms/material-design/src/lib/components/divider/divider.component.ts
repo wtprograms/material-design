@@ -1,24 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  model,
-  ViewEncapsulation,
-} from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { MdComponent } from '../md.component';
 
 @Component({
   selector: 'md-divider',
-  templateUrl: './divider.component.html',
+  template: ``,
   styleUrl: './divider.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [],
-  hostDirectives: [],
   host: {
-    '[attr.vertical]': 'vertical()',
-  },
+    '[class.vertical]': 'vertical()',
+  }
 })
-export class DividerComponent extends MaterialDesignComponent {
-  readonly vertical = model(false);
+export class MdDividerComponent extends MdComponent {
+  readonly vertical = input(false);
 }

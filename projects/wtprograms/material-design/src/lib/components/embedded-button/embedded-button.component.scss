@@ -1,0 +1,28 @@
+:host {
+  display: inline-flex;
+  border-radius: inherit;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  gap: inherit;
+  user-select: inherit;
+  text-decoration: none;
+  color: inherit;
+  appearance: none;
+  text-wrap: nowrap;
+  place-content: inherit;
+  place-items: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  -webkit-tap-highlight-color: transparent;
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:hover, &:active {
+    color: inherit;
+  }
+}

@@ -1,143 +1,127 @@
-<ng-template #actions>
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" class="clear" (click)="clearClick()"
-    i18n>Clear</md-button>
-  @if (variant() !== 'embedded') {
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" (click)="okayClick()"
-    [disabled]="!canOkay()" i18n>Okay</md-button>
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" (click)="cancelClick()"
-    i18n>Cancel</md-button>
+<ng-template #content>
+  <div class="header">
+    <div>
+      <md-icon-button variant="plain" (click)="month.set(month() - 1)">
+        chevron_left
+      </md-icon-button>
+      <md-button variant="plain" (click)="monthsOpen.set(!monthsOpen())">
+        {{ monthText() }}
+        <md-icon mdButtonTrailing>arrow_drop_down</md-icon>
+      </md-button>
+      <md-icon-button variant="plain" (click)="month.set(month() + 1)">
+        chevron_right
+      </md-icon-button>
+    </div>
+    <div>
+      <md-icon-button variant="plain" (click)="year.set(year() - 1)">
+        chevron_left
+      </md-icon-button>
+      <md-button variant="plain" (click)="yearsOpen.set(!yearsOpen())">
+        {{ yearText() }}
+        <md-icon mdButtonTrailing>arrow_drop_down</md-icon>
+      </md-button>
+      <md-icon-button variant="plain" (click)="year.set(year() + 1)">
+        chevron_right
+      </md-icon-button>
+    </div>
+  </div>
+  <div class="body">
+    <div #monthsDropdown class="dropdown months" [class]="monthsOpenCloseState()">
+      @for (monthItem of months(); track $index) {
+      <md-list-item [interactive]="true" (click)="selectMonth(monthItem.value)"
+        [selected]="monthItem.value === today.getMonth()" [class.current]="monthItem.value === month()">
+        @if (monthItem.value === month()) {
+        <md-icon mdListItemLeading>check</md-icon>
+        } @else {
+        <md-icon mdListItemLeading></md-icon>
+        }
+        {{ monthItem.text }}
+      </md-list-item>
+      }
+    </div>
+    <div #yearsDropdown class="dropdown years" [class]="yearsOpenCloseState()">
+      @for (yearItem of years; track $index) {
+      <md-button [variant]="year() === yearItem ? 'filled' : 'text'" (click)="selectYear(yearItem)"
+        [class.current]="yearItem === today.getFullYear()">
+        {{ yearItem }}
+      </md-button>
+      }
+    </div>
+    <div class="calendar">
+      <div class="days">
+        @for (dayName of dayNames(); track $index) {
+        <div class="day-container">
+          <div class="day-name">{{ dayName }}</div>
+        </div>
+        }
+      </div>
+      <div class="days">
+        @for (day of days(); track $index) {
+        <div class="day-container">
+          <div class="in-range-background" [class.in-range]="inRange(day.date)"
+            [class.first]="isDateEqual(day.date, fromSelectedValueAsDate)"
+            [class.last]="isDateEqual(day.date, toSelectedValueAsDate)" [class.not-current]="day.type !== 'current'">
+          </div>
+          <md-icon-button [customIcon]="true" [variant]="isDateSelected(day.date) ? 'filled' : 'standard'"
+            [class.not-current]="day.type !== 'current'" [selected]="isDateSelected(day.date)"
+            [class.in-range]="inRange(day.date)" [class.today]="isDateEqual(day.date, today)"
+            (click)="select(day.date)">{{
+            day.day }}</md-icon-button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  @if (inputVariant() !== 'embedded') {
+  <div class="footer">
+    <md-button variant="text" class="clear" (click)="clear()" i18n>
+      Clear
+    </md-button>
+    <md-button variant="text" (click)="okay()" i18n>
+      Okay
+    </md-button>
+    <md-button variant="text" (click)="cancel()" i18n>
+      Cancel
+    </md-button>
+  </div>
   }
 </ng-template>
-
-<ng-template #contents>
-  <div class="container">
-    <div class="header">
-      <div class="months">
-        <md-button variant="plain" class="navigate" (click)="monthView.set(monthView() - 1)">
-          <md-icon>chevron_left</md-icon>
-        </md-button>
-        <md-button #monthViewButton variant="plain" (click)="openMonthView()">
-          {{ monthViewText() }}
-          <md-icon class="month-icon" slot="trailing">arrow_drop_down</md-icon>
-        </md-button>
-        <md-button variant="plain" class="navigate" (click)="monthView.set(monthView() + 1)">
-          <md-icon>chevron_right</md-icon>
-        </md-button>
-      </div>
-      @if (variant() === 'dropdown') {
-      <md-icon-button #today (click)="todayClick()">today</md-icon-button>
-      <md-tooltip [target]="today" i18n>Today</md-tooltip>
-      } @else {
-      <md-button variant="text" (click)="todayClick()" i18n>Today</md-button>
-      }
-      <div class="years">
-        <md-button variant="plain" class="navigate" (click)="yearView.set(yearView() - 1)">
-          <md-icon>chevron_left</md-icon>
-        </md-button>
-        <md-button variant="plain" (click)="openYearView()">
-          {{ yearViewText() }}
-          <md-icon slot="trailing">arrow_drop_down</md-icon>
-        </md-button>
-        <md-button variant="plain" class="navigate" (click)="yearView.set(yearView() + 1)">
-          <md-icon>chevron_right</md-icon>
-        </md-button>
-      </div>
-    </div>
-    <div class="body">
-      <div class="view" [ngClass]="monthViewState()">
-        @for (month of months(); track $index) {
-        <md-list-item #monthItem [selected]="monthView() === month.value" (click)="monthItemClick(month.value)"
-          type="button">
-          {{ month.text }}
-        </md-list-item>
-        }
-      </div>
-      <div class="view year-view" [ngClass]="yearViewState()">
-        @for (year of years; track $index) {
-        <md-button #yearItem [variant]="yearView() === year ? 'filled' : 'text'" (click)="yearItemClick(year)">
-          {{ year }}
-        </md-button>
-        }
-      </div>
-      <div class="calendar">
-        <div class="days day-names">
-          @for (dayName of dayNames(); track $index) {
-          <div class="day-container">
-            <div class="day-name">{{ dayName }}</div>
-          </div>
-          }
-        </div>
-        <div class="days">
-          @for (day of days(); track $index) {
-          <div class="day-container">
-            @if (isInRange(day.date)) {
-            <div class="in-range-indicator" [class.first]="isDateEqual(fromSelectedValueAsDate, day.date)"
-              [class.last]="isDateEqual(toSelectedValueAsDate, day.date)" [class.not-current]="day.type !== 'current'">
-            </div>
-            }
-            <md-icon-button [custom]="true" [selected]="isDaySelected(day.date)"
-              [variant]="isDaySelected(day.date) ? 'filled' : 'standard'" [class.not-current]="day.type !== 'current'"
-              [class.today]="isToday(day.date)" (click)="dayClick(day)" [class.in-range]="isInRange(day.date)">{{
-              day.day
-              }}</md-icon-button>
-          </div>
-          }
-        </div>
-      </div>
-    </div>
-    @if (variant() !== 'dialog') {
-    <div class="actions">
-      <ng-container *ngTemplateOutlet="actions" />
-    </div>
-    }
-  </div>
-</ng-template>
-
-@if (variant() === 'embedded') {
-<ng-container *ngTemplateOutlet="contents" />
+@if (inputVariant() === 'embedded') {
+<ng-container *ngTemplateOutlet="content" />
 } @else {
-<md-field #field [variant]="fieldVariant()" [populated]="!!populated()" [errorText]="errorText()" [label]="label()"
-  [disabled]="disabled()" (bodyClick)="bodyClick()" (popoverStateChange)="popoverStateChange($event)">
-  <slot name="leading" slot="leading"></slot>
-  <slot name="prefix" slot="prefix"></slot>
-  <slot name="suffix" slot="suffix"></slot>
-  <slot name="supporting-text" slot="supporting-text"></slot>
-  <slot name="counter" slot="counter"></slot>
+<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
+  [populated]="populated()" [prefix]="fieldUser.prefix()" [suffix]="fieldUser.suffix()"
+  [supportingText]="fieldUser.supportingText()" [counter]="fieldUser.counter()" (bodyClick)="bodyClick()">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
+  <md-icon mdFieldTrailing>
+    @if (inputVariant() === 'dropdown') {
+    arrow_drop_down
+    } @else {
+    calendar_month
+    }
+  </md-icon>
+
   <span class="selected-value">
     @if (!fromValueAsDate) {
     <span i18n>Select a date...</span>
     } @else {
-    <span>{{ fromValueAsDate | dateFormat: this.locale(): 'dd MMM yyyy' }}</span>
+    <span>{{ fromValueAsDate | date: 'dd MMM yyyy': this.locale() }}</span>
     @if (range()) {
     <span>-</span>
-    <span>{{ toValueAsDate | dateFormat: this.locale(): 'dd MMM yyyy' }}</span>
+    <span>{{ toValueAsDate | date: 'dd MMM yyyy': this.locale() }}</span>
     }
     }
   </span>
-  <md-icon slot="trailing">calendar_month</md-icon>
-  @if (variant() === 'dropdown') {
-  <div class="popover" slot="popover">
-    <ng-container *ngTemplateOutlet="contents" />
-  </div>
-  }
 </md-field>
-@if (variant() === 'dialog') {
-<md-dialog #dialog (stateChange)="popoverStateChange($event)">
-  <md-icon slot="icon">calendar_month</md-icon>
-  <span class="selected-value" slot="headline">
-    @if (!fromSelectedValueAsDate) {
-    <span i18n>Select a date...</span>
-    } @else {
-    <span>{{ fromSelectedValueAsDate | dateFormat: this.locale(): 'dd MMM yyyy' }}</span>
-    @if (range()) {
-    <span>-</span>
-    <span>{{ toSelectedValueAsDate | dateFormat: this.locale(): 'dd MMM yyyy' }}</span>
-    }
-    }
-  </span>
-  <slot name="supporting-text" slot="supporting-text"></slot>
-  <ng-container *ngTemplateOutlet="contents" />
-  <ng-container *ngTemplateOutlet="actions" />
-</md-dialog>
+
+@if (inputVariant() === 'dropdown') {
+<md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
+  <ng-container *ngTemplateOutlet="content" />
+</md-popover>
+} @else {
+<dialog mdDialog [(open)]="open" class="date-picker">
+  <span mdDialogHeadline i18n>Select date</span>
+  <ng-container *ngTemplateOutlet="content" />
+</dialog>
 }
 }

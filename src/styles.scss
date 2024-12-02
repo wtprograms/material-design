@@ -1,7 +1,15 @@
-@use '../projects/wtprograms/material-design/styles/index' as md;
+@use "../projects/wtprograms/material-design/styles/index" as md;
+@use './styles//index' as styles;
 
 @include md.import;
-@include md.reboot;
 
+@layer base {
+  @include md.reboot;
+  @include styles.rules;
+}
+
+@include styles.document-rules;
+
+@tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -13,13 +13,9 @@ export const EASING = {
 
 export type Easing = keyof typeof EASING;
 
-export function easingToFunction(easing?: Easing | string): string | undefined {
+export function easingToFunction(easing?: Easing): string | undefined {
   if (!easing) {
     return undefined;
   }
-  if (easing in EASING) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (EASING as any)[easing];
-  }
-  return easing;
+  return (EASING as any)[easing];
 }

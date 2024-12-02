@@ -2,47 +2,35 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   model,
-  viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { PopoverComponent, PopoverTrigger } from '../popover/popover.component';
+import { MdComponent } from '../md.component';
+import {
+  MdPopoverComponent,
+  PopoverTrigger,
+} from '../popover/popover.component';
+import { MdAttachableDirective } from '../../directives/attachable.directive';
 import { Placement } from '@floating-ui/dom';
-import { AttachableDirective } from '../../directives/attachable.directive';
 
 @Component({
   selector: 'md-menu',
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [PopoverComponent],
+  imports: [MdPopoverComponent],
   hostDirectives: [
     {
-      directive: AttachableDirective,
+      directive: MdAttachableDirective,
       inputs: ['target'],
     },
   ],
-  host: {},
 })
-export class MenuComponent extends MaterialDesignComponent {
-  readonly placement = model<Placement>('bottom-start');
-  readonly trigger = model<PopoverTrigger>('click');
-  readonly offset = model(8);
-  readonly popover = viewChild<PopoverComponent>('popover');
-  readonly attachableDirective = inject(AttachableDirective);
-  readonly useContainerWidth = model(false);
-
-  constructor() {
-    super();
-    this.attachableDirective.events.set([
-      'click',
-      'pointerdown',
-      'pointerenter',
-      'pointerleave',
-      'contextmenu',
-    ]);
-  }
+export class MdMenuComponent extends MdComponent {
+  readonly attachable = inject(MdAttachableDirective);
+  readonly trigger = input<PopoverTrigger>('click');
+  readonly placement = input<Placement>('bottom');
+  readonly offset = input(8);
+  readonly open = model(false);
+  readonly useTargetWidth = input(false);
 }

@@ -1,83 +1,82 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   ElementRef,
-  model,
+  inject,
+  input,
   viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { RippleComponent } from '../ripple/ripple.component';
-import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
+import { MdComponent } from '../md.component';
 import { CommonModule } from '@angular/common';
-import { TouchAreaComponent } from '../touch-area/touch-area.component';
-import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { BadgeComponent } from '../badge/badge.component';
-import { ProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
-import { attachTarget } from '../../directives/attachable.directive';
-import { FocusRingComponent } from '../focus-ring/focus-ring.component';
-
-export type AvatarPalette =
-  | 'surface'
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'plain';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdRippleComponent } from '../ripple/ripple.component';
+import { dispatchActivationClick } from '../../common/events/dispatch-activation-click';
+import { isActivationClick } from '../../common/events/is-activation-click';
+import { MdBadgeUserDirective } from '../badge/badge-user.directive';
+import { MdBadgeModule } from '../badge/badge.module';
+import { MdProgressIndicatorModule } from '../progress-indicator/progress-indicator.module';
+import { MdProgressIndicatorUserDirective } from '../progress-indicator/progress-indicator-user.directive';
 
 @Component({
   selector: 'md-avatar',
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   imports: [
+    MdRippleComponent,
+    MdFocusRingComponent,
+    MdEmbeddedButtonComponent,
     CommonModule,
-    TouchAreaComponent,
-    FocusRingComponent,
-    RippleComponent,
-    CommonModule,
-    BadgeComponent,
-    ProgressIndicatorComponent,
+    MdBadgeModule,
+    MdProgressIndicatorModule
   ],
-  hostDirectives: [ForwardFocusDirective, ParentActivationDirective],
+  hostDirectives: [
+    {
+      directive: MdBadgeUserDirective,
+      inputs: ['badgeDot', 'badgeNumber'],
+    },
+    {
+      directive: MdProgressIndicatorUserDirective,
+      inputs: [
+        'progressValue',
+        'progressMax',
+        'progressIndeterminate',
+      ]
+    }
+  ],
   host: {
-    '[attr.palette]': 'palette()',
-    '[attr.interactive]': 'interactive() ?? null',
-    '[style.--md-comp-avatar-size]': 'size() ?? null',
-    '[attr.disabled]': 'disabled() || null',
-    '[attr.busy]': 'progressIndeterminate() || !!progressValue() || null',
+    '[style.--md-comp-avatar-size]': 'size() ? size() : null',
+    '[class.disabled]': 'disabled()',
+    '(click)': 'click($event)',
   },
 })
-export class AvatarComponent extends MaterialDesignComponent {
-  readonly disabled = model(false);
-  readonly href = model<string>();
-  readonly anchorTarget = model<string>();
-  readonly name = model<string>();
-  readonly value = model<string>();
-  readonly progressIndeterminate = model(false);
-  readonly progressValue = model(0);
-  readonly progressMax = model(0);
-  readonly badgeDot = model(false);
-  readonly badgeNumber = model<number>();
-  readonly src = model<string>();
-  readonly palette = model<AvatarPalette>('primary');
-  readonly fullName = model<string>();
-  readonly size = model<number>();
-  readonly slot = model<string>();
-  readonly interactive = model(false);
+export class MdAvatarComponent extends MdComponent {
+  readonly badgeUser = inject(MdBadgeUserDirective);
+  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
+  readonly src = input<string>();
+  readonly fullName = input<string>();
+  readonly size = input<number>();
+  readonly disabled = input(false);
+  readonly href = input<string>();
+  readonly target = input<string>();
+  readonly interactive = input(false);
 
-  readonly button =
-    viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
-
-  readonly initial = computed(() =>
-    this.fullName() ? this.fullName()![0] : ''
+  private readonly _buttonElement = viewChild(
+    MdEmbeddedButtonComponent,
+    {
+      read: ElementRef,
+    }
   );
 
-  constructor() {
-    super();
-    attachTarget(ForwardFocusDirective, this.button);
-    attachTarget(ParentActivationDirective, this.button);
+  click(event: Event) {
+    if (!this.interactive()) {
+      return;
+    }
+    if (!isActivationClick(event)) {
+      return;
+    }
+
+    dispatchActivationClick(this._buttonElement()?.nativeElement, false);
   }
 }

@@ -1,0 +1,9 @@
+<button mdEmbeddedButton type="button" [disabled]="disabled()">
+  <md-ripple />
+  <md-focus-ring />
+  <ng-content select="[mdTabLeading]" />
+  <ng-content />
+  @if (badgeUser.badgeDot() || badgeUser.badgeNumber()) {
+  <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />
+  }
+</button>

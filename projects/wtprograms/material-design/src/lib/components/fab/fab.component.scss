@@ -2,89 +2,99 @@
 
 :host {
   --_color: currentColor;
+  --_icon-size: 24;
+
+  width: auto;
   position: relative;
   display: inline-flex;
-  gap: 8px;
-  cursor: pointer;
-  justify-content: flex-start;
+  border-radius: var(--md-sys-shape-full);
+  height: 40px;
+  text-wrap: nowrap;
+  flex-shrink: 0;
   align-items: center;
+  justify-content: flex-start;
+  appearance: none;
+  outline: none;
+  user-select: none;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary-container-on);
   @include md.typescale('label', 'large');
-  @include md.motion('background-color, color, width', 'standard-decelerate');
+  @include md.motion('background-color, color, border-color, width');
 
-  @include md.reset-button {
-    overflow: hidden;
+  ::ng-deep [mdFabIcon] {
+    --md-comp-icon-size: var(--_icon-size);
+    max-height: calc(--_icon-size * 1px);
+  }
+
+  ::ng-deep [mdFabLabel] {
+    margin-inline-start: 8px;
   }
 
   .label {
     display: none;
+    overflow: hidden;
+  }
+
+  &:not(.closed), &:not(:has(::ng-deep [mdFabIcon])) {
+    .label {
+      display: inline-flex;
+    }
+  }
+
+  &.large {
+    height: 96px;
+    width: 96px;
+    padding: 32px;
+    border-radius: var(--md-sys-shape-medium);
+
+    @include md.typescale('title', 'large');
+
+    ::ng-deep [mdFabIcon] {
+      --_icon-size: 36;
+    }
+  }
+
+  &.medium {
+    height: 56px;
+    width: 56px;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-small);
+  }
+
+  &.small {
+    height: 40px;
+    width: 40px;
+    padding: 8px;
+    border-radius: var(--md-sys-shape-extra-small);
+  }
+
+  &:has(::ng-deep [mdFabLabel]) {
+    width: auto;
+  }
+
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+    background-color: var(--md-sys-color-disabled-background);
   }
 
   md-ripple {
     --md-comp-ripple-color: var(--_color);
   }
-}
 
-:host([state='opened']) {
-  transition-timing-function: var(--md-sys-motion-easing-standard-accelerate);
-}
-
-:host(:not([state='closed'])[label='true']) .label {
-  display: inline-flex;
-}
-
-:host([palette='surface']) {
-  background-color: var(--md-sys-color-surface-container-low);
-  color: var(--md-sys-color-primary);
-}
-
-$palettes: ('primary', 'secondary', 'tertiary', 'danger', 'warning', 'success');
-@each $palette in $palettes {
-  :host([palette='#{$palette}']) {
-    background-color: var(--md-sys-color-#{$palette}-container);
-    color: var(--md-sys-color-#{$palette}-container-on);
+  .label-width {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
   }
-}
 
-:host([size='large']) {
-  height: 96px;
-  width: 96px;
-  padding: 32px;
-  border-radius: var(--md-sys-shape-medium);
-
-  ::slotted(md-icon) {
-    --md-comp-icon-size: 36;
+  .grow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: inherit;
+    opacity: 0;
+    pointer-events: none;
   }
-}
-
-:host([size='medium']) {
-  height: 56px;
-  width: 56px;
-  padding: 16px;
-  border-radius: var(--md-sys-shape-small);
-
-  ::slotted(md-icon) {
-    --md-comp-icon-size: 24;
-  }
-}
-
-:host([size='small']) {
-  height: 40px;
-  width: 40px;
-  padding: 8px;
-  border-radius: var(--md-sys-shape-extra-small);
-
-  md-icon,
-  ::slotted(md-icon) {
-    --md-comp-icon-size: 24;
-  }
-}
-
-:host([label='true']:not([icon])),
-:host([icon='true']:not([state='closed'])[label='true']) {
-  width: auto;
-}
-
-@include md.disabled-component {
-  color: #{md.disabled('color')};
-  background-color: #{md.disabled('background-color')};
 }

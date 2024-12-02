@@ -1,0 +1,12 @@
+<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
+  [populated]="populated()" (bodyClick)="bodyClick()" [prefix]="fieldUser.prefix()" [suffix]="fieldUser.suffix()"
+  [supportingText]="fieldUser.supportingText()" [counter]="fieldUser.counter()">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
+  <md-icon mdFieldTrailing>arrow_drop_down</md-icon>
+
+  <ng-content />
+
+  <md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
+    <ng-content select="md-list-item" />
+  </md-popover>
+</md-field>

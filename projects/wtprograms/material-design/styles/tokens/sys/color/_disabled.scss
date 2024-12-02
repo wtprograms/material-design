@@ -1,0 +1,23 @@
+@use '../../../methods/mix';
+
+@function _disabled-color($opacity, $mode) {
+  @return mix.mix(transparent, var(--md-sys-color-surface-on-#{$mode}), $opacity);
+}
+
+$tokens: (
+  'color': (
+    '': unset,
+    'light': _disabled-color(0.38, 'light'),
+    'dark': _disabled-color(0.38, 'dark'),
+  ),
+  'border': (
+    '': unset,
+    'light': _disabled-color(0.12, 'light'),
+    'dark': _disabled-color('color', 'dark'),
+  ),
+  'background': (
+    '': unset,
+    'light': _disabled-color(0.12, 'light'),
+    'dark': _disabled-color(0.12, 'dark'),
+  ),
+);

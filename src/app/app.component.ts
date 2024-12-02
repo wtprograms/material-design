@@ -1,31 +1,65 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import routes from './routes';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, effect, inject, PLATFORM_ID } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import {
-  ListItemComponent,
-  NavigationComponent,
-  NavigationItemComponent,
-  LinkDirective,
-  SheetComponent,
+  MdAppBarModule,
+  MdLinkDirective,
+  MdMediaDirective,
+  MdMenuModule,
+  MdNavigationModule,
+  MdPopoverModule,
+  MdSegmentedButtonModule,
+  MdSheetModule,
+  MdTooltipModule,
 } from '@wtprograms/material-design';
+import {
+  injectLocalStorage
+} from 'ngxtension/inject-local-storage';
+import { ssrInjectLocalStorage } from './common/ssr-inject-local-storage';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
-    RouterModule,
-    ListItemComponent,
-    NavigationComponent,
-    NavigationItemComponent,
-    LinkDirective,
-    SheetComponent,
+    RouterOutlet,
+    MdAppBarModule,
+    MdSheetModule,
+    MdNavigationModule,
+    CommonModule,
+    MdLinkDirective,
+    MdSegmentedButtonModule,
+    MdPopoverModule,
+    MdTooltipModule,
+    MdMenuModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styles: `
+    .content {
+      height: calc(100dvh - 56px - 16px);
+    }
+  `,
   host: {
-    class: 'tw flex gap-4 relative',
+    class:
+      'tw inline-flex flex-col w-full bg-surface-container h-dvh max-h-dvh',
   },
 })
 export class AppComponent {
-  readonly routes = routes.sort((a, b) => a.title.localeCompare(b.title));
+  readonly theme = ssrInjectLocalStorage('theme', {
+    defaultValue: 'system'
+  });
+  private readonly _document = inject(DOCUMENT);
+
+  constructor() {
+    effect(() => {
+      const theme = this.theme();
+      if (theme === 'system') {
+        this._document.body.classList.remove('md-dark', 'md-light');
+      } else if (theme === 'light') {
+        this._document.body.classList.remove('md-dark');
+        this._document.body.classList.add('md-light');
+      } else {
+        this._document.body.classList.remove('md-light');
+        this._document.body.classList.add('md-dark');
+      }
+    });
+  }
 }

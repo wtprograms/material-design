@@ -1,110 +1,63 @@
+import { DOCUMENT } from '@angular/common';
 import {
   computed,
+  DestroyRef,
   Directive,
-  effect,
   ElementRef,
   inject,
+  input,
   isSignal,
-  model,
-  OnDestroy,
-  Signal,
-  Type,
 } from '@angular/core';
-import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
-import {
-  combineLatest,
-  filter,
-  fromEvent,
-  merge,
-  Subject,
-  Subscription,
-  switchMap,
-  tap,
-} from 'rxjs';
-import { MaterialDesignComponent } from '../components/material-design.component';
+import { MdComponent } from '../components/md.component';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { fromEvent, merge, switchMap } from 'rxjs';
 
-export type TargetType =
-  | HTMLElement
-  | ElementRef<HTMLElement>
-  | undefined
-  | MaterialDesignComponent;
+const EVENTS = [
+  'click',
+  'pointerenter',
+  'pointerleave',
+  'pointerdown',
+  'pointerup',
+  'pointercancel',
+  'contextmenu',
+  'focusin',
+  'focusout',
+];
 
-@Directive({
-  standalone: true,
-})
-export class AttachableDirective {
-  readonly events = model<string[]>([]);
-  readonly target = model<TargetType>();
-  readonly for = model<string>();
+@Directive()
+export class MdAttachableDirective {
+  readonly target = input<unknown>();
+  readonly targetElement = computed(() => this.getTarget(this.target()));
 
-  readonly hostElement =
-    inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly _destroyRef = inject(DestroyRef);
 
-  private readonly _forElement = computed(() => {
-    const htmlFor = this.for();
-    if (!htmlFor) {
-      return undefined;
-    }
-    return (
-      this.hostElement.getRootNode() as Document | ShadowRoot
-    ).querySelector<HTMLElement>(`#${htmlFor}`);
-  });
-
-  readonly targetElement = computed(
-    () => this._forElement() ?? getElement(this.target())
+  readonly targetEvent$ = toObservable(this.targetElement).pipe(
+    switchMap((target) =>
+      merge(...EVENTS.map((event) => fromEvent(target, event)))
+    ),
+    takeUntilDestroyed(this._destroyRef),
   );
-  readonly targetElement$ = toObservable(this.targetElement);
 
-  get event$() {
-    return this._event$.asObservable();
-  }
-  private readonly _event$ = new Subject<Event>();
-  readonly event = outputFromObservable(this._event$);
+  private readonly _hostElement =
+    inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly _document = inject(DOCUMENT);
 
-  constructor() {
-    // toSignal throws Writing to signals is not allowed in niche cases. :(
-    combineLatest({
-      target: this.targetElement$,
-      events: toObservable(this.events),
-    })
-      .pipe(
-        filter(({ target }) => !!target),
-        switchMap(({ target, events }) =>
-          merge(...events.map((x) => fromEvent(target!, x)))
-        ),
-        tap((x) => this._event$.next(x))
-      )
-      .subscribe();
+  private getTarget(target: unknown): HTMLElement {
+    if (isSignal(target)) {
+      return this.getTarget(target());
+    }
+    if (target instanceof HTMLElement) {
+      return target;
+    }
+    if (target instanceof ElementRef) {
+      return target.nativeElement as HTMLElement;
+    }
+    if (target instanceof MdComponent) {
+      return target.hostElement as HTMLElement;
+    }
+    if (typeof target === 'string') {
+      return this._document.querySelector(target) as HTMLElement;
+    }
+    return this._hostElement.parentElement as HTMLElement;
   }
-}
-
-function getElement(element: TargetType) {
-  if (!element) {
-    return undefined;
-  }
-  if (element instanceof MaterialDesignComponent) {
-    return element.hostElement;
-  }
-  return element instanceof ElementRef ? element.nativeElement : element;
-}
-
-export function attachTarget<T extends AttachableDirective>(
-  type: Type<T>,
-  element: TargetType | Signal<TargetType>
-) {
-  const directive = inject(type);
-  if (isSignal(element)) {
-    effect(() => directive.target.set(getElement(element())), {
-      allowSignalWrites: true,
-    });
-  } else {
-    directive.target.set(getElement(element));
-  }
-  return directive;
-}
-
-export function attach(...events: string[]) {
-  const directive = inject(AttachableDirective);
-  directive.events.set(events);
-  return directive;
 }

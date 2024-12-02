@@ -2,92 +2,89 @@
 
 :host {
   --_color: currentColor;
+
   position: relative;
-  border-radius: var(--md-sys-shape-extra-small);
-  color: var(--md-sys-color-surface-variant-on);
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: var(--md-sys-shape-extra-small);
   height: 32px;
+  text-wrap: nowrap;
   flex-shrink: 0;
-  cursor: pointer;
-  isolation: isolate;
-  @include md.typescale('label', 'large');
-  gap: 8px;
-  background-color: transparent;
+  place-content: center;
+  place-items: center;
+  appearance: none;
+  outline: none;
+  user-select: none;
   border: 1px solid var(--md-sys-color-outline);
-  padding-inline-start: 8px;
-  padding-inline-end: 8px;
+  color: var(--md-sys-color-surface-variant-on);
   overflow: hidden;
-  @include md.motion('background-color, color, opacity');
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, border-color, border-radius');
 
-  @include md.reset-button;
+  .container {
+    display: inherit;
+    place-content: inhert;
+    place-items: inherit;
+    position: relative;
+    gap: 8px;
+    padding-inline: 8px;
+    height: inherit;
 
-  .touch {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
+    &:has(::ng-deep [mdChipLeading]) {
+      padding-inline-start: 4px;
+    }
+    &:has(::ng-deep [mdChipTrailing]):not(:has(md-icon-button)) {
+      padding-inline-end: 4px;
+    }
   }
 
-  ::slotted(md-icon) {
-    pointer-events: none;
+  ::ng-deep [mdChipLeading],
+  ::ng-deep [mdChipTrailing] {
     --md-comp-icon-size: 18;
+    --md-comp-avatar-size: 24;
   }
 
-  ::slotted(md-avatar) {
-    margin-inline-start: -4px;
-    --md-comp-avatar-size: 24;
+  md-icon-button {
+    height: inherit;
+    width: auto;
+    padding-inline: 6px;
+    color: inherit;
+
+    ::ng-deep [mdEmbeddedButton] md-icon {
+      --md-comp-icon-size: 18;
+    }
   }
 
   md-ripple {
     --md-comp-ripple-color: var(--_color);
   }
 
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    border-color: var(--md-sys-color-disabled-border);
+    pointer-events: none;
+  }
+
   md-button {
     height: 100%;
-    padding-inline-start: 4px;
-    padding-inline-end: 4px;
+    padding-inline: 4px;
   }
-}
 
-:host([closable='true']) {
-  padding-inline-start: 16px;
-  cursor: default;
-  button,
-  a {
-    margin-left: -4px;
-    cursor: pointer;
-    position: relative;
-    padding-inline-start: 8px;
-    padding-inline-end: 8px;
+  &:has(md-icon-button) {
+    padding-inline-end: 0;
   }
-}
 
-:host([pill='true']) {
-  border-radius: var(--md-sys-shape-full);
-}
+  &.pill {
+    border-radius: var(--md-sys-shape-full);
+  }
 
-:host([leading='true']) {
-  padding-inline-start: 8px;
-}
+  &.selected {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-secondary-container-on);
 
-:host([pill='true'][trailing='true']) {
-  padding-inline-end: 4px;
-}
-
-:host([closable='true']) {
-  padding-inline-end: 0px;
-}
-
-:host([selected='true']) {
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-secondary-container-on);
-}
-
-:host([selected='true'][disabled='true']) {
-  background-color: #{md.disabled('background-color')};
-}
-
-@include md.disabled-component {
-  color: #{md.disabled('color')};
+    &.disabled {
+      background-color: var(--md-sys-color-disabled-background);
+      color: var(--md-sys-color-disabled-color);
+      border-color: var(--md-sys-color-disabled-border);
+    }
+  }
 }

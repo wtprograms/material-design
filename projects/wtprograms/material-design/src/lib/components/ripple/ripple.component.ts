@@ -1,191 +1,220 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   inject,
-  model,
+  input,
   signal,
-  ViewEncapsulation,
+  viewChild,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { AttachableDirective } from '../../directives/attachable.directive';
+import {
+  concat,
+  delay,
+  filter,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { delay, filter, map, tap } from 'rxjs';
-import { EASING } from '../../common/motion/easing';
+import { EASING, easingToFunction } from '../../common/motion/easing';
+import { MdComponent } from '../md.component';
+import { MdAttachableDirective } from '../../directives/attachable.directive';
 
-type ActivationState =
-  | 'inactive'
-  | 'touch-delay'
-  | 'holding'
-  | 'waiting-for-click';
+enum State {
+  INACTIVE,
+  TOUCH_DELAY,
+  HOLDING,
+  WAITING_FOR_CLICK,
+}
+
+const TOUCH_DELAY_MS = 150;
+const PRESS_GROW_MS = 450;
+const MINIMUM_PRESS_MS = 225;
+const INITIAL_ORIGIN_SCALE = 0.2;
+const PADDING = 10;
+const SOFT_EDGE_MINIMUM_SIZE = 75;
+const SOFT_EDGE_CONTAINER_RATIO = 0.35;
+const PRESS_PSEUDO = '::after';
+const ANIMATION_FILL = 'forwards';
 
 @Component({
-  selector: 'md-ripple, [mdRipple]',
+  selector: 'md-ripple',
   templateUrl: './ripple.component.html',
   styleUrl: './ripple.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   hostDirectives: [
     {
-      directive: AttachableDirective,
-      inputs: ['events', 'for', 'target'],
+      directive: MdAttachableDirective,
+      inputs: ['target'],
     },
   ],
-  host: {
-    '[attr.hovering]': 'hovering() || null',
-    '[attr.activated]': 'activated() || null',
-  },
 })
-export class RippleComponent extends MaterialDesignComponent {
-  readonly hoverable = model(true);
-  readonly interactive = model(true);
-  readonly attachableDirective = inject(AttachableDirective);
-  readonly hovering = toSignal(
-    this.attachableDirective.event$.pipe(
-      filter(
-        (x): x is PointerEvent =>
-          (this.hoverable() || this.interactive()) &&
-          (x.type === 'pointerenter' || x.type === 'pointerleave')
-      ),
-      filter((x) => this.shouldReactToEvent(x)),
-      tap((x) => x.type === 'pointerleave' && this.endPressAnimation()),
-      map((x) => x.type === 'pointerenter')
-    )
-  );
-  readonly activated = signal(false);
+export class MdRippleComponent extends MdComponent {
+  readonly hoverable = input(true);
+  readonly interactive = input(true);
+  readonly pressed = signal(false);
+  readonly hovered = signal(false);
+  
+  private readonly _attachable = inject(MdAttachableDirective);
+  private readonly _mdRoot = viewChild<ElementRef<HTMLElement>>('surface');
 
-  private _rippleStartEvent?: PointerEvent;
-  private _checkBoundsAfterContextMenu = false;
-  private _growAnimation?: Animation;
-
-  private _state: ActivationState = 'inactive';
-
-  private readonly _pointerUp$ = this.attachableDirective.event$.pipe(
-    filter((x): x is PointerEvent => x.type === 'pointerup'),
-    filter((x) => this.shouldReactToEvent(x)),
-    map(() => {
-      if (this._state === 'holding') {
-        return 'waiting-for-click';
-      }
-      if (this._state === 'touch-delay') {
-        this.startPressAnimation(this._rippleStartEvent);
-        return 'waiting-for-click';
-      }
-      return undefined;
-    }),
-    filter((x) => !!x),
-    tap((x) => (this._state = x))
-  );
-
-  private readonly _pointerDown$ = this.attachableDirective.event$.pipe(
-    filter((x): x is PointerEvent => x.type === 'pointerdown'),
-    filter((x) => this.shouldReactToEvent(x) && this.interactive()),
-    tap((x) => (this._rippleStartEvent = x)),
-    filter((x) => {
-      if (!this.isTouch(x)) {
-        this._state = 'waiting-for-click';
-        this.startPressAnimation(x);
-        return false;
-      }
-      return true;
-    }),
-    filter((x) => !this._checkBoundsAfterContextMenu || this.inBounds(x)),
-    tap(() => {
-      this._checkBoundsAfterContextMenu = false;
-      this._state = 'touch-delay';
-    }),
-    delay(150),
-    tap((x) => {
-      if (this._state === 'touch-delay') {
-        this._state = 'holding';
-        this.startPressAnimation(x);
-      }
-    })
-  );
-
-  private readonly _click$ = this.attachableDirective.event$.pipe(
-    filter((x) => x.type === 'click' && this.interactive()),
-    tap(() => {
-      if (this._state === 'waiting-for-click') {
-        this.endPressAnimation();
-      } else if (this._state === 'inactive') {
-        this.startPressAnimation();
-        this.endPressAnimation();
-      }
-    })
-  );
-
-  private readonly _pointerCancel$ = this.attachableDirective.event$.pipe(
-    filter((x) => x.type === 'pointercancel'),
-    tap(() => this.endPressAnimation())
-  );
-
-  private readonly _contextMenu$ = this.attachableDirective.event$.pipe(
-    filter((x) => x.type === 'contextmenu'),
-    tap(() => {
-      this._checkBoundsAfterContextMenu = true;
-      this.endPressAnimation();
-    })
-  );
+  private rippleSize = '';
+  private rippleScale = '';
+  private initialSize = 0;
+  private growAnimation?: Animation;
+  private state = State.INACTIVE;
+  private rippleStartEvent?: PointerEvent;
+  private checkBoundsAfterContextMenu = false;
 
   constructor() {
     super();
-    this.attachableDirective.events.set([
-      'click',
-      'contextmenu',
-      'pointercancel',
-      'pointerdown',
-      'pointerenter',
-      'pointerleave',
-      'pointerup',
-    ]);
-    this._pointerUp$.subscribe();
-    this._pointerDown$.subscribe();
-    this._click$.subscribe();
-    this._pointerCancel$.subscribe();
-    this._contextMenu$.subscribe();
+    this._attachable.targetEvent$.subscribe(this.handleEvent.bind(this));
+  }
+
+  private handlePointerenter(event: PointerEvent) {
+
+    if (!this.shouldReactToEvent(event) && (!this.hoverable() && !this.interactive())) {
+      return;
+    }
+
+    this.hovered.set(true);
+  }
+  
+  private handlePointerleave(event: PointerEvent) {
+    this.hovered.set(false);
+
+    // release a held mouse or pen press that moves outside the element
+    if (this.state !== State.INACTIVE) {
+      this.endPressAnimation();
+    }
+  }
+
+  private handlePointerup(event: PointerEvent) {
+    if (!this.shouldReactToEvent(event)) {
+      return;
+    }
+
+    if (this.state === State.HOLDING) {
+      this.state = State.WAITING_FOR_CLICK;
+      return;
+    }
+
+    if (this.state === State.TOUCH_DELAY) {
+      this.state = State.WAITING_FOR_CLICK;
+      this.startPressAnimation(this.rippleStartEvent);
+      return;
+    }
+  }
+
+  private async handlePointerdown(event: PointerEvent) {
+    if (!this.shouldReactToEvent(event)) {
+      return;
+    }
+
+    this.rippleStartEvent = event;
+    if (!this.isTouch(event)) {
+      this.state = State.WAITING_FOR_CLICK;
+      this.startPressAnimation(event);
+      return;
+    }
+
+    // after a longpress contextmenu event, an extra `pointerdown` can be
+    // dispatched to the pressed element. Check that the down is within
+    // bounds of the element in this case.
+    if (this.checkBoundsAfterContextMenu && !this.inBounds(event)) {
+      return;
+    }
+
+    this.checkBoundsAfterContextMenu = false;
+
+    // Wait for a hold after touch delay
+    this.state = State.TOUCH_DELAY;
+    await new Promise((resolve) => {
+      setTimeout(resolve, TOUCH_DELAY_MS);
+    });
+
+    if (this.state !== State.TOUCH_DELAY) {
+      return;
+    }
+
+    this.state = State.HOLDING;
+    this.startPressAnimation(event);
+  }
+
+  private handleClick() {
+    // Click is a MouseEvent in Firefox and Safari, so we cannot use
+    // `shouldReactToEvent`
+    if (!this.interactive()) {
+      return;
+    }
+
+    if (this.state === State.WAITING_FOR_CLICK) {
+      this.endPressAnimation();
+      return;
+    }
+
+    if (this.state === State.INACTIVE) {
+      // keyboard synthesized click event
+      this.startPressAnimation();
+      this.endPressAnimation();
+    }
+  }
+
+  private handlePointercancel(event: PointerEvent) {
+    if (!this.shouldReactToEvent(event)) {
+      return;
+    }
+
+    this.endPressAnimation();
+  }
+
+  private handleContextmenu() {
+    if (!this.interactive()) {
+      return;
+    }
+
+    this.checkBoundsAfterContextMenu = true;
+    this.endPressAnimation();
   }
 
   private determineRippleSize() {
-    const { height, width } = this.hostElement.getBoundingClientRect();
+    const {height, width} = this.hostElement.getBoundingClientRect();
     const maxDim = Math.max(height, width);
-    const softEdgeSize = Math.max(0.35 * maxDim, 75);
+    const softEdgeSize = Math.max(
+      SOFT_EDGE_CONTAINER_RATIO * maxDim,
+      SOFT_EDGE_MINIMUM_SIZE,
+    );
 
-    const initialSize = Math.floor(maxDim * 0.2);
+    const initialSize = Math.floor(maxDim * INITIAL_ORIGIN_SCALE);
     const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
-    const maxRadius = hypotenuse + 10;
+    const maxRadius = hypotenuse + PADDING;
 
-    const rippleScale = `${(maxRadius + softEdgeSize) / initialSize}`;
-    const rippleSize = `${initialSize}px`;
-
-    return {
-      initialSize,
-      rippleScale,
-      rippleSize,
-    };
+    this.initialSize = initialSize;
+    this.rippleScale = `${(maxRadius + softEdgeSize) / initialSize}`;
+    this.rippleSize = `${initialSize}px`;
   }
 
   private getNormalizedPointerEventCoords(pointerEvent: PointerEvent): {
     x: number;
     y: number;
   } {
-    const { scrollX, scrollY } = window;
-    const { left, top } = this.hostElement.getBoundingClientRect();
+    const {scrollX, scrollY} = window;
+    const {left, top} = this.hostElement.getBoundingClientRect();
     const documentX = scrollX + left;
     const documentY = scrollY + top;
-    const { pageX, pageY } = pointerEvent;
-    return { x: pageX - documentX, y: pageY - documentY };
+    const {pageX, pageY} = pointerEvent;
+    return {x: pageX - documentX, y: pageY - documentY};
   }
 
-  private getTranslationCoordinates(
-    initialSize: number,
-    positionEvent?: Event
-  ) {
-    const { height, width } = this.hostElement.getBoundingClientRect();
+  private getTranslationCoordinates(positionEvent?: Event) {
+    const {height, width} = this.hostElement.getBoundingClientRect();
     // end in the center
     const endPoint = {
-      x: (width - initialSize) / 2,
-      y: (height - initialSize) / 2,
+      x: (width - this.initialSize) / 2,
+      y: (height - this.initialSize) / 2,
     };
 
     let startPoint;
@@ -200,48 +229,51 @@ export class RippleComponent extends MaterialDesignComponent {
 
     // center around start point
     startPoint = {
-      x: startPoint.x - initialSize / 2,
-      y: startPoint.y - initialSize / 2,
+      x: startPoint.x - this.initialSize / 2,
+      y: startPoint.y - this.initialSize / 2,
     };
 
-    return { startPoint, endPoint };
+    return {startPoint, endPoint};
   }
 
   private startPressAnimation(positionEvent?: Event) {
-    this.activated.set(true);
-    this._growAnimation?.cancel();
-    const { initialSize, rippleSize, rippleScale } = this.determineRippleSize();
-    const { startPoint, endPoint } = this.getTranslationCoordinates(
-      initialSize,
-      positionEvent
-    );
+    const mdRoot = this._mdRoot()?.nativeElement
+    if (!mdRoot) {
+      return;
+    }
+
+    this.pressed.set(true);
+    this.growAnimation?.cancel();
+    this.determineRippleSize();
+    const {startPoint, endPoint} =
+      this.getTranslationCoordinates(positionEvent);
     const translateStart = `${startPoint.x}px, ${startPoint.y}px`;
     const translateEnd = `${endPoint.x}px, ${endPoint.y}px`;
 
-    this._growAnimation = this.hostElement.animate(
+    this.growAnimation = mdRoot.animate(
       {
         top: [0, 0],
         left: [0, 0],
-        height: [rippleSize, rippleSize],
-        width: [rippleSize, rippleSize],
+        height: [this.rippleSize, this.rippleSize],
+        width: [this.rippleSize, this.rippleSize],
         transform: [
           `translate(${translateStart}) scale(1)`,
-          `translate(${translateEnd}) scale(${rippleScale})`,
+          `translate(${translateEnd}) scale(${this.rippleScale})`,
         ],
       },
       {
-        pseudoElement: '::after',
-        duration: 450,
-        easing: EASING.standard,
-        fill: 'forwards',
-      }
+        pseudoElement: PRESS_PSEUDO,
+        duration: PRESS_GROW_MS,
+        easing: easingToFunction('standard'),
+        fill: ANIMATION_FILL,
+      },
     );
   }
 
   private async endPressAnimation() {
-    this._rippleStartEvent = undefined;
-    this._state = 'inactive';
-    const animation = this._growAnimation;
+    this.rippleStartEvent = undefined;
+    this.state = State.INACTIVE;
+    const animation = this.growAnimation;
     let pressAnimationPlayState = Infinity;
     if (typeof animation?.currentTime === 'number') {
       pressAnimationPlayState = animation.currentTime;
@@ -249,32 +281,41 @@ export class RippleComponent extends MaterialDesignComponent {
       pressAnimationPlayState = animation.currentTime.to('ms').value;
     }
 
-    if (pressAnimationPlayState >= 225) {
-      this.activated.set(false);
+    if (pressAnimationPlayState >= MINIMUM_PRESS_MS) {
+      this.pressed.set(false);
       return;
     }
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 225 - pressAnimationPlayState);
+      setTimeout(resolve, MINIMUM_PRESS_MS - pressAnimationPlayState);
     });
 
-    if (this._growAnimation !== animation) {
+    if (this.growAnimation !== animation) {
       // A new press animation was started. The old animation was canceled and
       // should not finish the pressed state.
       return;
     }
 
-    this.activated.set(false);
+    this.pressed.set(false);
   }
 
+  /**
+   * Returns `true` if
+   *  - the ripple element is enabled
+   *  - the pointer is primary for the input type
+   *  - the pointer is the pointer that started the interaction, or will start
+   * the interaction
+   *  - the pointer is a touch, or the pointer state has the primary button
+   * held, or the pointer is hovering
+   */
   private shouldReactToEvent(event: PointerEvent) {
-    if (!event.isPrimary) {
+    if (!this.interactive() || !event.isPrimary) {
       return false;
     }
 
     if (
-      this._rippleStartEvent &&
-      this._rippleStartEvent.pointerId !== event.pointerId
+      this.rippleStartEvent &&
+      this.rippleStartEvent.pointerId !== event.pointerId
     ) {
       return false;
     }
@@ -287,13 +328,45 @@ export class RippleComponent extends MaterialDesignComponent {
     return this.isTouch(event) || isPrimaryButton;
   }
 
-  private inBounds({ x, y }: PointerEvent) {
-    const { top, left, bottom, right } =
-      this.hostElement.getBoundingClientRect();
+  /**
+   * Check if the event is within the bounds of the element.
+   *
+   * This is only needed for the "stuck" contextmenu longpress on Chrome.
+   */
+  private inBounds({x, y}: PointerEvent) {
+    const {top, left, bottom, right} = this.hostElement.getBoundingClientRect();
     return x >= left && x <= right && y >= top && y <= bottom;
   }
 
-  private isTouch({ pointerType }: PointerEvent) {
+  private isTouch({pointerType}: PointerEvent) {
     return pointerType === 'touch';
+  }
+
+  private async handleEvent(event: Event) {
+    switch (event.type) {
+      case 'click':
+        this.handleClick();
+        break;
+      case 'contextmenu':
+        this.handleContextmenu();
+        break;
+      case 'pointercancel':
+        this.handlePointercancel(event as PointerEvent);
+        break;
+      case 'pointerdown':
+        await this.handlePointerdown(event as PointerEvent);
+        break;
+      case 'pointerenter':
+        this.handlePointerenter(event as PointerEvent);
+        break;
+      case 'pointerleave':
+        this.handlePointerleave(event as PointerEvent);
+        break;
+      case 'pointerup':
+        this.handlePointerup(event as PointerEvent);
+        break;
+      default:
+        break;
+    }
   }
 }

@@ -2,125 +2,164 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
+  HostListener,
   model,
-  output,
   viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MdComponent } from '../md.component';
 import { skip, tap } from 'rxjs';
-import { openClose, OpenCloseState } from '../../common/rxjs/open-close';
-import { ElevationComponent } from '../elevation/elevation.component';
-import { SlotDirective } from '../../directives/slot.directive';
-import { ButtonComponent } from '../button/button.component';
+import { CommonModule, isPlatformServer } from '@angular/common';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { DURATION } from '../../common/motion/duration';
+import { EASING } from '../../common/motion/easing';
 
 @Component({
-  selector: 'md-dialog',
+  selector: 'dialog[mdDialog]',
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   standalone: true,
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [ElevationComponent, SlotDirective],
-  host: {
-    '[attr.icon]': `iconSlot()?.any() || null`,
-    '[attr.headline]': `headlineSlot()?.any() || null`,
-    '[attr.supportingText]': `supportingtext()?.any() || null`,
-    '[attr.actions]': `actionSlot()?.any() || null`,
-    '[attr.body]': `bodySlot()?.any() || null`,
-    '[attr.state]': 'state()',
-  },
 })
-export class DialogComponent extends MaterialDesignComponent {
-  readonly returnValue = model<string>();
+export class MdDialogComponent extends MdComponent<HTMLDialogElement> {
   readonly open = model(false);
-  readonly cancel = output();
-  private readonly _dialog = viewChild<ElementRef<HTMLDialogElement>>('dialog');
 
-  readonly iconSlot = this.slotDirective('icon');
-  readonly headlineSlot = this.slotDirective('headline');
-  readonly supportingtext = this.slotDirective('supporting-text');
-  readonly actionSlot = this.slotDirective('action');
-  readonly bodySlot = this.slotDirective();
+  private readonly _contentElement =
+    viewChild<ElementRef<HTMLElement>>('content');
+  private readonly _containerHostElement =
+    viewChild<ElementRef<HTMLElement>>('containerHost');
+  private readonly _containerElement =
+    viewChild<ElementRef<HTMLElement>>('container');
 
-  private readonly _document = inject(DOCUMENT);
-  private readonly _openClose$ = openClose(this.open, 'long3', 'long2');
-  readonly state = toSignal(this._openClose$, {
-    initialValue: 'closed',
-  });
-  readonly stateChange = output<OpenCloseState>();
+  private _abortController?: AbortController;
 
   constructor() {
     super();
-    toObservable(this.state)
+    toObservable(this.open)
       .pipe(
-        tap((x) => this.stateChange.emit(x)),
         skip(1),
-        tap((state) => {
-          if (state === 'opening') {
-            this._document.body.style.overflow = 'hidden';
-            if (isPlatformBrowser(this.platformId)) {
-              this._dialog()?.nativeElement.showModal();
-            }
+        tap((open) => {
+          if (isPlatformServer(this._platformId)) {
+            return;
           }
-          if (state === 'closed') {
-            this._document.body.style.overflow = '';
-            if (isPlatformBrowser(this.platformId)) {
-              this._dialog()?.nativeElement.close();
-            }
+          this._document.body.style.overflow = open ? 'hidden' : '';
+          this.animate(open);
+          if (open) {
+            this._contentElement()!.nativeElement!.scrollTop = 0;
           }
         })
       )
       .subscribe();
-    this.setSlots(ButtonComponent, (component) => {
-      component.hostElement.slot = 'action';
-      component.variant.set('text');
+  }
+
+  @HostListener('document:keydown.escape')
+  escape() {
+    this.open.set(false);
+  }
+
+  scrimClick() {
+    this.open.set(false);
+  }
+
+  private async animate(opened: boolean) {
+    if (opened) {
+      this.hostElement.style.display = 'inline-flex';
+      this.hostElement.showModal();
+    }
+
+    this._abortController?.abort();
+    this._abortController = new AbortController();
+
+    const promises = [
+      this.animateHost(opened),
+      this.animateContainerHost(opened),
+    ].map(async (animation) => {
+      this._abortController?.signal.addEventListener('abort', () =>
+        animation.cancel()
+      );
+      await animation.finished.catch(() => {});
+      animation.commitStyles();
     });
+
+    await Promise.all(promises);
+
+    if (!opened) {
+      this.hostElement.close();
+      this.hostElement.style.display = 'none';
+    }
   }
 
-  private _nextClickIsFromContent = false;
-  private _escapePressedWithoutCancel = false;
+  private animateHost(opened: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
 
-  onDialogCancel(event: Event) {
-    event.preventDefault();
-    this._escapePressedWithoutCancel = false;
-    this.open.set(false);
-  }
+    const style = {
+      opacity: ['0', '1'],
+    };
 
-  onDialogClose() {
-    if (!this._escapePressedWithoutCancel) {
-      this.cancel.emit();
+    if (!opened) {
+      style.opacity = style.opacity.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
     }
 
-    this._escapePressedWithoutCancel = false;
-    this._dialog()?.nativeElement?.dispatchEvent(
-      new Event('cancel', { cancelable: true })
+    return this.hostElement.animate(style, timings);
+  }
+
+  private animateContainerHost(opened: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
+
+    const style: any = {
+      transform: [],
+      height: [],
+    };
+
+    this._containerHostElement()!.nativeElement.style.height = 'auto';
+    const containerHostRect =
+      this._containerHostElement()!.nativeElement.getBoundingClientRect();
+
+    const containerRect =
+      this._containerElement()!.nativeElement.getBoundingClientRect();
+    this._containerElement()!.nativeElement.style.height = `${containerRect.height}px`;
+    style.transform = [
+      `translateY(-${containerHostRect.height * 0.75}px)`,
+      'translateY(0)',
+    ];
+    style.height = [
+      `${containerHostRect.height * 0.25}px`,
+      `${containerHostRect.height}px`,
+    ];
+
+    if (!opened) {
+      style.transform = style.transform.reverse();
+      style.height = style.height.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
+    }
+
+    const animation = this._containerHostElement()!.nativeElement.animate(
+      style,
+      timings
     );
-  }
-
-  onDialogKeyDown(event: KeyboardEvent) {
-    if (event.key !== 'Escape') {
-      return;
-    }
-
-    this._escapePressedWithoutCancel = true;
-    setTimeout(() => (this._escapePressedWithoutCancel = false));
-  }
-
-  onDialogClick() {
-    if (this._nextClickIsFromContent) {
-      this._nextClickIsFromContent = false;
-      return;
-    }
-
-    this.cancel.emit();
-    this.open.set(false);
-  }
-
-  onContainerContentClick() {
-    this._nextClickIsFromContent = true;
+    this._abortController?.signal.addEventListener('abort', () =>
+      animation.cancel()
+    );
+    const reset = () => {
+      this._containerElement()!.nativeElement.style.height = '';
+      this._containerHostElement()!.nativeElement.style.height = '';
+    };
+    animation.onfinish = () => {
+      animation.cancel();
+      reset();
+    };
+    animation.oncancel = () => reset();
+    return animation;
   }
 }

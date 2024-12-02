@@ -1,23 +1,31 @@
+
 @use '../md';
 
-:host {
-  position: relative;
+@mixin _disabled {
+  color: var(--md-sys-color-disabled-color);
+  pointer-events: none;
 
+  .track {
+    background-color: var(--md-sys-color-surface-container-highest);
+    border-color: var(--md-sys-color-disabled-border);
+  }
+
+  .handle {
+    color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-disabled-border);
+  }
+}
+
+:host {
+  --_color: currentColor;
+  position: relative;
   display: inline-flex;
   flex-direction: row;
   gap: 8px;
   color: var(--md-sys-color-surface-variant-on);
+  align-items: center;
+  @include md.typescale('label', 'large');
   @include md.motion('color');
-
-  .container {
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: var(--md-sys-shape-full);
-    width: 40px;
-    height: 40px;
-  }
 
   input {
     appearance: none;
@@ -28,172 +36,254 @@
     cursor: pointer;
   }
 
+  .container {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--md-sys-shape-full);
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
   md-ripple {
+    --md-comp-ripple-color: var(--_color);
     --md-comp-ripple-transform-default: scale(0);
     --md-comp-ripple-transform-hover: scale(1);
   }
 
-  .label {
-    display: none;
-    color: inherit;
-    align-self: center;
-  }
-
-  md-icon,
-  ::slotted(md-icon) {
-    pointer-events: none;
-  }
-
-  md-icon {
-    color: inherit;
-  }
-}
-
-:host([checked='true']) {
-  color: var(--md-sys-color-primary);
-
-  md-icon,
-  ::slotted(md-icon) {
-    --md-comp-icon-filled: 1;
-  }
-}
-
-:host([error='true']) {
-  color: var(--md-sys-color-danger);
-}
-
-:host([label='true']) {
-  .label {
-    display: inline-flex;
-  }
-}
-
-:host([switch='true']) {
-  flex-grow: 0;
-  flex-shrink: 0;
-
-  .track {
-    width: 52px;
-    height: 32px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--md-sys-color-surface-container-highest);
-    border: 2px solid var(--md-sys-color-outline);
-    border-radius: var(--md-sys-shape-full);
-    box-sizing: border-box;
-    @include md.motion('background-color', 'border');
-  }
-
-  .handle {
-    width: 16px;
-    height: 16px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--md-sys-color-surface-container-highest);
-    background-color: var(--md-sys-color-outline);
-    border-radius: inherit;
-    @include md.motion('width, height, background-color');
-  }
-
-  .container {
-    position: absolute;
-    @include md.motion('inset-inline-start');
-  }
-
-  .unchecked-icon,
-  .checked-icon {
-    display: none;
-  }
-
-  ::slotted(md-icon) {
-    --md-comp-icon-size: 16;
-  }
-}
-
-:host([switch='true'][checked='false']) {
-  .container {
-    inset-inline-start: -4px;
-  }
-}
-:host([switch='true'][checked='false'][error='true']) {
-  .track {
-    background-color: var(--md-sys-color-danger-container);
-    border-color: var(--md-sys-color-danger);
-  }
-  .handle {
-    color: var(--md-sys-color-danger-on);
-    background-color: var(--md-sys-color-danger);
-  }
-}
-
-:host([switch='true'][checked='true']) {
-  .container {
-    inset-inline-start: 16px;
-  }
-  .track {
-    background-color: var(--md-sys-color-primary);
-    border-color: var(--md-sys-color-primary);
-  }
-  .handle {
-    height: 24px;
-    width: 24px;
-    color: var(--md-sys-color-primary);
-    background-color: var(--md-sys-color-primary-on);
-  }
-}
-:host([switch='true'][checked='true'][error='true']) {
-  .track {
-    background-color: var(--md-sys-color-danger);
-    border-color: var(--md-sys-color-danger);
-  }
-  .handle {
+  &.error {
     color: var(--md-sys-color-danger);
-    background-color: var(--md-sys-color-danger-on);
   }
-}
 
-:host([switch='true'][checked='false'][uncheckedIcon='true']) {
-  .unchecked-icon {
-    display: inline-flex;
-  }
-  .handle {
-    height: 24px;
+  .icon,
+  ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon] {
+    --md-comp-icon-size: 24;
     width: 24px;
+    height: 24px;
   }
-}
 
-:host([switch='true'][checked='true'][checkedIcon='true']) {
-  .checked-icon {
+  .icon {
     display: inline-flex;
   }
-}
 
-:host([switch='true']:active),
-:host([switch='true'][checked='false'][uncheckedIcon='true']:active) {
-  .handle {
-    height: 28px;
-    width: 28px;
+  ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon]  {
+    display: none;
+  }
+
+  &:has(input:checked),
+  &:has(input:indeterminate) {
+    color: var(--md-sys-color-primary);
+
+    md-icon,
+    ::ng-deep [mdCheckCheckedIcon],
+    ::ng-deep [mdCheckIndeterminateIcon] {
+      --md-comp-icon-filled: 1;
+    }
+
+    &.error {
+      color: var(--md-sys-color-danger);
+    }
+  }
+
+  &:has(::ng-deep [mdCheckUncheckedIcon]):not(:has(input:checked)):not(
+      :has(input:indeterminate)
+    ) {
+    ::ng-deep [mdCheckUncheckedIcon] {
+      display: inline-flex;
+    }
+
+    .icon {
+      display: none;
+    }
+  }
+
+  &:has(::ng-deep [mdCheckCheckedIcon]):has(input:checked):not(
+      :has(input:indeterminate)
+    ) {
+    ::ng-deep [mdCheckCheckedIcon] {
+      display: inline-flex;
+    }
+
+    .icon {
+      display: none;
+    }
+  }
+
+  &:has(::ng-deep [mdCheckIndeterminateIcon]):has(input:indeterminate) {
+    ::ng-deep {
+      [mdCheckUncheckedIcon],
+      [mdCheckCheckedIcon] {
+        display: none;
+      }
+
+      [mdCheckIndeterminateIcon] {
+        display: inline-flex;
+      }
+    }
+
+    .icon {
+      display: none;
+    }
+  }
+
+  &.switch {
+    .icon {
+      display: none;
+    }
+
+    .icon,
+    ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon] {
+      --md-comp-icon-size: 16;
+      width: 16px;
+      height: 16px;
+    }
+
+    .track {
+      position: relative;
+      width: 52px;
+      height: 32px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--md-sys-color-surface-container-highest);
+      border: 2px solid var(--md-sys-color-outline);
+      border-radius: var(--md-sys-shape-full);
+      box-sizing: border-box;
+      @include md.motion('background-color', 'border');
+    }
+
+    .handle {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--md-sys-color-surface-container-highest);
+      background-color: var(--md-sys-color-outline);
+      border-radius: inherit;
+      @include md.motion('width, height, background-color');
+    }
+
+    &:has(:not(input:checked)):has(::ng-deep [mdCheckUncheckedIcon]),
+    &:has(input:indeterminate):has(::ng-deep [mdCheckCheckedIcon]) {
+      .handle {
+        height: 24px;
+        width: 24px;
+      }
+    }
+
+    .container {
+      position: absolute;
+      @include md.motion('inset-inline-start');
+    }
+
+    &:has(:not(input:checked)) .container {
+      inset-inline-start: -6px;
+    }
+
+    &.error {
+      .track {
+        background-color: var(--md-sys-color-danger-container);
+        border-color: var(--md-sys-color-danger);
+      }
+
+      .handle {
+        color: var(--md-sys-color-danger-on);
+        background-color: var(--md-sys-color-danger);
+      }
+    }
+
+    &:has(input:checked) {
+      .container {
+        inset-inline-start: 14px;
+      }
+
+      .track {
+        background-color: var(--md-sys-color-primary);
+        border-color: var(--md-sys-color-primary);
+      }
+
+      .handle {
+        height: 24px;
+        width: 24px;
+        color: var(--md-sys-color-primary);
+        background-color: var(--md-sys-color-primary-on);
+      }
+
+      &.error {
+        .track {
+          background-color: var(--md-sys-color-danger);
+          border-color: var(--md-sys-color-danger);
+        }
+
+        .handle {
+          color: var(--md-sys-color-danger);
+          background-color: var(--md-sys-color-danger-on);
+        }
+      }
+    }
+
+    &:has(input:indeterminate) {
+      .container {
+        inset-inline-start: 16px;
+      }
+
+      .track {
+        background-color: var(--md-sys-color-primary-container);
+        border-color: var(--md-sys-color-primary);
+      }
+
+      .handle {
+        height: 24px;
+        width: 24px;
+        color: var(--md-sys-color-primary-on);
+        background-color: var(--md-sys-color-primary);
+      }
+
+      &.error {
+        .track {
+          background-color: var(--md-sys-color-danger-container);
+          border-color: var(--md-sys-color-danger);
+        }
+
+        .handle {
+          color: var(--md-sys-color-danger-on);
+          background-color: var(--md-sys-color-danger);
+        }
+      }
+    }
+
+    &:has(input:indeterminate) .container {
+      inset-inline-start: revert;
+    }
+
+    &:has(input:active),
+    &:has(input:active:not(:checked)):has(
+        ::ng-deep [mdCheckIndeterminateIcon]
+      ) {
+      .handle {
+        height: 28px;
+        width: 28px;
+      }
+    }
+  }
+
+  &.disabled,
+  &.disabled:has(input:checked),
+  &.disabled:has(input:indeterminate),
+  &.error.disabled,
+  &.error.disabled:has(input:checked),
+  &.error.disabled:has(input:indeterminate) {
+    @include _disabled;
   }
 }
 
-@mixin _disabled {
-  color: #{md.disabled('color')};
-  .track {
-    background-color: var(--md-sys-color-surface-container-highest);
-    border-color: #{md.disabled('border-color')};
-  }
-  .handle {
-    color: var(--md-sys-color-surface);
-    background-color: #{md.disabled('border-color')};
-  }
+:host-context(md-list-item.interactive:not(.split)) {
+  pointer-events: none;
 }
 
-:host([switch='true'][disabled='true']) {
-  @include _disabled;
-}
-
-@include md.disabled-component {
+:host-context(md-list-item.disabled) {
   @include _disabled;
 }

@@ -1,17 +1,7 @@
-@if (modal()) {
-<div mdAnimation [mdAnimationAnimators]="scrimAnimation" [mdAnimationState]="state()" part="scrim" class="scrim"></div>
-}
-<md-popover #popover part="popover" [target]="attachableDirective.target()" [offset]="offset()"
-  [placement]="placement()" [trigger]="trigger()" [manualClose]="manualClose() || !!actionSlot()?.any()" [delay]="500">
-  @if (variant() === 'plain') {
-  <slot></slot>
-  } @else {
-  <span part="headline" class="headline">
-    <slot name="headline"></slot>
-  </span>
-  <slot></slot>
-  <span part="actions" class="actions">
-    <slot name="action" (click)="onActionClick()"></slot>
-  </span>
-  }
+<md-popover [target]="attachable.targetElement()" [delay]="500" [offset]="8" trigger="hover" [hoverCloseOnPointerLeave]="variant() === 'plain' || !hasActions()" [(open)]="open">
+  <ng-content select="[mdTooltipHeadline]" />
+  <ng-content />
+  <div class="actions">
+    <ng-content select="[mdTooltipAction]" />
+  </div>
 </md-popover>

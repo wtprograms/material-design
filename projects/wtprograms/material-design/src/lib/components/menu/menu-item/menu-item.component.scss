@@ -1,0 +1,71 @@
+@use '../../md';
+
+:host {
+  --_color: currentColor;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  position: relative;
+  height: 48px;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  outline: none;
+  padding-inline: 12px;
+
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color', 'border-color', 'color');
+
+  .shortcut {
+    @include md.typescale('label', 'small');
+  }
+
+  .leading {
+    display: none;
+  }
+
+  & > [mdEmbeddedButton] ::ng-deep [mdMenuItemTrailing],
+  .trailing,
+  .shortcut {
+    margin-inline-start: auto;
+  }
+
+  [mdEmbeddedButton] {
+    flex-grow: 1;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-secondary-container-on);
+    background-color: var(--md-sys-color-secondary-container);
+  }
+
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+
+    &.selected {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  &.show-check-icon:has(input:checked)
+    >
+    ::ng-deep
+    [mdMenuItemTrailing] {
+    display: none;
+  }
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    outline: 0;
+    cursor: pointer;
+  }
+}

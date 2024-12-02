@@ -19,12 +19,17 @@ export const DURATION = {
 
 export type Duration = keyof typeof DURATION;
 
-export function durationToMilliseconds(duration?: Duration | number): number | undefined {
+export function durationToMilliseconds(duration?: Duration | number): number {
   if (!duration) {
-    return undefined;
+    return DURATION.short4;
   }
   if (typeof duration === 'number') {
     return duration;
   }
   return DURATION[duration];
+}
+
+export function durationToString(duration: Duration | number) {
+  const ms = durationToMilliseconds(duration) ?? 0;
+  return `${ms}ms`;
 }

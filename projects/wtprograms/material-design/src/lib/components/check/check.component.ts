@@ -1,24 +1,21 @@
 import {
-  Component,
   ChangeDetectionStrategy,
-  ViewEncapsulation,
+  Component,
+  computed,
+  ElementRef,
   forwardRef,
+  input,
   model,
   viewChild,
-  ElementRef,
-  computed,
-  signal,
-  effect,
 } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { attachTarget } from '../../directives/attachable.directive';
-import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
-import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { RippleComponent } from '../ripple/ripple.component';
-import { IconComponent } from '../icon/icon.component';
-import { MaterialDesignValueAccessorComponent } from '../material-design-value-accessor.component';
-import { FocusRingComponent } from '../focus-ring/focus-ring.component';
-import { SlotDirective } from '../../directives/slot.directive';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdValueAccessorComponent } from '../md-value-accessor.component';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdRippleComponent } from '../ripple/ripple.component';
+import { isActivationClick } from '../../common/events/is-activation-click';
+import { dispatchActivationClick } from '../../common/events/dispatch-activation-click';
 
 export type CheckType = 'checkbox' | 'radio';
 
@@ -26,93 +23,69 @@ export type CheckType = 'checkbox' | 'radio';
   selector: 'md-check',
   templateUrl: './check.component.html',
   styleUrl: './check.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [RippleComponent, FocusRingComponent, IconComponent, SlotDirective],
-  hostDirectives: [ParentActivationDirective, ForwardFocusDirective],
-  host: {
-    '[attr.error]': '!!errorText() || null',
-    '[attr.type]': 'type()',
-    '[attr.checked]': 'checked() || indeterminate()',
-    '[attr.disabled]': 'disabled() || null',
-    '[attr.switch]': 'switch() || null',
-    '[attr.uncheckedIcon]': `uncheckedIconSlot()?.any() || null`,
-    '[attr.checkedIcon]': `checkedIconSlot()?.any() || null`,
-    '[attr.label]': `labelSlot()?.any() || null`,
-  },
+  imports: [
+    CommonModule,
+    MdRippleComponent,
+    MdFocusRingComponent,
+    FormsModule,
+    MdIconComponent,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => CheckComponent),
+      useExisting: forwardRef(() => MdCheckComponent),
     },
   ],
+  host: {
+    '[class.switch]': 'switch()',
+    '[class.disabled]': 'disabled()',
+    '(click)': 'click($event)',
+  },
 })
-export class CheckComponent extends MaterialDesignValueAccessorComponent<
-  boolean | undefined | string
+export class MdCheckComponent extends MdValueAccessorComponent<
+  string | boolean
 > {
-  readonly type = model<CheckType>('checkbox');
-  readonly switch = model(false);
-  readonly supportingText = model<string>();
-  override readonly value = model<boolean | undefined | string>(false);
-  readonly radioValue = model<string | undefined>();
+  readonly checked = model(false);
+  readonly indeterminate = model(false);
+  readonly switch = input(false);
+  readonly type = input<CheckType>('checkbox');
 
-  private readonly _input = viewChild<ElementRef<HTMLInputElement>>('input');
-
-  readonly uncheckedIconSlot = this.slotDirective('unchecked-icon');
-  readonly checkedIconSlot = this.slotDirective('checked-icon');
-  readonly labelSlot = this.slotDirective();
-
-  readonly checked = signal(false);
-  readonly indeterminate = computed(() => this.value() === undefined);
-  private readonly _checkboxIcon = computed(() => {
-    if (!this.checked() && !this.indeterminate()) {
-      return 'check_box_outline_blank';
-    } else if (this.checked() && !this.indeterminate()) {
-      return 'check_box';
-    }
-    return 'indeterminate_check_box';
-  });
-  private readonly _radioIcon = computed(() =>
-    this.checked() ? 'radio_button_checked' : 'radio_button_unchecked'
-  );
-  readonly icon = computed(() =>
-    this.type() === 'checkbox' ? this._checkboxIcon() : this._radioIcon()
+  readonly checkedIcon = computed(() =>
+    this.type() === 'checkbox' ? 'check_box' : 'radio_button_checked'
   );
 
-  constructor() {
-    super();
-    attachTarget(ParentActivationDirective, this._input);
-    attachTarget(ForwardFocusDirective, this._input);
-    effect(
-      () => {
-        if (this.type() === 'radio') {
-          this.checked.set(this.value() === this.radioValue());
-        }
-      },
-      {
-        allowSignalWrites: true,
-      }
-    );
+  readonly indeterminateIcon = computed(() =>
+    this.type() === 'checkbox'
+      ? 'indeterminate_check_box'
+      : 'radio_button_unchecked'
+  );
+
+  readonly uncheckedIcon = computed(() =>
+    this.type() === 'checkbox'
+      ? 'check_box_outline_blank'
+      : 'radio_button_unchecked'
+  );
+
+  private readonly _inputElement =
+    viewChild.required<ElementRef<HTMLInputElement>>('inputElement');
+
+  input(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.value.set(input.value);
+    this.checked.set(!!input.checked);
+    this.indeterminate.set(!!input.indeterminate);
   }
 
-  onInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-
-    if (this.type() === 'radio') {
-      this.checked.set(target.checked);
-      this.value.set(this.radioValue());
+  click(event: Event) {
+    if (this.disabled()) {
+      return;
+    }
+    if (!isActivationClick(event)) {
       return;
     }
 
-    this.checked.set(target.checked || target.indeterminate);
-    if (!target.checked) {
-      this.value.set(false);
-    } else if (target.indeterminate) {
-      this.value.set(undefined);
-    } else {
-      this.value.set(true);
-    }
+    dispatchActivationClick(this._inputElement().nativeElement, false);
   }
 }

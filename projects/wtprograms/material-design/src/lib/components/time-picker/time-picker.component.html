@@ -1,95 +1,64 @@
-<ng-template #actions>
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" class="clear" (click)="clearClick()"
-    i18n>Clear</md-button>
-  @if (variant() !== 'embedded') {
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" (click)="okayClick()"
-    i18n>Okay</md-button>
-  <md-button [attr.slot]="variant() === 'dialog' ? 'action' : null" variant="text" (click)="cancelClick()"
-    i18n>Cancel</md-button>
-  }
-</ng-template>
-
-<ng-template #contents>
-  <div class="container">
-    <div class="body">
-      @if (hours()) {
-      <div class="input-container">
-        <div class="input">
-          <md-ripple [target]="hours" [interactive]="false" />
-          <input #hours type="number" class="hours" (beforeinput)="onBeforeInput($event, 'hours')"
-            [(ngModel)]="hoursInput">
-        </div>
-        <span class="input-label" i18n>Hours</span>
-      </div>
-      <span class="separator">:</span>
-      }
-      <div class="input-container">
-        <div class="input">
-          <md-ripple [target]="minutes" [interactive]="false" />
-          <input #minutes type="number" class="minutes" (beforeinput)="onBeforeInput($event, 'minutes')"
-            [(ngModel)]="minutesInput">
-        </div>
-        <span class="input-label" i18n>Minutes</span>
-      </div>
-      @if (seconds()) {
-      <span class="separator">:</span>
-      <div class="input-container">
-        <div class="input">
-          <md-ripple [target]="seconds" [interactive]="false" />
-          <input #seconds type="number" class="seconds" (beforeinput)="onBeforeInput($event, 'seconds')"
-            [(ngModel)]="secondsInput">
-        </div>
-        <span class="input-label" i18n>Seconds</span>
-      </div>
-      }
-      @if (timeOfDay()) {
-      <div class="meridian">
-        <md-button variant="plain" [class.selected]="meridian() === 'am'" (click)="meridian.set('am')">
-          {{ meridianLabels.am }}
-        </md-button>
-        <md-button variant="plain" [class.selected]="meridian() === 'pm'" (click)="meridian.set('pm')">
-          {{ meridianLabels.pm }}
-        </md-button>
-      </div>
-      }
-    </div>
-    @if (variant() !== 'dialog') {
-    <div class="actions">
-      <ng-container *ngTemplateOutlet="actions" />
-    </div>
+<ng-template #content>
+  <div class="body">
+    @if (displayHours()) {
+    <input type="number" [ngModel]="selectedTime().hours"
+      class="primary" (beforeinput)="beforeInput($event, 'hours')" />
+    <span class="colon">:</span>
+    }
+    <input type="number" [ngModel]="selectedTime().minutes" [class.primary]="!displayHours()"
+      [class.secondary]="displayHours()" (beforeinput)="beforeInput($event, 'minutes')" />
+    @if (displaySeconds()) {
+    <span class="colon">:</span>
+    <input type="number" [ngModel]="selectedTime().seconds" class="secondary"
+      (beforeinput)="beforeInput($event, 'seconds')" />
     }
   </div>
-</ng-template>
-
-@if (variant() === 'embedded') {
-<ng-container *ngTemplateOutlet="contents" />
-} @else {
-<md-field #field [variant]="fieldVariant()" [populated]="!!populated()" [errorText]="errorText()" [label]="label()"
-  [disabled]="disabled()" (bodyClick)="bodyClick()" (popoverStateChange)="popoverStateChange($event)">
-  <slot name="leading" slot="leading"></slot>
-  <slot name="prefix" slot="prefix"></slot>
-  <slot name="suffix" slot="suffix"></slot>
-  <slot name="supporting-text" slot="supporting-text"></slot>
-  <slot name="counter" slot="counter"></slot>
-  <span class="selected-value">
-    {{ displayText() }}
-  </span>
-  <md-icon slot="trailing">schedule</md-icon>
-  @if (variant() === 'dropdown') {
-  <div class="popover" slot="popover">
-    <ng-container *ngTemplateOutlet="contents" />
+  @if (inputVariant() !== 'embedded') {
+  <div class="actions">
+    <md-button variant="text" class="clear" (click)="clear()" i18n>
+      Clear
+    </md-button>
+    <md-button variant="text" (click)="okay()" i18n>
+      Okay
+    </md-button>
+    <md-button variant="text" (click)="cancel()" i18n>
+      Cancel
+    </md-button>
   </div>
   }
-</md-field>
-@if (variant() === 'dialog') {
-<md-dialog #dialog (stateChange)="popoverStateChange($event)">
-  <md-icon slot="icon">schedule</md-icon>
-  <span class="selected-value" slot="headline" i18n>
-    Select a time...
+</ng-template>
+@if (inputVariant() === 'embedded') {
+<ng-container *ngTemplateOutlet="content" />
+} @else {
+<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
+  [populated]="populated()" [prefix]="fieldUser.prefix()" [suffix]="fieldUser.suffix()"
+  [supportingText]="fieldUser.supportingText()" [counter]="fieldUser.counter()" (bodyClick)="this.open.set(true);">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
+  <md-icon mdFieldTrailing>
+    @if (inputVariant() === 'dropdown') {
+    arrow_drop_down
+    } @else {
+    calendar_month
+    }
+  </md-icon>
+
+  <span class="selected-value">
+    @if (!displayText()) {
+    <span i18n>Select a time...</span>
+    } @else {
+    <span>{{ displayText() }}</span>
+    }
   </span>
-  <slot name="supporting-text" slot="supporting-text"></slot>
-  <ng-container *ngTemplateOutlet="contents" />
-  <ng-container *ngTemplateOutlet="actions" />
-</md-dialog>
+</md-field>
+
+@if (inputVariant() === 'dropdown') {
+<md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
+  <ng-container *ngTemplateOutlet="content" />
+</md-popover>
+} @else {
+<dialog mdDialog [(open)]="open">
+  <span mdDialogHeadline i18n>Enter time</span>
+  <ng-container *ngTemplateOutlet="content" />
+</dialog>
 }
 }

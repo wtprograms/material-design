@@ -1,83 +1,43 @@
-@use '../md';
+@use "../md";
 
 :host {
   position: absolute;
-  display: inline-flex;
-  flex-direction: column;
 
-  md-popover {
-    max-width: 280px;
-    @include md.typescale('body', 'small');
-
-    &::part(body) {
-      padding: 8px;
-    }
-  }
-
-  ::slotted(md-divider) {
-    border-color: var(--md-sys-color-outline-variant);
-  }
-
-  .scrim {
+  .actions {
     display: none;
-    inset: 0;
-    opacity: 0;
-    position: fixed;
-    z-index: var(--md-sys-z-index-scrim);
-    background: var(--md-sys-color-scrim);
-    transition-property: opacity;
-  }
-}
-
-:host(:not([state='closed'])) {
-  .scrim {
-    display: block;
-  }
-}
-
-:host([variant='plain']) {
-  color: var(--md-sys-color-surface-inverse-on);
-  md-popover {
-    &::part(container) {
-      background-color: var(--md-sys-color-surface-inverse);
-    }
-  }
-}
-
-:host([variant='rich']) {
-  color: var(--md-sys-color-surface-variant-on);
-  md-popover {
-    &::part(body) {
-      padding-top: 12px;
-      padding-bottom: 8px;
-      padding-inline: 16px;
-    }
   }
 
-  .headline {
-    display: none;
-    margin-bottom: 4px;
+  &:has(::ng-deep [mdTooltipAction]) .actions {
+    display: inline-flex;
+  }
+
+  ::ng-deep [mdTooltipHeadline] {
     color: var(--md-sys-color-surface-on);
-    @include md.typescale('label', 'large');
+    @include md.typescale("title", "small");
+    margin-bottom: 4px;
   }
 
   .actions {
-    margin-inline-start: -12px;
-    display: none;
-    margin-top: 12px;
-    justify-content: flex-start;
     gap: 8px;
+    margin-inline-start: -12px;
+    margin-top: 12px;
   }
-}
 
-:host([headline='true']) {
-  .headline {
-    display: inline-flex;
+  md-popover {
+    background-color: var(--md-sys-color-surface-inverse);
+    color: var(--md-sys-color-surface-inverse-on);
+    padding-inline: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-wrap: nowrap;
   }
-}
 
-:host([actions='true']) {
-  .actions {
-    display: inline-flex;
+  &.rich md-popover {
+    border-radius: var(--md-sys-shape-medium);
+    background-color: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-surface-variant-on);
+    padding-top: 12px;
+    padding-inline: 16px;
+    padding-bottom: 8px;
   }
 }

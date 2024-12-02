@@ -1,0 +1,9 @@
+<button mdEmbeddedButton (click)="open.set(!open())" class="headline">
+  <md-focus-ring />
+  <md-ripple />
+  <ng-content select="[mdAccordionHeadline]" />
+  <md-icon>keyboard_arrow_down</md-icon>
+</button>
+<div #body class="body">
+  <ng-content />
+</div>

@@ -1,43 +1,27 @@
 <ng-template #content>
-  <div part="leading" class="leading content">
-    <slot name="leading"></slot>
-  </div>
-  <div part="body" class="body content">
-    <slot></slot>
-  </div>
-  <div part="trailing" class="trailing content">
-    <slot name="trailing"></slot>
-  </div>
+  @if (hasElevation()) {
+  <md-elevation [level]="elevationLevel()" [hoverable]="this.interactive()" [interactive]="this.interactive()" />
+  }
+  <ng-content />
 </ng-template>
 
-@if (this.interactive()) {
-@if (hasElevation()) {
-<md-elevation part="elevation" [target]="button()" [level]="elevationLevel()" />
-}
-<md-focus-ring part="focus-ring" [target]="button()" />
-<md-ripple part="ripple" [target]="button()" />
-@if (href()) {
-<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
-  [tabIndex]="disabled() ? -1 : 0">
-  <md-touch-area />
-  <ng-container *ngTemplateOutlet="content" />
-</a>
-} @else {
-<button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
-  [attr.value]="value() ?? null">
-  <md-touch-area />
-  <ng-container *ngTemplateOutlet="content" />
-</button>
-}
-} @else {
-<md-elevation part="elevation" [target]="hostElement" [level]="elevationLevel()" [hoverable]="false"
-  [interactive]="false" />
-<ng-container *ngTemplateOutlet="content" />
+@if (progressIndicatorUser.progressIndeterminate() || progressIndicatorUser.progressValue()) {
+<md-progress-indicator [indeterminate]="progressIndicatorUser.progressIndeterminate()"
+  [max]="progressIndicatorUser.progressMax()" [value]="progressIndicatorUser.progressValue()" variant="circular" />
 }
 
-@if (!disabled() && (progressValue() || progressIndeterminate())) {
-<div class="progress">
-  <md-progress-indicator variant="linear" [value]="progressValue()" [indeterminate]="progressIndeterminate()"
-    [buffer]="progressBuffer()" />
-</div>
+@if (interactive()) {
+@if (href()) {
+<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+  <md-ripple />
+  <md-focus-ring />
+</a>
+} @else {
+<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+  <md-ripple />
+  <md-focus-ring />
+</button>
 }
+}
+
+<ng-container *ngTemplateOutlet="content" />

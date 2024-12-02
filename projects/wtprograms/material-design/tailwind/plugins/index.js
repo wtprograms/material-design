@@ -1,3 +1,3 @@
 module.exports = {
-  typescale: require('./typescale')
+  typescale: require('./typescale'),
 };

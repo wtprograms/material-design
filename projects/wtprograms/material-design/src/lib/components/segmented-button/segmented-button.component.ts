@@ -2,90 +2,75 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  ElementRef,
   forwardRef,
+  inject,
+  input,
   model,
-  viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
+import { MdRippleComponent } from '../ripple/ripple.component';
 import { CommonModule } from '@angular/common';
-import { attachTarget } from '../../directives/attachable.directive';
-import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
-import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { BadgeComponent } from '../badge/badge.component';
-import { FocusRingComponent } from '../focus-ring/focus-ring.component';
-import { IconComponent } from '../icon/icon.component';
-import { MaterialDesignValueAccessorComponent } from '../material-design-value-accessor.component';
-import { RippleComponent } from '../ripple/ripple.component';
-import { TouchAreaComponent } from '../touch-area/touch-area.component';
+import { ButtonType } from '../button/button.component';
+import { MdValueAccessorComponent } from '../md-value-accessor.component';
+import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MdBadgeUserDirective } from '../badge/badge-user.directive';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdBadgeComponent } from '../badge/badge.component';
 
-export type SegmentedButtonType = 'button' | 'checkbox' | 'radio';
+export type SegmentedButtonType = ButtonType | 'checkbox' | 'radio';
 
 @Component({
   selector: 'md-segmented-button',
   templateUrl: './segmented-button.component.html',
   styleUrl: './segmented-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   imports: [
-    TouchAreaComponent,
-    RippleComponent,
-    FocusRingComponent,
+    MdFocusRingComponent,
+    MdEmbeddedButtonComponent,
+    MdRippleComponent,
     CommonModule,
-
-    BadgeComponent,
-    IconComponent,
+    MdIconComponent,
+    FormsModule,
+    MdBadgeComponent,
   ],
-  hostDirectives: [ParentActivationDirective, ForwardFocusDirective],
-  host: {
-    '[attr.disabled]': 'disabled() || null',
-    '[attr.selected]': 'selectedOrChecked() || null',
-    '[attr.leading]':
-      'leadingSlot()?.any() || selectedOrChecked() && checkOnSelected() || null',
-    '[attr.trailing]':
-      'trailingSlot()?.any() || badgeDot() || !!badgeNumber() || null',
-  },
+  hostDirectives: [
+    {
+      directive: MdBadgeUserDirective,
+      inputs: ['badgeDot', 'badgeNumber'],
+    },
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => SegmentedButtonComponent),
+      useExisting: forwardRef(() => MdSegmentedButtonComponent),
     },
   ],
+  host: {
+    '[class.disabled]': 'disabled()',
+    '[class.selected]': 'selectedOrChecked()',
+    '[class.show-check-icon]': 'showCheckIcon()',
+  },
 })
-export class SegmentedButtonComponent extends MaterialDesignValueAccessorComponent<boolean> {
-  readonly selected = model(false);
-  readonly type = model<SegmentedButtonType>('button');
-  readonly name = model<string>();
-  override readonly value = model<boolean | undefined>();
-  readonly badgeDot = model(false);
-  readonly badgeNumber = model<number>();
-  readonly checkOnSelected = model(false);
-  readonly checked = computed(() => this.value() === true);
+export class MdSegmentedButtonComponent extends MdValueAccessorComponent<
+  boolean | string
+> {
+  readonly badgeUser = inject(MdBadgeUserDirective);
+  readonly checked = model(false);
+  readonly type = input<SegmentedButtonType>('button');
+  readonly href = input<string>();
+  readonly target = input<string>();
+  readonly selected = input(false);
+  readonly showCheckIcon = input(false);
+
   readonly selectedOrChecked = computed(
     () => this.selected() || this.checked()
   );
 
-  readonly leadingSlot = this.slotDirective('leading');
-  readonly trailingSlot = this.slotDirective('trailing');
-
-  private readonly _button = viewChild<ElementRef<HTMLButtonElement>>('button');
-  private readonly _input = viewChild<ElementRef<HTMLInputElement>>('input');
-  readonly input = computed(() =>
-    this.type() === 'button' ? this._button() : this._input()
-  );
-
-  constructor() {
-    super();
-    attachTarget(ForwardFocusDirective, this.input);
-    attachTarget(ParentActivationDirective, this.input);
-  }
-
-  onInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.value.set(target.checked);
+  input(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.value.set(input.value);
+    this.checked.set(!!input.checked);
   }
 }

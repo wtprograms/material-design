@@ -1,28 +1,38 @@
 <ng-template #content>
-  <md-touch-area />
-  @if (custom()) {
-  <slot></slot>
+  <ng-content />
+</ng-template>
+
+<ng-template #buttonContent>
+  <md-ripple />
+  <md-focus-ring />
+  @if (customIcon()) {
+  <div class="md-icon-button-custom">
+    <ng-container *ngTemplateOutlet="content" />
+    @if (!disabled()) {
+    <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />
+    }
+  </div>
   } @else {
-  <md-icon part="icon" [filled]="selected()" [badgeDot]="badgeDot()" [badgeNumber]="badgeNumber()">
-    <slot></slot>
+  <md-icon [filled]="filled()" [badgeDot]="disabled() ? false : badgeUser.badgeDot()"
+    [badgeNumber]="disabled() ? 0 : badgeUser.badgeNumber()">
+    <ng-container *ngTemplateOutlet="content" />
   </md-icon>
   }
 </ng-template>
 
-<md-focus-ring part="focus-ring" [target]="button()" />
-<md-ripple part="ripple" [target]="button()" />
 @if (href()) {
-<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
-  [tabIndex]="disabled() ? -1 : 0">
-  <ng-container *ngTemplateOutlet="content" />
+<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+  <ng-container *ngTemplateOutlet="buttonContent" />
 </a>
 } @else {
-<button part="button" #button [type]="type()" [disabled]="disabled() || null" [attr.name]="name() ?? null"
-  [attr.value]="value() ?? null">
-  <ng-container *ngTemplateOutlet="content" />
+<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+  <ng-container *ngTemplateOutlet="buttonContent" />
 </button>
 }
 
-@if (!disabled() && (progressValue() || progressIndeterminate())) {
-<md-progress-indicator [size]="28" [value]="progressValue()" [indeterminate]="progressIndeterminate()" />
+@if (progressIndicatorUser.progressIndeterminate() || progressIndicatorUser.progressValue()) {
+<md-progress-indicator [indeterminate]="progressIndicatorUser.progressIndeterminate()"
+  [max]="progressIndicatorUser.progressMax()" [value]="progressIndicatorUser.progressValue()" variant="circular" />
 }
+
+<ng-content select="md-popover, md-tooltip, md-menu" />

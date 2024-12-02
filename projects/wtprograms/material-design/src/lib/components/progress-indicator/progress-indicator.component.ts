@@ -2,10 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  input,
   model,
   ViewEncapsulation,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
+import { MdComponent } from '../md.component';
 
 export type ProgressIndicatorVariant = 'circular' | 'linear';
 
@@ -15,23 +16,21 @@ export type ProgressIndicatorVariant = 'circular' | 'linear';
   styleUrl: './progress-indicator.component.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
   host: {
     '[attr.variant]': 'variant()',
     '[style.--md-comp-progress-indicator-size]': 'size() ?? null',
     '[style.--md-comp-progress-indicator-width]': 'width() ?? null',
   },
 })
-export class ProgressIndicatorComponent extends MaterialDesignComponent {
-  readonly variant = model<ProgressIndicatorVariant>('circular');
-  readonly value = model(0);
-  readonly max = model(1);
-  readonly indeterminate = model(false);
-  readonly fourColor = model(false);
-  readonly size = model<number>();
-  readonly width = model<number>();
-  readonly buffer = model(0);
-  readonly circleSize = model<number>();
+export class MdProgressIndicatorComponent extends MdComponent {
+  readonly variant = input<ProgressIndicatorVariant>('circular');
+  readonly value = input(0);
+  readonly max = input(1);
+  readonly indeterminate = input(false);
+  readonly fourColor = input(false);
+  readonly size = input<number>();
+  readonly width = input<number>();
+  readonly buffer = input(0);
   readonly dashOffset = computed(() => (1 - this.value() / this.max()) * 100);
   readonly progressStyle = computed<Partial<CSSStyleDeclaration>>(() => ({
     transform: `scaleX(${

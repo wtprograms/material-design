@@ -1,92 +1,71 @@
-import { CommonModule } from '@angular/common';
 import {
-  Component,
   ChangeDetectionStrategy,
-  ViewEncapsulation,
-  model,
-  viewChild,
-  ElementRef,
-  HostListener,
+  Component,
   inject,
+  input,
 } from '@angular/core';
-import { attachTarget } from '../../directives/attachable.directive';
-import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
-import { IconComponent } from '../icon/icon.component';
-import { MaterialDesignComponent } from '../material-design.component';
-import { ProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
-import { TouchAreaComponent } from '../touch-area/touch-area.component';
-import { FocusRingComponent } from '../focus-ring/focus-ring.component';
-import { RippleComponent } from '../ripple/ripple.component';
-import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { FormGroupDirective } from '@angular/forms';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
+import { MdComponent } from '../md.component';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdRippleComponent } from '../ripple/ripple.component';
+import { ButtonType } from '../button/button.component';
+import { MdBadgeUserDirective } from '../badge/badge-user.directive';
+import { CommonModule } from '@angular/common';
+import { MdBadgeComponent } from '../badge/badge.component';
+import { MdEmbeddedButtonModule } from '../embedded-button/embedded-button.module';
+import { MdProgressIndicatorUserDirective } from '../progress-indicator/progress-indicator-user.directive';
+import { MdProgressIndicatorModule } from '../progress-indicator/progress-indicator.module';
 
-export type IconButtonVariant = 'filled' | 'tonal' | 'outlined' | 'standard';
+export type IconButtonVariant =
+  | 'standard'
+  | 'filled'
+  | 'tonal'
+  | 'outlined'
+  | 'plain';
 
 @Component({
   selector: 'md-icon-button',
   templateUrl: './icon-button.component.html',
   styleUrl: './icon-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   imports: [
-    ProgressIndicatorComponent,
-    IconComponent,
-    FocusRingComponent,
-    RippleComponent,
-    TouchAreaComponent,
+    MdRippleComponent,
+    MdFocusRingComponent,
+    MdIconComponent,
     CommonModule,
+    MdEmbeddedButtonModule,
+    MdBadgeComponent,
+    MdProgressIndicatorModule
   ],
   hostDirectives: [
-    ForwardFocusDirective,
-    ParentActivationDirective,
+    {
+      directive: MdBadgeUserDirective,
+      inputs: ['badgeDot', 'badgeNumber'],
+    },
+    {
+      directive: MdProgressIndicatorUserDirective,
+      inputs: [
+        'progressValue',
+        'progressMax',
+        'progressIndeterminate',
+      ]
+    }
   ],
   host: {
-    '[attr.variant]': 'variant()',
-    '[attr.selected]': 'selected() || null',
-    '[attr.busy]': 'progressIndeterminate() || !!progressValue() || null',
-    '[attr.disabled]': 'disabled() || null',
+    '[class]': 'variant()',
+    '[class.selected]': 'selected()',
+    '[class.disabled]': 'disabled()',
   },
 })
-export class IconButtonComponent extends MaterialDesignComponent {
-  readonly disabled = model(false);
-  readonly anchorTarget = model<string>();
-  readonly name = model<string>();
-  readonly value = model<string>();
-  readonly progressIndeterminate = model(false);
-  readonly progressValue = model(0);
-  readonly progressMax = model(0);
-  readonly variant = model<IconButtonVariant>('standard');
-  readonly selected = model(false);
-  readonly custom = model(false);
-  readonly badgeDot = model(false);
-  readonly badgeNumber = model<number>();
-  readonly type = model<FormSubmitterType>('button');
-  readonly href = model<string>();
-
-  readonly button =
-    viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
-
-    private readonly _formGroup = inject(FormGroupDirective, { optional: true });
-
-  constructor() {
-    super();
-    attachTarget(ForwardFocusDirective, this.button);
-    attachTarget(ParentActivationDirective, this.button);
-  }
-
-  @HostListener('click')
-  onClick() {
-    if (this.href()) {
-      return;
-    }
-
-    if (this.type() === 'submit') {
-      const form = this.hostElement.closest('form');
-      form?.requestSubmit();
-    } else if (this.type() === 'reset') {
-      this._formGroup?.reset();
-    }
-  }
+export class MdIconButtonComponent extends MdComponent {
+  readonly badgeUser = inject(MdBadgeUserDirective);
+  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
+  readonly variant = input<IconButtonVariant>('standard');
+  readonly selected = input(false);
+  readonly type = input<ButtonType>('button');
+  readonly disabled = input(false);
+  readonly href = input<string>();
+  readonly target = input<string>();
+  readonly customIcon = input(false);
+  readonly filled = input<boolean>();
 }

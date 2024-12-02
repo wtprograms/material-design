@@ -2,33 +2,30 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  model,
-  ViewEncapsulation,
+  inject,
+  input,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
 
 @Component({
   selector: 'md-badge',
-  templateUrl: './badge.component.html',
+  template: `{{ text() }}`,
   styleUrl: './badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   host: {
-    '[attr.dot]': 'dot() || null',
-    '[attr.number]': 'text() ?? null',
-    '[attr.embedded]': 'embedded() || null',
-    '[attr.singleDigit]': 'singleDigit() || null',
+    '[class.dot]': 'dot()',
+    '[class.zero]': 'number() === 0',
+    '[class.single-digit]': 'singleDigit()',
+    '[class.embedded]': 'embedded()',
   },
 })
-export class BadgeComponent extends MaterialDesignComponent {
-  readonly dot = model(false);
-  readonly number = model<number>();
-  readonly embedded = model(false);
+export class MdBadgeComponent {
+  readonly dot = input(false);
+  readonly number = input(0);
+  readonly embedded = input(false);
 
   readonly text = computed(() => {
-    if (this.dot()) {
-      return;
+    if (this.number() === 0 || this.dot()) {
+      return '';
     }
     const number = this.number();
     if (!number) {
@@ -36,6 +33,7 @@ export class BadgeComponent extends MaterialDesignComponent {
     }
     return number > 999 ? '999+' : number;
   });
+
   readonly singleDigit = computed(() =>
     this.number() ? this.number()! < 10 : false
   );

@@ -2,26 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  ElementRef,
-  HostListener,
   inject,
-  model,
-  viewChild,
-  ViewEncapsulation,
+  input,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { ForwardFocusDirective } from '../../directives/forward-focus.directive';
-import { ProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
-import { TouchAreaComponent } from '../touch-area/touch-area.component';
-import { RippleComponent } from '../ripple/ripple.component';
+import { MdComponent } from '../md.component';
+import { MdElevationComponent } from '../elevation/elevation.component';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
 import { CommonModule } from '@angular/common';
-import { ParentActivationDirective } from '../../directives/parent-activation.directive';
-import { attachTarget } from '../../directives/attachable.directive';
-import { ElevationComponent } from '../elevation/elevation.component';
-import { FocusRingComponent } from '../focus-ring/focus-ring.component';
-import { SlotDirective } from '../../directives/slot.directive';
-import { FormSubmitterType } from '../../common/forms/form-submitted-type';
-import { FormGroupDirective } from '@angular/forms';
+import { MdRippleComponent } from '../ripple/ripple.component';
+import { MdTooltipComponent } from '../tooltip/tooltip.component';
+import { MdProgressIndicatorUserDirective } from '../progress-indicator/progress-indicator-user.directive';
+import { MdProgressIndicatorModule } from '../progress-indicator/progress-indicator.module';
 
 export type ButtonVariant =
   | 'elevated'
@@ -30,81 +22,65 @@ export type ButtonVariant =
   | 'outlined'
   | 'text'
   | 'plain';
+export type ButtonType = 'button' | 'submit' | 'reset';
+
+const ELEVATION_VARIANTS: ButtonVariant[] = ['elevated', 'filled', 'tonal'];
 
 @Component({
   selector: 'md-button',
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  standalone: true,
   imports: [
-    ProgressIndicatorComponent,
-    TouchAreaComponent,
-    ElevationComponent,
-    RippleComponent,
-    FocusRingComponent,
+    MdElevationComponent,
+    MdFocusRingComponent,
+    MdEmbeddedButtonComponent,
+    MdRippleComponent,
     CommonModule,
-    SlotDirective,
+    MdProgressIndicatorModule
   ],
-  hostDirectives: [ParentActivationDirective, ForwardFocusDirective],
+  hostDirectives: [
+    {
+      directive: MdProgressIndicatorUserDirective,
+      inputs: [
+        'progressValue',
+        'progressMax',
+        'progressIndeterminate',
+      ]
+    }
+  ],
   host: {
-    '[attr.variant]': 'variant()',
-    '[attr.disabled]': 'disabled() || null',
-    '[attr.busy]': 'progressIndeterminate() || !!progressValue() || null',
-    '[attr.leading]': `leadingSlot()?.any() || null`,
-    '[attr.trailing]': `trailingSlot()?.any() || null`,
+    '[class]': 'variant()',
+    '[class.disabled]': 'disabled()',
+    '(click)': 'click()',
   },
 })
-export class ButtonComponent extends MaterialDesignComponent {
-  readonly variant = model<ButtonVariant>('filled');
-  readonly disabled = model(false);
-  readonly anchorTarget = model<string>();
-  readonly name = model<string>();
-  readonly value = model<string>();
-  readonly progressIndeterminate = model(false);
-  readonly progressValue = model(0);
-  readonly progressMax = model(0);
-  readonly type = model<FormSubmitterType>('button');
-  readonly href = model<string>();
-
-  private readonly _formGroup = inject(FormGroupDirective, { optional: true });
-
-  readonly button =
-    viewChild<ElementRef<HTMLButtonElement | HTMLAnchorElement>>('button');
-
-  readonly leadingSlot = this.slotDirective('leading');
-  readonly trailingSlot = this.slotDirective('trailing');
-
-  readonly hasElevation = computed(
-    () =>
-      (this.variant() === 'elevated' ||
-        this.variant() === 'filled' ||
-        this.variant() === 'tonal') &&
-      !this.progressIndeterminate() &&
-      !this.progressValue()
+export class MdButtonComponent extends MdComponent {
+  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
+  readonly variant = input<ButtonVariant>('filled');
+  readonly type = input<ButtonType>('button');
+  readonly disabled = input(false);
+  readonly href = input<string>();
+  readonly target = input<string>();
+  readonly hasElevation = computed(() =>
+    ELEVATION_VARIANTS.includes(this.variant())
   );
   readonly elevationLevel = computed(() =>
-    !this.disabled() && this.variant() === 'elevated' ? 1 : 0
+    this.variant() !== 'elevated' ? 0 : 1
   );
 
-  constructor() {
-    super();
-    attachTarget(ForwardFocusDirective, this.button);
-    attachTarget(ParentActivationDirective, this.button);
-  }
+  private readonly _tooltip = inject(MdTooltipComponent, {
+    host: true,
+    optional: true,
+  });
 
-  @HostListener('click')
-  onClick() {
-    if (this.href()) {
+  click() {
+    if (this.disabled()) {
       return;
     }
 
-    if (this.type() === 'submit') {
-      const form = this.hostElement.closest('form');
-      form?.requestSubmit();
-    } else if (this.type() === 'reset') {
-      this._formGroup?.reset();
+    if (this._tooltip) {
+      this._tooltip.open.set(false);
     }
   }
 }

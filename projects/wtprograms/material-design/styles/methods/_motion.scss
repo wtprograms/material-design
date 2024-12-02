@@ -1,5 +1,15 @@
-@mixin motion($properties: 'all', $easing: 'standard', $duration: 'short-4') {
+@mixin motion($properties: 'all', $easing: 'standard', $duration: 'short-4', $delay: null) {
   transition-property: #{$properties};
+  @include motion-change($easing, $duration, $delay);
+}
+
+@mixin motion-change($easing: 'standard', $duration: 'short-4', $delay: null) {
   transition-duration: var(--md-sys-motion-duration-#{$duration});
   transition-timing-function: var(--md-sys-motion-easing-#{$easing});
+  @if $delay == null {
+    transition-duration: 0;
+  } @else {
+    transition-delay: var(--md-sys-motion-duration-#{$delay});
+  }
+  transition-behavior: allow-discrete;
 }

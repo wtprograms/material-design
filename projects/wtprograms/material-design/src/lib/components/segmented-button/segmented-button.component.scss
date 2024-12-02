@@ -1,34 +1,75 @@
-@use '../md';
+@use "../md";
 
 :host {
   --_color: currentColor;
-  position: relative;
+  -webkit-tap-highlight-color: transparent;
   display: inline-flex;
+  position: relative;
   height: 40px;
-  gap: 8px;
-  cursor: pointer;
+  flex-shrink: 0;
   place-content: center;
   place-items: center;
+  gap: 8px;
   user-select: none;
-  @include md.typescale('label', 'large');
-  @include md.motion('background-color, color, border-color');
+  outline: none;
   padding-inline: 24px;
-  background-color: transparent;
-  color: var(--md-sys-color-surface-variant-on);
   border-color: var(--md-sys-color-outline);
   border-style: solid;
   border-top-width: 1px;
   border-bottom-width: 1px;
+  color: var(--md-sys-color-surface-variant-on);
 
-  md-icon,
-  ::slotted(md-icon) {
+  @include md.typescale("label", "large");
+  @include md.motion("background-color", "border-color", "color");
+
+  ::ng-deep [mdSegmentedButtonLeading],
+  ::ng-deep [mdSegmentedButtonTrailing],
+  md-icon {
     --md-comp-icon-size: 18;
+    max-height: 18px;
   }
 
-  @include md.reset-button;
+  &.show-check-icon:has(input:checked) ::ng-deep [mdSegmentedButtonLeading] {
+    display: none;
+  }
 
-  .label {
-    text-wrap: nowrap;
+  &:first-child {
+    border-start-start-radius: var(--md-sys-shape-full);
+    border-end-start-radius: var(--md-sys-shape-full);
+    border-inline-start-width: 1px;
+  }
+
+  &:last-child {
+    border-start-end-radius: var(--md-sys-shape-full);
+    border-end-end-radius: var(--md-sys-shape-full);
+    border-inline-end-width: 1px;
+  }
+
+  &:has(::ng-deep [mdSegmentedButtonLeading]),
+  &.show-check-icon:has(input:checked) {
+    padding-inline-start: 16px;
+  }
+  &:has(::ng-deep [mdSegmentedButtonTrailing]),
+  &:has(md-badge) {
+    padding-inline-end: 16px;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-secondary-container-on);
+    background-color: var(--md-sys-color-secondary-container);
+  }
+
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
+
+    &.selected {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
   }
 
   input {
@@ -39,49 +80,4 @@
     outline: 0;
     cursor: pointer;
   }
-
-  md-ripple {
-    --md-comp-ripple-color: var(--_color);
-  }
-}
-
-:host(:first-child:last-child) {
-  border-radius: var(--md-sys-shape-full);
-  border-inline-width: 1px;
-}
-
-:host(:first-child:not(:last-child)) {
-  border-radius: var(--md-sys-shape-full-start);
-  border-inline-start-width: 1px;
-  border-inline-end-width: 0.5px;
-}
-
-:host(:not(:first-child):not(:last-child)) {
-  border-inline-width: 0.5px;
-}
-
-:host(:not(:first-child):last-child) {
-  border-radius: var(--md-sys-shape-full-end);
-  border-inline-start-width: 0.5px;
-  border-inline-end-width: 1px;
-}
-
-:host([leading='true']) {
-  padding-inline-start: 16px;
-}
-:host([trailing='true']) {
-  padding-inline-end: 16px;
-}
-
-:host([selected='true']) {
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-secondary-container-on);
-}
-:host([selected='true'][disabled='true']) {
-  background-color: #{md.disabled('background-color')};
-}
-
-@include md.disabled-component {
-  color: #{md.disabled('color')};
-  border-color: #{md.disabled('border-color')};
 }

@@ -1,23 +1,21 @@
 @use '../md';
 
 :host {
-  display: inline-flex;
-  flex-direction: column;
-
-  .tabs {
-    display: inline-flex;
-    width: 100%;
-  }
+  display: grid;
+  flex-grow: 1;
+  position: relative;
 
   .indicator {
+    position: absolute;
+    height: 0;
+    border-radius: 3px 3px 0 0;
     background-color: var(--md-sys-color-primary);
-    border-radius: 3 3 0 0;
-    height: 3px;
-    @include md.motion('margin-inline-start, width, opacity');
+    bottom: 0;
+    inset-inline-start: 0;
+    @include md.motion('height');
   }
-}
 
-:host([secondary='true']) .indicator {
-  border-radius: 0;
-  height: 2px;
+  &.secondary .indicator {
+    border-radius: 0;
+  }
 }

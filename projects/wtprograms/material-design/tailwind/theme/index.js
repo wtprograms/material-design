@@ -1,6 +1,9 @@
+const boxShadow = require('./boxShadow');
+
 module.exports = {
   colors: require('./colors'),
   borderRadius: require('./borderRadius'),
+  boxShadow: require('./boxShadow'),
   screens: require('./screens'),
   fontFamily: require('./fontFamily'),
   fontWeight: require('./fontWeight'),

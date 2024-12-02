@@ -1,9 +1,11 @@
-@use '../md';
+@use "../md";
 
 :host {
   position: absolute;
   border-radius: inherit;
   inset: 0;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
 
-  @include md.motion('box-shadow');
+  @include md.motion("box-shadow");
 }

@@ -1,4 +1,4 @@
-@use '../md';
+@use "../md";
 
 :host {
   display: inline-flex;
@@ -13,10 +13,5 @@
   outline-color: var(--md-sys-color-outline-variant);
   outline-style: solid;
 
-  @include md.motion('opacity, outline-width');
-}
-
-:host([focused='true']) {
-  outline-width: 3px;
-  opacity: 1;
+  @include md.motion("opacity, outline-width");
 }

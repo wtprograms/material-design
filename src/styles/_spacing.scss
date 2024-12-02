@@ -1,0 +1,18 @@
+@mixin rules {
+  p,
+  h2,
+  md-card:has(table) {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  md-card:has(table) {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}

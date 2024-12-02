@@ -1,44 +1,34 @@
 @use '../md';
 
 :host {
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-surface-variant-on);
+  border-radius: var(--md-sys-shape-extra-small);
+  box-shadow: var(--md-sys-elevation-2);
+  z-index: var(--md-sys-z-index-popover);
+  margin: 0;
+  padding: 0;
   display: none;
   flex-direction: column;
-  inset: auto;
-  opacity: 0;
-  margin: 0;
-  background-color: transparent;
-  overflow: visible;
-  border-radius: var(--md-sys-shape-extra-small);
-  border: 0;
-  padding: 0;
-  z-index: var(--md-sys-z-index-popover);
-  isolation: isolate;
-  color: inherit;
+  @include md.typescale('body', 'medium');
 
-  .container {
+  &.opening, &.closing {
+    overflow: hidden;
+  }
+
+  &.absolute {
     position: absolute;
-    background-color: var(--md-sys-color-surface-container);
-    inset: 0;
-    border-radius: inherit;
-    transform-origin: top;
-    z-index: -1;
-    color: inherit;
-    height: 0;
   }
 
-  .body {
-    display: inline-flex;
-    flex-direction: column;
-    opacity: 0;
-    overflow-y: auto;
-    color: inherit;
+  &.fixed {
+    position: fixed;
   }
-}
 
-:host([strategy='fixed']) {
-  position: fixed;
-}
-
-:host([strategy='absolute']) {
-  position: absolute;
+  &.height {
+    display: inline-flex !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    height: fit-content !important;
+    pointer-events: none !important;
+  }
 }

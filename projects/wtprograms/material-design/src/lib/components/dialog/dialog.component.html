@@ -1,28 +1,21 @@
-<div part="scrim" class="scrim"></div>
-<dialog part="dialog" #dialog [returnValue]="returnValue() || null" (cancel)="onDialogCancel($event)"
-  (click)="onDialogClick()" (close)="onDialogClose()" (keydown)="onDialogKeyDown($event)">
-  <div part="container" class="container">
-    <md-elevation part="elevation" [level]="3" />
-    <div part="container-content" class="container-content" (click)="onContainerContentClick()">
-      <div part="header" class="header">
-        <div part="icon" class="icon">
-          <slot name="icon"></slot>
-        </div>
-        <div part="headline" class="headline">
-          <slot name="headline"></slot>
-        </div>
-        <div part="supporting-text" class="supporting-text">
-          <slot #supportingTextSlot name="supporting-text"></slot>
-        </div>
+<ng-template #actions>
+  <ng-content select="[mdDialogAction]" />
+</ng-template>
+<div class="scrim" (click)="scrimClick()"></div>
+<div #containerHost class="container-host">
+  <div #container class="container">
+    <div class="body">
+      <div class="header">
+        <ng-content select="[mdDialogIcon]" />
+        <ng-content select="[mdDialogHeadline]" />
       </div>
-      <div class="scroller">
-        <div class="content">
-          <slot></slot>
-        </div>
-      </div>
-      <div part="actions" #actions class="actions">
-        <slot name="action"></slot>
+      <ng-content select="[mdDialogSupportingText]" />
+      <div #content class="content">
+        <ng-content />
       </div>
     </div>
+    <div class="actions">
+      <ng-container *ngTemplateOutlet="actions" />
+    </div>
   </div>
-</dialog>
+</div>

@@ -1,13 +1,61 @@
-@use '../md';
-
 :host {
-  @include md.reset-input {
-    flex-grow: 1;
-  }
-
-  md-field::part(content) {
+  md-field ::ng-deep .input-container {
     cursor: text;
   }
-}
 
-@include md.disabled-component;
+  .value-text {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  input,
+  textarea {
+    display: inline-flex;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    caret-color: inherit;
+    resize: none;
+    overflow: hidden;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    box-sizing: border-box;
+    caret-color: var(--_label-color);
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  md-popover {
+    max-height: 260px;
+  }
+}

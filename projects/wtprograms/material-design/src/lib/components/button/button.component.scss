@@ -1,119 +1,147 @@
-@use '../md';
+@use "../md";
 
 :host {
-  --md-comp-button-icon-size: 18;
   --_color: currentColor;
-  position: relative;
+  -webkit-tap-highlight-color: transparent;
   display: inline-flex;
+  position: relative;
   border-radius: var(--md-sys-shape-full);
   height: 40px;
-  cursor: pointer;
-  @include md.motion('background-color, color, border-color');
   flex-shrink: 0;
   place-content: center;
   place-items: center;
   gap: 8px;
-  @include md.typescale('label', 'large');
+  user-select: none;
+  outline: none;
+  padding-inline: 24px;
 
-  @include md.reset-button;
+  @include md.typescale("label", "large");
+  @include md.motion("background-color", "border-color", "color");
 
-  ::slotted(md-icon) {
-    --md-comp-icon-size: var(--md-comp-button-icon-size);
+  ::ng-deep [mdButtonLeading], ::ng-deep [mdButtonTrailing] {
+    --md-comp-icon-size: 18;
+    max-height: 18px;
+  }
+
+  &:has(::ng-deep [mdButtonLeading]) {
+    padding-inline-start: 16px;
+  }
+  &:has(::ng-deep [mdButtonTrailing]) {
+    padding-inline-end: 16px;
+  }
+
+  &.text {
+    padding-inline: 16px;
+    &:has(::ng-deep [mdButtonLeading]) {
+      padding-inline-start: 12px;
+    }
+    &:has(::ng-deep [mdButtonTrailing]) {
+      padding-inline-end: 12px;
+    }
+  }
+
+  &.disabled {
+    &.elevated,
+    &.filled,
+    &.tonal {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+
+  &.elevated,
+  &.outlined,
+  &.text {
+    color: var(--md-sys-color-primary);
+  }
+
+  &.elevated {
+    background-color: var(--md-sys-color-surface-container-low);
+  }
+
+  &.filled {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-primary-on);
+  }
+
+  &.tonal {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-secondary-container-on);
+  }
+
+  &.outlined {
+    border: 1px solid var(--md-sys-color-outline);
+
+    &.disabled {
+      border-color: var(--md-sys-color-disabled-border);
+    }
+  }
+
+  &.plain {
+    border-radius: 0;
+    color: var(--md-sys-color-surface-variant-on);
+    padding-inline: 0;
+
+    &:has(::ng-deep [mdButtonLeading]),
+    &:has(::ng-deep [mdButtonTrailing]) {
+      padding-inline: 0;
+    }
+  }
+
+  &.disabled {
+    color: var(--md-sys-color-disabled-color);
+    pointer-events: none;
   }
 
   md-ripple {
     --md-comp-ripple-color: var(--_color);
   }
 
-  .progress {
-    position: absolute;
-    display: inline-flex;
-    align-self: center;
-    justify-content: center;
-    inset: 0;
+  &:has(md-progress-indicator) {
+    pointer-events: none;
+    [mdEmbeddedButton] {
+      color: transparent;
+    }
   }
 
   md-progress-indicator {
     --md-comp-progress-indicator-color: var(--_color);
+    --md-comp-progress-indicator-size: 32;
     --md-comp-progress-indicator-width: 8;
-  }
-
-  .leading,
-  .trailing {
-    display: none;
+    position: absolute;
   }
 }
 
-:host([variant='elevated']) {
-  background-color: var(--md-sys-color-surface-container-low);
-  color: var(--md-sys-color-primary);
-}
-
-:host([variant='filled']) {
-  background-color: var(--md-sys-color-primary);
-  color: var(--md-sys-color-primary-on);
-}
-
-:host([variant='tonal']) {
-  background-color: var(--md-sys-color-secondary-container);
-  color: var(--md-sys-color-secondary-container-on);
-}
-
-:host([variant='outlined']) {
-  border: 1px solid var(--md-sys-color-outline);
-  color: var(--md-sys-color-primary);
-}
-
-:host([variant='text']) {
-  color: var(--md-sys-color-primary);
-}
-
-:host([variant='plain']) {
-  border-radius: 0;
-  color: var(--md-sys-color-surface-variant-on);
-}
-
-$_24-padding: 24px;
-$_24-addon: 16px;
-$_24-variants: ('elevated', 'filled', 'tonal', 'outlined');
-@each $variant in $_24-variants {
-  :host([variant='#{$variant}']) {
-    padding-inline: $_24-padding;
-  }
-  :host([variant='#{$variant}'][leading='true']) {
-    padding-inline-start: $_24-addon;
-  }
-  :host([variant='#{$variant}'][trailing='true']) {
-    padding-inline-end: $_24-addon;
+:host-context(md-tooltip), :host-context(md-dialog:not(.date-picker)) {
+  &.filled {
+    color: var(--md-sys-color-primary);
+    background-color: transparent;
+    padding-inline: 16px;
+    md-elevation {
+      display: none;
+    }
+    &:has(::ng-deep [mdButtonLeading]) {
+      padding-inline-start: 12px;
+    }
+    &:has(::ng-deep [mdButtonTrailing]) {
+      padding-inline-end: 12px;
+    }
   }
 }
 
-:host([variant='text']) {
-  padding-inline: 16px;
-}
-:host([variant='text'][leading='true']) {
-  padding-inline-start: 12px;
-}
-:host([variant='text'][trailing='true']) {
-  padding-inline-end: 12px;
-}
 
-:host([busy='true']:not([disabled='true'])) {
-  pointer-events: none;
-
-  a,
-  button {
-    opacity: 0;
+:host-context(md-snack-bar) {
+  &.filled {
+    color: var(--md-sys-color-primary-inverse-on);
+    background-color: transparent;
+    padding-inline: 16px;
+    md-elevation {
+      display: none;
+    }
+    &:has(::ng-deep [mdButtonLeading]) {
+      padding-inline-start: 12px;
+    }
+    &:has(::ng-deep [mdButtonTrailing]) {
+      padding-inline-end: 12px;
+    }
   }
-}
-
-$disabled-backgrounds: ('elevated', 'filled', 'tonal');
-@each $background in $disabled-backgrounds {
-  :host([variant='#{$background}'][disabled='true']) {
-    background-color: #{md.disabled('background-color')};
-  }
-}
-
-@include md.disabled-component {
-  color: #{md.disabled('color')};
 }

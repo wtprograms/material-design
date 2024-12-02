@@ -1,0 +1,47 @@
+<ng-template #content>
+  <md-icon class="leading"></md-icon>
+  <ng-content select="[mdMenuItemLeading]" />
+  <span>
+    <ng-content />
+  </span>
+  @if (hasChildMenuItems()) {
+  <md-icon class="trailing">arrow_right</md-icon>
+  } @else if (shortcut()) {
+  <span class="shortcut">{{ shortcut() }}</span>
+  } @else {
+  <ng-content select="[mdMenuItemTrailing]" />
+  }
+</ng-template>
+
+@if (href()) {
+<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+  <md-ripple />
+  <md-focus-ring />
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else if (type() === 'button') {
+<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+  <md-ripple />
+  <md-focus-ring />
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+} @else {
+<md-ripple [target]="inputElement" />
+<md-focus-ring [target]="inputElement" />
+@if (checked() && showCheckIcon()) {
+<md-icon>check</md-icon>
+}
+<ng-container *ngTemplateOutlet="content" />
+<input #inputElement [type]="type()" [ngModel]="value()" [checked]="checked()" [disabled]="disabled()"
+  (input)="input($event)" />
+}
+
+<ng-template #childMenuItems>
+  <ng-content select="md-menu-item" />
+</ng-template>
+
+@if (hasChildMenuItems()) {
+<md-menu [target]="this" placement="right-start" [offset]="0">
+  <ng-container *ngTemplateOutlet="childMenuItems" />
+</md-menu>
+}

@@ -1,116 +1,163 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  effect,
-  inject,
+  input,
   model,
-  PLATFORM_ID,
-  ViewEncapsulation,
+  output,
+  signal,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { AnimationDirective } from '../../directives/animation/animation.directive';
-import { IconButtonComponent } from '../icon-button/icon-button.component';
+import { MdComponent } from '../md.component';
+import { distinctUntilChanged, filter, tap } from 'rxjs';
+import { MdAttachableDirective } from '../../directives/attachable.directive';
 import {
-  animationContext,
-  AnimationContextDirective,
-  AnimationTriggers,
-} from '../../directives/animation/animation-context.directive';
-import { Animator } from '../../directives/animation/animator';
+  takeUntilDestroyed,
+  toObservable,
+  toSignal,
+} from '@angular/core/rxjs-interop';
+import { openClose, OpenCloseState } from '../../common/rxjs/open-close';
 import { isPlatformBrowser } from '@angular/common';
-import { Subject, takeUntil, timer } from 'rxjs';
-import { openClose } from '../../common/rxjs/open-close';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ElevationComponent } from '../elevation/elevation.component';
+import { DURATION, durationToMilliseconds } from '../../common/motion/duration';
+import { EASING } from '../../common/motion/easing';
+import { MdButtonModule } from '../button/button.module';
+import { MdIconButtonComponent } from '../icon-button/icon-button.component';
 
 @Component({
   selector: 'md-snack-bar',
   templateUrl: './snack-bar.component.html',
   styleUrl: './snack-bar.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [IconButtonComponent, ElevationComponent, AnimationDirective],
-  hostDirectives: [AnimationContextDirective],
+  imports: [MdIconButtonComponent, MdButtonModule],
+  hostDirectives: [
+    {
+      directive: MdAttachableDirective,
+      inputs: ['target'],
+    },
+  ],
   host: {
-    '[attr.closeButton]': 'closeButton() || null',
-    '[attr.actions]': 'actionSlot()?.any() || null',
-    '[attr.multiline]': 'multiline() || null',
+    '[class]': 'openCloseState()',
+    '[class.multiline]': 'multiline()',
+    '(touchstart)': 'touchStart($event)',
+    '(touchmove)': 'touchMove($event)',
+    '(touchend)': 'touchEnd($event)',
   },
 })
-export class SnackBarComponent extends MaterialDesignComponent {
-  readonly multiline = model(false);
-  readonly closeButton = model(false);
+export class MdSnackBarComponent extends MdComponent {
   readonly open = model(false);
-  readonly autoDissmissTimeout = model(5000);
+  readonly closable = input(false);
+  readonly close = output<Event>();
+  readonly actionClick = output<Event>();
+  readonly action = input<string>();
+  readonly multiline = input(false);
 
-  readonly actionSlot = this.slotDirective('action');
+  private _deltaX = 0;
+  private _currentX = 0;
+  private _animation?: Animation;
 
-  readonly animationTriggers: AnimationTriggers = {
-    container: [
-      new Animator('opening', {
-        style: { display: 'inline-flex' },
-        keyframes: { transform: 'scaleY(100%)' },
-        options: { duration: 'short4', easing: 'standardDecelerate' },
-      }),
-      new Animator('closing', {
-        keyframes: { transform: 'scaleY(0)' },
-        options: {
-          duration: 'short2',
-          easing: 'standardAccelerate',
-          delay: 'short1',
-        },
-      }),
-      new Animator('closed', {
-        style: { display: 'none', transform: 'scaleY(0)' },
-      }),
-    ],
-    body: [
-      new Animator('opening', {
-        keyframes: { opacity: '1' },
-        options: {
-          duration: 'short4',
-          easing: 'standardDecelerate',
-          delay: 'short3',
-        },
-      }),
-      new Animator('closing', {
-        keyframes: { opacity: '0' },
-        options: { duration: 'short2', easing: 'standardAccelerate' },
-      }),
-    ],
-  };
-
-  private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _closing$ = new Subject<void>();
-
-  private readonly _openClose = openClose(this.open, 'long1', 'long1');
-  readonly state = toSignal(this._openClose);
+  readonly openCloseState = toSignal(
+    openClose(
+      toObservable(this.open).pipe(
+        filter(() => isPlatformBrowser(this._platformId)),
+        distinctUntilChanged(),
+        tap((open) => this.animate(open)),
+        takeUntilDestroyed(this._destroyRef)
+      )
+    ).pipe(tap((state) => this.openCloseStateChange.emit(state)))
+  );
+  readonly openCloseStateChange = output<OpenCloseState>();
 
   constructor() {
     super();
     this.hostElement.popover = 'manual';
-    animationContext(this.animationTriggers);
-
-    effect(() => {
-      const state = this.state();
-      if (state === 'opening' && isPlatformBrowser(this._platformId)) {
-        this.hostElement.showPopover();
-      }
-      if (state === 'closed' && isPlatformBrowser(this._platformId)) {
-        this.hostElement.hidePopover();
-        this._closing$.next();
-      }
-      if (state === 'opened') {
-        if (this.autoDissmissTimeout() > 0) {
-          timer(this.autoDissmissTimeout())
-            .pipe(takeUntil(this._closing$))
-            .subscribe(() => this.open.set(false));
-        }
-      }
-    });
   }
 
-  onActionClick() {
-    this.open.set(false);
+  touchStart(event: TouchEvent) {
+    event.preventDefault();
+    this.hostElement.style.transition = 'none';
+    this._currentX = event.touches[0].clientX;
+  }
+
+  touchMove(event: TouchEvent) {
+    event.preventDefault();
+    this._deltaX = (this._currentX - event.touches[0].clientX) * -1;
+    this.hostElement.style.transform = `translateX(${this._deltaX}px)`;
+  }
+
+  async touchEnd(event: Event) {
+    event.preventDefault();
+    this.hostElement.style.transition = '';
+    const rect = this.hostElement.getBoundingClientRect();
+    if (Math.abs(this._deltaX) > 150) {
+      if (this._deltaX < 0) {
+        this.hostElement.style.transform = `translateX(-${window.innerWidth + rect.width}px)`;
+      } else {
+        this.hostElement.style.transform = `translateX(${window.innerWidth + rect.width}px)`;
+      }
+      await new Promise((resolve) => setTimeout(resolve, durationToMilliseconds(DURATION.long4)));
+      this.hostElement.style.transform = '';
+      this.open.set(false);
+    } else {
+      this.hostElement.style.transform = '';
+    }
+    this._deltaX = 0;
+  }
+
+  closeClicked(event: Event) {
+    this.close.emit(event);
+    if (!event.defaultPrevented) {
+      this.open.set(false);
+    }
+  }
+
+  actionClicked(event: Event) {
+    this.actionClick.emit(event);
+    if (!event.defaultPrevented) {
+      this.open.set(false);
+    }
+  }
+
+  private getHeight() {
+    this.hostElement.classList.add('height');
+    const height = this.hostElement.offsetHeight;
+    this.hostElement.classList.remove('height');
+    return height;
+  }
+
+  private async animate(open: boolean) {
+    this._animation?.cancel();
+    const timings: OptionalEffectTiming = {
+      easing: EASING.standardDecelerate,
+      duration: DURATION.short4,
+      fill: 'forwards',
+    };
+
+    if (open) {
+      this.hostElement.style.display = 'inline-flex';
+      this.hostElement.showPopover();
+    }
+
+    const height = this.getHeight();
+    const style: any = {
+      opacity: ['0', '1'],
+      height: ['0px', `${height}px`],
+    };
+
+    if (!open) {
+      style.height = style.height.reverse();
+      style.opacity = style.opacity.reverse();
+      timings.easing = EASING.standardAccelerate;
+      timings.duration = DURATION.short3;
+    }
+
+    this._animation = this.hostElement.animate(style, timings);
+    try {
+      await this._animation.finished;
+      this._animation.cancel();
+    } catch {}
+    this.hostElement.style.height = open ? 'fit-content' : '0px';
+
+    if (!open) {
+      this.hostElement.style.display = 'none';
+      this.hostElement.hidePopover();
+    }
   }
 }

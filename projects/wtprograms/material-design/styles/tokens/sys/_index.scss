@@ -1,5 +1,4 @@
 @use 'color';
-@use 'disabled';
 @use 'elevation';
 @use 'motion';
 @use 'shape';
@@ -9,7 +8,6 @@
 
 $tokens: (
   'color': color.$tokens,
-  'disabled': disabled.$tokens,
   'elevation': elevation.$tokens,
   'motion': motion.$tokens,
   'shape': shape.$tokens,

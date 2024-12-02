@@ -1,9 +1,7 @@
-@use '../../../methods';
 @use 'to-typescale';
 
 $tokens: (
-  'large': to-typescale.to-typescale('headline-large', methods.rfs(32, 20), 'brand', 'regular'),
-  'large-no-rfs': to-typescale.to-typescale('headline-large', 32px, 'brand', 'regular'),
+  'large': to-typescale.to-typescale('headline-large', 32px, 'brand', 'regular'),
   'medium': to-typescale.to-typescale('headline-medium', 28px, 'brand', 'regular'),
   'small': to-typescale.to-typescale('headline-small', 24px, 'brand', 'regular')
 );

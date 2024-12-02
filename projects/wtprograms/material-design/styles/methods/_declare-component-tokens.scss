@@ -1,0 +1,19 @@
+@use 'sass:meta';
+
+@mixin declare-component-tokens($component, $tokens) {
+  $prefix: '--md-comp-#{$component}';
+  @include _declare-tokens($component, $tokens, $prefix);
+}
+
+@mixin _declare-tokens($component, $tokens, $prefix: '') {
+  @each $key, $value in $tokens {
+    $token-name: if($key == '', $prefix, '#{$prefix}-#{$key}');
+    @if meta.type-of($value) == 'map' {
+      @include declare-tokens($value, $token-name);
+    } @else {
+      --#{$token-name}: #{$value};
+      $local-name: str-replace($token-name, 'md-comp-#{$component}', '');
+      #{$local-name}: var(--#{$token-name}, #{$value});
+    }
+  }
+}

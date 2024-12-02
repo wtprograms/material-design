@@ -1,260 +1,101 @@
-import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ViewEncapsulation,
-  model,
-  output,
-  viewChild,
-  ElementRef,
-  inject,
-  computed,
-  effect,
-} from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { openClose, OpenCloseState } from '../../common/rxjs/open-close';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { Animator } from '../../directives/animation/animator';
-import {
-  animationContext,
-  AnimationContextDirective,
-  AnimationTriggers,
-} from '../../directives/animation/animation-context.directive';
-import {
-  animation,
-  AnimationDirective,
-} from '../../directives/animation/animation.directive';
-import { combineLatest, filter, map, skip, tap } from 'rxjs';
-import { ElevationComponent } from '../elevation/elevation.component';
-import { SlotDirective } from '../../directives/slot.directive';
+import { ChangeDetectionStrategy, Component, ElementRef, input, model, viewChild } from '@angular/core';
+import { MdComponent } from '../md.component';
+import { CommonModule, isPlatformServer } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { skip, tap } from 'rxjs';
+import { DURATION } from '../../common/motion/duration';
+import { EASING } from '../../common/motion/easing';
 
-export type SheetPosition = 'top' | 'end' | 'bottom' | 'start';
+export type SheetSide = 'top' | 'bottom' | 'start' | 'end';
 
 @Component({
-  selector: 'md-sheet',
+  selector: 'dialog[mdSheet]',
   templateUrl: './sheet.component.html',
   styleUrl: './sheet.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [
-    CommonModule,
-    AnimationDirective,
-    ElevationComponent,
-    SlotDirective,
-  ],
-  hostDirectives: [AnimationContextDirective, AnimationDirective],
+  imports: [CommonModule],
   host: {
-    '[attr.position]': 'position()',
-    '[attr.state]': 'state()',
-    '[attr.modal]': 'modal() || null',
-    '[attr.icon]': `iconSlot()?.any() || null`,
-    '[attr.headline]': `headlineSlot()?.any() || null`,
-    '[attr.supportingText]': `supportingtext()?.any() || null`,
-    '[attr.actions]': `actionSlot()?.any() || null`,
-    '[style.--md-comp-sheet-width]': 'maxWidthPx() ?? null',
-    '[style.--md-comp-sheet-height]': 'maxHeightPx() ?? null',
+    '[class]': 'side()',
   },
 })
-export class SheetComponent extends MaterialDesignComponent {
-  readonly modal = model(false);
+export class MdSheetComponent extends MdComponent<HTMLDialogElement> {
   readonly open = model(false);
-  readonly returnValue = model<string>();
-  readonly cancel = output();
-  readonly position = model<SheetPosition>('start');
-  readonly maxWidth = model<number>();
+  readonly side = input<SheetSide>('start');
+  readonly embedded = input(false);
 
-  readonly iconSlot = this.slotDirective('icon');
-  readonly headlineSlot = this.slotDirective('headline');
-  readonly supportingtext = this.slotDirective('supportingText');
-  readonly actionSlot = this.slotDirective('action');
-
-  readonly maxWidthPx = computed(() =>
-    this.maxWidth() &&
-    (this.position() === 'start' || this.position() === 'end')
-      ? `${this.maxWidth()}px`
-      : '100%'
-  );
-  readonly maxHeight = model<number>();
-  readonly maxHeightPx = computed(() =>
-    this.maxHeight() &&
-    (this.position() === 'top' || this.position() === 'bottom')
-      ? `${this.maxHeight()}px`
-      : '100%'
-  );
-
-  private readonly _openClose$ = openClose(this.open, 'long2', 'short4');
-  readonly state = toSignal(this._openClose$, {
-    initialValue: 'closed',
-  });
-  readonly stateChange = output<OpenCloseState>();
-
-  private readonly _embeddedAnimations = computed(() => {
-    if (this.modal()) {
-      return [];
-    }
-    const maxWidth = this.maxWidthPx();
-    const maxHeight = this.maxHeightPx();
-    return [
-      new Animator('opening', {
-        keyframes: () => {
-          return { maxWidth, maxHeight };
-        },
-        options: { duration: 'long1', easing: 'standardDecelerate' },
-      }),
-      new Animator('closing', {
-        keyframes: () => {
-          if (this.position() === 'top' || this.position() === 'bottom') {
-            return { maxHeight: 0 };
-          }
-          return { maxWidth: 0 };
-        },
-        options: { duration: 'short3', easing: 'standardAccelerate' },
-      }),
-    ];
-  });
-
-  private readonly _dialog = viewChild<ElementRef<HTMLDialogElement>>('dialog');
-
-  private getTranslate(amount: number) {
-    const func =
-      this.position() === 'top' || this.position() === 'bottom'
-        ? 'translateY'
-        : 'translateX';
-    const percentageNumber =
-      this.position() === 'start' || this.position() === 'top'
-        ? amount * -1
-        : amount;
-    const percentage = amount === 0 ? 0 : percentageNumber + '%';
-    return `${func}(${percentage})`;
-  }
-
-  private readonly _dialogAnimations: AnimationTriggers = {
-    dialog: [
-      new Animator('opening', {
-        keyframes: () => ({
-          transform: [this.getTranslate(100), this.getTranslate(0)],
-        }),
-        options: { duration: 'long1', easing: 'emphasizedDecelerate' },
-      }),
-      new Animator('closing', {
-        keyframes: () => ({
-          transform: [this.getTranslate(0), this.getTranslate(100)],
-        }),
-        options: { duration: 'short3', easing: 'emphasizedAccelerate' },
-      }),
-    ],
-    scrim: [
-      new Animator('opening', {
-        keyframes: { opacity: 0.32 },
-        options: { duration: 'long1', easing: 'emphasizedDecelerate' },
-      }),
-      new Animator('closing', {
-        keyframes: { opacity: 0 },
-        options: { duration: 'short3', easing: 'emphasizedAccelerate' },
-      }),
-    ],
-  };
-
-  private _isModalOpen = false;
+  private readonly _contentElement =
+    viewChild<ElementRef<HTMLElement>>('content');
+  private readonly _containerHostElement =
+    viewChild<ElementRef<HTMLElement>>('containerHost');
+  private readonly _scrimElement = viewChild<ElementRef<HTMLElement>>('scrim');
 
   constructor() {
     super();
-    effect(() => this.stateChange.emit(this.state()));
-    animationContext(
-      computed(() => (this.modal() ? this._dialogAnimations : {}))
-    );
-    animation(this.state, this._embeddedAnimations);
-    toObservable(this.modal)
+    toObservable(this.open)
       .pipe(
         skip(1),
-        map(() => [
-          ...this._embeddedAnimations(),
-          ...Object.values(this._dialogAnimations).flat(),
-        ]),
-        tap((x) => {
-          for (const animator of x) {
-            animator.stop();
+        tap((open) => {
+          if (isPlatformServer(this._platformId)) {
+            return;
           }
-        })
-      )
-      .subscribe();
-
-    combineLatest({
-      state: toObservable(this.state),
-      modal: toObservable(this.modal),
-    })
-      .pipe(
-        filter(({ modal }) => modal),
-        tap(({ state }) => {
-          const openModal = () => {
-            this._document.body.style.overflow = 'hidden';
-            if (isPlatformBrowser(this.platformId)) {
-              this._dialog()?.nativeElement.showModal();
-              this._isModalOpen = true;
-            }
-          };
-          if (state === 'opened' && !this._isModalOpen) {
-            openModal();
-          }
-
-          if (state === 'opening') {
-            openModal();
-          }
-          if (state === 'closed') {
-            this._document.body.style.overflow = '';
-            if (isPlatformBrowser(this.platformId)) {
-              this._dialog()?.nativeElement.close();
-              this._isModalOpen = false;
-            }
+          this._document.body.style.overflow = open ? 'hidden' : '';
+          this.animate(open);
+          if (open) {
+            this._contentElement()!.nativeElement!.scrollTop = 0;
           }
         })
       )
       .subscribe();
   }
 
-  private readonly _document = inject(DOCUMENT);
-
-  private _nextClickIsFromContent = false;
-  private _escapePressedWithoutCancel = false;
-
-  onDialogCancel(event: Event) {
-    event.preventDefault();
-    this._escapePressedWithoutCancel = false;
+  scrimClick() {
     this.open.set(false);
   }
 
-  onDialogClose() {
-    if (!this._escapePressedWithoutCancel) {
-      this.cancel.emit();
+  private async animate(opened: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
+
+    const func =
+      this.side() === 'top' || this.side() === 'bottom'
+        ? 'translateY'
+        : 'translateX';
+    const amount =
+      this.side() === 'top' || this.side() === 'start' ? '-100%' : '100%';
+    const transform = [`${func}(${amount})`, `${func}(0)`];
+
+    const containerStyle: any = {
+      transform,
+    };
+    const scrimStyle: any = {
+      opacity: ['0', '0.32'],
+    };
+
+    if (!opened) {
+      containerStyle.transform = containerStyle.transform.reverse();
+      scrimStyle.opacity = scrimStyle.opacity.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
     }
 
-    this._escapePressedWithoutCancel = false;
-    this._dialog()?.nativeElement?.dispatchEvent(
-      new Event('cancel', { cancelable: true })
+    if (opened) {
+      this.hostElement.style.display = 'inline-flex';
+    }
+
+    this._scrimElement()!.nativeElement.animate(scrimStyle, timings);
+    const animation = this._containerHostElement()!.nativeElement.animate(
+      containerStyle,
+      timings
     );
-  }
+    try {
+      await animation.finished;
+    } catch {}
 
-  onDialogKeyDown(event: KeyboardEvent) {
-    if (event.key !== 'Escape') {
-      return;
+    if (!opened) {
+      this.hostElement.style.display = '';
     }
-
-    this._escapePressedWithoutCancel = true;
-    setTimeout(() => (this._escapePressedWithoutCancel = false));
-  }
-
-  onDialogClick() {
-    if (this._nextClickIsFromContent) {
-      this._nextClickIsFromContent = false;
-      return;
-    }
-
-    this.cancel.emit();
-    this.open.set(false);
-  }
-
-  onContainerContentClick() {
-    this._nextClickIsFromContent = true;
   }
 }

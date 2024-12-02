@@ -1,0 +1,24 @@
+@use '../md';
+
+:host {
+  md-field ::ng-deep .body {
+    cursor: pointer;
+  }
+
+  md-popover {
+    max-height: 260px;
+  }
+
+  ::ng-deep md-list {
+    flex-grow: 1;
+  }
+
+  [mdFieldTrailing] {
+    transform: rotate(0deg);
+    @include md.motion('color, transform');
+  }
+
+  &.open [mdFieldTrailing] {
+    transform: rotate(180deg);
+  }
+}

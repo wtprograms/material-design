@@ -12,42 +12,41 @@
   flex-grow: 0;
   top: 0;
   height: 16px;
+  width: auto;
 
   @include md.typescale('label', 'small');
-}
 
-:host([embedded='true']) {
-  position: relative;
-  top: auto;
-}
+  &.embedded {
+    position: relative;
+    top: auto;
+  }
 
-:host(:not([embedded='true'])[dot='true']) {
-  right: 0;
-}
+  &.dot {
+    width: 6px;
+    height: 6px;
+  }
 
-:host(:not([embedded='true'])[number]:not([number='0'])) {
-  inset-inline-start: 50%;
-}
+  &.single-digit {
+    width: 16px;
+  }
 
-:host([dot]) {
-  width: 6px;
-  height: 6px;
-}
+  &:not(.dot) {
+    padding-inline: 4px;
+  }
 
-:host(:not([dot]):not([number])) {
-  display: none;
-}
+  &:not(.dot).zero {
+    display: none;
+  }
 
-:host([singleDigit]:not([dot='true'])) {
-  width: 16px;
-}
+  &:not(.embedded) {
+    &.dot {
+      right: 0;
+    }
 
-:host(:not([embedded])[number]:not([number='0'])) {
-  margin-top: -2px;
-  margin-inline-end: -4px;
-}
-
-:host([number]:not([singleDigit]):not([number='0'])) {
-  padding-inline-start: 4px;
-  padding-inline-end: 4px;
+    &:not(.dot) {
+      margin-top: -2px;
+      margin-inline-end: -4px;
+      inset-inline-start: 50%;
+    }
+  }
 }

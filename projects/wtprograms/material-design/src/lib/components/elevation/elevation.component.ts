@@ -1,79 +1,71 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
-  model,
-  ViewEncapsulation,
+  input,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap, merge, fromEvent, map } from 'rxjs';
-import { AttachableDirective } from '../../directives/attachable.directive';
-import { MaterialDesignComponent } from '../material-design.component';
+import { MdComponent } from '../md.component';
+import { MdAttachableDirective } from '../../directives/attachable.directive';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, filter, map, startWith } from 'rxjs';
+import { isDefined } from '../../common/assertion/is-defined';
+
+export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
+
+const EVENTS = [
+  'pointerenter',
+  'pointerleave',
+  'pointerdown',
+  'pointerup',
+  'pointercancel',
+];
 
 @Component({
   selector: 'md-elevation',
-  templateUrl: './elevation.component.html',
+  template: '',
   styleUrl: './elevation.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
   hostDirectives: [
     {
-      directive: AttachableDirective,
-      inputs: ['events', 'for', 'target'],
+      directive: MdAttachableDirective,
+      inputs: ['target'],
     },
   ],
   host: {
-    '[style.boxShadow]': 'levelVariable()',
+    '[style.box-shadow]': 'boxShadow()',
   },
 })
-export class ElevationComponent extends MaterialDesignComponent {
-  readonly level = model(0);
-  readonly hoverable = model(true);
-  readonly interactive = model(true);
-  readonly dragging = model(false);
-  readonly attachableDirective = inject(AttachableDirective);
+export class MdElevationComponent extends MdComponent {
+  readonly level = input<ElevationLevel>(0);
+  readonly hoverable = input(true);
+  readonly interactive = input(true);
 
-  readonly hovering = toSignal(
-    this.attachableDirective.targetElement$.pipe(
-      filter((x) => !!x),
-      switchMap((x) =>
-        merge(fromEvent(x, 'pointerenter'), fromEvent(x, 'pointerleave'))
-      ),
-      filter(() => this.hoverable() || this.interactive()),
-      map((x) => x.type === 'pointerenter')
+  private readonly _attachable = inject(MdAttachableDirective);
+
+  readonly boxShadow = toSignal(
+    combineLatest({
+      event: this._attachable.targetEvent$.pipe(startWith(undefined)),
+      level: toObservable(this.level),
+    }).pipe(
+      map((x) => {
+        if (!x.event) {
+          return `var(--md-sys-elevation-${x.level})`;
+        }
+        if (
+          (x.event.type === 'pointerenter' || x.event.type === 'pointerup') &&
+          (this.hoverable() || this.interactive())
+        ) {
+          return `var(--md-sys-elevation-${x.level + 1})`;
+        }
+        if (
+          (x.event.type === 'pointerdown' && this.interactive()) ||
+          x.event.type === 'pointerleave'
+        ) {
+          return `var(--md-sys-elevation-${x.level})`;
+        }
+        return undefined;
+      }),
+      filter((x) => isDefined(x))
     )
   );
-  readonly activated = toSignal(
-    this.attachableDirective.targetElement$.pipe(
-      filter((x) => !!x),
-      switchMap((x) =>
-        merge(fromEvent(x, 'pointerdown'), fromEvent(x, 'pointerup'))
-      ),
-      filter(() => this.interactive()),
-      map((x) => x.type === 'pointerdown')
-    )
-  );
-
-  readonly levelVariable = computed(() => {
-    let level = this.level();
-    if (this.dragging()) {
-      return 'var(--md-sys-elevation-4)';
-    }
-    if (this.hovering() && !this.activated()) {
-      level += 1;
-    }
-    return `var(--md-sys-elevation-${level})`;
-  });
-
-  constructor() {
-    super();
-    this.attachableDirective.events.set([
-      'pointerenter',
-      'pointerleave',
-      'pointerdown',
-      'pointerup',
-    ]);
-  }
 }

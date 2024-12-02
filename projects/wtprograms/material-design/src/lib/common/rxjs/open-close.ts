@@ -1,7 +1,9 @@
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { inject, isSignal, PLATFORM_ID, Signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
-  filter,
-  map,
+  concat,
+  delay,
+  distinctUntilChanged,
   merge,
   Observable,
   of,
@@ -9,61 +11,57 @@ import {
   switchMap,
   takeUntil,
   tap,
-  timer,
 } from 'rxjs';
 import { Duration, durationToMilliseconds } from '../motion/duration';
-import { DestroyRef, inject, isSignal, Signal } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 
-export type OpenCloseState = 'closed' | 'init-opening' | 'opening' | 'opened' | 'init-closing' | 'closing';
+export type OpenCloseState = 'closed' | 'opening' | 'opened' | 'closing';
 
 export function openClose(
-  openTrigger: Observable<boolean> | Signal<boolean>,
-  openingDelay: Duration | number = 'short4',
-  closingDelay?: Duration | number
-) {
-  closingDelay ??= openingDelay;
-  const destroyRef = inject(DestroyRef);
-  const _cancelTimer = new Subject<void>();
+  trigger: Observable<boolean> | Signal<boolean>,
+  openDelay: Duration | number = 'short4',
+  closeDelay?: Duration | number
+): Observable<OpenCloseState> {
+  closeDelay = closeDelay ?? openDelay;
   let lastState: OpenCloseState = 'closed';
-  if (isSignal(openTrigger)) {
-    openTrigger = toObservable(openTrigger);
+  const platformId = inject(PLATFORM_ID);
+  if (isPlatformServer(platformId)) {
+    return of(lastState);
   }
-  return openTrigger.pipe(
-    takeUntilDestroyed(destroyRef),
+  if (isSignal(trigger)) {
+    trigger = toObservable(trigger);
+  }
+  const cancelTimer = new Subject<void>();
+  return trigger.pipe(
     switchMap((open) => {
-      let state = lastState;
-      if (!open && state === 'opening') {
-        _cancelTimer.next();
-        state = 'opened';
+      if (!open && lastState === 'opening') {
+        cancelTimer.next();
+        lastState = 'opened';
       }
-      if (open && state === 'closing') {
-        _cancelTimer.next();
-        state = 'closed';
+      if (open && lastState === 'closing') {
+        cancelTimer.next();
+        lastState = 'closed';
       }
-
-      if (open && state === 'closed') {
+      if (open && lastState === 'closed') {
         return merge(
-          of<OpenCloseState>('opening'),
-          timer(durationToMilliseconds(openingDelay) ?? 50).pipe(
-            takeUntilDestroyed(destroyRef),
-            takeUntil(_cancelTimer),
-            map((): OpenCloseState => 'opened')
+          of('opening' as OpenCloseState),
+          of('opened' as OpenCloseState).pipe(
+            delay(durationToMilliseconds(openDelay)),
+            takeUntil(cancelTimer)
           )
         );
       }
-      if (!open && state === 'opened') {
+      if (!open && lastState === 'opened') {
         return merge(
-          of<OpenCloseState>('closing'),
-          timer(durationToMilliseconds(closingDelay) ?? 50).pipe(
-            takeUntilDestroyed(destroyRef),
-            takeUntil(_cancelTimer),
-            map((): OpenCloseState => 'closed')
+          of('closing' as OpenCloseState),
+          of('closed' as OpenCloseState).pipe(
+            delay(durationToMilliseconds(closeDelay)),
+            takeUntil(cancelTimer)
           )
         );
       }
-      return of({});
+      return of(lastState);
     }),
-    filter((state): state is OpenCloseState => typeof state === 'string'),
     tap((state) => (lastState = state))
   );
 }

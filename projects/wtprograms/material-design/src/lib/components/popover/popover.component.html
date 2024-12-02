@@ -1,7 +1,1 @@
-<div mdAnimation="container" [mdAnimationState]="state()" part="container" class="container"
-  [style.transformOrigin]="transformOrigin()">
-  <md-elevation part="elevation" [level]="2" />
-</div>
-<div mdAnimation="body" [mdAnimationState]="state()" part="body" class="body">
-  <slot (close-popover)="onClosePopover()"></slot>
-</div>
+<ng-content />

@@ -1,92 +1,30 @@
 @use '../md';
 
 :host {
-  md-field::part(body) {
-    cursor: pointer;
-  }
+  display: inline-flex;
+  flex-direction: column;
 
-  .popover {
+  .body {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
   }
 
-  .container {
-    display: inline-flex;
-    flex-direction: column;
-    isolation: isolate;
-    flex-grow: 1;
-    background-color: var(--md-sys-color-surface-container);
-    border-radius: var(--md-sys-shape-extra-small);
-    padding-top: 20px;
-    padding-bottom: 12px;
-    padding-inline: 12px;
-
-    md-button[variant='plain'] {
-      border-inline: 1px solid var(--md-sys-color-outline);
-      height: 40px;
-      &:first-child {
-        border-top: 1px solid var(--md-sys-color-outline);
-        border-bottom: 0.5px solid var(--md-sys-color-outline);
-        border-radius: var(--md-sys-shape-extra-small-top);
-      }
-      &:last-child {
-        border-top: 0.5px solid var(--md-sys-color-outline);
-        border-bottom: 1px solid var(--md-sys-color-outline);
-        border-radius: var(--md-sys-shape-extra-small-bottom);
-      }
-    }
-
-    .body {
-      position: relative;
-      flex-grow: 1;
-      flex-direction: row;
-      display: inline-flex;
-      justify-content: center;
-    }
-  }
-
-  .actions {
-    display: inline-flex;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-grow: 1;
-    margin-top: 8px;
-  }
-
-  .clear {
-    margin-inline-end: auto;
-  }
-
-  .selected-value {
-    display: inline-flex;
-    gap: 8px;
+  .colon {
+    @include md.typescale('display', 'large');
   }
 
   @include md.reset-input {
+    border-radius: var(--md-sys-shape-extra-small);
     height: 80px;
     width: 96px;
+    @include md.typescale('display', 'medium');
     text-align: center;
-    border-radius: inherit;
+    @include md.motion('border');
   }
 
-  .input-container {
-    display: inline-flex;
-    gap: 4px;
-    flex-direction: column;
-  }
-
-  .input-label {
-    color: var(--md-sys-color-surface-variant-on);
-    @include md.typescale('body', 'small');
-  }
-
-  .input {
-    position: relative;
-    @include md.typescale('display', 'large', false);
-    caret-color: currentColor;
-    border-radius: var(--md-sys-shape-small);
-  }
-
-  .hours {
+  .primary {
     background-color: var(--md-sys-color-primary-container);
     color: var(--md-sys-color-primary-container-on);
 
@@ -95,8 +33,7 @@
     }
   }
 
-  .minutes,
-  .seconds {
+  .secondary {
     background-color: var(--md-sys-color-surface-container-highest);
     color: var(--md-sys-color-surface-on);
 
@@ -105,20 +42,26 @@
     }
   }
 
-  .separator {
-    margin-inline: 8px;
-    @include md.typescale('display', 'large', false);
+  .actions {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 24px;
+    justify-content: flex-end;
   }
 
-  .meridian {
-    display: inline-flex;
-    flex-direction: column;
-    margin-inline-start: 16px;
-    width: 52px;
+  .clear {
+    margin-inline-end: auto;
+  }
 
-    .selected {
-      background-color: var(--md-sys-color-tertiary-container);
-      color: var(--md-sys-color-tertiary-container-on);
+  md-popover {
+    padding-top: 20px;
+    padding-inline: 12px;
+    padding-bottom: 12px;
+  }
+
+  md-field {
+    ::ng-deep .body {
+      cursor: pointer;
     }
   }
 }

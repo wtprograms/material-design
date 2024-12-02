@@ -1,3 +1,0 @@
-@function rfs($size, $min-size) {
-  @return max(#{$min-size}px, calc(#{$min-size}px + (#{$size} - #{$min-size}) * ((100vw - 300px) / (1600 - 300))));
-}

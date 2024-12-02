@@ -2,77 +2,114 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  model,
-  ViewEncapsulation,
+  contentChildren,
+  effect,
+  ElementRef,
+  input,
+  QueryList,
+  viewChild,
 } from '@angular/core';
-import { MaterialDesignComponent } from '../material-design.component';
-import { SlotDirective } from '../../directives/slot.directive';
-import { TabComponent } from '../tab/tab.component';
+import { MdComponent } from '../md.component';
+import {
+  assertValue,
+  definedValue,
+  DURATION,
+  EASING,
+  MdTabComponent,
+  observeResize,
+} from '@wtprograms/material-design';
+import {
+  combineLatest,
+  filter,
+  fromEvent,
+  map,
+  merge,
+  Subscription,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, merge, pairwise, startWith, switchMap, tap } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 
 @Component({
   selector: 'md-tabs',
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
-  imports: [SlotDirective, CommonModule],
-  hostDirectives: [],
   host: {
-    '[attr.secondary]': 'secondary() || null',
+    '[class.secondary]': 'secondary()',
+    '[style.grid-template-columns]': 'columns()',
   },
 })
-export class TabsComponent extends MaterialDesignComponent {
-  readonly secondary = model(false);
-  readonly selectedTab$ = toObservable(this.defaultSlot).pipe(
-    filter((x) => !!x),
-    map((slots) =>
-      slots
-        .componentsOf(TabComponent)
-        .map((tab) =>
-          tab.selected$.pipe(map((selected) => ({ tab, selected })))
-        )
-    ),
-    switchMap((tabs) => merge(...tabs)),
-    filter((x) => x.selected),
-    map((x) => x.tab)
-  );
-  readonly selectedTab = toSignal(
-    this.selectedTab$.pipe(
-      startWith(undefined),
-      pairwise(),
-      tap(([previous]) => previous?.selected?.set(false)),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      map(([_, current]) => current)
-    )
-  );
-  readonly indicatorStyle = computed<Partial<CSSStyleDeclaration>>(() => {
-    const selectedTab = this.selectedTab();
-    const secondary = this.secondary();
-    if (!selectedTab) {
-      return {
-        marginInlineStart: '0',
-        width: '0',
-        opacity: '0',
-      };
-    }
-    const left = secondary
-      ? selectedTab.hostElement.offsetLeft
-      : selectedTab.hostElement.offsetLeft +
-        selectedTab.hostElement.offsetWidth / 2 -
-        selectedTab.contentWidth() / 2;
-    return {
-      marginInlineStart: `${left - 16}px`,
-      width: `${selectedTab.contentWidth()}px`,
-    };
+export class MdTabsComponent extends MdComponent {
+  readonly secondary = input(false);
+
+  readonly tabs = contentChildren(MdTabComponent);
+  readonly columns = computed(() => `repeat(${this.tabs().length}, 1fr)`);
+
+  private readonly _rect = observeResize(this.hostElement);
+  private readonly _indicator = viewChild<ElementRef<HTMLElement>>('indicator');
+
+  readonly selectedTab = computed(() => {
+    const tabs = this.tabs();
+    const selectedTab = tabs.find((tab) => tab.selected());
+    return selectedTab;
   });
 
   constructor() {
     super();
+    effect(() => 
+      this.animate(this.selectedTab(), this.secondary(), false));
+    toObservable(this._rect)
+      .pipe(
+        tap(() => this.animate(this.selectedTab(), this.secondary(), true))
+      )
+      .subscribe();
+  }
 
-    this.setSlots(TabComponent, (x) => x.secondary.set(this.secondary()));
+  private async animate(
+    tab: MdTabComponent | undefined,
+    secondary: boolean,
+    rectChange: boolean
+  ) {
+    const indicator = this._indicator();
+    assertValue(indicator);
+
+    if (!tab) {
+      indicator.nativeElement.style.height = `0`;
+      return;
+    }
+
+    const left = tab.hostElement.offsetLeft;
+    const start = this.getStart(left, tab.hostElement.offsetWidth, secondary);
+    const width = secondary ? tab.hostElement.offsetWidth : 32;
+
+    indicator.nativeElement.style.height = secondary ? `2px` : `3px`;
+
+    if (isPlatformServer(this._platformId) || rectChange) {
+      indicator.nativeElement.style.insetInlineStart = `${start}px`;
+      indicator.nativeElement.style.width = `${width}px`;
+      return;
+    }
+
+    const timings: OptionalEffectTiming = {
+      easing: EASING.standard,
+      duration: DURATION.long1,
+      fill: 'forwards',
+    };
+
+    const style: any = {
+      insetInlineStart: `${start}px`,
+      width: `${width}px`,
+    };
+
+    const animation = indicator.nativeElement.animate(style, timings);
+    await animation.finished.catch(() => {});
+    animation.commitStyles();
+    animation.cancel();
+  }
+
+  private getStart(left: number, width: number, secondary: boolean) {
+    return secondary ? left : left + width / 2 - 18;
   }
 }

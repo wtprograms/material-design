@@ -1,27 +1,36 @@
+<ng-template #icons>
+  <ng-content select="[mdCheckUncheckedIcon]" />
+  <ng-content select="[mdCheckCheckedIcon]" />
+  <ng-content select="[mdCheckIndeterminateIcon]" />
+  @if (!switch()) {
+  <md-icon class="icon">
+    @if (indeterminate()) {
+    {{ indeterminateIcon() }}
+    } @else if (!checked()) {
+    {{ uncheckedIcon() }}
+    } @else {
+    {{ checkedIcon() }}
+    }
+  </md-icon>
+  }
+</ng-template>
 @if (switch()) {
 <div class="track">
   <div class="container">
-    <md-ripple [target]="input" />
-    <md-focus-ring [target]="input" />
+    <md-ripple [target]="inputElement" />
+    <md-focus-ring [target]="inputElement" />
     <div class="handle">
-      <span class="unchecked-icon">
-        <slot name="unchecked-icon"></slot>
-      </span>
-      <span class="checked-icon">
-        <slot name="checked-icon"></slot>
-      </span>
+      <ng-container *ngTemplateOutlet="icons" />
     </div>
   </div>
 </div>
 } @else {
-<div part="container" class="container">
-  <md-ripple [target]="input" />
-  <md-focus-ring [target]="input" />
-  <md-icon [filled]="checked() || indeterminate()">{{ icon() }}</md-icon>
+<div class="container">
+  <md-ripple [target]="inputElement" />
+  <md-focus-ring [target]="inputElement" />
+  <ng-container *ngTemplateOutlet="icons" />
 </div>
 }
-<input #input [type]="type()" [disabled]="disabled()" [checked]="checked()" [indeterminate]="indeterminate()"
-  (change)="onInput($event)" [value]="value()">
-<span class="label">
-  <slot></slot>
-</span>
+<input #inputElement [type]="type()" [ngModel]="value()" [checked]="checked()" [indeterminate]="indeterminate()"
+  [disabled]="disabled()" (input)="input($event)" />
+<ng-content />

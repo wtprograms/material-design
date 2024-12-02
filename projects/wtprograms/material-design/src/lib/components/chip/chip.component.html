@@ -1,27 +1,23 @@
 <ng-template #content>
-  <md-touch-area />
-  <slot name="leading"></slot>
-  <slot></slot>
-  <slot name="trailing"></slot>
+  <ng-content select="[mdChipLeading], md-chip-leading" />
+  <ng-content />
+  <ng-content select="[mdChipTrailing], md-chip-trailing" />
 </ng-template>
 
-<md-focus-ring part="focus-ring" [target]="button()" />
-<md-ripple part="ripple" [target]="button()" />
+<div class="container">
+  @if (interactive()) {
+  <button mdEmbeddedButton type="button" [disabled]="disabled()">
+    <md-focus-ring />
+    <md-ripple />
+    <ng-container *ngTemplateOutlet="content" />
+  </button>
+  } @else {
+  <ng-container *ngTemplateOutlet="content" />
+  }
+</div>
+
 @if (closable()) {
-<ng-container *ngTemplateOutlet="content" />
-<md-button variant="plain" (click)="close.emit()">
+<md-icon-button variant="plain" (click)="close.emit($event)" [disabled]="disabled()">
   <md-icon>close</md-icon>
-</md-button>
-} @else {
-@if (href()) {
-<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
-  [tabIndex]="disabled() ? -1 : 0">
-  <ng-container *ngTemplateOutlet="content" />
-</a>
-} @else {
-<button part="button" #button type="button" [disabled]="disabled() || null" [attr.name]="name() ?? null"
-  [attr.value]="value() ?? null">
-  <ng-container *ngTemplateOutlet="content" />
-</button>
-}
+</md-icon-button>
 }

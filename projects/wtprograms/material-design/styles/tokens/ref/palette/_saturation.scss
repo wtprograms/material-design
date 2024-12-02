@@ -1,10 +1,15 @@
+@function _calc($diff) {
+  @return calc(var(--md-ref-palette-saturation-base) + #{$diff});
+}
+
 $tokens: (
-  'primary': 80%,
-  'secondary': 20%,
-  'tertiary': 50%,
-  'danger': 80%,
-  'warning': 100%,
-  'success': 80%,
-  'neutral': 2%,
-  'neutral-variant': 6%,
+  'base': 80%,
+  'primary': var(--md-ref-palette-saturation-base),
+  'secondary': _calc(-60%),
+  'tertiary': _calc(-30%),
+  'danger': var(--md-ref-palette-saturation-base),
+  'warning': _calc(20%),
+  'success': var(--md-ref-palette-saturation-base),
+  'neutral': _calc(-78%),
+  'neutral-variant': _calc(-74%),
 );

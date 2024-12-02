@@ -1,0 +1,126 @@
+@use "../../md";
+
+:host {
+  --_color: currentColor;
+  display: inline-flex;
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  color: var(--md-sys-color-surface-variant-on);
+
+  @include md.motion("background-color, color");
+
+  [mdEmbeddedButton] {
+    flex-direction: inherit;
+    flex-grow: 1;
+  }
+
+  ::ng-deep [mdNavigationItemIcon] {
+    --md-comp-icon-size: 24;
+    height: 24px;
+    width: 24px;
+  }
+
+  &.selected {
+    ::ng-deep [mdNavigationItemIcon] {
+      --md-comp-icon-filled: 1;
+    }
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+  }
+
+  &.disabled {
+    pointer-events: none;
+  }
+}
+
+:host-context(md-navigation.bar),
+:host-context(md-navigation.rail) {
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+
+  @include md.typescale("label", "small");
+
+  .container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--md-sys-shape-full);
+    flex-shrink: 0;
+    width: 64px;
+    height: 32px;
+
+    @include md.motion("background-color");
+  }
+
+  [mdEmbeddedButton] {
+    border-radius: 0;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-secondary-container-on);
+
+    .container {
+      position: relative;
+      background-color: var(--md-sys-color-secondary-container);
+    }
+  }
+
+  md-ripple {
+    --md-comp-ripple-transform-default: scaleX(0);
+    --md-comp-ripple-transform-hover: scaleX(1);
+  }
+
+  &.disabled,
+  &.selected.disabled {
+    color: var(--md-sys-color-disabled-color);
+    &.selected .container {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+}
+
+:host-context(md-navigation.bar) {
+  flex-grow: 1;
+  padding-bottom: 16px;
+  padding-top: 12px;
+}
+
+:host-context(md-navigation.rail) {
+  .container {
+    width: 56px;
+  }
+}
+
+:host-context(md-navigation.drawer) {
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  padding-inline-start: 16px;
+  padding-inline-end: 24px;
+  height: 56px;
+  flex-shrink: 0;
+
+  @include md.typescale("label", "large");
+
+  md-badge {
+    margin-inline-start: auto;
+  }
+
+  &.selected {
+    color: var(--md-sys-color-secondary-container-on);
+    background-color: var(--md-sys-color-secondary-container);
+  }
+
+  &.disabled,
+  &.selected.disabled {
+    color: var(--md-sys-color-disabled-color);
+    &.selected {
+      background-color: var(--md-sys-color-disabled-background);
+    }
+  }
+}

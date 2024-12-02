@@ -2,57 +2,51 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  model,
+  input,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map, tap } from 'rxjs';
-import { AttachableDirective } from '../../directives/attachable.directive';
-import { MaterialDesignComponent } from '../material-design.component';
-import { CommonModule } from '@angular/common';
+import { MdComponent } from '../md.component';
+import { MdAttachableDirective } from '../../directives/attachable.directive';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, filter, map } from 'rxjs';
 
 @Component({
   selector: 'md-focus-ring',
-  templateUrl: './focus-ring.component.html',
+  template: '',
   styleUrl: './focus-ring.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule],
   hostDirectives: [
     {
-      directive: AttachableDirective,
-      inputs: ['events', 'for', 'target'],
+      directive: MdAttachableDirective,
+      inputs: ['target'],
     },
   ],
+  host: {
+    '[style.outline-width.px]': 'style()?.outlineWidth',
+    '[style.opacity]': 'style()?.opacity',
+  },
 })
-export class FocusRingComponent extends MaterialDesignComponent {
-  readonly focusVisible = model(true);
-  readonly attachableDirective = inject(AttachableDirective);
-  readonly focused$ = this.attachableDirective.event$.pipe(
-    map((x) => {
-      if (x.type === 'focusout') {
-        return false;
-      }
-      return this.focusVisible()
-        ? this.attachableDirective.targetElement()?.matches(':focus-visible') ??
-            false
-        : true;
-    })
-  );
+export class MdFocusRingComponent extends MdComponent {
+  readonly focusVisible = input(true);
+  private readonly _attachable = inject(MdAttachableDirective);
+  readonly style = toSignal(
+    combineLatest({
+      focusVisible: toObservable(this.focusVisible),
+      targetElement: toObservable(this._attachable.targetElement),
+      event: this._attachable.targetEvent$,
+    }).pipe(
+      filter(
+        ({ event }) => event.type === 'focusin' || event.type === 'focusout'
+      ),
+      map(({ event, focusVisible, targetElement }) => {
+        if (event.type === 'focusout') {
+          return false;
+        }
 
-  constructor() {
-    super();
-    this.attachableDirective.events.set(['focusin', 'focusout']);
-    // toSignal throws Writing to signals is not allowed in niche cases. :(
-    this.focused$
-      .pipe(
-        tap((x) => {
-          if (x) {
-            this.hostElement.setAttribute('focused', 'true');
-          } else {
-            this.hostElement.removeAttribute('focused');
-          }
-        })
-      )
-      .subscribe();
-  }
+        return focusVisible
+          ? targetElement.matches(':focus-visible') ?? false
+          : true;
+      }),
+      map((focused) => (focused ? { outlineWidth: 3, opacity: 1 } : undefined))
+    )
+  );
 }

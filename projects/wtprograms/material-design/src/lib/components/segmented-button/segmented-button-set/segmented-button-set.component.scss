@@ -1,0 +1,9 @@
+:host {
+  display: inline-flex;
+
+  ::ng-deep {
+    md-segmented-button + md-segmented-button {
+      border-inline-start-width: 1px;
+    }
+  }
+}

@@ -1,14 +1,174 @@
-<div class="inline-flex flex-col">
-  <md-sheet [open]="true">
-    <md-navigation layout="drawer">
-      @for (route of routes; track route) {
-      <md-navigation-item [mdLink]="route.path">
-        <span slot="label">
-          {{ route.title }}
-        </span>
-      </md-navigation-item>
-      }
-    </md-navigation>
-  </md-sheet>
+<md-app-bar>
+  <md-icon-button mdAppBarLeading (click)="sheet.open.set(true)" class="inline-flex extra-large:hidden">
+    menu
+    <md-tooltip i18n>Menu</md-tooltip>
+  </md-icon-button>
+
+  <a mdLink="/" class="inline-flex items-center ms-2">
+    <md-icon class="me-2">category</md-icon>
+    Material Design
+  </a>
+
+  <md-icon-button mdAppBarTrailing [customIcon]="true" href="https://github.com/wtprograms/material-design"
+    target="_blank">
+    <img src="/github.svg" alt="github" />
+    <md-tooltip i18n>Github</md-tooltip>
+  </md-icon-button>
+
+  <md-icon-button #palette mdAppBarTrailing>
+    palette
+    <md-tooltip i18n>Palette</md-tooltip>
+  </md-icon-button>
+  <md-popover [target]="palette" [offset]="8" class="p-4">
+    <md-segmented-button-set>
+      <md-segmented-button [selected]="theme() === 'system'" [showCheckIcon]="true" (click)="theme.set('system')">
+        <md-icon mdSegmentedButtonLeading>contrast</md-icon>
+        <span i18n>System</span>
+      </md-segmented-button>
+      <md-segmented-button [selected]="theme() === 'light'" [showCheckIcon]="true" (click)="theme.set('light')">
+        <md-icon mdSegmentedButtonLeading>light_mode</md-icon>
+        <span i18n>Light</span>
+      </md-segmented-button>
+      <md-segmented-button [selected]="theme() === 'dark'" [showCheckIcon]="true" (click)="theme.set('dark')">
+        <md-icon mdSegmentedButtonLeading>dark_mode</md-icon>
+        <span i18n>Dark</span>
+      </md-segmented-button>
+    </md-segmented-button-set>
+  </md-popover>
+
+  <md-icon-button #translate mdAppBarTrailing>
+    translate
+    <md-tooltip i18n>Translate</md-tooltip>
+  </md-icon-button>
+  <md-menu [target]="translate">
+    <md-menu-item>
+      <span i18n>Afrikaans</span>
+    </md-menu-item>
+    <md-menu-item>
+      <span i18n>English</span>
+    </md-menu-item>
+  </md-menu>
+</md-app-bar>
+
+<ng-template #navigation>
+  <md-navigation layout="drawer">
+    <md-navigation-headline i18n>About</md-navigation-headline>
+    <md-navigation-item mdLink="introduction" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel i18n>Introduction</span>
+    </md-navigation-item>
+    <md-navigation-item mdLink="quick-start" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel i18n>Quick start</span>
+    </md-navigation-item>
+    <md-divider />
+    <md-navigation-headline i18n>Components</md-navigation-headline>
+    <md-navigation-item mdLink="accordion" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel>Accordion</span>
+    </md-navigation-item>
+    <md-navigation-item mdLink="app-bar" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel>App Bar</span>
+    </md-navigation-item>
+    <md-navigation-item mdLink="avatar" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel>Avatar</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Badge</span>
+    </md-navigation-item>
+    <md-navigation-item mdLink="button" mdLinkActiveClass="selected">
+      <span mdNavigationItemLabel>Button</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Card</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Check</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Chip</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Chips Input</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Date Picker</span>
+    </md-navigation-item>
+    <md-navigation-item mdLink="dialog">
+      <span mdNavigationItemLabel>Dialog</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Divider</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Drop Down Field</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Elevation</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Embedded Button</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Fab</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Field</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Focus Ring</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Icon</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Icon Button</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>List</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Menu</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Navigation</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Popover</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Progress Indicator</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Ripple</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Segmented Button</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Sheet</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Snack Bar</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Text Field</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Time Picker</span>
+    </md-navigation-item>
+    <md-navigation-item>
+      <span mdNavigationItemLabel>Tooltip</span>
+    </md-navigation-item>
+  </md-navigation>
+</ng-template>
+
+<dialog mdSheet #sheet>
+  <ng-container *ngTemplateOutlet="navigation" />
+</dialog>
+
+<div class="inline-flex flex-row">
+  <div class=" flex-col hidden extra-large:inline-flex min-w-[280px] overflow-y-auto content">
+    <ng-container *ngTemplateOutlet="navigation" />
+  </div>
+  <div class="inline-flex grow mx-4 content">
+    <router-outlet />
+  </div>
 </div>
-<router-outlet />

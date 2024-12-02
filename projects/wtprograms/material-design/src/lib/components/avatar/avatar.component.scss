@@ -1,118 +1,79 @@
-@use '../md';
+@use "../md";
 
-$tokens: (
-  'size': 40,
-);
-
-:host {
-  --md-comp-avatar-size: 40;
-  --_size-px: calc(var(--md-comp-avatar-size) * 1px);
-  --_color: currentColor;
-  position: relative;
-  border-radius: var(--md-sys-shape-full);
-  height: var(--_size-px);
-  width: var(--_size-px);
-  flex-shrink: 0;
-  @include md.typescale('label', 'large');
-  font-size: calc(var(--_size-px) * 0.45);
-  justify-content: center;
-  align-items: center;
-  display: inline-flex;
-  overflow: hidden;
-
-  @include md.motion('background-color, border, color');
-
-  img {
-    height: var(--_size-px);
-    width: var(--_size-px);
-    @include md.motion('opacity');
-  }
-
-  @include md.reset-button;
-
-  md-ripple {
-    --md-comp-ripple-color: var(--_color);
-    --md-comp-ripple-transform-default: scale(0);
-    --md-comp-ripple-transform-hover: scale(1);
-    z-index: 1;
-  }
-
-  md-progress-indicator {
-    --md-comp-progress-indicator-color: var(--_color);
-    --md-comp-progress-indicator-size: calc(var(--md-comp-avatar-size) * 0.6);
-    --md-comp-progress-indicator-width: 8;
-    position: absolute;
-    display: inline-flex;
-    align-self: center;
-  }
-
-  .content {
-    @include md.motion('opacity');
-  }
-}
-
-:host([interactive='true']) {
-  cursor: pointer;
-}
-
-:host([palette='surface']) {
-  background-color: var(--md-sys-color-surface-container-low);
-  border: 2px solid var(--md-sys-color-outline-variant);
-  color: var(--md-sys-color-surface-variant-on);
-}
-
-:host([palette='primary']) {
-  background-color: var(--md-sys-color-primary-container);
-  border: 2px solid var(--md-sys-color-primary);
-  color: var(--md-sys-color-primary);
-}
-
-:host([palette='secondary']) {
-  background-color: var(--md-sys-color-secondary-container);
-  border: 2px solid var(--md-sys-color-secondary);
-  color: var(--md-sys-color-secondary);
-}
-
-:host([palette='tertiary']) {
-  background-color: var(--md-sys-color-tertiary-container);
-  border: 2px solid var(--md-sys-color-tertiary);
-  color: var(--md-sys-color-tertiary);
-}
-
-:host([palette='plain']) {
-  background-color: transparent;
-  color: var(--md-sys-color-surface-variant-on);
-}
-
-:host([palette='plain'][disabled='true']) {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-:host([interactive='true']:hover) {
-  img {
-    opacity: 0.8;
-  }
-}
-
-:host([busy='true']:not([disabled='true'])) {
+@mixin _disabled {
+  color: var(--md-sys-color-disabled-color);
+  border-color: var(--md-sys-color-disabled-border);
+  background-color: var(--md-sys-color-disabled-background);
   pointer-events: none;
 
   img {
     opacity: 0.5;
   }
+}
 
-  .initials {
-    opacity: 0;
+:host {
+  --md-comp-avatar-size: 40;
+  --_color: currentColor;
+  position: relative;
+  border-radius: var(--md-sys-shape-full);
+  height: 40px;
+  width: 40px;
+  flex-shrink: 0;
+  @include md.typescale("title", "large");
+  place-content: center;
+  place-items: center;
+  display: inline-flex;
+  background-color: var(--md-sys-color-primary-container);
+  border: 2px solid var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+  outline: none;
+  user-select: none;
+  isolation: isolate;
+
+  @include md.motion("background-color, border, color");
+  zoom: calc(var(--md-comp-avatar-size) / 40);
+
+  img {
+    border-radius: inherit;
+    @include md.motion("opacity");
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-transform-default: scale(0);
+    --md-comp-ripple-transform-hover: scale(1);
+  }
+
+  &.disabled {
+    @include _disabled;
+  }
+
+  .badge-container {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+  }
+
+  &:has(md-progress-indicator) {
+    pointer-events: none;
+    color: transparent;
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  md-progress-indicator {
+    --md-comp-progress-indicator-color: var(--md-sys-color-primary);
+    --md-comp-progress-indicator-size: 32;
+    --md-comp-progress-indicator-width: 8;
+    position: absolute;
   }
 }
 
-@include md.disabled-component {
-  color: #{md.disabled('color')};
-  background-color: #{md.disabled('background-color')};
-  border-color: #{md.disabled('border-color')};
+:host-context(md-list-item.interactive:not(.split)) {
+  pointer-events: none;
+}
 
-  img {
-    opacity: 0.5;
-  }
+:host-context(md-list-item.disabled) {
+  @include _disabled;
 }

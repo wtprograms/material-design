@@ -1,0 +1,113 @@
+<app-page>
+  <div class="inline-grid gap-4 medium:grid-cols-2">
+    <md-card variant="filled" class="grow justify-center p-10 bg-primary-container text-primary-container-on">
+      <h1 i18n>Button</h1>
+      <span class="typescale-body-large" i18n>
+        A button is a graphical user interface element that triggers an event when clicked.
+      </span>
+    </md-card>
+    <md-card variant="filled" class="grow justify-center px-10 py-0 bg-primary-container text-primary-container-on">
+      <img src="https://material-web.dev/components/images/button/hero.webp" />
+    </md-card>
+  </div>
+
+  <h2 id="demo" i18n>Interactive demonstration</h2>
+
+  <app-demo>
+    <app-properties>
+      <app-property [options]="variant.values" [(option)]="variant" i18n>variant</app-property>
+      <app-property [(checked)]="anchor" i18n>anchor</app-property>
+      <app-property [(checked)]="leading" i18n>leading</app-property>
+      <app-property [(checked)]="trailing" i18n>trailing</app-property>
+      <app-property [(checked)]="disabled" i18n>disabled</app-property>
+      <app-property [(checked)]="progressIndeterminate" i18n>progressIndeterminate</app-property>
+    </app-properties>
+    <div class="demo-body">
+      <md-button [variant]="variant()" [disabled]="disabled()" [href]="anchor()  ? '#' : undefined"
+        [progressIndeterminate]="progressIndeterminate()">
+        @if (leading()) {
+        <md-icon mdButtonLeading>home</md-icon>
+        }
+        Button
+        @if (trailing()) {
+          <md-icon mdButtonTrailing>link</md-icon>
+          }
+       </md-button>
+    </div>
+  </app-demo>
+
+  <h2 id="usage" i18n>Usage</h2>
+
+  <p i18n>
+    <code>md-accordion</code> has a <code>[mdAccordionHeadline]</code> attribute that you can use to set the headline
+    and the rest of the content is the body.
+  </p>
+
+  <app-code [code]="button" language="html" />
+
+  <h2 id="api" i18n>API</h2>
+
+  <h3 id="inputs">Inputs</h3>
+
+  <md-card>
+    <table>
+      <thead>
+        <tr>
+          <th i18n>Property</th>
+          <th i18n>Type</th>
+          <th i18n>Default</th>
+          <th colspan="2" i18n>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>src</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's image source.</td>
+        </tr>
+        <tr>
+          <td><code>fullName</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's full name to get the initial from. It is also used as an <code>alt</code> if
+            <code>src</code> is specified.
+          </td>
+        </tr>
+        <tr>
+          <td><code>size</code></td>
+          <td><code>number</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's size.</td>
+        </tr>
+        <tr>
+          <td><code>href</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's URL.</td>
+        </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's URL target.</td>
+        </tr>
+        <tr>
+          <td><code>interactive</code></td>
+          <td><code>boolean</code></td>
+          <td><code>false</code></td>
+          <td colspan="2" i18n>Whether or not the Avatar is interactive.</td>
+        </tr>
+      </tbody>
+    </table>
+  </md-card>
+
+  <li class="navigation"><a mdScrollTo="demo" i18n>Interactive demonstration</a></li>
+  <li class="navigation"><a mdScrollTo="usage" i18n>Usage</a></li>
+  <li class="navigation">
+    <a mdScrollTo="api" i18n>API</a>
+    <ul>
+      <li class="list-disc ms-4"><a mdScrollTo="inputs" i18n>Inputs</a></li>
+    </ul>
+  </li>
+</app-page>

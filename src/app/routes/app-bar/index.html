@@ -1,0 +1,68 @@
+<app-page>
+  <div class="inline-grid gap-4 medium:grid-cols-2">
+    <md-card variant="filled" class="grow justify-center p-10 bg-primary-container text-primary-container-on">
+      <h1 i18n>App Bar</h1>
+      <span class="typescale-body-large" i18n>
+        The app bar is a graphical user interface element that contains a text label, icons, and other elements.
+      </span>
+    </md-card>
+    <md-card variant="filled" class="grow justify-center px-10 py-0 bg-primary-container text-primary-container-on">
+      <img src="https://material-web.dev/components/images/button/hero.webp" />
+    </md-card>
+  </div>
+
+  <h2 id="demo" i18n>Interactive demonstration</h2>
+
+  <md-card>
+    Top App Bar
+    <md-app-bar class="mb-4">
+      <md-icon-button mdAppBarLeading>menu</md-icon-button>
+      Title
+      <md-icon-button mdAppBarTrailing>search</md-icon-button>
+      <md-icon-button mdAppBarTrailing>more_vert</md-icon-button>
+    </md-app-bar>
+    Bottom App Bar
+    <md-app-bar>
+      <md-icon-button mdAppBarLeading>content_copy</md-icon-button>
+      <md-icon-button mdAppBarLeading>content_cut</md-icon-button>
+      <md-icon-button mdAppBarLeading>content_paste</md-icon-button>
+      <md-fab mdAppBarTrailing [lowered]="true">
+        <md-icon mdFabIcon>add</md-icon>
+      </md-fab>
+    </md-app-bar>
+  </md-card>
+
+  <h2 id="usage" i18n>Usage</h2>
+
+  <p i18n>
+    <code>md-app-bar</code> has two directives that will align the elements in the App Bar namely
+    <code>[mdAppBarLeading]</code> and <code>[mdAppBarTrailing]</code>. The rest of the content is the body.
+    and the rest of the content is the body.
+  </p>
+
+  <app-code [code]="appBar" language="html" />
+
+  <h2 id="api" i18n>API</h2>
+
+  <h3 id="inputs">Inputs</h3>
+
+  <p i18n>
+    The App Bar does not have any inputs.
+  </p>
+
+  <h3 id="properties">Properties</h3>
+
+  <p i18n>
+    The App Bar does not have any inputs.
+  </p>
+
+  <li class="navigation"><a mdScrollTo="demo" i18n>Interactive demonstration</a></li>
+  <li class="navigation"><a mdScrollTo="usage" i18n>Usage</a></li>
+  <li class="navigation">
+    <a mdScrollTo="api" i18n>API</a>
+    <ul>
+      <li class="list-disc ms-4"><a mdScrollTo="inputs" i18n>Inputs</a></li>
+      <li class="list-disc ms-4"><a mdScrollTo="properties" i18n>Properties</a></li>
+    </ul>
+  </li>
+</app-page>

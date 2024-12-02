@@ -1,56 +1,56 @@
-<div #body part="body" class="body" (click)="bodyClick.emit($event)">
-  @if (label()) {
-  <span #labelSpan class="hidden-label">{{ label() }}</span>
-  }
+<div #body class="body" (click)="bodyClick.emit($event)">
+  <span class="label small"></span>
   @if (variant() === 'filled') {
-  <md-ripple [target]="body" [interactive]="false" />
+  <md-ripple [interactive]="false" />
   }
-
-  @if (variant() === 'outlined') {
-  <div class="border-top-start"></div>
-  <div class="border-top-end" [style]="borderTopEndStyle()"></div>
-  <div class="border-x"></div>
-  }
-  <div class="border-bottom"></div>
-
+  <div class="border x"></div>
+  <div class="border top start"></div>
+  <div class="border top end" [style.margin-inline-start.px]="borderStart()"></div>
+  <div class="border bottom"></div>
+  <div #leadingElement class="leading">
+    <ng-content select="[mdFieldLeading]" />
+  </div>
   @if (label()) {
-  <span class="label" [ngStyle]="labelStyle()">{{ label() }}</span>
-  }
-
-  <span class="leading">
-    <slot name="leading"></slot>
+  <span class="label normal" [style.inset-inline-start.px]="labelStart()">
+    {{ label() }}
   </span>
-
-  <div #content part="content" class="content" (click)="contentClick.emit($event)" [style]="contentStyle()">
-    <div part="control" class="control">
-      <slot name="prefix"></slot>
-      <slot></slot>
-      <span class="suffix">
-        <slot name="suffix"></slot>
+  }
+  <div class="input-container" (click)="inputContainerClick.emit($event)">
+    <div class="input">
+      @if (prefix()) {
+      <span class="prefix">
+        {{ prefix() }}
       </span>
+      }
+      <div class="input-content">
+        <ng-content />
+      </div>
+      @if (suffix()) {
+      <span class="suffix">
+        {{ suffix() }}
+      </span>
+      }
     </div>
   </div>
-
-  <span class="trailing">
-    <slot name="trailing"></slot>
-  </span>
-
+  <div class="trailing">
+    <ng-content select="[mdFieldTrailing]" />
+  </div>
 </div>
-@if (hasFooter()) {
 <div class="footer">
-  @if (errorText()) {
-  <span>{{ errorText()}}</span>
+  @if (error() && error() !== true) {
+  <div class="error-text">
+    {{ error() }}
+  </div>
   }
+  @if (supportingText()) {
   <span class="supporting-text">
-    <slot #supportingTextSlot name="supporting-text"></slot>
+    {{ supportingText() }}
   </span>
+  }
+  @if (counter()) {
   <span class="counter">
-    <slot name="counter"></slot>
+    {{ counter() }}
   </span>
+  }
 </div>
-}
-
-<md-popover #popover [target]="body" [offset]="4" [trigger]="popoverTrigger()" [useContainerWidth]="true"
-  [(open)]="open" [style.maxHeight.px]="maxPopoverHeight()" (stateChange)="popoverStateChange.emit($event)">
-  <slot name="popover"></slot>
-</md-popover>
+<ng-content select="[mdFieldBottom]" />

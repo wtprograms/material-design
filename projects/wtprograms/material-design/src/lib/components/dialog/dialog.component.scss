@@ -1,233 +1,109 @@
-@use '../md';
+@use "../md";
 
 :host {
-  --_motion-easing: var(--md-sys-motion-easing-emphasized-decelerate);
-  --_motion-duration: var(--md-sys-motion-duration-long-1);
-
-  max-height: min(560px, calc(100% - 48px));
-  max-width: min(560px, calc(100% - 48px));
-  min-height: 140px;
-  min-width: 280px;
-  display: contents;
-  margin: auto;
+  inset: 0;
+  width: 100dvw;
+  height: 100dvh;
+  max-width: 100dvw;
+  max-height: 100dvh;
+  color: var(--md-sys-color-surface-on);
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  place-items: center;
+  place-content: center;
+  padding: 48px;
   position: fixed;
-  height: fit-content;
-  width: fit-content;
+  opacity: 0;
+  overflow: clip;
+  z-index: var(--md-sys-z-index-dialog);
+  display: none;
+  @include md.typescale("body", "medium");
+  @include md.motion("opacity", "emphasized-decelerate", "short-4");
 
-  dialog {
-    background: transparent;
-    border: none;
-    border-radius: inherit;
-    flex-direction: column;
-    height: inherit;
-    margin: inherit;
-    max-height: inherit;
-    max-width: inherit;
-    min-height: inherit;
-    min-width: inherit;
-    outline: none;
-    overflow: visible;
-    padding: 0;
-    width: inherit;
-    opacity: 0;
-    transform: translateY(-200px);
-    color: var(--md-sys-color-surface-on);
-    transition-property: (opacity, transform);
-    transition-timing-function: var(--_motion-easing);
-    transition-duration: var(--_motion-duration);
+  &::backdrop {
+    display: none;
   }
 
-  dialog[open] {
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background-color: var(--md-sys-color-scrim);
+    opacity: 0.32;
+    z-index: -1;
+  }
+
+  .container-host {
+    overflow: clip;
+    max-width: 670px;
+    max-height: calc(100dvh - 48px * 2);
+    border-radius: var(--md-sys-shape-extra-large);
+    box-shadow: var(--md-sys-elevation-3);
     display: inline-flex;
-  }
-
-  ::backdrop {
-    background: none;
   }
 
   .container {
-    position: relative;
-    border-radius: inherit;
-    display: inline-flex;
-    border-radius: var(--md-sys-shape-extra-large);
-    flex-direction: column;
-    background-color: var(--md-sys-color-surface-container);
-    max-height: 670px;
-  }
-
-  .container-content {
-    position: relative;
-    border-radius: inherit;
-    display: inline-flex;
-    border-radius: var(--md-sys-shape-extra-large);
-    flex-direction: column;
-    gap: 24px;
+    flex-grow: 1;
     padding: 24px;
-    transform-origin: top;
-    overflow: hidden;
-    height: auto;
-    opacity: 0;
-    transition-property: (opacity);
-    transition-timing-function: var(--_motion-easing);
-    transition-duration: var(--_motion-duration);
-    transition-delay: 100ms;
-  }
-
-  .scrim {
-    visibility: hidden;
-    inset: 0;
-    position: fixed;
-    z-index: -1;
-    background: var(--md-sys-color-scrim);
-    opacity: 0;
-    transition-property: (opacity, visibility);
-    transition-timing-function: var(--_motion-easing);
-    transition-duration: var(--_motion-duration);
-  }
-
-  .header {
-    display: none;
+    gap: 24px;
+    background-color: var(--md-sys-color-surface-container);
+    display: inline-flex;
     flex-direction: column;
-    width: 100%;
+    overflow: clip;
+  }
+
+  .body {
+    overflow-y: auto;
+  }
+
+  .body,
+  .header {
+    display: inline-flex;
+    flex-direction: column;
     gap: 16px;
   }
 
-  .actions {
-    display: none;
-    gap: 8px;
-    justify-content: flex-end;
-  }
-
-  .scroller {
-    display: none;
-    overflow-y: hidden;
-    flex-direction: column;
+  .header {
+    overflow: clip;
   }
 
   .content {
-    height: min-content;
-    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    outline: none;
+    overflow-y: auto;
+    max-height: 100%;
   }
 
-  .headline {
-    @include md.typescale('headline', 'small');
-    color: var(--md-sys-color-surface-on);
-    display: none;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 16px;
-  }
+  ::ng-deep {
+    [mdDialogHeadline] {
+      display: inline-flex;
+      @include md.typescale("headline", "small");
+    }
 
-  .supporting-text {
-    display: none;
-    @include md.typescale('body', 'medium');
-    color: var(--md-sys-color-surface-variant-on);
-  }
+    [mdDialogSupportingText] {
+      color: var(--md-sys-color-surface-variant-on);
+    }
 
-  .icon {
-    display: none;
-    color: var(--md-sys-color-secondary);
-
-    ::slotted(md-icon) {
-      --md-sys-icon-size: 24;
+    [mdDialogIcon] {
+      --md-comp-icon-size: 24;
+      color: var(--md-sys-color-secondary);
     }
   }
-}
 
-:host([state='opening']),
-:host([state='opened']) {
-  dialog {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .scrim {
-    opacity: 0.32;
-  }
-
-  .container-content {
-    opacity: 1;
-  }
-}
-
-:host([state='opened']) {
-  .scroller {
-    overflow-y: auto;
-  }
-}
-
-:host(:not([state='closed'])) .scrim {
-  visibility: visible;
-  z-index: var(--md-sys-z-index-scrim);
-}
-
-:host([state='closing']) {
-  --_motion-easing: var(--md-sys-motion-easing-emphasized-accelerate);
-  --_motion-duration: var(--md-sys-motion-duration-short-4);
-  dialog {
-    opacity: 0;
-    transform: translateY(-200px);
-  }
-
-  .scrim {
-    opacity: 0;
-  }
-
-  .container-content {
-    opacity: 0;
-  }
-}
-
-:host([body='true']) {
-  .scroller {
-    display: inline-flex;
-  }
-}
-
-:host([header='true']) {
-  .header {
-    display: inline-flex;
-  }
-}
-
-:host([actions='true']) {
-  .actions {
-    margin-top: auto;
-    display: inline-flex;
-  }
-}
-
-:host([icon='true']),
-:host([headline='true']),
-:host([supportingText='true']) {
-  .header {
-    display: inline-flex;
-  }
-}
-
-:host([icon='true']) {
-  .icon {
-    display: inline-flex;
-  }
-
-  .headline {
+  &:has([mdDialogIcon]) .header {
     flex-direction: column;
-  }
-
-  .headline,
-  .header {
     align-items: center;
   }
-}
 
-:host([headline='true']) {
-  .headline {
+  &:has([mdDialogAction]) .actions {
     display: inline-flex;
   }
-}
 
-:host([supportingText='true']) {
-  .supporting-text {
-    display: inline-flex;
+  .actions {
+    margin-top: auto;
+    display: none;
+    justify-content: flex-end;
+    gap: 8px;
   }
 }

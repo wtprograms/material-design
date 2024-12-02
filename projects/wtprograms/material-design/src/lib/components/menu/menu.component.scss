@@ -1,19 +1,10 @@
+@use '../md';
+
 :host {
   position: absolute;
-  display: inline-flex;
-  flex-direction: column;
 
   md-popover {
-    min-width: 112px;
-    max-width: 280px;
-
-    &::part(body) {
-      padding-top: 8px;
-      padding-bottom: 8px;
-    }
-  }
-
-  ::slotted(md-divider) {
-    border-color: var(--md-sys-color-outline-variant);
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
 }

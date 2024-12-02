@@ -1,4 +1,2 @@
-<slot></slot>
-@if (badgeDot() || badgeNumber()) {
-<md-badge [dot]="badgeDot()" [number]="badgeNumber()" />
-}
+<ng-content />
+<md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />

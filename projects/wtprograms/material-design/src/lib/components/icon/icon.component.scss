@@ -29,13 +29,16 @@
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--md-ref-typeface-font-icon);
   font-weight: var(--md-comp-icon-weight);
-  font-variation-settings: 'FILL' var(--md-comp-icon-filled),
-    'wght' var(--md-comp-icon-weight), 'GRAD' 0,
+  pointer-events: none;
+  font-variation-settings:
+    'FILL' var(--md-comp-icon-filled),
+    'wght' var(--md-comp-icon-weight),
+    'GRAD' 0,
     'opsz' clamp(20, var(--md-comp-icon-size), 48);
 
   @include md.motion('font-variation-settings');
 
-  md-badge {
-    transform: scale(calc(var(--md-comp-icon-size) / 24));
+  ::ng-deep md-badge {
+    zoom: calc(var(--md-comp-icon-size) / 24);
   }
 }

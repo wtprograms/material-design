@@ -1,0 +1,106 @@
+<app-page>
+  <div class="inline-grid gap-4 medium:grid-cols-2">
+    <md-card variant="filled" class="grow justify-center p-10 bg-primary-container text-primary-container-on">
+      <h1 i18n>Avatar</h1>
+      <span class="typescale-body-large" i18n>
+        An avatar is a graphical representation of a user or the user's character.
+      </span>
+    </md-card>
+    <md-card variant="filled" class="grow justify-center px-10 py-0 bg-primary-container text-primary-container-on">
+      <img src="https://material-web.dev/components/images/button/hero.webp" />
+    </md-card>
+  </div>
+
+  <h2 id="demo" i18n>Interactive demonstration</h2>
+
+  <app-demo>
+    <app-properties>
+      <app-property [options]="type.values" [(option)]="type" i18n>interactive</app-property>
+      <app-property [options]="size.values" [(option)]="size" i18n>size</app-property>
+      <app-property [options]="badge.values" [(option)]="badge" i18n>badge</app-property>
+      <app-property [(checked)]="src" i18n>src</app-property>
+      <app-property [(checked)]="disabled" i18n>disabled</app-property>
+      <app-property [(checked)]="progressIndeterminate" i18n>progressIndeterminate</app-property>
+    </app-properties>
+    <div class="demo-body">
+      <md-avatar [badgeDot]="badge() === 'dot'" [badgeNumber]="badge() === 'number' ? 24 : 0" [size]="size()"
+        fullName="John Doe" [disabled]="disabled()" [interactive]="type() !== 'non-interactive'"
+        [href]="type() === 'anchor' ? '#' : undefined" [progressIndeterminate]="progressIndeterminate()"
+        [src]="src() ? 'https://avatar.iran.liara.run/public/48' : undefined" />
+    </div>
+  </app-demo>
+
+  <h2 id="usage" i18n>Usage</h2>
+
+  <p i18n>
+    <code>md-accordion</code> has a <code>[mdAccordionHeadline]</code> attribute that you can use to set the headline
+    and the rest of the content is the body.
+  </p>
+
+  <app-code [code]="avatar" language="html" />
+
+  <h2 id="api" i18n>API</h2>
+
+  <h3 id="inputs">Inputs</h3>
+
+  <md-card>
+    <table>
+      <thead>
+        <tr>
+          <th i18n>Property</th>
+          <th i18n>Type</th>
+          <th i18n>Default</th>
+          <th colspan="2" i18n>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>src</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's image source.</td>
+        </tr>
+        <tr>
+          <td><code>fullName</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's full name to get the initial from. It is also used as an <code>alt</code> if
+            <code>src</code> is specified.</td>
+        </tr>
+        <tr>
+          <td><code>size</code></td>
+          <td><code>number</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's size.</td>
+        </tr>
+        <tr>
+          <td><code>href</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's URL.</td>
+        </tr>
+        <tr>
+          <td><code>target</code></td>
+          <td><code>string</code></td>
+          <td><code>undefined</code></td>
+          <td colspan="2" i18n>The Avatar's URL target.</td>
+        </tr>
+        <tr>
+          <td><code>interactive</code></td>
+          <td><code>boolean</code></td>
+          <td><code>false</code></td>
+          <td colspan="2" i18n>Whether or not the Avatar is interactive.</td>
+        </tr>
+      </tbody>
+    </table>
+  </md-card>
+
+  <li class="navigation"><a mdScrollTo="demo" i18n>Interactive demonstration</a></li>
+  <li class="navigation"><a mdScrollTo="usage" i18n>Usage</a></li>
+  <li class="navigation">
+    <a mdScrollTo="api" i18n>API</a>
+    <ul>
+      <li class="list-disc ms-4"><a mdScrollTo="inputs" i18n>Inputs</a></li>
+    </ul>
+  </li>
+</app-page>

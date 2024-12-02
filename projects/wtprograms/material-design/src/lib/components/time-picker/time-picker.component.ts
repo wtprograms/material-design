@@ -2,235 +2,200 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   forwardRef,
+  inject,
+  input,
   model,
-  signal,
-  viewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-import { ButtonComponent } from '../button/button.component';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MaterialDesignValueAccessorComponent } from '../material-design-value-accessor.component';
-import { FieldComponent, FieldVariant } from '../field/field.component';
-import { DialogComponent } from '../dialog/dialog.component';
-import { TimeSpan } from '../../common/time-span';
-import { OpenCloseState } from '../../common/rxjs/open-close';
+import { MdValueAccessorComponent } from '../md-value-accessor.component';
+import { MdFieldUserDirective } from '../field/field-user.directive';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, fromEvent, map, merge, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { IconComponent } from '../icon/icon.component';
-import { RippleComponent } from '../ripple/ripple.component';
-import { getMeridianValues } from '../../common/date-helpers/get-meridian-values';
+import { MdButtonModule } from '../button/button.module';
+import { MdDialogModule } from '../dialog/dialog.module';
+import { MdFieldModule } from '../field/field.module';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdListModule } from '../list/list.module';
+import { MdPopoverComponent } from '../popover/popover.component';
 
-export type TimePickerVariant = 'embedded' | 'dropdown' | 'dialog';
+export type TimePickerInputVariant = 'embedded' | 'dropdown' | 'dialog';
+
+export class Time {
+  get totalSeconds() {
+    return this.hours * 3600 + this.minutes * 60 + this.seconds;
+  }
+
+  constructor(
+    public readonly hours = 0,
+    public readonly minutes = 0,
+    public readonly seconds = 0,
+  ) {}
+
+  static fromTotalSeconds(totalSeconds: number) {
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    if (totalSeconds >= 60) {
+      minutes = Math.floor(totalSeconds / 60);
+      seconds = totalSeconds % 60;
+    }
+    if (minutes >= 60) {
+      hours = Math.floor(minutes / 60);
+      minutes = minutes % 60;
+    }
+    return new Time(hours, minutes, seconds);
+  }
+}
 
 @Component({
   selector: 'md-time-picker',
   templateUrl: './time-picker.component.html',
   styleUrl: './time-picker.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.ShadowDom,
   imports: [
-    ButtonComponent,
-    DialogComponent,
-    FieldComponent,
+    MdButtonModule,
+    MdIconComponent,
     CommonModule,
-    IconComponent,
+    MdListModule,
+    MdFieldModule,
+    MdDialogModule,
+    MdPopoverComponent,
     FormsModule,
-    RippleComponent,
   ],
-  hostDirectives: [],
-  host: {},
+  hostDirectives: [
+    {
+      directive: MdFieldUserDirective,
+      inputs: ['variant', 'label', 'prefix', 'suffix', 'supportingText'],
+    },
+  ],
+  host: {
+    '[class]': 'inputVariant()',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => TimePickerComponent),
+      useExisting: forwardRef(() => MdTimePickerComponent),
     },
   ],
 })
-export class TimePickerComponent extends MaterialDesignValueAccessorComponent<
-  string | undefined
-> {
-  readonly variant = model<TimePickerVariant>('embedded');
-  readonly fieldVariant = model<FieldVariant>('filled');
-  readonly label = model<string>();
-  override readonly value = model<string | undefined>();
-  readonly selectionValue = model<string | undefined>(this.value());
-  readonly field = viewChild<FieldComponent<string | undefined>>('field');
-  readonly dialog = viewChild<DialogComponent>('dialog');
-  readonly hours = model(true);
-  readonly seconds = model(false);
-  readonly timeOfDay = model(false);
-  readonly locale = model('en');
-  readonly meridian = model('am');
+export class MdTimePickerComponent extends MdValueAccessorComponent<number> {
+  readonly fieldUser = inject(MdFieldUserDirective);
+  readonly inputVariant = input<TimePickerInputVariant>('dropdown');
+  readonly open = model(false);
+  readonly selectedValue = model<number | undefined>(this.value());
+  readonly locale = input('en');
+  readonly displayHours = input(true);
+  readonly displaySeconds = input(false);
+  readonly timeOfDay = input(false);
 
-  readonly populated = computed(() => {
-    if (this.field()?.popover()?.state() === 'closing' && !this.value()) {
-      return false;
-    }
-    return (
-      !!this.value() ||
-      this.field()?.open() ||
-      this.field()?.popover()?.state() === 'opening'
-    );
-  });
-
-  get meridianLabels() {
-    return getMeridianValues(this.locale());
-  }
-
-  get valueAsTimeSpan() {
-    return this.value() ? TimeSpan.parse(this.value()!) : undefined;
-  }
-  set valueAsTimeSpan(value: TimeSpan | undefined) {
-    this.value.set(value?.toString());
-  }
-
-  get selectedValueAsTimeSpan() {
-    return this.selectionValue()
-      ? TimeSpan.parse(this.selectionValue()!)
-      : undefined;
-  }
-  set selectedValueAsTimeSpan(value: TimeSpan | undefined) {
-    this.selectionValue.set(value?.toString());
-  }
-
-  readonly hoursInput = signal(this.selectedValueAsTimeSpan?.hours);
-  readonly minutesInput = signal(this.selectedValueAsTimeSpan?.minutes);
-  readonly secondsInput = signal(this.selectedValueAsTimeSpan?.seconds);
-
+  readonly time = computed(() => Time.fromTotalSeconds(this.value() ?? 0));
+  readonly selectedTime = computed(() =>
+    Time.fromTotalSeconds(this.selectedValue() ?? 0)
+  );
   readonly displayText = computed(() => {
-    if (!this.valueAsTimeSpan) {
-      return $localize`Select a time...`;
+    const time = this.time();
+    if (!time) {
+      return undefined;
     }
-    const time = this.valueAsTimeSpan.toString({
-      seconds: this.seconds(),
-      hours: this.hours(),
-    });
-    if (this.timeOfDay()) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return `${time} ${(this.meridianLabels as any)[this.meridian()]}`;
+    const parts: string[] = [];
+    if (this.displayHours()) {
+      parts.push(time.hours.toString().padStart(2, '0'));
     }
-    return time;
+    parts.push(time.minutes.toString().padStart(2, '0'));
+    if (this.displaySeconds()) {
+      parts.push(time.seconds.toString().padStart(2, '0'));
+    }
+    let value = parts.join(':');
+    return value;
   });
 
-  constructor() {
-    super();
-    effect(
-      () => {
-        const hours = this.hoursInput();
-        const minutes = this.minutesInput();
-        const seconds = this.secondsInput();
-        this.selectedValueAsTimeSpan = new TimeSpan(hours, minutes, seconds);
-      },
-      {
-        allowSignalWrites: true,
-      }
-    );
-    effect(
-      () => {
-        if (this.variant() === 'embedded') {
-          this.value.set(this.selectionValue());
-        }
-      },
-      {
-        allowSignalWrites: true,
-      }
-    );
-    effect(
-      () => {
-        if (this.timeOfDay()) {
-          if (this.meridian() === 'am' && this.hoursInput() === 12) {
-            this.hoursInput.set(0);
-          } else if (this.meridian() === 'pm' && this.hoursInput() === 0) {
-            this.hoursInput.set(12);
-          }
-        }
-      },
-      {
-        allowSignalWrites: true,
-      }
-    );
-  }
+  readonly meridianValues = computed(() => {
+    const date = new Date(2000, 0, 1);
+    const am = date
+      .toLocaleTimeString(this.locale(), { hour: 'numeric', hour12: true })
+      .split(' ')[1];
+    date.setHours(13);
+    const pm = date
+      .toLocaleTimeString(this.locale(), { hour: 'numeric', hour12: true })
+      .split(' ')[1];
+    return [am, pm];
+  });
 
-  clearClick() {
+  readonly populated = toSignal(
+    combineLatest({
+      focused: merge(
+        fromEvent(this.hostElement, 'focus').pipe(
+          map(() => true),
+          startWith(false)
+        ),
+        fromEvent(this.hostElement, 'blur').pipe(
+          map(() => false),
+          startWith(false)
+        )
+      ),
+      value: toObservable(this.value),
+      open: toObservable(this.open),
+    }).pipe(map(({ focused, value, open }) => focused || !!value || open)),
+    {
+      initialValue: false,
+    }
+  );
+
+  clear() {
     this.value.set(undefined);
-    this.selectionValue.set(undefined);
+    this.selectedValue.set(undefined);
   }
 
-  okayClick() {
-    this.value.set(this.selectionValue());
-    if (this.variant() === 'dropdown') {
-      this.field()?.open.set(false);
-    }
-    if (this.variant() === 'dialog') {
-      this.dialog()?.open.set(false);
-    }
+  okay() {
+    this.value.set(this.selectedValue());
+    this.open.set(false);
   }
 
-  cancelClick() {
-    this.selectionValue.set(this.value());
-    if (this.variant() === 'dropdown') {
-      this.field()?.open.set(false);
-    }
-    if (this.variant() === 'dialog') {
-      this.dialog()?.open.set(false);
-    }
+  cancel() {
+    this.selectedValue.set(this.value());
+    this.open.set(false);
   }
 
-  bodyClick() {
-    if (this.variant() !== 'dialog') {
-      return;
-    }
-    this.dialog()?.open.set(true);
-  }
-
-  popoverStateChange(state: OpenCloseState) {
-    if (state === 'closed') {
-      this.cancelClick();
-    }
-  }
-
-  onBeforeInput(event: Event, part: 'hours' | 'minutes' | 'seconds') {
+  beforeInput(event: Event, part: 'hours' | 'minutes' | 'seconds') {
     const input = event.target as HTMLInputElement;
     const inputEvent = event as InputEvent;
     if (inputEvent.inputType === 'insertText') {
       inputEvent.preventDefault();
-      const min = 0;
-      const max = part === 'hours' ? 12 : 59;
-      let value = parseInt(input.value + (inputEvent.data ?? '0'));
+      let min = 0;
+      let max = 59;
+      let value = Number(input.value + (inputEvent.data ?? '0'));
 
-      if (this.timeOfDay() || part !== 'hours') {
-        if (value < min) {
-          value = min;
-        }
-        if (value > max) {
-          value = max;
-        }
-      }
-
-      if (part === 'hours') {
-        if (this.timeOfDay() && this.meridian() === 'am' && value === 12) {
-          this.hoursInput.set(0);
-        } else if (
-          this.timeOfDay() &&
-          this.meridian() === 'pm' &&
-          value === 0
-        ) {
-          this.hoursInput.set(12);
+      if (part !== 'hours') {
+        value = Math.max(min, Math.min(max, value));
+      } else {
+        if (this.timeOfDay()) {
+          value = Math.max(min, Math.min(23, value));
         } else {
-          this.hoursInput.set(value);
+          value = Math.max(min, value);
         }
       }
 
-      if (part === 'minutes') {
-        this.minutesInput.set(value);
+      const time = this.selectedTime();
+      let hours = time.hours;
+      let minutes = time.minutes;
+      let seconds = time.seconds;
+      switch (part) {
+        case 'hours':
+          hours = value;
+          break;
+        case 'minutes':
+          minutes = value;
+          break;
+        case 'seconds':
+          seconds = value;
+          break;
       }
-
-      if (part === 'seconds') {
-        this.secondsInput.set(value);
-      }
+      this.selectedValue.set(
+        new Time(hours, minutes, seconds).totalSeconds
+      );
     }
   }
 }

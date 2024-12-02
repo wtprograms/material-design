@@ -1,8 +1,9 @@
 import { signal, WritableSignal } from '@angular/core';
 
-export function options<T>(...values: T[]): WritableSignal<T> & { values: T[] } {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const _signal = signal<T>(values[0]) as any;
+export type OptionsSignal<T> = WritableSignal<T> & { values: T[] };
+
+export function options<T>(...values: T[]): OptionsSignal<T> {
+  const _signal = signal(values[0]) as OptionsSignal<T>;
   _signal.values = values;
   return _signal;
 }

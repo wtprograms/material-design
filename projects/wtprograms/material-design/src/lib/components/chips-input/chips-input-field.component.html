@@ -1,0 +1,16 @@
+<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
+  [populated]="populated()" (inputContainerClick)="inputContainerClick()" [prefix]="fieldUser.prefix()"
+  [suffix]="fieldUser.suffix()" [supportingText]="fieldUser.supportingText()">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
+  <ng-content select="[mdFieldTrailing]" ngProjectAs="[mdFieldTrailing]" />
+
+  <ng-content select="md-chip" />
+  <input #input type="text" [(ngModel)]="text" [disabled]="disabled()" (input)="textInput()"
+    [style.width.px]="valueText.offsetWidth + 16" />
+  <span #valueText class="value-text">{{ text() }}</span>
+
+</md-field>
+
+<md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
+  <ng-content select="md-list-item" />
+</md-popover>

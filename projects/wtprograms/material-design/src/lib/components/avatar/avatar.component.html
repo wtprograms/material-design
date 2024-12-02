@@ -1,37 +1,37 @@
 <ng-template #content>
-  <md-touch-area />
   @if (src()) {
-  @defer {
-  <img [src]="src()" [alt]="fullName()" />
-  }
+  <img class="avatar" [src]="src()" [alt]="fullName()" />
   } @else {
-  <span class="initials">
-    {{ initial() }}
-  </span>
+  <span class="initials">{{ fullName()?.[0]?.toUpperCase() }}</span>
+  }
+  @if (!disabled()) {
+  <div class="badge-container">
+    <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />
+  </div>
   }
 </ng-template>
 
-@if (this.interactive()) {
-<md-focus-ring part="focus-ring" [target]="button()" />
-<md-ripple part="ripple" [target]="button()" />
+@if (interactive() || href()) {
 @if (href()) {
-<a part="button" #button [attr.href]="href() ?? null" [attr.target]="anchorTarget() ?? null"
-  [tabIndex]="disabled() ? -1 : 0">
-  <ng-container *ngTemplateOutlet="content" class="content" />
+<a mdEmbeddedButton #button [href]="href()" [target]="target()" [tabIndex]="disabled() ? -1 : 0">
+  <md-focus-ring />
+  <md-ripple />
+  <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button part="button" #button type="button" [disabled]="disabled()" [attr.name]="name() ?? null"
-  [attr.value]="value() ?? null">
+<button mdEmbeddedButton #button type="button" [disabled]="disabled()">
+  <md-focus-ring />
+  <md-ripple />
   <ng-container *ngTemplateOutlet="content" />
 </button>
 }
 } @else {
 <ng-container *ngTemplateOutlet="content" />
 }
-@if (badgeDot() || badgeNumber()) {
-<md-badge part="badge" [dot]="badgeDot()" [number]="badgeNumber()" />
+
+@if (progressIndicatorUser.progressIndeterminate() || progressIndicatorUser.progressValue()) {
+  <md-progress-indicator [indeterminate]="progressIndicatorUser.progressIndeterminate()"
+    [max]="progressIndicatorUser.progressMax()" [value]="progressIndicatorUser.progressValue()" variant="circular" />
 }
 
-@if (!disabled() && (progressValue() || progressIndeterminate())) {
-<md-progress-indicator [value]="progressValue()" [indeterminate]="progressIndeterminate()" />
-}
+<ng-content select="md-popover, md-tooltip, md-menu" />
