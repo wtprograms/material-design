@@ -5,11 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "start:playground": "ng serve playground",
-    "build": "ng build",
-    "build:index": "node ./index.cjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:material-design": "node dist/material-design/server/server.mjs"
+    "serve:ssr:material-design": "node dist/material-design/server/server.mjs",
+    "build:index": "node ./index.cjs",
+    "build:package": "ng build @wtprograms/material-design --configuration production",
+    "build:application": "ng build --configuration production",
+    "build": "npm-run-all build:index build:package"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +29,7 @@
     "express": "^4.18.2",
     "ngx-highlightjs": "^12.0.0",
     "ngxtension": "^4.1.0",
+    "npm-run-all": "^4.1.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

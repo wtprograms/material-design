@@ -4,7 +4,8 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@floating-ui/dom": "^1.6.12"
+    "@floating-ui/dom": "^1.6.12",
+    "ngxtension": "^4.1.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

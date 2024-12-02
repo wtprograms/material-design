@@ -5,14 +5,13 @@ import {
   effect,
   ElementRef,
   input,
-  linkedSignal,
   output,
   viewChild,
 } from '@angular/core';
 import { MdComponent } from '../md.component';
 import { CommonModule } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { observeResize, observeResize$ } from '../../common/signals/observe-resize';
+import { observeResize$ } from '../../common/signals/observe-resize';
 import { filter, map, switchMap } from 'rxjs';
 import { MdRippleComponent } from '../ripple/ripple.component';
 

@@ -7,19 +7,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {
-  concat,
-  delay,
-  filter,
-  map,
-  Observable,
-  of,
-  switchMap,
-  tap,
-  timer,
-} from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { EASING, easingToFunction } from '../../common/motion/easing';
+import { easingToFunction } from '../../common/motion/easing';
 import { MdComponent } from '../md.component';
 import { MdAttachableDirective } from '../../directives/attachable.directive';
 

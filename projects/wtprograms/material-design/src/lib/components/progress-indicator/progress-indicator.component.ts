@@ -3,8 +3,6 @@ import {
   Component,
   computed,
   input,
-  model,
-  ViewEncapsulation,
 } from '@angular/core';
 import { MdComponent } from '../md.component';
 

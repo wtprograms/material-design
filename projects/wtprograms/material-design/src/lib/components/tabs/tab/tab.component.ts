@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, contentChild, effect, inject, model } from '@angular/core';
 import { MdComponent } from '../../md.component';
 import { MdBadgeUserDirective } from '../../badge/badge-user.directive';
-import { MdBadgeModule, MdEmbeddedButtonModule, MdFocusRingModule, MdIconComponent, MdRippleModule, MdTabsComponent } from '@wtprograms/material-design';
-import { outputFromObservable, outputToObservable, toObservable } from '@angular/core/rxjs-interop';
+import { MdBadgeModule } from '../../badge/badge.module';
+import { MdEmbeddedButtonModule } from '../../embedded-button/embedded-button.module';
+import { MdFocusRingModule } from '../../focus-ring/focus-ring.module';
+import { MdIconComponent } from '../../icon/icon.component';
+import { MdRippleModule } from '../../ripple/ripple.module';
+import { MdTabsComponent } from '../tabs.component';
 
 @Component({
   selector: 'md-tab',

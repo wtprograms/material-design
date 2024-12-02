@@ -14,7 +14,6 @@ import { MdBadgeComponent } from '../../badge/badge.component';
 import { ButtonType } from '../../button/button.component';
 import { MdEmbeddedButtonModule } from '../../embedded-button/embedded-button.module';
 import { MdFocusRingComponent } from '../../focus-ring/focus-ring.component';
-import { IconButtonVariant } from '../../icon-button/icon-button.component';
 import { MdIconComponent } from '../../icon/icon.component';
 import { MdComponent } from '../../md.component';
 import { MdRippleComponent } from '../../ripple/ripple.component';

@@ -9,7 +9,7 @@ import {
 import { MdComponent } from '../md.component';
 import { skip, tap } from 'rxjs';
 import { CommonModule, isPlatformServer } from '@angular/common';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { DURATION } from '../../common/motion/duration';
 import { EASING } from '../../common/motion/easing';
 

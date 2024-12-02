@@ -1,14 +1,13 @@
 import {
-  DestroyRef,
   Directive,
   effect,
   inject,
   input,
-  OnInit,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { observeMedia, ScreenSize } from '@wtprograms/material-design';
+import { ScreenSize } from '../common/screen-size';
+import { observeMedia } from '../common/signals/observe-media';
 
 @Directive({
   selector: '[mdMedia]',

@@ -5,7 +5,8 @@ import { MdDividerComponent } from '../divider/divider.component';
 import { MdListItemLeadingDirective } from './list-item/list-item-leading.directive';
 import { MdListItemTrailingDirective } from './list-item/list-item-trailing.directive';
 import { MdListItemSupportingTextDirective } from './list-item/list-item-supporting-text.directive';
-import { MdCheckModule, MdIconButtonModule } from '@wtprograms/material-design';
+import { MdCheckModule } from '../check/check.module';
+import { MdIconButtonModule } from '../icon-button/icon-button.module';
 
 @NgModule({
   imports: [

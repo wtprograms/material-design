@@ -6,30 +6,19 @@ import {
   effect,
   ElementRef,
   input,
-  QueryList,
   viewChild,
 } from '@angular/core';
 import { MdComponent } from '../md.component';
 import {
-  assertValue,
-  definedValue,
-  DURATION,
-  EASING,
-  MdTabComponent,
-  observeResize,
-} from '@wtprograms/material-design';
-import {
-  combineLatest,
-  filter,
-  fromEvent,
-  map,
-  merge,
-  Subscription,
-  switchMap,
   tap,
 } from 'rxjs';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { isPlatformServer } from '@angular/common';
+import { MdTabComponent } from './tab/tab.component';
+import { observeResize } from '../../common/signals/observe-resize';
+import { assertValue } from '../../common/assertion/assert-value';
+import { EASING } from '../../common/motion/easing';
+import { DURATION } from '../../common/motion/duration';
 
 @Component({
   selector: 'md-tabs',
