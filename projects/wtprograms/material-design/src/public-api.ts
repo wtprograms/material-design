@@ -23,6 +23,8 @@ export * from './lib/common/motion/animation-timing';
 export * from './lib/common/motion/duration';
 export * from './lib/common/motion/easing';
 export * from './lib/common/motion/index';
+export * from './lib/common/px-to-rem';
+export * from './lib/common/rem-to-px';
 export * from './lib/common/rxjs/observe-mutation';
 export * from './lib/common/rxjs/observe-resize';
 export * from './lib/common/screen-size';

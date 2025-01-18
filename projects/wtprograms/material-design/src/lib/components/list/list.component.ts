@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MdComponent } from '../../common/base/md.component';
-import { MdListItemComponent } from '@wtprograms/material-design';
+import { MdListItemComponent } from './list-item/list-item.component';
 
 @Component({
   selector: 'md-list',
