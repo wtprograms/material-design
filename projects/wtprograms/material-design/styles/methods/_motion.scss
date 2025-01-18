@@ -7,9 +7,8 @@
   transition-duration: var(--md-sys-motion-duration-#{$duration});
   transition-timing-function: var(--md-sys-motion-easing-#{$easing});
   @if $delay == null {
-    transition-duration: 0;
+    transition-duration: reset;
   } @else {
     transition-delay: var(--md-sys-motion-duration-#{$delay});
   }
-  transition-behavior: allow-discrete;
 }

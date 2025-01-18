@@ -1,12 +1,34 @@
 @use 'sass:meta';
+@use 'sass:string';
+@use 'str-replace';
 
-@mixin declare-tokens($tokens, $prefix: '') {
+@mixin declare-tokens($tokens, $prefix: '', $internal: false) {
+  @include _declare-tokens($tokens, $prefix, $prefix, $internal);
+}
+
+@mixin _declare-tokens($tokens, $prefix: '', $root, $internal) {
   @each $key, $value in $tokens {
-    $token-name: if($key == '', $prefix, '#{$prefix}-#{$key}');
-    @if meta.type-of($value) == 'map' {
-      @include declare-tokens($value, $token-name);
-    } @else {
-      --#{$token-name}: #{$value};
+    @if ($value != ()) {
+      $prefix-key: if(
+        $prefix == '_',
+        '#{$prefix}#{$key}',
+        '#{$prefix}-#{$key}'
+      );
+      $token-name: if($key == '', $prefix, $prefix-key);
+      @if meta.type-of($value) == 'map' {
+        @include _declare-tokens($value, $token-name, $root, $internal);
+      } @else {
+        --#{$token-name}: #{$value};
+        @if $internal {
+          $prefix-key: str-replace.str-replace($prefix-key, $root + '-', '_');
+          $prefix-key: if(
+            string.slice($prefix-key, string.length($prefix-key), -1) == '-',
+            string.slice($prefix-key, 0, -2),
+            $prefix-key
+          );
+          --#{$prefix-key}: var(--#{$token-name});
+        }
+      }
     }
   }
 }

@@ -1,90 +1,203 @@
 @use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-on),
+  'icon': (
+    'color': var(--md-sys-color-primary),
+    'filled': 0,
+  ),
+  'background-color': transparent,
+  'border-radius': (
+    '': var(--md-sys-shape-extra-small),
+    'pill': var(--md-sys-shape-full),
+  ),
+  'padding': (
+    '': 16px,
+    'addon': 8px,
+    'avatar': 2px,
+    'start': var(--_padding),
+    'end': var(--_padding),
+  ),
+  'border': 0.0625rem solid var(--md-sys-color-outline-variant),
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+    'icon-color': var(--md-sys-color-disabled-color),
+    'border': 0.0625rem solid var(--md-sys-color-disabled-border),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'icon-filled': 1,
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'icon-color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+    ),
+  ),
+  'elevated': (
+    'background-color': var(--md-sys-color-surface-container-low),
+    'border': 0,
+    'disabled': (
+      'background-color': var(--md-sys-color-disabled-background),
+      'border': 0,
+    ),
+  ),
+);
+
+@mixin disabled {
+  @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+  > img {
+    opacity: 0.5;
+  }
+}
+
+@mixin elevated {
+  @include md.set-tokens(map.get($tokens, 'elevated'), 'elevated');
+
+  &[disabled] {
+    @include md.set-tokens(
+      map.get(map.get($tokens, 'elevated'), 'disabled'),
+      'elevated-disabled'
+    );
+    --_box-shadow: none;
+
+    &[selected] {
+      @include md.set-tokens(
+        map.get(map.get($tokens, 'selected'), 'disabled'),
+        'selected-disabled'
+      );
+    }
+  }
+}
+
+@mixin selected {
+  @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+}
+
+@mixin selected {
+  @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+}
 
 :host {
-  --_color: currentColor;
+  @include md.declare-tokens($tokens, 'md-comp-chip', true);
+  --_current-color: currentColor;
 
+  &[elevated] {
+    @include elevated;
+  }
+
+  &[selected] {
+    @include selected;
+  }
+
+  &[disabled] {
+    @include disabled;
+  }
+
+  &[pill] {
+    --_border-radius: var(--_border-radius-pill);
+
+    ::ng-deep md-icon-button {
+      border-radius: var(--md-sys-shape-full-end);
+    }
+  }
+
+  --_current-color: currentColor;
   position: relative;
   display: inline-flex;
-  border-radius: var(--md-sys-shape-extra-small);
-  height: 32px;
+  border-radius: var(--_border-radius);
+  background-color: var(--_background-color);
+  border: var(--_border);
+  color: var(--_color);
+  height: 2rem;
   text-wrap: nowrap;
-  flex-shrink: 0;
-  place-content: center;
-  place-items: center;
+  justify-content: center;
+  align-items: center;
   appearance: none;
   outline: none;
   user-select: none;
-  border: 1px solid var(--md-sys-color-outline);
-  color: var(--md-sys-color-surface-variant-on);
-  overflow: hidden;
+  padding-inline-start: var(--_padding-start);
+  padding-inline-end: var(--_padding-end);
+  gap: 0.5rem;
   @include md.typescale('label', 'large');
-  @include md.motion('background-color, color, border-color, border-radius');
+  @include md.motion('background-color, color, border, box-shadow');
 
-  .container {
-    display: inherit;
-    place-content: inhert;
-    place-items: inherit;
-    position: relative;
-    gap: 8px;
-    padding-inline: 8px;
-    height: inherit;
-
-    &:has(::ng-deep [mdChipLeading]) {
-      padding-inline-start: 4px;
-    }
-    &:has(::ng-deep [mdChipTrailing]):not(:has(md-icon-button)) {
-      padding-inline-end: 4px;
+  &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
+    md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
     }
   }
 
-  ::ng-deep [mdChipLeading],
-  ::ng-deep [mdChipTrailing] {
-    --md-comp-icon-size: 18;
-    --md-comp-avatar-size: 24;
+  &:has(
+      > ::ng-deep md-icon,
+      > [mdEmbeddedButton]:not(.md-chip-close-button) > ::ng-deep md-icon
+    ),
+  &:has(img) {
+    --_padding-start: var(--_padding-addon);
   }
 
-  md-icon-button {
-    height: inherit;
-    width: auto;
-    padding-inline: 6px;
-    color: inherit;
+  &:has(::ng-deep md-avatar) {
+    --_padding-start: var(--_padding-avatar);
+  }
 
-    ::ng-deep [mdEmbeddedButton] md-icon {
+  &:has(.trailing),
+  &:has(::ng-deep md-badge) {
+    --_padding-end: var(--_padding-addon);
+  }
+
+
+  ::ng-deep {
+    > md-icon,
+    > [mdEmbeddedButton] > md-icon {
+      color: var(--_icon-color);
+      --md-comp-icon-filled: var(--_icon-filled);
+      --md-comp-icon-size: 18;
+    }
+
+    md-icon-button [mdEmbeddedButton] md-icon {
       --md-comp-icon-size: 18;
     }
   }
 
+  > img,
+  > [mdEmbeddedButton] > img {
+    object-fit: cover;
+    max-height: 1.125rem;
+  }
+
+  ::ng-deep md-avatar {
+    --md-comp-avatar-size: 24;
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
+  }
+
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-color: var(--_current-color);
   }
 
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    border-color: var(--md-sys-color-disabled-border);
-    pointer-events: none;
+  &:has(::ng-deep md-icon-button) {
+    --_padding-end: 0;
   }
 
-  md-button {
+  ::ng-deep md-icon-button {
+    --_background-color: transparent;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
-    padding-inline: 4px;
-  }
+    width: 2rem;
+    margin: 0;
+    border-radius: 0;
+    color: inherit;
+    border: 0;
 
-  &:has(md-icon-button) {
-    padding-inline-end: 0;
-  }
-
-  &.pill {
-    border-radius: var(--md-sys-shape-full);
-  }
-
-  &.selected {
-    background-color: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-secondary-container-on);
-
-    &.disabled {
-      background-color: var(--md-sys-color-disabled-background);
-      color: var(--md-sys-color-disabled-color);
-      border-color: var(--md-sys-color-disabled-border);
+    ::ng-deep md-icon {
+      --md-comp-icon-size: 18;
+      color: inherit;
     }
   }
 }

@@ -1,0 +1,1 @@
+export type ControlState = 'success' | 'warning' | 'error' | undefined;

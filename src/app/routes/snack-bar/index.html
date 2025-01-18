@@ -1,0 +1,18 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+    <app-check-property [(checked)]="action">Action</app-check-property>
+    <app-check-property [(checked)]="closable">Closable</app-check-property>
+    <app-check-property [(checked)]="multiline">Multiline</app-check-property>
+  </app-properties>
+
+  <md-snack-bar
+    [(open)]="open"
+    [closable]="closable()"
+    [multiline]="multiline()"
+  >
+    This is the snack bar message. @if (action()) {
+    <md-button>Action</md-button>
+    }
+  </md-snack-bar>
+</app-page>

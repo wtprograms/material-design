@@ -1,38 +1,31 @@
-<ng-template #content>
+<ng-template #icon>
   <ng-content />
 </ng-template>
-
-<ng-template #buttonContent>
-  <md-ripple />
+<ng-template #content>
   <md-focus-ring />
-  @if (customIcon()) {
-  <div class="md-icon-button-custom">
-    <ng-container *ngTemplateOutlet="content" />
-    @if (!disabled()) {
-    <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />
-    }
-  </div>
+  <md-tint />
+  <md-ripple />
+  @if (custom()) {
+  <ng-container *ngTemplateOutlet="icon" />
   } @else {
-  <md-icon [filled]="filled()" [badgeDot]="disabled() ? false : badgeUser.badgeDot()"
-    [badgeNumber]="disabled() ? 0 : badgeUser.badgeNumber()">
-    <ng-container *ngTemplateOutlet="content" />
+  <md-icon [filled]="filled()" [badgeDot]="embeddedBadge.dot()" [badgeText]="embeddedBadge.text()">
+    <ng-container *ngTemplateOutlet="icon" />
   </md-icon>
   }
 </ng-template>
-
 @if (href()) {
-<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
-  <ng-container *ngTemplateOutlet="buttonContent" />
+<a mdEmbeddedButton [href]="href()" [target]="target()">
+  <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
-  <ng-container *ngTemplateOutlet="buttonContent" />
+<button mdEmbeddedButton [type]="type()" [value]="value()" [disabled]="disabled()">
+  <ng-container *ngTemplateOutlet="content" />
 </button>
-}
-
-@if (progressIndicatorUser.progressIndeterminate() || progressIndicatorUser.progressValue()) {
-<md-progress-indicator [indeterminate]="progressIndicatorUser.progressIndeterminate()"
-  [max]="progressIndicatorUser.progressMax()" [value]="progressIndicatorUser.progressValue()" variant="circular" />
+} @if (embeddedProgressIndicator.value() ||
+embeddedProgressIndicator.indeterminate()) {
+<md-progress-indicator [value]="embeddedProgressIndicator.value()" [indeterminate]="
+    embeddedProgressIndicator.indeterminate()
+  " [max]="embeddedProgressIndicator.max()" [buffer]="embeddedProgressIndicator.buffer()" />
 }
 
 <ng-content select="md-popover, md-tooltip, md-menu" />

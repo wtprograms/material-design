@@ -1,6 +1,12 @@
-@use "../md";
+@use '../md';
+
+$tokens: (
+  'color': var(--md-sys-color-outline-variant),
+);
 
 :host {
+  @include md.declare-tokens($tokens, 'md-comp-focus-ring', true);
+
   display: inline-flex;
   pointer-events: none;
   border-radius: inherit;
@@ -10,8 +16,13 @@
 
   outline-width: 0;
   outline-offset: 3px;
-  outline-color: var(--md-sys-color-outline-variant);
+  outline-color: var(--_color);
   outline-style: solid;
 
-  @include md.motion("opacity, outline-width");
+  @include md.motion('opacity, outline-width');
+
+  &[focused] {
+    opacity: 1;
+    outline-width: 3px;
+  }
 }

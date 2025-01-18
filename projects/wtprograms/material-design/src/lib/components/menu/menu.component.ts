@@ -1,36 +1,53 @@
 import {
-  ChangeDetectionStrategy,
   Component,
+  ChangeDetectionStrategy,
   inject,
   input,
   model,
+  contentChildren,
+  effect,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import {
-  MdPopoverComponent,
-  PopoverTrigger,
-} from '../popover/popover.component';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
 import { Placement } from '@floating-ui/dom';
+import { MdMenuItemComponent } from './menu-item/menu-item.component';
+import { MdComponent } from '../../common/base/md.component';
+import { MdPopoverModule } from '../popover/popover.module';
+import { PopoverTrigger } from '../popover/popover-trigger';
+import { MdAttachableDirective } from '../../directives/attachable/attachable.directive';
 
 @Component({
   selector: 'md-menu',
   templateUrl: './menu.component.html',
-  styleUrl: './menu.component.scss',
+  styleUrls: ['./menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MdPopoverComponent],
   hostDirectives: [
     {
       directive: MdAttachableDirective,
       inputs: ['target'],
     },
   ],
+  imports: [MdPopoverModule],
 })
 export class MdMenuComponent extends MdComponent {
   readonly attachable = inject(MdAttachableDirective);
   readonly trigger = input<PopoverTrigger>('click');
-  readonly placement = input<Placement>('bottom');
+  readonly flip = input(true);
+  readonly shift = input(true);
   readonly offset = input(8);
+  readonly placement = input<Placement>('bottom');
   readonly open = model(false);
-  readonly useTargetWidth = input(false);
+  readonly subItems = contentChildren(MdMenuItemComponent);
+
+  constructor() {
+    super();
+    effect(() => {
+      const open = this.open();
+      if (open) {
+        return;
+      }
+      const subItems = this.subItems();
+      for (const subItem of subItems) {
+        subItem.subMenu()?.open.set(false);
+      }
+    });
+  }
 }

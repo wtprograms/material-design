@@ -1,10 +1,32 @@
 @use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'background-color': var(--md-sys-color-surface-container),
+  'color': var(--md-sys-color-surface-variant-on),
+  'border-radius': var(--md-sys-shape-extra-small),
+  'padding': 4px 0,
+);
 
 :host {
-  position: absolute;
+  @include md.declare-tokens($tokens, 'md-comp-menu', true);
+  display: contents;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  border-radius: var(--_border-radius);
+  padding: var(--_padding);
 
   md-popover {
-    padding-top: 4px;
-    padding-bottom: 4px;
+    min-width: 114px;
+    background-color: inherit;
+    color: inherit;
+    border-radius: inherit;
+    padding: inherit;
+  }
+
+  ::ng-deep md-divider {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    --md-comp-divider-color: var(--md-sys-color-outline-variant);
   }
 }

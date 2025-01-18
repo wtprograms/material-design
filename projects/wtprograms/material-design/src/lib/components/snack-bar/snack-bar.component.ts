@@ -1,41 +1,25 @@
+import { isPlatformServer } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  contentChildren,
+  effect,
   input,
   model,
-  output,
-  signal,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { distinctUntilChanged, filter, tap } from 'rxjs';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
-import {
-  takeUntilDestroyed,
-  toObservable,
-  toSignal,
-} from '@angular/core/rxjs-interop';
-import { openClose, OpenCloseState } from '../../common/rxjs/open-close';
-import { isPlatformBrowser } from '@angular/common';
-import { DURATION, durationToMilliseconds } from '../../common/motion/duration';
-import { EASING } from '../../common/motion/easing';
-import { MdButtonModule } from '../button/button.module';
+import { MdComponent } from '../../common/base/md.component';
+import { DURATION } from '../../common/motion';
+import { MdButtonComponent } from '../button/button.component';
 import { MdIconButtonComponent } from '../icon-button/icon-button.component';
 
 @Component({
   selector: 'md-snack-bar',
   templateUrl: './snack-bar.component.html',
-  styleUrl: './snack-bar.component.scss',
+  styleUrls: ['./snack-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MdIconButtonComponent, MdButtonModule],
-  hostDirectives: [
-    {
-      directive: MdAttachableDirective,
-      inputs: ['target'],
-    },
-  ],
+  imports: [MdIconButtonComponent],
   host: {
-    '[class]': 'openCloseState()',
-    '[class.multiline]': 'multiline()',
+    '[attr.multiline]': 'multiline() ? "" : null',
     '(touchstart)': 'touchStart($event)',
     '(touchmove)': 'touchMove($event)',
     '(touchend)': 'touchEnd($event)',
@@ -43,121 +27,80 @@ import { MdIconButtonComponent } from '../icon-button/icon-button.component';
 })
 export class MdSnackBarComponent extends MdComponent {
   readonly open = model(false);
-  readonly closable = input(false);
-  readonly close = output<Event>();
-  readonly actionClick = output<Event>();
-  readonly action = input<string>();
   readonly multiline = input(false);
-
-  private _deltaX = 0;
-  private _currentX = 0;
-  private _animation?: Animation;
-
-  readonly openCloseState = toSignal(
-    openClose(
-      toObservable(this.open).pipe(
-        filter(() => isPlatformBrowser(this._platformId)),
-        distinctUntilChanged(),
-        tap((open) => this.animate(open)),
-        takeUntilDestroyed(this._destroyRef)
-      )
-    ).pipe(tap((state) => this.openCloseStateChange.emit(state)))
-  );
-  readonly openCloseStateChange = output<OpenCloseState>();
+  readonly closable = input(false);
+  private readonly _actions = contentChildren(MdButtonComponent);
+  private startX = 0;
+  private currentX = 0;
+  private translateX = 0;
 
   constructor() {
     super();
     this.hostElement.popover = 'manual';
+    effect(() => {
+      const actions = this._actions();
+      for (const action of actions) {
+        action.hostElement.addEventListener('click', () => this.open.set(false));
+        action.variant.set('text');
+      }
+    });
+    effect(() => {
+      const open = this.open();
+      if (isPlatformServer(this.platformId)) {
+        return;
+      }
+      if (open) {
+        this.hostElement.showPopover();
+      } else {
+        this.hostElement.hidePopover();
+      }
+    });
+  }
+
+  closeClick() {
+    this.open.set(false);
   }
 
   touchStart(event: TouchEvent) {
+    const element = event.target as HTMLElement;
+    if (element.tagName === 'BUTTON') {
+      return;
+    }
     event.preventDefault();
-    this.hostElement.style.transition = 'none';
-    this._currentX = event.touches[0].clientX;
+    this.startX = event.touches[0].clientX;
   }
 
   touchMove(event: TouchEvent) {
-    event.preventDefault();
-    this._deltaX = (this._currentX - event.touches[0].clientX) * -1;
-    this.hostElement.style.transform = `translateX(${this._deltaX}px)`;
+    const element = event.target as HTMLElement;
+    if (element.tagName === 'BUTTON') {
+      return;
+    }
+    this.currentX = event.touches[0].clientX;
+    this.translateX = this.currentX - this.startX;
+    this.hostElement.style.transition = 'none';
+    this.hostElement.style.transform = `translateX(${this.translateX}px)`;
   }
 
-  async touchEnd(event: Event) {
-    event.preventDefault();
-    this.hostElement.style.transition = '';
-    const rect = this.hostElement.getBoundingClientRect();
-    if (Math.abs(this._deltaX) > 150) {
-      if (this._deltaX < 0) {
-        this.hostElement.style.transform = `translateX(-${window.innerWidth + rect.width}px)`;
-      } else {
-        this.hostElement.style.transform = `translateX(${window.innerWidth + rect.width}px)`;
-      }
-      await new Promise((resolve) => setTimeout(resolve, durationToMilliseconds(DURATION.long4)));
-      this.hostElement.style.transform = '';
-      this.open.set(false);
+  touchEnd(event: TouchEvent) {
+    const element = event.target as HTMLElement;
+    if (element.tagName === 'BUTTON') {
+      return;
+    }
+    const percentage = Math.abs(this.translateX) / this.hostElement.offsetWidth;
+    if (percentage > 0.35 && this.startX !== 0) {
+      const direction = this.translateX < 0 ? '-300%' : '300%';
+      this.hostElement.style.transition = '';
+      this.hostElement.style.transform = `translateX(${direction})`;
+      setTimeout(() => {
+        this.hostElement.style.transform = '';
+        this.startX = 0;
+        this.currentX = 0;
+        this.translateX = 0;
+        this.open.set(false);
+      }, DURATION.short4);
     } else {
+      this.hostElement.style.transition = '';
       this.hostElement.style.transform = '';
-    }
-    this._deltaX = 0;
-  }
-
-  closeClicked(event: Event) {
-    this.close.emit(event);
-    if (!event.defaultPrevented) {
-      this.open.set(false);
-    }
-  }
-
-  actionClicked(event: Event) {
-    this.actionClick.emit(event);
-    if (!event.defaultPrevented) {
-      this.open.set(false);
-    }
-  }
-
-  private getHeight() {
-    this.hostElement.classList.add('height');
-    const height = this.hostElement.offsetHeight;
-    this.hostElement.classList.remove('height');
-    return height;
-  }
-
-  private async animate(open: boolean) {
-    this._animation?.cancel();
-    const timings: OptionalEffectTiming = {
-      easing: EASING.standardDecelerate,
-      duration: DURATION.short4,
-      fill: 'forwards',
-    };
-
-    if (open) {
-      this.hostElement.style.display = 'inline-flex';
-      this.hostElement.showPopover();
-    }
-
-    const height = this.getHeight();
-    const style: any = {
-      opacity: ['0', '1'],
-      height: ['0px', `${height}px`],
-    };
-
-    if (!open) {
-      style.height = style.height.reverse();
-      style.opacity = style.opacity.reverse();
-      timings.easing = EASING.standardAccelerate;
-      timings.duration = DURATION.short3;
-    }
-
-    this._animation = this.hostElement.animate(style, timings);
-    try {
-      await this._animation.finished;
-      this._animation.cancel();
-    } catch {}
-    this.hostElement.style.height = open ? 'fit-content' : '0px';
-
-    if (!open) {
-      this.hostElement.style.display = 'none';
-      this.hostElement.hidePopover();
     }
   }
 }

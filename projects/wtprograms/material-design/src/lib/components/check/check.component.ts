@@ -2,35 +2,40 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   forwardRef,
   input,
   model,
   viewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MdIconComponent } from '../icon/icon.component';
-import { MdValueAccessorComponent } from '../md-value-accessor.component';
-import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
-import { MdRippleComponent } from '../ripple/ripple.component';
-import { isActivationClick } from '../../common/events/is-activation-click';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.module';
+import { MdRippleComponent } from '../ripple/ripple.module';
+import { CheckType } from './check-type';
+import { MdValueAccessorComponent } from '../../common/base/value-accessor/md-value-accessor.component';
 import { dispatchActivationClick } from '../../common/events/dispatch-activation-click';
-
-export type CheckType = 'checkbox' | 'radio';
+import { isActivationClick } from '../../common/events/is-activation-click';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdTintComponent } from '../tint/tint.component';
 
 @Component({
   selector: 'md-check',
   templateUrl: './check.component.html',
-  styleUrl: './check.component.scss',
+  styleUrls: ['./check.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    MdRippleComponent,
-    MdFocusRingComponent,
     FormsModule,
     MdIconComponent,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
   ],
+  host: {
+    '[attr.switch]': 'switch() ? "" : null',
+    '[attr.type]': 'type()',
+    '(click)': 'click($event)',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -38,19 +43,17 @@ export type CheckType = 'checkbox' | 'radio';
       useExisting: forwardRef(() => MdCheckComponent),
     },
   ],
-  host: {
-    '[class.switch]': 'switch()',
-    '[class.disabled]': 'disabled()',
-    '(click)': 'click($event)',
-  },
 })
 export class MdCheckComponent extends MdValueAccessorComponent<
-  string | boolean
+  string | boolean | number
 > {
+  readonly type = input<CheckType>('checkbox');
   readonly checked = model(false);
   readonly indeterminate = model(false);
   readonly switch = input(false);
-  readonly type = input<CheckType>('checkbox');
+  readonly radioValue = input<string | boolean | number>();
+  private readonly _input =
+    viewChild.required<ElementRef<HTMLInputElement>>('input');
 
   readonly checkedIcon = computed(() =>
     this.type() === 'checkbox' ? 'check_box' : 'radio_button_checked'
@@ -68,14 +71,29 @@ export class MdCheckComponent extends MdValueAccessorComponent<
       : 'radio_button_unchecked'
   );
 
-  private readonly _inputElement =
-    viewChild.required<ElementRef<HTMLInputElement>>('inputElement');
+  constructor() {
+    super();
+    effect(() => {
+      const type = this.type();
+      const value = this.value();
+      const radioValue = this.radioValue();
+      const checked = this.checked();
+      if (type === 'radio') {
+        this.checked.set(value === radioValue);
+      } else {
+        this.value.set(checked);
+      }
+    });
+  }
 
-  input(event: Event) {
+  onInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.value.set(input.value);
-    this.checked.set(!!input.checked);
-    this.indeterminate.set(!!input.indeterminate);
+    if (this.type() === 'radio') {
+      this.value.set(this.radioValue());
+    } else {
+      this.checked.set(input.checked);
+      this.indeterminate.set(input.indeterminate);
+    }
   }
 
   click(event: Event) {
@@ -86,6 +104,6 @@ export class MdCheckComponent extends MdValueAccessorComponent<
       return;
     }
 
-    dispatchActivationClick(this._inputElement().nativeElement, false);
+    dispatchActivationClick(this._input()?.nativeElement!, false);
   }
 }

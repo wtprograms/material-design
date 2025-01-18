@@ -1,0 +1,62 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="selected">Selected</app-check-property>
+    <app-check-property [(checked)]="useCheckIcon">Use Check Icon</app-check-property>
+  </app-properties>
+
+  <div class="inline-flex flex-col gap-2">
+    <md-segmented-button-set>
+      <md-segmented-button [disabled]="disabled()" [selected]="selected()" [badgeDot]="true">
+        <md-icon mdSegmentedButtonLeading>home</md-icon>
+        Button
+      </md-segmented-button>
+    </md-segmented-button-set>
+    <md-segmented-button-set>
+      <md-segmented-button [disabled]="disabled()" [selected]="selected()" [badgeDot]="true">
+        <md-icon mdSegmentedButtonLeading>home</md-icon>
+        Button
+      </md-segmented-button>
+      <md-segmented-button> Button </md-segmented-button>
+    </md-segmented-button-set>
+    <md-segmented-button-set>
+      <md-segmented-button #item1 [selected]="selectedItem() === item1" (click)="selectedItem.set(item1)"
+        [useCheckIcon]="useCheckIcon()">
+        <md-icon mdSegmentedButtonLeading>home</md-icon>
+        Button
+      </md-segmented-button>
+      <md-segmented-button #item2 [selected]="selectedItem() === item2" (click)="selectedItem.set(item2)"
+        [useCheckIcon]="useCheckIcon()">
+        Button
+      </md-segmented-button>
+      <md-segmented-button #item3 [selected]="selectedItem() === item3" (click)="selectedItem.set(item3)"
+        [useCheckIcon]="useCheckIcon()">
+        Button
+      </md-segmented-button>
+    </md-segmented-button-set>
+    <md-segmented-button-set type="radio">
+      <md-segmented-button [useCheckIcon]="useCheckIcon()" [(value)]="radioValue" [radioValue]="1">
+        <md-icon mdSegmentedButtonLeading>home</md-icon>
+        Button
+      </md-segmented-button>
+      <md-segmented-button [useCheckIcon]="useCheckIcon()" [(value)]="radioValue" [radioValue]="2">
+        Button
+      </md-segmented-button>
+      <md-segmented-button [useCheckIcon]="useCheckIcon()" [(value)]="radioValue" [radioValue]="3">
+        Button
+      </md-segmented-button>
+    </md-segmented-button-set>
+    <md-segmented-button-set type="checkbox">
+      <md-segmented-button [useCheckIcon]="useCheckIcon()">
+        <md-icon mdSegmentedButtonLeading>home</md-icon>
+        Button
+      </md-segmented-button>
+      <md-segmented-button [useCheckIcon]="useCheckIcon()">
+        Button
+      </md-segmented-button>
+      <md-segmented-button [useCheckIcon]="useCheckIcon()">
+        Button
+      </md-segmented-button>
+    </md-segmented-button-set>
+  </div>
+</app-page>

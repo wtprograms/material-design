@@ -1,0 +1,13 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="focusVisible"
+      >Focus Visible</app-check-property
+    >
+  </app-properties>
+
+  <button
+    class="w-24 h-24 relative border border-outline-variant outline-none"
+  >
+    <md-focus-ring [focusVisible]="focusVisible()" />
+  </button>
+</app-page>

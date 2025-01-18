@@ -1,45 +1,48 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  effect,
   forwardRef,
   inject,
   input,
   model,
 } from '@angular/core';
-import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
-import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
-import { MdRippleComponent } from '../ripple/ripple.component';
 import { CommonModule } from '@angular/common';
-import { ButtonType } from '../button/button.component';
-import { MdValueAccessorComponent } from '../md-value-accessor.component';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MdBadgeUserDirective } from '../badge/badge-user.directive';
-import { MdIconComponent } from '../icon/icon.component';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MdBadgeComponent } from '../badge/badge.component';
-
-export type SegmentedButtonType = ButtonType | 'checkbox' | 'radio';
+import { MdEmbeddedBadgeDirective } from '../badge/embedded-badge.directive';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdRippleComponent } from '../ripple/ripple.component';
+import { MdTintComponent } from '../tint/tint.component';
+import { SegmentedButtonType } from './segmented-button-type';
+import { MdValueAccessorComponent } from '../../common/base/value-accessor/md-value-accessor.component';
 
 @Component({
   selector: 'md-segmented-button',
   templateUrl: './segmented-button.component.html',
-  styleUrl: './segmented-button.component.scss',
+  styleUrls: ['./segmented-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdFocusRingComponent,
-    MdEmbeddedButtonComponent,
-    MdRippleComponent,
     CommonModule,
-    MdIconComponent,
-    FormsModule,
+    MdEmbeddedButtonComponent,
     MdBadgeComponent,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
+    MdIconComponent,
   ],
   hostDirectives: [
     {
-      directive: MdBadgeUserDirective,
-      inputs: ['badgeDot', 'badgeNumber'],
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
     },
   ],
+  host: {
+    '[attr.disabled]': 'disabled() ? "" : null',
+    '[attr.selected]': 'selected() ? "" : null',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -47,30 +50,39 @@ export type SegmentedButtonType = ButtonType | 'checkbox' | 'radio';
       useExisting: forwardRef(() => MdSegmentedButtonComponent),
     },
   ],
-  host: {
-    '[class.disabled]': 'disabled()',
-    '[class.selected]': 'selectedOrChecked()',
-    '[class.show-check-icon]': 'showCheckIcon()',
-  },
 })
 export class MdSegmentedButtonComponent extends MdValueAccessorComponent<
-  boolean | string
+  string | boolean | number
 > {
-  readonly badgeUser = inject(MdBadgeUserDirective);
-  readonly checked = model(false);
-  readonly type = input<SegmentedButtonType>('button');
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
+  readonly type = model<SegmentedButtonType>('button');
   readonly href = input<string>();
   readonly target = input<string>();
-  readonly selected = input(false);
-  readonly showCheckIcon = input(false);
+  readonly selected = model(false);
+  readonly useCheckIcon = input(false);
+  readonly radioValue = input<string | boolean | number>();
 
-  readonly selectedOrChecked = computed(
-    () => this.selected() || this.checked()
-  );
+  constructor() {
+    super();
+    effect(() => {
+      const type = this.type();
+      const value = this.value();
+      const radioValue = this.radioValue();
+      const selected = this.selected();
+      if (type === 'radio') {
+        this.selected.set(value === radioValue);
+      } else if (type === 'checkbox') {
+        this.value.set(selected);
+      }
+    });
+  }
 
-  input(event: Event) {
+  onInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.value.set(input.value);
-    this.checked.set(!!input.checked);
+    if (this.type() === 'radio') {
+      this.value.set(this.radioValue());
+    } else {
+      this.selected.set(input.checked);
+    }
   }
 }

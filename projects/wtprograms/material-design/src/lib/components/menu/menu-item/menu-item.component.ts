@@ -1,41 +1,55 @@
+import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
-  computed,
-  contentChildren,
-  forwardRef,
+  ChangeDetectionStrategy,
   inject,
   input,
   model,
+  contentChildren,
   viewChild,
+  forwardRef,
+  effect,
 } from '@angular/core';
-import { MdFocusRingComponent } from '../../focus-ring/focus-ring.component';
-import { MdEmbeddedButtonComponent } from '../../embedded-button/embedded-button.component';
-import { MdRippleComponent } from '../../ripple/ripple.component';
-import { CommonModule } from '@angular/common';
-import { ButtonType } from '../../button/button.component';
 import { MdMenuComponent } from '../menu.component';
+import { MenuItemType } from './menu-item-type';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MdBadgeComponent } from '../../badge/badge.component';
+import { MdEmbeddedBadgeDirective } from '../../badge/embedded-badge.directive';
+import { MdEmbeddedButtonComponent } from '../../embedded-button/embedded-button.component';
+import { MdFocusRingComponent } from '../../focus-ring/focus-ring.component';
 import { MdIconComponent } from '../../icon/icon.component';
-import { MdValueAccessorComponent } from '../../md-value-accessor.component';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MdRippleComponent } from '../../ripple/ripple.component';
+import { MdTintComponent } from '../../tint/tint.component';
+import { MdValueAccessorComponent } from '../../../common/base/value-accessor/md-value-accessor.component';
 import { dispatchClosePopover } from '../../../common/events/dispatch-close-popover';
-
-export type MenuItemType = ButtonType | 'checkbox' | 'radio';
 
 @Component({
   selector: 'md-menu-item',
   templateUrl: './menu-item.component.html',
-  styleUrl: './menu-item.component.scss',
+  styleUrls: ['./menu-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdFocusRingComponent,
     MdEmbeddedButtonComponent,
-    MdRippleComponent,
     CommonModule,
+    MdBadgeComponent,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
     MdMenuComponent,
     MdIconComponent,
-    FormsModule,
   ],
+  hostDirectives: [
+    {
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
+    },
+  ],
+  host: {
+    '[attr.disabled]': 'disabled() ? "" : null',
+    '[attr.selected]': 'selected() ? "" : null',
+    '[attr.type]': 'type()',
+    '(click)': 'click($event)',
+  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -43,58 +57,58 @@ export type MenuItemType = ButtonType | 'checkbox' | 'radio';
       useExisting: forwardRef(() => MdMenuItemComponent),
     },
   ],
-  host: {
-    '[class.disabled]': 'disabled()',
-    '[class.selected]': 'selectedOrChecked()',
-    '[class.show-check-icon]': 'showCheckIcon()',
-    '(click)': 'click($event)',
-  },
 })
 export class MdMenuItemComponent extends MdValueAccessorComponent<
-  boolean | string
+  string | boolean | number
 > {
-  readonly type = input<MenuItemType>('button');
-  readonly checked = model(false);
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
   readonly href = input<string>();
   readonly target = input<string>();
-  readonly shortcut = input<string>();
-  readonly selected = input(false);
-  readonly showCheckIcon = input(false);
-
-  private readonly _parentMenu = inject(MdMenuComponent, {
-    host: true,
-    optional: true,
-  });
-  private readonly _menu = viewChild(MdMenuComponent);
-
-  readonly selectedOrChecked = computed(
-    () => this.selected() || this.checked()
-  );
+  readonly subItems = contentChildren(MdMenuItemComponent);
+  readonly selected = model(false);
+  readonly subMenu = viewChild(MdMenuComponent);
+  readonly type = input<MenuItemType>('button');
+  readonly useCheckIcon = input(false);
+  readonly radioValue = input<string | boolean | number>();
+  readonly blankIcon = input(false);
 
   constructor() {
     super();
-    this._parentMenu?.open.subscribe((open) => {
-      if (!open) {
-        this._menu()?.open.set(false);
+    effect(() => {
+      const type = this.type();
+      const value = this.value();
+      const radioValue = this.radioValue();
+      const selected = this.selected();
+      if (type === 'radio') {
+        this.selected.set(value === radioValue);
+      } else if (type === 'checkbox') {
+        this.value.set(selected);
       }
     });
   }
 
-  input(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.value.set(input.value);
-    this.checked.set(!!input.checked);
+  click(event: Event) {
+    if (this.subItems().length === 0) {
+      dispatchClosePopover(this.hostElement, event);
+    }
   }
 
-  private readonly _menuItems = contentChildren(MdMenuItemComponent);
-  readonly hasChildMenuItems = computed(() => this._menuItems().length > 0);
-
-  click(event: Event) {
-    if (this.hasChildMenuItems()) {
+  openChange(open: boolean) {
+    if (open) {
       return;
     }
+    const subItems = this.subItems();
+    for (const subItem of subItems) {
+      subItem.subMenu()?.open.set(false);
+    }
+  }
 
-    event.stopPropagation();
-    dispatchClosePopover(this.hostElement);
+  onInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (this.type() === 'radio') {
+      this.value.set(this.radioValue());
+    } else {
+      this.selected.set(input.checked);
+    }
   }
 }

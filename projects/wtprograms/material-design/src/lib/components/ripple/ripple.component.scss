@@ -1,19 +1,14 @@
-@use "../md";
+@use '../md';
+
+$tokens: (
+  'color': currentColor,
+);
 
 :host {
-  --md-comp-ripple-color: var(--md-sys-color-surface-on);
-  --md-comp-ripple-transform-default: unset;
-  --md-comp-ripple-transform-hover: unset;
-}
-
-:host {
+  @include md.declare-tokens($tokens, 'md-comp-ripple', true);
   display: flex;
   margin: auto;
   pointer-events: none;
-}
-
-:host([disabled]) {
-  display: none;
 }
 
 @media (forced-colors: active) {
@@ -33,26 +28,17 @@
 .surface {
   -webkit-tap-highlight-color: transparent;
 
-  &::before,
   &::after {
-    content: "";
+    content: '';
     border-radius: inherit;
     opacity: 0;
     position: absolute;
   }
 
-  &::before {
-    background-color: var(--md-comp-ripple-color);
-    inset: 0;
-    transform: var(--md-comp-ripple-transform-default);
-    @include md.motion('opacity, background-color, transform');
-  }
-
   &::after {
-    // press ripple fade-out
     background: radial-gradient(
       closest-side,
-      var(--md-comp-ripple-color) max(calc(100% - 70px), 65%),
+      var(--_color) max(calc(100% - 70px), 65%),
       transparent 100%
     );
     transform-origin: center center;
@@ -60,14 +46,7 @@
   }
 }
 
-.hovered::before {
-  background-color: var(--md-comp-ripple-color);
-  opacity: var(--md-sys-state-hover);
-  transform: var(--md-comp-ripple-transform-hover);
-}
-
 .pressed::after {
-  // press ripple fade-in
   opacity: var(--md-sys-state-active);
   transition-duration: 105ms;
 }

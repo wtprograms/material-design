@@ -1,102 +1,61 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  forwardRef,
-  inject,
+  contentChild,
   input,
   model,
+  ViewEncapsulation,
 } from '@angular/core';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MdValueAccessorComponent } from '../md-value-accessor.component';
-import { MdFieldUserDirective } from '../field/field-user.directive';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, fromEvent, map, merge, startWith } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { MdButtonModule } from '../button/button.module';
-import { MdDialogModule } from '../dialog/dialog.module';
 import { MdFieldModule } from '../field/field.module';
+import { FormsModule } from '@angular/forms';
+import { MdButtonComponent } from '../button/button.component';
+import { MdFieldTrailingDirective } from '../field/field-trailing.directive';
+import { FieldVariant } from '../field/field-variant';
 import { MdIconComponent } from '../icon/icon.component';
-import { MdListModule } from '../list/list.module';
-import { MdPopoverComponent } from '../popover/popover.component';
-
-export type TimePickerInputVariant = 'embedded' | 'dropdown' | 'dialog';
-
-export class Time {
-  get totalSeconds() {
-    return this.hours * 3600 + this.minutes * 60 + this.seconds;
-  }
-
-  constructor(
-    public readonly hours = 0,
-    public readonly minutes = 0,
-    public readonly seconds = 0,
-  ) {}
-
-  static fromTotalSeconds(totalSeconds: number) {
-    let seconds = 0;
-    let minutes = 0;
-    let hours = 0;
-    if (totalSeconds >= 60) {
-      minutes = Math.floor(totalSeconds / 60);
-      seconds = totalSeconds % 60;
-    }
-    if (minutes >= 60) {
-      hours = Math.floor(minutes / 60);
-      minutes = minutes % 60;
-    }
-    return new Time(hours, minutes, seconds);
-  }
-}
+import { MdTintComponent } from '../tint/tint.component';
+import { Time } from './time';
+import { MdDialogModule } from '../dialog/dialog.module';
+import { TimePickerLayout } from './time-picker-layout';
+import { MdValueAccessorComponent } from '../../common/base/value-accessor/md-value-accessor.component';
 
 @Component({
   selector: 'md-time-picker',
   templateUrl: './time-picker.component.html',
-  styleUrl: './time-picker.component.scss',
+  styleUrls: ['./time-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdButtonModule,
-    MdIconComponent,
-    CommonModule,
-    MdListModule,
     MdFieldModule,
-    MdDialogModule,
-    MdPopoverComponent,
+    CommonModule,
     FormsModule,
-  ],
-  hostDirectives: [
-    {
-      directive: MdFieldUserDirective,
-      inputs: ['variant', 'label', 'prefix', 'suffix', 'supportingText'],
-    },
-  ],
-  host: {
-    '[class]': 'inputVariant()',
-  },
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: forwardRef(() => MdTimePickerComponent),
-    },
+    MdIconComponent,
+    MdDialogModule,
+    MdButtonComponent,
+    MdTintComponent,
   ],
 })
 export class MdTimePickerComponent extends MdValueAccessorComponent<number> {
-  readonly fieldUser = inject(MdFieldUserDirective);
-  readonly inputVariant = input<TimePickerInputVariant>('dropdown');
+  readonly variant = input<FieldVariant>('filled');
+  readonly layout = input<TimePickerLayout>('field');
+  readonly stateText = model<string>();
+  readonly label = input<string>();
+  readonly prefixText = input<string>();
+  readonly suffixText = input<string>();
+  readonly selectedValue = model<number>();
   readonly open = model(false);
-  readonly selectedValue = model<number | undefined>(this.value());
+  readonly min = input<number>();
+  readonly max = input<number>();
   readonly locale = input('en');
+  readonly trailing = contentChild(MdFieldTrailingDirective);
   readonly displayHours = input(true);
   readonly displaySeconds = input(false);
   readonly timeOfDay = input(false);
 
-  readonly time = computed(() => Time.fromTotalSeconds(this.value() ?? 0));
-  readonly selectedTime = computed(() =>
-    Time.fromTotalSeconds(this.selectedValue() ?? 0)
-  );
+  readonly populated = computed(() => !!this.value() || this.open());
+
   readonly displayText = computed(() => {
-    const time = this.time();
+    const time = this.valueAsTime;
     if (!time) {
       return undefined;
     }
@@ -124,39 +83,32 @@ export class MdTimePickerComponent extends MdValueAccessorComponent<number> {
     return [am, pm];
   });
 
-  readonly populated = toSignal(
-    combineLatest({
-      focused: merge(
-        fromEvent(this.hostElement, 'focus').pipe(
-          map(() => true),
-          startWith(false)
-        ),
-        fromEvent(this.hostElement, 'blur').pipe(
-          map(() => false),
-          startWith(false)
-        )
-      ),
-      value: toObservable(this.value),
-      open: toObservable(this.open),
-    }).pipe(map(({ focused, value, open }) => focused || !!value || open)),
-    {
-      initialValue: false,
+  get valueAsTime() {
+    if (!this.value()) {
+      return undefined;
     }
-  );
-
-  clear() {
-    this.value.set(undefined);
-    this.selectedValue.set(undefined);
+    return Time.fromTotalSeconds(this.value()!);
+  }
+  set valueAsTime(time: Time | undefined) {
+    this.value.set(time?.totalSeconds);
   }
 
-  okay() {
-    this.value.set(this.selectedValue());
-    this.open.set(false);
+  get selectedValueAsTime() {
+    if (!this.selectedValue()) {
+      return undefined;
+    }
+    return Time.fromTotalSeconds(this.selectedValue()!);
+  }
+  set selectedValueAsTime(time: Time | undefined) {
+    this.selectedValue.set(time?.totalSeconds);
   }
 
-  cancel() {
-    this.selectedValue.set(this.value());
-    this.open.set(false);
+  bodyClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'BUTTON') {
+      return;
+    }
+    this.open.set(true);
   }
 
   beforeInput(event: Event, part: 'hours' | 'minutes' | 'seconds') {
@@ -178,7 +130,7 @@ export class MdTimePickerComponent extends MdValueAccessorComponent<number> {
         }
       }
 
-      const time = this.selectedTime();
+      const time = this.selectedValueAsTime ?? new Time();
       let hours = time.hours;
       let minutes = time.minutes;
       let seconds = time.seconds;
@@ -193,9 +145,31 @@ export class MdTimePickerComponent extends MdValueAccessorComponent<number> {
           seconds = value;
           break;
       }
-      this.selectedValue.set(
-        new Time(hours, minutes, seconds).totalSeconds
-      );
+      let totalSeconds = new Time(hours, minutes, seconds).totalSeconds;
+      if (this.min() !== undefined) {
+        totalSeconds = Math.max(this.min()!, totalSeconds);
+      }
+      if (this.max() !== undefined) {
+        totalSeconds = Math.min(this.max()!, totalSeconds);
+      }
+      ({ hours, minutes, seconds } = Time.fromTotalSeconds(totalSeconds));
+      this.selectedValue.set(new Time(hours, minutes, seconds).totalSeconds);
     }
+  }
+
+  okay() {
+    this.value.set(this.selectedValue());
+    this.open.set(false);
+  }
+
+  cancel() {
+    this.selectedValue.set(this.value());
+    this.open.set(false);
+  }
+
+  reset() {
+    this.value.set(undefined);
+    this.selectedValue.set(undefined);
+    this.open.set(false);
   }
 }

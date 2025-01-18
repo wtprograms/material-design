@@ -1,34 +1,40 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
+import { MdComponent } from '../../common/base/md.component';
 
 @Component({
   selector: 'md-badge',
-  template: `{{ text() }}`,
-  styleUrl: './badge.component.scss',
+  templateUrl: './badge.component.html',
+  styleUrls: ['./badge.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class.dot]': 'dot()',
-    '[class.zero]': 'number() === 0',
-    '[class.single-digit]': 'singleDigit()',
-    '[class.embedded]': 'embedded()',
+    '[attr.dot]': 'dot() ? "" : null',
+    '[attr.embedded]': 'embedded() ? "" : null',
+    '[attr.zero]': 'text() === "0" || text() === undefined ? "" : null',
+    '[attr.single-digit]': 'singleDigit() ? "" : null',
   },
 })
-export class MdBadgeComponent {
+export class MdBadgeComponent extends MdComponent {
   readonly dot = input(false);
-  readonly number = input(0);
   readonly embedded = input(false);
+  readonly text = input<string>();
 
-  readonly text = computed(() => {
-    if (this.number() === 0 || this.dot()) {
-      return '';
+  readonly number = computed(() => {
+    const text = this.text();
+    if (!text) {
+      return 0;
+    }
+    const number = parseInt(text, 10);
+    return isNaN(number) ? 0 : number;
+  })
+
+  readonly content = computed(() => {
+    const text = this.text();
+    if (this.number() === 0) {
+      return text;
     }
     const number = this.number();
     if (!number) {
-      return;
+      return undefined;
     }
     return number > 999 ? '999+' : number;
   });

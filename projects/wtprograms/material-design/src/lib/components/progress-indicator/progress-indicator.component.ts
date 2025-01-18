@@ -1,23 +1,16 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-} from '@angular/core';
-import { MdComponent } from '../md.component';
+import { ChangeDetectionStrategy, Component, computed, Directive, input } from '@angular/core';
+import { MdComponent } from '../../common/base/md.component';
 
 export type ProgressIndicatorVariant = 'circular' | 'linear';
 
 @Component({
   selector: 'md-progress-indicator',
   templateUrl: './progress-indicator.component.html',
-  styleUrl: './progress-indicator.component.scss',
-  standalone: true,
+  styleUrls: ['./progress-indicator.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.variant]': 'variant()',
-    '[style.--md-comp-progress-indicator-size]': 'size() ?? null',
-    '[style.--md-comp-progress-indicator-width]': 'width() ?? null',
+    '[style.--md-comp-progress-indicator-size]': 'size() ? size() : null',
   },
 })
 export class MdProgressIndicatorComponent extends MdComponent {
@@ -25,7 +18,6 @@ export class MdProgressIndicatorComponent extends MdComponent {
   readonly value = input(0);
   readonly max = input(1);
   readonly indeterminate = input(false);
-  readonly fourColor = input(false);
   readonly size = input<number>();
   readonly width = input<number>();
   readonly buffer = input(0);
@@ -49,3 +41,4 @@ export class MdProgressIndicatorComponent extends MdComponent {
       this.value() >= this.max()
   );
 }
+

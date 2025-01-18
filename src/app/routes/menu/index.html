@@ -1,0 +1,61 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="leading">Leading</app-check-property>
+    <app-select-property [options]="trailing.options" [(value)]="trailing">Trailing</app-select-property>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="selected">Selected</app-check-property>
+  </app-properties>
+
+  <md-menu-item [selected]="selected()" [disabled]="disabled()">
+    @if (leading()) {
+    <md-icon>star</md-icon>
+    } Menu item @if (trailing() === 'icon') {
+    <md-icon>home</md-icon>
+    } @else if (trailing() === 'shortcut') {
+    <md-menu-item-trailing>CTRL+C</md-menu-item-trailing>
+    }
+  </md-menu-item>
+
+  <md-button>
+    Open menu
+    <md-menu [(open)]="open">
+      <md-menu-item [selected]="selected()" [disabled]="disabled()">
+        This is a long label for menu item.
+      </md-menu-item>
+      <md-menu-item> Menu item </md-menu-item>
+      <md-menu-item> Menu item </md-menu-item>
+      <md-divider />
+      <md-menu-item>
+        Menu item
+        <md-menu-item> Menu item </md-menu-item>
+        <md-menu-item> Menu item </md-menu-item>
+        <md-menu-item> Menu item </md-menu-item>
+      </md-menu-item>
+      <md-menu-item>
+        Menu item
+        <md-menu-item> Menu item </md-menu-item>
+        <md-menu-item> Menu item </md-menu-item>
+        <md-menu-item>
+          Menu item
+          <md-menu-item>
+            Menu item
+            <md-menu-item> Menu item </md-menu-item>
+            <md-menu-item> Menu item </md-menu-item>
+            <md-menu-item> Menu item </md-menu-item>
+          </md-menu-item>
+        </md-menu-item>
+      </md-menu-item>
+    </md-menu>
+  </md-button>
+
+  <md-button>
+    Open radio menu
+    <md-menu>
+      <md-menu-item type="radio" [blankIcon]="true" [useCheckIcon]="true" [(value)]="radioValue" [radioValue]="1"> Option 1 </md-menu-item>
+      <md-menu-item type="radio" [blankIcon]="true" [useCheckIcon]="true" [(value)]="radioValue" [radioValue]="2"> Option 2 </md-menu-item>
+      <md-menu-item type="radio" [blankIcon]="true" [useCheckIcon]="true" [(value)]="radioValue" [radioValue]="3"> Option 3 </md-menu-item>
+    </md-menu>
+  </md-button>
+  {{ radioValue() }}
+</app-page>

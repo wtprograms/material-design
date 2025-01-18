@@ -1,0 +1,23 @@
+@use '../../../methods/color';
+
+@function _elevation-color($alpha) {
+  @return hsla(0, 0%, 0%, $alpha);
+}
+
+$tokens: (
+  'one': (
+    '': unset,
+    'light': _elevation-color(var(--md-sys-elevation-alpha-one)),
+    'dark': _elevation-color(var(--md-sys-elevation-alpha-one)),
+  ),
+  'two': (
+    '': unset,
+    'light': _elevation-color(var(--md-sys-elevation-alpha-two)),
+    'dark': _elevation-color(var(--md-sys-elevation-alpha-two)),
+  ),
+  'three': (
+    '': unset,
+    'light': _elevation-color(var(--md-sys-elevation-alpha-three)),
+    'dark': _elevation-color(var(--md-sys-elevation-alpha-three)),
+  ),
+);

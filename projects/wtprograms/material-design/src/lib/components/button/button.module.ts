@@ -1,11 +1,18 @@
 import { NgModule } from '@angular/core';
-import { MdButtonComponent } from './button.component';
 import { MdButtonLeadingDirective } from './button-leading.directive';
 import { MdButtonTrailingDirective } from './button-trailing.directive';
-import { MdIconModule } from '../icon/icon.module';
+import { MdButtonComponent } from './button.component';
 
 @NgModule({
-  imports: [MdButtonLeadingDirective, MdButtonTrailingDirective, MdButtonComponent],
-  exports: [MdButtonLeadingDirective, MdButtonTrailingDirective, MdButtonComponent, MdIconModule],
+  imports: [
+    MdButtonComponent,
+    MdButtonLeadingDirective,
+    MdButtonTrailingDirective,
+  ],
+  exports: [
+    MdButtonComponent,
+    MdButtonLeadingDirective,
+    MdButtonTrailingDirective,
+  ],
 })
 export class MdButtonModule {}

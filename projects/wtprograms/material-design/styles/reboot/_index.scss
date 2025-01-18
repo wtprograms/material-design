@@ -1,21 +1,25 @@
 @use 'body';
+@use 'disabled';
 @use 'document';
 @use 'h';
 @use 'p';
 @use 'a';
 @use 'hr';
-@use 'small';
+@use 'scroll-bar';
 @use 'select';
+@use 'small';
 @use 'strong';
 
 @mixin reboot {
   @include body.reboot;
+  @include disabled.reboot;
   @include document.reboot;
   @include h.reboot;
   @include p.reboot;
   @include a.reboot;
   @include hr.reboot;
-  @include small.reboot;
+  @include scroll-bar.reboot;
   @include select.reboot;
+  @include small.reboot;
   @include strong.reboot;
 }

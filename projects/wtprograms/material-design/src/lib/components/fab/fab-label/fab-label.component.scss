@@ -1,0 +1,22 @@
+@use '../../md';
+
+:host {
+  display: grid;
+  grid-template-columns: 0fr;
+  overflow: hidden;
+  @include md.motion('grid-template-columns');
+
+  .text {
+    min-width: 0;
+    padding-inline-start: 0px;
+    @include md.motion('padding-inline-start');
+  }
+
+  &[extended] {
+    grid-template-columns: 1fr;
+
+    .text {
+      padding-inline-start: 8px;
+    }
+  }
+}

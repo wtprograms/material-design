@@ -1,0 +1,39 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="leading.options" [(value)]="leading"
+      >Leading</app-select-property
+    >
+    <app-check-property [(checked)]="selected">Selected</app-check-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="pill">Pill</app-check-property>
+    <app-check-property [(checked)]="elevated">Elevated</app-check-property>
+    <app-check-property [(checked)]="interactive"
+      >Interactive</app-check-property
+    >
+    <app-check-property [(checked)]="anchor">Anchor</app-check-property>
+    <app-check-property [(checked)]="closable">Closable</app-check-property>
+    <app-check-property [(checked)]="trailingButton"
+      >Trailing Button</app-check-property
+    >
+  </app-properties>
+
+  <md-chip
+    [selected]="selected()"
+    [pill]="pill()"
+    [elevated]="elevated()"
+    [disabled]="disabled()"
+    [interactive]="interactive()"
+    [href]="anchor() ? '#' : undefined"
+    [closable]="closable()"
+  >
+    @if (leading() === 'icon') {
+    <md-icon>home</md-icon>
+    } @else if (leading() === 'img') {
+    <img src="https://avatar.iran.liara.run/public/26" />
+    } @else if (leading() === 'avatar') {
+    <md-avatar name="Willem" src="https://avatar.iran.liara.run/public/26" />
+    } @if (trailingButton()) {
+    <md-icon-button variant="plain">arrow_drop_down</md-icon-button>
+    } Chip
+  </md-chip>
+</app-page>

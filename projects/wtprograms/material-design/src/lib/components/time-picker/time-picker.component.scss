@@ -4,6 +4,65 @@
   display: inline-flex;
   flex-direction: column;
 
+  ::ng-deep md-field {
+    > .field-body {
+      cursor: pointer;
+    }
+
+    md-popover {
+      padding: 12px;
+    }
+  }
+
+  input {
+    display: inline-flex;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    outline: none;
+    background-color: transparent;
+    resize: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-radius: var(--md-sys-shape-extra-small);
+    height: 80px;
+    width: 96px;
+    @include md.typescale('display', 'medium');
+    text-align: center;
+    background-color: var(--md-sys-color-surface-container-highest);
+    color: var(--md-sys-color-surface-on);
+    caret-color: currentColor;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    &:focus-visible {
+      border: 2px solid var(--md-sys-color-surface-on);
+    }
+  }
+
   .body {
     display: inline-flex;
     align-items: center;
@@ -12,56 +71,53 @@
   }
 
   .colon {
+    height: 80px;
     @include md.typescale('display', 'large');
   }
 
-  @include md.reset-input {
-    border-radius: var(--md-sys-shape-extra-small);
-    height: 80px;
-    width: 96px;
-    @include md.typescale('display', 'medium');
-    text-align: center;
-    @include md.motion('border');
-  }
-
-  .primary {
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-primary-container-on);
-
-    &:focus {
-      border: 2px solid var(--md-sys-color-primary);
-    }
-  }
-
-  .secondary {
-    background-color: var(--md-sys-color-surface-container-highest);
-    color: var(--md-sys-color-surface-on);
-
-    &:focus {
-      border: 2px solid var(--md-sys-color-surface-on);
-    }
-  }
-
-  .actions {
+  .input-container {
     display: inline-flex;
-    gap: 8px;
-    margin-top: 24px;
-    justify-content: flex-end;
-  }
+    flex-direction: column;
 
-  .clear {
-    margin-inline-end: auto;
-  }
+    &:first-child {
+      input {
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-primary-container-on);
+        caret-color: currentColor;
 
-  md-popover {
-    padding-top: 20px;
-    padding-inline: 12px;
-    padding-bottom: 12px;
-  }
-
-  md-field {
-    ::ng-deep .body {
-      cursor: pointer;
+        &:focus-visible {
+          border: 2px solid var(--md-sys-color-primary);
+        }
+      }
+      md-tint {
+        --md-comp-tint-color: var(--md-sys-color-primary-container-on);
+      }
     }
+  }
+
+  .input {
+    position: relative;
+    md-tint {
+      --md-comp-tint-color: var(--md-sys-color-surface-on);
+    }
+  }
+
+  .supporting-text {
+    @include md.typescale('body', 'small');
+    color: var(--md-sys-color-surface-variant-on);
+    margin-top: 4px;
+  }
+
+  .footer {
+    margin-top: 8px;
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-grow: 1;
+    margin-inline: -4px;
+  }
+
+  .reset {
+    margin-inline-end: auto;
   }
 }

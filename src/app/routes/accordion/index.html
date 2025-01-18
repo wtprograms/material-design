@@ -1,91 +1,28 @@
 <app-page>
-  <div class="inline-grid gap-4 medium:grid-cols-2">
-    <md-card variant="filled" class="grow justify-center p-10 bg-primary-container text-primary-container-on">
-      <h1 i18n>Accordion</h1>
-      <span class="typescale-body-large" i18n>
-        An accordion is a vertically stacked list of items that utilizes show/hide functionality to reveal content.
-      </span>
-    </md-card>
-    <md-card variant="filled" class="grow justify-center px-10 py-0 bg-primary-container text-primary-container-on">
-      <img src="https://material-web.dev/components/images/button/hero.webp" />
-    </md-card>
-  </div>
+  <app-properties>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+  </app-properties>
 
-  <h2 id="demo" i18n>Interactive demonstration</h2>
-
-  <md-card>
-    <md-accordion>
-      <span mdAccordionHeadline>Headline</span>
-      Minim et ex sunt tempor et anim. Ipsum incididunt commodo nisi dolor aliqua pariatur est duis non magna labore
-      amet. Sint enim non mollit velit. Excepteur veniam excepteur occaecat deserunt ex ullamco laborum. Tempor ex in
-      veniam nostrud ad culpa aliqua ex.
-      Nisi ullamco deserunt labore labore quis.
-    </md-accordion>
-    
-    <md-accordion>
-      <span mdAccordionHeadline>Headline</span>
-      Minim et ex sunt tempor et anim. Ipsum incididunt commodo nisi dolor aliqua pariatur est duis non magna labore
-      amet. Sint enim non mollit velit. Excepteur veniam excepteur occaecat deserunt ex ullamco laborum. Tempor ex in
-      veniam nostrud ad culpa aliqua ex.
-      Nisi ullamco deserunt labore labore quis.
-    </md-accordion>
-    
-    <md-accordion>
-      <span mdAccordionHeadline>Headline</span>
-      Minim et ex sunt tempor et anim. Ipsum incididunt commodo nisi dolor aliqua pariatur est duis non magna labore
-      amet. Sint enim non mollit velit. Excepteur veniam excepteur occaecat deserunt ex ullamco laborum. Tempor ex in
-      veniam nostrud ad culpa aliqua ex.
-      Nisi ullamco deserunt labore labore quis.
-    </md-accordion>
-  </md-card>
-
-  <h2 id="usage" i18n>Usage</h2>
-
-  <p i18n>
-    <code>md-accordion</code> has a <code>[mdAccordionHeadline]</code> attribute that you can use to set the headline
-    and the rest of the content is the body.
-  </p>
-
-  <app-code [code]="accordion" language="html" />
-
-  <h2 id="api" i18n>API</h2>
-
-  <h3 id="inputs">Inputs</h3>
-
-  <p i18n>
-    The Accordion does not have any inputs.
-  </p>
-
-  <h3 id="properties">Properties</h3>
-
-  <md-card>
-    <table>
-      <thead>
-        <tr>
-          <th i18n>Property</th>
-          <th i18n>Type</th>
-          <th i18n>Default</th>
-          <th colspan="2" i18n>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>openCloseState</code></td>
-          <td><a href="#">OpenCloseState</a></td>
-          <td><code>'closed'</code></td>
-          <td colspan="2" i18n>Whether the Accordion is open or closed.</td>
-        </tr>
-      </tbody>
-    </table>
-  </md-card>
-
-  <li class="navigation"><a mdScrollTo="demo" i18n>Interactive demonstration</a></li>
-  <li class="navigation"><a mdScrollTo="usage" i18n>Usage</a></li>
-  <li class="navigation">
-    <a mdScrollTo="api" i18n>API</a>
-    <ul>
-      <li class="list-disc ms-4"><a mdScrollTo="inputs" i18n>Inputs</a></li>
-      <li class="list-disc ms-4"><a mdScrollTo="properties" i18n>Properties</a></li>
-    </ul>
-  </li>
+  <md-accordion [(open)]="open">
+    <md-accordion-headline>Headline</md-accordion-headline>
+    Consequat tempor minim eiusmod ut anim sunt consectetur labore magna
+    eiusmod cillum. Irure cillum dolore ea ut enim nulla officia excepteur
+    dolor in labore cupidatat cupidatat. Quis sunt excepteur dolor id anim
+    aute et minim eiusmod laboris incididunt anim proident. Nulla laboris et
+    aute laboris anim cillum culpa consectetur tempor laborum est laborum in.
+    Reprehenderit anim qui fugiat labore. Voluptate mollit enim magna veniam
+    nisi magna cillum dolor et elit cupidatat sit nulla. Mollit consequat qui
+    ipsum adipisicing cupidatat aliqua est veniam.
+  </md-accordion>
+  <md-accordion>
+    <md-accordion-headline>Headline</md-accordion-headline>
+    Consequat tempor minim eiusmod ut anim sunt consectetur labore magna
+    eiusmod cillum. Irure cillum dolore ea ut enim nulla officia excepteur
+    dolor in labore cupidatat cupidatat. Quis sunt excepteur dolor id anim
+    aute et minim eiusmod laboris incididunt anim proident. Nulla laboris et
+    aute laboris anim cillum culpa consectetur tempor laborum est laborum in.
+    Reprehenderit anim qui fugiat labore. Voluptate mollit enim magna veniam
+    nisi magna cillum dolor et elit cupidatat sit nulla. Mollit consequat qui
+    ipsum adipisicing cupidatat aliqua est veniam.
+  </md-accordion>
 </app-page>

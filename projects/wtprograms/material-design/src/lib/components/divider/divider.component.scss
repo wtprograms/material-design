@@ -1,34 +1,24 @@
+@use '../md';
+
+$tokens: (
+  'color': var(--md-sys-color-outline),
+  'border-width': 1px,
+);
+
 :host {
-  border-color: var(--md-sys-color-outline);
+  @include md.declare-tokens($tokens, 'md-comp-divider', true);
+  border-color: var(--_color);
   flex-grow: 1;
 
-  &:not(.veritcal) {
+  &:not([veritcal]) {
     border-top-style: solid;
-    border-top-width: 1px;
+    border-top-width: var(--_border-width);
   }
 
-  &.vertical {
+  &[vertical] {
+    max-width: var(--_border-width);
     border-top: 0;
     border-inline-start-style: solid;
-    border-inline-start-width: 1px;
+    border-inline-start-width: var(--_border-width);
   }
-}
-
-:host-context(md-menu) {
-  border-color: var(--md-sys-color-outline-variant);
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-:host-context(md-list) {
-  border-color: var(--md-sys-color-outline-variant);
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-:host-context(md-navigation) {
-  border-color: var(--md-sys-color-outline-variant);
-  flex-grow: 0;
-  margin-top: 4px;
-  margin-bottom: 4px;
 }

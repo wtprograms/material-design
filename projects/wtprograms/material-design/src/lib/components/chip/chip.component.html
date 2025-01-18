@@ -1,23 +1,28 @@
 <ng-template #content>
-  <ng-content select="[mdChipLeading], md-chip-leading" />
-  <ng-content />
-  <ng-content select="[mdChipTrailing], md-chip-trailing" />
-</ng-template>
-
-<div class="container">
-  @if (interactive()) {
-  <button mdEmbeddedButton type="button" [disabled]="disabled()">
-    <md-focus-ring />
-    <md-ripple />
-    <ng-container *ngTemplateOutlet="content" />
-  </button>
-  } @else {
-  <ng-container *ngTemplateOutlet="content" />
+  @if (elevated()) {
+  <md-elevation [level]="1" [hoverable]="interactive() || !!href()" [interactive]="interactive() || !href()" />
   }
-</div>
-
+  <md-focus-ring />
+  <md-tint [hoverable]="interactive() || !!href()" />
+  <md-ripple [hoverable]="interactive() || !!href()" [interactive]="interactive() || !!href()" />
+  <ng-content />
+</ng-template>
+@if (href()) {
+<a mdEmbeddedButton [href]="href()" [target]="target()">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else if (interactive()) {
+<button mdEmbeddedButton type="button" [value]="value()" [disabled]="disabled()">
+  <ng-container *ngTemplateOutlet="content" />
+</button>
+} @else {
+<ng-container *ngTemplateOutlet="content" />
+}
+<ng-content select="md-icon-button" />
 @if (closable()) {
-<md-icon-button variant="plain" (click)="close.emit($event)" [disabled]="disabled()">
-  <md-icon>close</md-icon>
+<md-icon-button variant="plain" [disabled]="disabled()" (click)="close.emit($event)">
+  close
 </md-icon-button>
 }
+
+<ng-content select="md-popover, md-tooltip, md-menu" />

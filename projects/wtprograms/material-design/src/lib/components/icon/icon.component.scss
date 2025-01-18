@@ -1,9 +1,13 @@
 @use '../md';
 
+$tokens: (
+  'filled': 0,
+  'weight': var(--md-ref-typeface-weight-regular),
+  'size': 24,
+);
+
 :host {
-  --md-comp-icon-filled: 0;
-  --md-comp-icon-weight: var(--md-ref-typeface-weight-regular);
-  --md-comp-icon-size: 24;
+  @include md.declare-tokens($tokens, 'md-comp-icon', true);
   --_size-px: calc(var(--md-comp-icon-size) * 1px);
 
   position: relative;
@@ -28,17 +32,14 @@
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--md-ref-typeface-font-icon);
-  font-weight: var(--md-comp-icon-weight);
+  font-weight: var(--_weight);
   pointer-events: none;
-  font-variation-settings:
-    'FILL' var(--md-comp-icon-filled),
-    'wght' var(--md-comp-icon-weight),
-    'GRAD' 0,
-    'opsz' clamp(20, var(--md-comp-icon-size), 48);
+  font-variation-settings: 'FILL' var(--_filled), 'wght' var(--_weight),
+    'GRAD' 0, 'opsz' clamp(20, var(--_size), 48);
 
   @include md.motion('font-variation-settings');
 
-  ::ng-deep md-badge {
-    zoom: calc(var(--md-comp-icon-size) / 24);
+  &[filled] {
+    --md-comp-icon-filled: 1;
   }
 }

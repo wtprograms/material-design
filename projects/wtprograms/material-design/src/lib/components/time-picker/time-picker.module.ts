@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { MdFieldModule } from '../field/field.module';
 import { MdTimePickerComponent } from './time-picker.component';
+import { MdFieldModule } from '../field/field.module';
 
 @NgModule({
   imports: [MdTimePickerComponent],

@@ -1,0 +1,23 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="variant.options" [(value)]="variant"
+      >Variant</app-select-property
+    >
+    <app-check-property [(checked)]="selected">Selected</app-check-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="badge">Badge</app-check-property>
+    <app-check-property [(checked)]="progressIndicator"
+      >Progress indicator</app-check-property
+    >
+  </app-properties>
+
+  <md-icon-button
+    [variant]="variant()"
+    [selected]="selected()"
+    [disabled]="disabled()"
+    [badgeText]="badge() ? 'New' : undefined"
+    [progressIndicatorIndeterminate]="progressIndicator()"
+  >
+    home
+  </md-icon-button>
+</app-page>

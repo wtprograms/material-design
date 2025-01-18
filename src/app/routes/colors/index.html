@@ -1,0 +1,155 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="dark">Dark mode</app-check-property>
+    <div class="inline-flex py-2 px-4 w-[280px] gap-2 ">
+      Hue
+      <input type="range" min="0" max="360" [(ngModel)]="hue" class="grow" />
+
+      <span class="w-[30px]">{{ hue() }}</span>
+    </div>
+    <div class="inline-flex py-2 px-4  w-[280px] gap-2 ">
+      Saturation
+      <input type="range" min="0" max="100" [(ngModel)]="saturation" class="grow" />
+      <span class="w-[30px]">{{ saturation() }}%</span>
+
+    </div>
+  </app-properties>
+
+  <div class="md-colors inline-flex flex-col gap-2" [class.md-dark]="dark()" [class.md-light]="!dark()"
+    [style.--md-ref-palette-hue-base]="hue()" [style.--md-ref-palette-saturation-base.%]="saturation()">
+    <div class="inline-flex gap-2">
+      <div class="inline-flex flex-col">
+        <app-color-entry background="primary" color="primary-on">primary</app-color-entry>
+        <app-color-entry background="primary-on" color="primary">primary-on</app-color-entry>
+        <app-color-entry background="primary-container" color="primary-container-on">primary-container</app-color-entry>
+        <app-color-entry background="primary-container-on"
+          color="primary-container">primary-container-on</app-color-entry>
+        <app-color-entry background="primary-inverse" color="primary-inverse-on">primary-inverse</app-color-entry>
+        <app-color-entry background="primary-inverse-on" color="primary-inverse">primary-inverse-on</app-color-entry>
+        <app-color-entry background="primary-fixed" color="primary-fixed-on">primary-fixed</app-color-entry>
+        <app-color-entry background="primary-fixed-on" color="primary-fixed">primary-fixed-on</app-color-entry>
+        <app-color-entry background="primary-fixed-dim" color="primary-fixed-dim-on">primary-fixed-dim</app-color-entry>
+        <app-color-entry background="primary-fixed-dim-on"
+          color="primary-fixed-dim">primary-fixed-dim-on</app-color-entry>
+        <app-color-entry background="primary-fixed-variant"
+          color="primary-fixed-variant-on">primary-fixed-variant</app-color-entry>
+        <app-color-entry background="primary-fixed-variant-on"
+          color="primary-fixed-variant">primary-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="secondary" color="secondary-on">secondary</app-color-entry>
+        <app-color-entry background="secondary-on" color="secondary">secondary-on</app-color-entry>
+        <app-color-entry background="secondary-container" color="secondary-container-on">secondary-container</app-color-entry>
+        <app-color-entry background="secondary-container-on"
+          color="secondary-container">secondary-container-on</app-color-entry>
+        <app-color-entry background="secondary-inverse" color="secondary-inverse-on">secondary-inverse</app-color-entry>
+        <app-color-entry background="secondary-inverse-on" color="secondary-inverse">secondary-inverse-on</app-color-entry>
+        <app-color-entry background="secondary-fixed" color="secondary-fixed-on">secondary-fixed</app-color-entry>
+        <app-color-entry background="secondary-fixed-on" color="secondary-fixed">secondary-fixed-on</app-color-entry>
+        <app-color-entry background="secondary-fixed-dim" color="secondary-fixed-dim-on">secondary-fixed-dim</app-color-entry>
+        <app-color-entry background="secondary-fixed-dim-on"
+          color="secondary-fixed-dim">secondary-fixed-dim-on</app-color-entry>
+        <app-color-entry background="secondary-fixed-variant"
+          color="secondary-fixed-variant-on">secondary-fixed-variant</app-color-entry>
+        <app-color-entry background="secondary-fixed-variant-on"
+          color="secondary-fixed-variant">secondary-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="tertiary" color="tertiary-on">tertiary</app-color-entry>
+        <app-color-entry background="tertiary-on" color="tertiary">tertiary-on</app-color-entry>
+        <app-color-entry background="tertiary-container" color="tertiary-container-on">tertiary-container</app-color-entry>
+        <app-color-entry background="tertiary-container-on"
+          color="tertiary-container">tertiary-container-on</app-color-entry>
+        <app-color-entry background="tertiary-inverse" color="tertiary-inverse-on">tertiary-inverse</app-color-entry>
+        <app-color-entry background="tertiary-inverse-on" color="tertiary-inverse">tertiary-inverse-on</app-color-entry>
+        <app-color-entry background="tertiary-fixed" color="tertiary-fixed-on">tertiary-fixed</app-color-entry>
+        <app-color-entry background="tertiary-fixed-on" color="tertiary-fixed">tertiary-fixed-on</app-color-entry>
+        <app-color-entry background="tertiary-fixed-dim" color="tertiary-fixed-dim-on">tertiary-fixed-dim</app-color-entry>
+        <app-color-entry background="tertiary-fixed-dim-on"
+          color="tertiary-fixed-dim">tertiary-fixed-dim-on</app-color-entry>
+        <app-color-entry background="tertiary-fixed-variant"
+          color="tertiary-fixed-variant-on">tertiary-fixed-variant</app-color-entry>
+        <app-color-entry background="tertiary-fixed-variant-on"
+          color="tertiary-fixed-variant">tertiary-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="surface" color="surface-on">surface</app-color-entry>
+        <app-color-entry background="surface-dim" color="surface-on">surface-dim</app-color-entry>
+        <app-color-entry background="surface-bright" color="surface-on">surface-bright</app-color-entry>
+        <app-color-entry background="surface-on" color="surface">surface-on</app-color-entry>
+        <app-color-entry background="surface-variant" color="surface-variant-on">surface-variant</app-color-entry>
+        <app-color-entry background="surface-variant-on" color="surface-variant">surface-variant-on</app-color-entry>
+        <app-color-entry background="surface-inverse" color="surface-inverse-on">surface-inverse</app-color-entry>
+        <app-color-entry background="surface-inverse-on" color="surface-inverse">surface-inverse-on</app-color-entry>
+        <app-color-entry background="surface-container-lowest" color="surface-on">surface-container-lowest</app-color-entry>
+        <app-color-entry background="surface-container-low" color="surface-on">surface-container-low</app-color-entry>
+        <app-color-entry background="surface-container" color="surface-on">surface-container</app-color-entry>
+        <app-color-entry background="surface-container-high" color="surface-on">surface-container-high</app-color-entry>
+        <app-color-entry background="surface-container-highest" color="surface-on">surface-container-highest</app-color-entry>
+      </div>
+    </div>
+    <div class="inline-flex gap-2">
+      <div class="inline-flex flex-col">
+        <app-color-entry background="success" color="success-on">success</app-color-entry>
+        <app-color-entry background="success-on" color="success">success-on</app-color-entry>
+        <app-color-entry background="success-container" color="success-container-on">success-container</app-color-entry>
+        <app-color-entry background="success-container-on"
+          color="success-container">success-container-on</app-color-entry>
+        <app-color-entry background="success-inverse" color="success-inverse-on">success-inverse</app-color-entry>
+        <app-color-entry background="success-inverse-on" color="success-inverse">success-inverse-on</app-color-entry>
+        <app-color-entry background="success-fixed" color="success-fixed-on">success-fixed</app-color-entry>
+        <app-color-entry background="success-fixed-on" color="success-fixed">success-fixed-on</app-color-entry>
+        <app-color-entry background="success-fixed-dim" color="success-fixed-dim-on">success-fixed-dim</app-color-entry>
+        <app-color-entry background="success-fixed-dim-on"
+          color="success-fixed-dim">success-fixed-dim-on</app-color-entry>
+        <app-color-entry background="success-fixed-variant"
+          color="success-fixed-variant-on">success-fixed-variant</app-color-entry>
+        <app-color-entry background="success-fixed-variant-on"
+          color="success-fixed-variant">success-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="warning" color="warning-on">warning</app-color-entry>
+        <app-color-entry background="warning-on" color="warning">warning-on</app-color-entry>
+        <app-color-entry background="warning-container" color="warning-container-on">warning-container</app-color-entry>
+        <app-color-entry background="warning-container-on"
+          color="warning-container">warning-container-on</app-color-entry>
+        <app-color-entry background="warning-inverse" color="warning-inverse-on">warning-inverse</app-color-entry>
+        <app-color-entry background="warning-inverse-on" color="warning-inverse">warning-inverse-on</app-color-entry>
+        <app-color-entry background="warning-fixed" color="warning-fixed-on">warning-fixed</app-color-entry>
+        <app-color-entry background="warning-fixed-on" color="warning-fixed">warning-fixed-on</app-color-entry>
+        <app-color-entry background="warning-fixed-dim" color="warning-fixed-dim-on">warning-fixed-dim</app-color-entry>
+        <app-color-entry background="warning-fixed-dim-on"
+          color="warning-fixed-dim">warning-fixed-dim-on</app-color-entry>
+        <app-color-entry background="warning-fixed-variant"
+          color="warning-fixed-variant-on">warning-fixed-variant</app-color-entry>
+        <app-color-entry background="warning-fixed-variant-on"
+          color="warning-fixed-variant">warning-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="danger" color="danger-on">danger</app-color-entry>
+        <app-color-entry background="danger-on" color="danger">danger-on</app-color-entry>
+        <app-color-entry background="danger-container" color="danger-container-on">danger-container</app-color-entry>
+        <app-color-entry background="danger-container-on"
+          color="danger-container">danger-container-on</app-color-entry>
+        <app-color-entry background="danger-inverse" color="danger-inverse-on">danger-inverse</app-color-entry>
+        <app-color-entry background="danger-inverse-on" color="danger-inverse">danger-inverse-on</app-color-entry>
+        <app-color-entry background="danger-fixed" color="danger-fixed-on">danger-fixed</app-color-entry>
+        <app-color-entry background="danger-fixed-on" color="danger-fixed">danger-fixed-on</app-color-entry>
+        <app-color-entry background="danger-fixed-dim" color="danger-fixed-dim-on">danger-fixed-dim</app-color-entry>
+        <app-color-entry background="danger-fixed-dim-on"
+          color="danger-fixed-dim">danger-fixed-dim-on</app-color-entry>
+        <app-color-entry background="danger-fixed-variant"
+          color="danger-fixed-variant-on">danger-fixed-variant</app-color-entry>
+        <app-color-entry background="danger-fixed-variant-on"
+          color="danger-fixed-variant">danger-fixed-variant-on</app-color-entry>
+      </div>
+      <div class="inline-flex flex-col">
+        <app-color-entry background="background" color="background-on">background</app-color-entry>
+        <app-color-entry background="background-on" color="background">background-on</app-color-entry>
+        <app-color-entry background="outline" color="surface">outline</app-color-entry>
+        <app-color-entry background="outline-variant" color="surface-on">outline-variant</app-color-entry>
+      </div>
+    </div>
+
+  </div>
+</app-page>

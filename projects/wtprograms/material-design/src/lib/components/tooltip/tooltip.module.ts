@@ -1,18 +1,9 @@
 import { NgModule } from '@angular/core';
 import { MdTooltipComponent } from './tooltip.component';
-import { MdTooltipHeadlineDirective } from './tooltip-headline.directive';
-import { MdTooltipActionDirective } from './tooltip-action.directive';
+import { MdTooltipHeadlineComponent } from './tooltip-headline/tooltip-headline.component';
 
 @NgModule({
-  imports: [
-    MdTooltipHeadlineDirective,
-    MdTooltipActionDirective,
-    MdTooltipComponent,
-  ],
-  exports: [
-    MdTooltipHeadlineDirective,
-    MdTooltipActionDirective,
-    MdTooltipComponent,
-  ],
+  imports: [MdTooltipComponent, MdTooltipHeadlineComponent],
+  exports: [MdTooltipComponent, MdTooltipHeadlineComponent],
 })
 export class MdTooltipModule {}

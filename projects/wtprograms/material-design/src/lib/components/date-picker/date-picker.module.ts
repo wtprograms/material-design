@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { MdDatePickerComponent } from './date-picker.component';
 import { MdFieldModule } from '../field/field.module';
+import { MdDatePickerComponent } from './date-picker.component';
 
 @NgModule({
   imports: [MdDatePickerComponent],

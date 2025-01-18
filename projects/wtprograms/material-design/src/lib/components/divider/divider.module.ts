@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { MdDividerComponent } from './divider.component';
+import { MdDivider } from './divider.component';
 
 @NgModule({
-  imports: [MdDividerComponent],
-  exports: [MdDividerComponent],
+  imports: [MdDivider],
+  exports: [MdDivider]
 })
 export class MdDividerModule {}

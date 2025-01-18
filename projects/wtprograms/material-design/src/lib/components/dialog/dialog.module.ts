@@ -1,26 +1,25 @@
 import { NgModule } from '@angular/core';
-import { MdDialogComponent } from './dialog.component';
-import { MdDialogHeadlineDirective } from './dialog-headline.directive';
 import { MdDialogIconDirective } from './dialog-icon.directive';
-import { MdDialogSupportingTextDirective } from './dialog-supporting-text.directive';
-import { MdDialogActionDirective } from './dialog-action.directive';
-import { MdButtonModule } from '../button/button.module';
+import { MdDialogComponent } from './dialog.component';
+import { MdDialogActionDirective } from './dialog-action/dialog-action.directive';
+import { MdDialogHeadlineComponent } from './dialog-headline/dialog-headline.component';
+import { MdDialogSupportingTextComponent } from './dialog-supporting-text/dialog-supporting-text.component';
+
 
 @NgModule({
   imports: [
-    MdDialogHeadlineDirective,
-    MdDialogIconDirective,
-    MdDialogSupportingTextDirective,
-    MdDialogActionDirective,
     MdDialogComponent,
+    MdDialogHeadlineComponent,
+    MdDialogSupportingTextComponent,
+    MdDialogIconDirective,
+    MdDialogActionDirective,
   ],
   exports: [
-    MdDialogHeadlineDirective,
-    MdDialogIconDirective,
-    MdDialogSupportingTextDirective,
-    MdDialogActionDirective,
     MdDialogComponent,
-    MdButtonModule
+    MdDialogHeadlineComponent,
+    MdDialogSupportingTextComponent,
+    MdDialogIconDirective,
+    MdDialogActionDirective,
   ],
 })
 export class MdDialogModule {}

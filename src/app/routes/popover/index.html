@@ -1,0 +1,58 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="trigger.options" [(value)]="trigger"
+      >Trigger</app-select-property
+    >
+    <app-select-property [options]="placement.options" [(value)]="placement"
+      >Placement</app-select-property
+    >
+    <app-select-property [options]="width.options" [(value)]="width"
+      >Width</app-select-property
+    >
+    <app-check-property [(checked)]="offset">Offset</app-check-property>
+    <app-check-property [(checked)]="flip">Flip</app-check-property>
+    <app-check-property [(checked)]="shift">Shift</app-check-property>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+    <app-check-property [(checked)]="closeOnLeave"
+      >Close on leave</app-check-property
+    >
+  </app-properties>
+
+  <md-button #button> Outside </md-button>
+  <md-popover
+    [trigger]="trigger()"
+    [placement]="placement()"
+    [offset]="offset() ? 16 : 0"
+    [flip]="flip()"
+    [shift]="shift()"
+    [(open)]="open"
+    [target]="button"
+    [targetWidth]="width() === 'target' ? true : false"
+    [class.px200]="width() === '200px'"
+    [closeOnLeave]="closeOnLeave()"
+  >
+    In dolore ea esse cillum veniam labore nostrud ea. Labore enim sunt magna
+    irure culpa nisi velit ipsum aute pariatur. Sunt incididunt do duis id
+    excepteur quis. Et eiusmod et ad ea voluptate quis cillum in duis amet
+    sint labore cillum.
+  </md-popover>
+
+  <md-button>
+    Inside
+    <md-popover
+      [trigger]="trigger()"
+      [placement]="placement()"
+      [offset]="offset() ? 16 : 0"
+      [flip]="flip()"
+      [shift]="shift()"
+      [targetWidth]="width() === 'target' ? true : false"
+      [class.px200]="width() === '200px'"
+      [closeOnLeave]="closeOnLeave()"
+    >
+      In dolore ea esse cillum veniam labore nostrud ea. Labore enim sunt
+      magna irure culpa nisi velit ipsum aute pariatur. Sunt incididunt do
+      duis id excepteur quis. Et eiusmod et ad ea voluptate quis cillum in
+      duis amet sint labore cillum.
+    </md-popover>
+  </md-button>
+</app-page>

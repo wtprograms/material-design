@@ -1,84 +1,103 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   ElementRef,
   input,
+  model,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { CommonModule } from '@angular/common';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { observeResize$ } from '../../common/signals/observe-resize';
-import { filter, map, switchMap } from 'rxjs';
-import { MdRippleComponent } from '../ripple/ripple.component';
-
-export type FieldVariant = 'filled' | 'outlined';
+import { isPlatformBrowser } from '@angular/common';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs';
+import { FieldVariant } from './field-variant';
+import { MdComponent } from '../../common/base/md.component';
+import { ControlState } from '../../common/base/value-accessor/control-state';
+import { observeResize$ } from '../../common/rxjs/observe-resize';
+import { MdResizeDirective } from '../../directives/resize.directive';
+import { MdPopoverComponent } from '../popover/popover.component';
+import { MdTintComponent } from '../tint/tint.component';
 
 @Component({
   selector: 'md-field',
-  templateUrl: './field.component.html',
-  styleUrl: './field.component.scss',
+  templateUrl: 'field.component.html',
+  styleUrls: ['field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, MdRippleComponent],
+  imports: [MdResizeDirective, MdTintComponent, MdPopoverComponent],
   host: {
-    '[class]': 'variant()',
-    '[class.disabled]': 'disabled()',
-    '[class.error]': '!!error()',
-    '[class.populated]': 'populated()',
+    '[attr.variant]': 'variant()',
+    '[attr.state]': 'state() ? state() : null',
+    '[attr.populated]': 'populated() ? "" : null',
   },
 })
-export class MdFieldComponent extends MdComponent {
-  readonly label = input<string>();
-  readonly error = input<string | boolean>(false);
+export class MdFieldComponent extends MdComponent implements AfterViewInit {
   readonly variant = input<FieldVariant>('filled');
   readonly disabled = input(false);
-  readonly populated = input(false);
-  readonly inputContainerClick = output<Event>();
+  readonly state = model<ControlState>();
+  readonly stateMessage = model<string>();
+  readonly counterText = input<string>();
+  readonly label = input<string>();
+  readonly prefixText = input<string>();
+  readonly suffixText = input<string>();
+  readonly populated = model(false);
   readonly bodyClick = output<Event>();
-  readonly body = viewChild<ElementRef<HTMLElement>>('body');
-  readonly supportingText = input<string>();
-  readonly counter = input<string>();
-  readonly prefix = input<string>();
-  readonly suffix = input<string>();
+  readonly open = model(false);
+  readonly targetWidth = input(true);
 
-  private readonly _leadingElement =
-    viewChild<ElementRef<HTMLElement>>('leadingElement');
+  readonly loaded = signal(false);
+
+  readonly labelRect = signal<DOMRect | undefined>(undefined);
+
+  private readonly _leading = viewChild<ElementRef<HTMLDivElement>>('leading');
 
   private readonly _leadingWidth = toSignal(
-    toObservable(this._leadingElement).pipe(
-      filter((x) => !!x),
-      switchMap((leading) => observeResize$(leading.nativeElement).pipe(map((x) => x.width)))
+    toObservable(this._leading).pipe(
+      filter((leading) => isPlatformBrowser(this.platformId) && !!leading),
+      switchMap((leading) =>
+        observeResize$(leading!.nativeElement, this.platformId)
+      )
     ),
     {
-      initialValue: 0,
+      initialValue: undefined,
     }
   );
 
   readonly labelStart = computed(() => {
+    const label = this.label();
+    const populated = this.populated();
+    const variant = this.variant();
     const leadingWidth = this._leadingWidth();
-    if (!this.populated() || this.variant() === 'filled') {
-      return leadingWidth ? 12 + leadingWidth + 16 : 16;
+    if (!label || !leadingWidth?.width) {
+      return 16;
     }
+
+    const start = leadingWidth ? 12 + leadingWidth.width + 16 : 16;
+    if (variant === 'filled' || !populated) {
+      return start;
+    }
+
     return 16;
   });
+
   readonly borderStart = computed(() => {
-    if (!this.populated() || this.variant() === 'filled' || !this.label()) {
+    const populated = this.populated();
+    const variant = this.variant();
+    const label = this.label();
+    const smallLabelWidth = this.labelRect()?.width ?? 0;
+    if (!label || !smallLabelWidth || variant === 'filled' || !populated) {
       return 12;
     }
-    const labelElement = document.createElement('span');
-    labelElement.innerText = this.label()!;
-    labelElement.className = 'label small';
-    this.hostElement.querySelector('.label.small')!.appendChild(labelElement);
-    const labelWidth = labelElement.offsetWidth;
-    const width = labelWidth + 20;
-    labelElement.remove();
-    return width;
+    return smallLabelWidth + 20;
   });
-  constructor() {
-    super();
-    effect(() => this.label());
+
+  onBodyClick(event: Event) {
+    this.bodyClick.emit(event);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.loaded.set(true), 500);
   }
 }

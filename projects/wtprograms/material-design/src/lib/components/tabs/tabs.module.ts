@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { MdTabLeadingDirective } from './tab/tab-leading.directive';
+import { MdTabsComponent } from './tabs.component';
 import { MdTabComponent } from './tab/tab.component';
-import { MdIconModule } from '../icon/icon.module';
 
 @NgModule({
-  imports: [MdTabLeadingDirective, MdTabComponent],
-  exports: [MdTabLeadingDirective, MdTabComponent, MdIconModule],
+  imports: [MdTabsComponent, MdTabComponent],
+  exports: [MdTabsComponent, MdTabComponent],
 })
 export class MdTabsModule {}

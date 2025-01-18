@@ -1,186 +1,140 @@
-@use "../md";
+@use '../md';
 
 :host {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
+
+  ::ng-deep md-field {
+    > .field-body {
+      cursor: pointer;
+    }
+
+    md-popover {
+      padding: 12px;
+    }
+  }
 
   .header {
     display: inline-flex;
-    justify-content: space-between;
-    flex-grow: 1;
-    margin-bottom: 30px;
+    margin-bottom: 16px;
 
-    > div {
+    & > div {
       display: inline-flex;
     }
 
     md-button {
-      padding-inline: 8px;
+      --md-comp-button-padding: 8px;
+      --md-comp-button-padding-addon: 8px;
     }
-  }
-
-  .day-container {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 40px;
-  }
-
-  .days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-
-    &:first-child {
-      margin-bottom: 16px;
-    }
-  }
-
-  .day-name {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    @include md.typescale("label", "large");
-    height: 40px;
-    width: 40px;
-    justify-self: center;
-    align-self: center;
-  }
-
-  .days md-icon-button {
-    justify-self: center;
-    align-self: center;
-
-    &.not-current {
-      color: md.mix(currentColor, var(--md-sys-color-surface), 0.5);
-
-      &.filled {
-        color: var(--md-sys-color-primary-on);
-        background: md.mix(
-          var(--md-sys-color-primary),
-          var(--md-sys-color-surface),
-          0.5
-        );
-      }
-    }
-
-    &.in-range {
-      color: var(--md-sys-color-primary-on);
-    }
-  }
-
-  .day-container {
-    position: relative;
-  }
-
-  .in-range-background {
-    position: absolute;
-    height: 24px;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-inline: 0;
-    inset: 0;
-
-    &.in-range {
-      background-color: var(--md-sys-color-primary);
-
-      &.first {
-        inset-inline-start: 50%;
-      }
-
-      &.last {
-        inset-inline-end: 50%;
-      }
-
-      &.not-current {
-        background: md.mix(
-          var(--md-sys-color-primary),
-          var(--md-sys-color-surface),
-          0.5
-        );
-      }
-    }
-  }
-
-  .today {
-    border: 1px solid var(--md-sys-color-outline);
   }
 
   .body {
+    display: inline-flex;
     position: relative;
     isolation: isolate;
   }
 
-  .dropdown {
+  .month-year-drop-down {
     border-top: 1px solid var(--md-sys-color-outline);
     position: absolute;
     inset: 0;
-    z-index: 1;
-    opacity: 0;
-    display: none;
     overflow-y: auto;
+    display: inline-flex;
     background-color: var(--md-sys-color-surface-container);
-  }
+    transform: scaleY(0);
+    opacity: 0;
+    transform-origin: top;
+    @include md.motion('transform, opacity');
 
-  .dropdown.months {
-    flex-direction: column;
-  }
-
-  .dropdown.years {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-
-    md-button {
-      width: 100px;
-      justify-self: center;
+    &.month-year-drop-down-open {
+      opacity: 1;
+      transform: scaleY(1);
     }
 
-    .current {
-      border: 1px solid var(--md-sys-color-outline);
+    ::ng-deep md-list {
+      flex-grow: 1;
     }
   }
 
-  .measure {
-    z-index: -1 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    height: auto !important;
-  }
-
-  .measure.months {
-    display: inline-flex !important;
-  }
-
-  .measure.years {
-    display: inline-grid !important;
+  &:has(.month-year-drop-down-open) {
+    md-icon-button {
+      z-index: -1;
+    }
   }
 
   .footer {
+    margin-top: 8px;
     display: inline-flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .reset {
+    margin-inline-end: auto;
+  }
+
+  .calendar {
+    display: inline-flex;
+    flex-direction: column;
     flex-grow: 1;
-    gap: 8px;
-    margin-top: 24px;
+    gap: 16px;
 
-    .clear {
-      margin-inline-end: auto;
+    md-icon-button {
+      align-self: center;
+      justify-content: center;
+      justify-self: center;
+
+      &.calendar-not-current {
+        color: md.mix(currentColor, var(--md-sys-color-surface), 0.5);
+
+        &[variant='filled'][selected] {
+          color: var(--md-sys-color-primary-on);
+          background: md.mix(
+            var(--md-sys-color-primary),
+            var(--md-sys-color-surface),
+            0.5
+          );
+        }
+      }
+
+      &.calendar-in-range {
+        color: var(--md-sys-color-primary-on);
+      }
+
+      &.calendar-today {
+        border: 1px solid var(--md-sys-color-outline);
+      }
+
+      &.calendar-not-in-range {
+        pointer-events: none;
+        visibility: hidden;
+      }
     }
-  }
 
-  md-popover {
-    padding-top: 20px;
-    padding-inline: 12px;
-    padding-bottom: 12px;
-  }
-
-  md-field {
-    ::ng-deep .body {
-      cursor: pointer;
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      flex-grow: 1;
+      gap: 4px;
     }
-  }
 
-  .selected-value {
-    display: inline-flex;
-    gap: 8px;
+    .calendar-day-container {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 40px;
+    }
+
+    .calendar-day-name {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      @include md.typescale('label', 'large');
+      height: 40px;
+      width: 40px;
+      align-self: center;
+    }
   }
 }

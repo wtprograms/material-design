@@ -1,24 +1,18 @@
-<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
-  [populated]="populated()" (inputContainerClick)="inputContainerClick()" [prefix]="fieldUser.prefix()"
-  [suffix]="fieldUser.suffix()" [supportingText]="fieldUser.supportingText()"
-  [counter]="showCounter() ? count() : undefined" >
-  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
-  <ng-content select="[mdFieldTrailing]" ngProjectAs="[mdFieldTrailing]" />
-
+<md-field [variant]="variant()" [disabled]="disabled()" [state]="state()" [stateMessage]="stateMessage()"
+  [label]="label()" [counterText]="counter() ? counterText() : undefined" [prefixText]="prefixText()"
+  [suffixText]="suffixText()" [populated]="populated()" (bodyClick)="bodyClick($event)">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]"></ng-content>
+  <ng-content select="[mdFieldTrailing]" ngProjectAs="[mdFieldTrailing]"></ng-content>
+  <ng-content select="md-field-supporting-text" ngProjectAs="md-field-supporting-text"></ng-content>
+  <ng-content />
   @if (type() === 'textarea') {
-  <textarea #input [disabled]="disabled()" [(ngModel)]="value" (input)="textInput($event)"
-    (beforeinput)="textBeforeInput($event)" rows="1" [maxlength]="maxLength() ?? null"></textarea>
+  <textarea #inputElement [disabled]="disabled()" [(ngModel)]="value" rows="1"
+    [maxlength]="maxLength() ?? null"></textarea>
   } @else {
-  <input #input [type]="type()" [(ngModel)]="value" [disabled]="disabled()" (input)="textInput($event)"
-    (beforeinput)="textBeforeInput($event)" [min]="min() ?? null" [max]="max() ?? null"
-    [maxlength]="maxLength() ?? null" (blur)="inputBlur()" [style.width.px]="valueText.offsetWidth + 16" />
+  <input #inputElement [type]="type()" [disabled]="disabled()" [(ngModel)]="value" (input)="input.emit($event)"
+    (beforeinput)="beforeInput.emit($event)" [maxlength]="maxLength() ?? null" (keydown)="keyDown.emit($event)" />
   }
-  <span #valueText class="value-text">{{ value() }}</span>
-</md-field>
-
-<md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
   <md-list>
     <ng-content select="md-list-item" />
   </md-list>
-</md-popover>
-
+</md-field>

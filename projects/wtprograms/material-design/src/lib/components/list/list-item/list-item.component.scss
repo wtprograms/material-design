@@ -1,138 +1,147 @@
-@use "../../md";
+@use '../../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-on),
+  'supporting-text-color': var(--md-sys-color-surface-variant-on),
+  'padding': 8px 16px,
+  'icon-filled': 0,
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+    'supporting-text-color': var(--md-sys-color-disabled-color),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'supporting-text-color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'icon-filled': 1,
+    'disabled': (
+      'background-color': var(--md-sys-color-disabled-background),
+      'supporting-text-color': var(--md-sys-color-disabled-color),
+      'color': var(--md-sys-color-disabled-color),
+    ),
+  ),
+);
 
 :host {
-  --_color: currentColor;
+  @include md.declare-tokens($tokens, 'md-comp-list-item', true);
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
 
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  &[selected] {
+    $selected: map.get($tokens, 'selected');
+    @include md.set-tokens($selected, 'selected');
+
+    &[disabled] {
+      @include md.set-tokens(map.get($selected, 'disabled'), 'disabled');
+    }
+  }
+
+  &:has(> ::ng-deep [mdEmbeddedButton]:hover, > ::ng-deep [mdEmbeddedButton]:focus-visible) {
+    md-icon:not(::ng-deep [mdListItemTrailing]) {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+    }
+  }
+
+  --_current-color: currentColor;
   position: relative;
   display: inline-flex;
-  min-height: 48px;
-  flex-grow: 1;
-  gap: 16px;
-  min-height: 56px;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  justify-content: flex-start;
+  align-items: center;
+  appearance: none;
   outline: none;
-  user-select: none;
-  color: var(--md-sys-color-surface-variant-on);
-  @include md.typescale("label", "large");
-  @include md.motion("background-color, color, border-color");
-
-  .container {
-    padding-inline: 16px;
-    position: relative;
-    display: inherit;
-    gap: inherit;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    align-items: center;
-    flex-grow: 1;
-  }
-
-  [mdEmbeddedButton],
-  .container {
-    justify-content: flex-start;
-    justify-items: flex-start;
-  }
+  padding: var(--_padding);
+  gap: 16px;
+  text-align: start;
+  flex-grow: 1;
+  min-height: 48px;
+  @include md.typescale('body', 'large');
+  @include md.motion('background-color, color, border, box-shadow');
 
   [mdEmbeddedButton] {
-    text-align: start;
     flex-grow: 1;
   }
 
-  .split {
-    display: inline-flex;
-    gap: 16px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-inline-end: 16px;
+  img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+  }
+
+  &[large]:has(img) {
+    --_padding: 12px 16px 12px 0;
+    img {
+      width: auto;
+      max-height: 64px;
+    }
+  }
+
+  &[top] {
+    align-items: flex-start;
   }
 
   .content {
     display: inline-flex;
     flex-direction: column;
-    color: var(--md-sys-color-surface-on);
-    text-wrap: wrap;
-    flex-grow: 1;
-    @include md.typescale("body", "large");
+    align-items: flex-start;
   }
 
-  .container .supporting-text {
-    color: var(--md-sys-color-surface-variant-on);
-    @include md.typescale("body", "medium");
+  ::ng-deep md-list-item-supporting-text {
+    color: var(--_supporting-text-color);
   }
 
-  .leading,
-  .trailing {
-    display: none;
-    --md-comp-icon-size: 24;
-    @include md.typescale("body", "small");
+  md-icon:not(::ng-deep [mdListItemTrailing]) {
+    --md-comp-icon-filled: var(--_icon-filled);
   }
 
-  &.large {
-    .container {
-      padding-inline-start: 0;
-    }
+  md-check {
+    --md-comp-check-switch-unchecked-track-background-color: transparent;
+  }
 
-    .leading ::ng-deep img:not(.avatar) {
-      max-width: revert;
-      max-height: 64px;
+  &:not([split]) {
+    [mdListItemTrailing],
+    ::ng-deep md-check,
+    ::ng-deep md-icon-button,
+    md-badge {
+      margin-inline-start: auto;
     }
   }
 
-  &.align-top {
-    .container,
-    .split .trailing {
-      align-items: flex-start;
+  &[split]:not([top]) {
+    [mdListItemTrailing],
+    ::ng-deep md-check,
+    ::ng-deep md-icon-button,
+    md-badge {
+      align-self: center;
     }
   }
 
-  > .container > .leading ::ng-deep img:not(.avatar) {
-    max-width: 56px;
-    max-height: 56px;
+  &[interactive]:not([split]) {
+    [mdListItemTrailing],
+    ::ng-deep md-check,
+    ::ng-deep md-icon-button,
+    md-badge {
+      md-ripple {
+        opacity: 0;
+      }
+    }
   }
 
-  &:has(::ng-deep [mdListItemLeading]) .leading {
+  .split {
     display: inline-flex;
-  }
-
-  &:has(::ng-deep [mdListItemTrailing]) .trailing {
-    display: inline-flex;
+    gap: 16px;
+    margin-inline-start: auto;
+    height: 100%;
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
-  }
-
-  &.large {
-    padding-inline-start: 0;
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-
-  &.selected {
-    color: var(--md-sys-color-secondary-container-on);
-    background-color: var(--md-sys-color-secondary-container);
-
-    &.disabled {
-      background-color: var(--md-sys-color-disabled-background);
-    }
-  }
-
-  &.disabled,
-  &.selected.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-
-    .content,
-    .supporting-text {
-      color: inherit;
-    }
-
-    ::ng-deep img:not(.avatar) {
-      opacity: 0.5;
-    }
-  }
-
-  md-progress-indicator {
-    inset: auto 0 0 0;
-    position: absolute;
+    --md-comp-ripple-color: var(--_current-color);
   }
 }

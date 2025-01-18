@@ -1,35 +1,22 @@
-<ng-template #icon>
-  <ng-content select="[mdNavigationItemIcon]" />
-</ng-template>
-<ng-template #label>
-  <ng-content select="[mdNavigationItemLabel]" />
-</ng-template>
-
 <ng-template #content>
-  @if (navigation.layout() === 'drawer') {
-  <md-ripple [target]="buttonElement" />
-  <md-focus-ring [target]="buttonElement" />
-  <ng-container *ngTemplateOutlet="icon" />
-  <ng-container *ngTemplateOutlet="label" />
-  @if (!disabled()) {
-  <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" [embedded]="true" />
-  }
-  } @else {
   <div class="container">
-    <md-ripple [target]="buttonElement" />
-    <md-focus-ring [target]="buttonElement" />
-    <ng-container *ngTemplateOutlet="icon" />
+    <md-focus-ring [target]="button" />
+    <md-tint [target]="button" />
+    <md-ripple [target]="button" />
+    <ng-content select="md-icon, img" />
   </div>
-  <ng-container *ngTemplateOutlet="label" />
+  <ng-content />
+  @if (navigation.layout() === 'drawer' && !disabled() &&
+  (embeddedBadge.dot() || embeddedBadge.text())) {
+  <md-badge [dot]="embeddedBadge.dot()" [text]="embeddedBadge.text()" [embedded]="true" />
   }
 </ng-template>
-
 @if (href()) {
-<a #button mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+<a mdEmbeddedButton [href]="href()" [target]="target()">
   <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button #button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+<button mdEmbeddedButton [type]="type()">
   <ng-container *ngTemplateOutlet="content" />
 </button>
 }

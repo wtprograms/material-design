@@ -1,43 +1,55 @@
-@use "../md";
+@use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'plain': (
+    'min-width': auto,
+    'background-color': var(--md-sys-color-surface-inverse),
+    'color': var(--md-sys-color-surface-inverse-on),
+    'border-radius': var(--md-sys-shape-extra-small),
+    'padding': 8px,
+  ),
+  'rich': (
+    'min-width': 114px,
+    'background-color': var(--md-sys-color-surface-container),
+    'color': var(--md-sys-color-surface-variant-on),
+    'border-radius': var(--md-sys-shape-medium),
+    'padding': 12px 16px 8px 16px,
+  ),
+);
 
 :host {
-  position: absolute;
+  @include md.declare-tokens($tokens, 'md-comp-tooltip', true);
+
+  &[variant='plain'] {
+    @include md.set-tokens(map.get($tokens, 'plain'), 'plain');
+  }
+
+  &[variant='rich'] {
+    @include md.set-tokens(map.get($tokens, 'rich'), 'rich');
+  }
+
+  display: contents;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  border-radius: var(--_border-radius);
+  padding: var(--_padding);
+
+  md-popover {
+    min-width: var(--_min-width);
+    max-width: 280px;
+    background-color: inherit;
+    color: inherit;
+    border-radius: inherit;
+    padding: inherit;
+  }
 
   .actions {
     display: none;
+    margin: 12px -8px 0 -8px;
   }
 
-  &:has(::ng-deep [mdTooltipAction]) .actions {
+  &:has(md-button) .actions {
     display: inline-flex;
-  }
-
-  ::ng-deep [mdTooltipHeadline] {
-    color: var(--md-sys-color-surface-on);
-    @include md.typescale("title", "small");
-    margin-bottom: 4px;
-  }
-
-  .actions {
-    gap: 8px;
-    margin-inline-start: -12px;
-    margin-top: 12px;
-  }
-
-  md-popover {
-    background-color: var(--md-sys-color-surface-inverse);
-    color: var(--md-sys-color-surface-inverse-on);
-    padding-inline: 8px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    text-wrap: nowrap;
-  }
-
-  &.rich md-popover {
-    border-radius: var(--md-sys-shape-medium);
-    background-color: var(--md-sys-color-surface-container);
-    color: var(--md-sys-color-surface-variant-on);
-    padding-top: 12px;
-    padding-inline: 16px;
-    padding-bottom: 8px;
   }
 }

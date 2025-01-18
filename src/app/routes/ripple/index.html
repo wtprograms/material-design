@@ -1,0 +1,12 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="interactive">Interactive</app-check-property>
+  </app-properties>
+
+  <div class="w-24 h-24 relative border border-outline-variant">
+    <md-ripple [interactive]="interactive()" />
+  </div>
+  <button mdEmbeddedButton class="w-24 h-24 relative border border-outline-variant">
+    <md-ripple [interactive]="interactive()" />
+  </button>
+</app-page>

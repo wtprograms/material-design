@@ -1,84 +1,87 @@
+import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
-  contentChildren,
-  ElementRef,
+  ChangeDetectionStrategy,
   inject,
   input,
   model,
+  contentChild,
+  effect,
 } from '@angular/core';
-import { MdComponent } from '../../md.component';
-import { MdDividerComponent } from '../../divider/divider.component';
-import { CommonModule } from '@angular/common';
-import { dispatchActivationClick } from '../../../common/events/dispatch-activation-click';
-import { ButtonType } from '../../button/button.component';
-import { MdEmbeddedButtonModule } from '../../embedded-button/embedded-button.module';
+import { MdAvatarComponent } from '../../avatar/avatar.component';
+import { MdBadgeComponent } from '../../badge/badge.component';
+import { MdEmbeddedBadgeDirective } from '../../badge/embedded-badge.directive';
+import { MdCheckComponent } from '../../check/check.component';
+import { MdDivider } from '../../divider/divider.component';
+import { MdEmbeddedButtonComponent } from '../../embedded-button/embedded-button.component';
 import { MdFocusRingComponent } from '../../focus-ring/focus-ring.component';
+import { MdIconButtonComponent } from '../../icon-button/icon-button.component';
 import { MdRippleComponent } from '../../ripple/ripple.component';
-import { MdListItemTrailingDirective } from './list-item-trailing.directive';
-import { MdProgressIndicatorUserDirective } from '../../progress-indicator/progress-indicator-user.directive';
-import { MdProgressIndicatorModule } from '../../progress-indicator/progress-indicator.module';
+import { MdTintComponent } from '../../tint/tint.component';
+import { MdComponent } from '../../../common/base/md.component';
+import { dispatchActivationClick } from '../../../common/events/dispatch-activation-click';
 
 @Component({
   selector: 'md-list-item',
   templateUrl: './list-item.component.html',
-  styleUrl: './list-item.component.scss',
+  styleUrls: ['./list-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdRippleComponent,
-    MdFocusRingComponent,
-    MdDividerComponent,
+    MdEmbeddedButtonComponent,
     CommonModule,
-    MdEmbeddedButtonModule,
-    MdProgressIndicatorModule
+    MdBadgeComponent,
+    MdDivider,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
   ],
   hostDirectives: [
     {
-      directive: MdProgressIndicatorUserDirective,
-      inputs: [
-        'progressValue',
-        'progressMax',
-        'progressIndeterminate',
-        'progressBuffer'
-      ]
-    }
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
+    },
   ],
   host: {
-    '[class.selected]': 'selected()',
-    '[class.interactive]': 'interactive()',
-    '[class.split]': 'split()',
-    '[class.disabled]': 'disabled()',
-    '[class.large]': 'large()',
-    '[class.align-top]': 'alignTop()',
-    '(click)': 'click($event)',
+    '[attr.disabled]': 'disabled() ? "" : null',
+    '[attr.selected]': 'selected() ? "" : null',
+    '[attr.split]': 'split() ? "" : null',
+    '[attr.top]': 'top() ? "" : null',
+    '[attr.interactive]': 'interactive() ? "" : null',
+    '[attr.large]': 'large() ? "" : null',
+    '(click)': 'click()',
   },
 })
 export class MdListItemComponent extends MdComponent {
-  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
-  readonly type = input<ButtonType>('button');
-  readonly disabled = input(false);
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
   readonly href = input<string>();
   readonly target = input<string>();
-  readonly interactive = model(false);
-  readonly split = input(false);
-  readonly value = model<unknown>();
+  readonly disabled = input(false);
   readonly selected = model(false);
-  readonly large = input(false);
-  readonly alignTop = input(false);
+  readonly split = model(false);
+  readonly interactive = model(false);
+  readonly top = model(false);
+  readonly large = model(false);
+  readonly check = contentChild(MdCheckComponent);
+  readonly iconButton = contentChild(MdIconButtonComponent);
+  readonly avatar = contentChild(MdAvatarComponent);
+  readonly value = input<boolean | number | string>();
 
-  private readonly _trailing = contentChildren(MdListItemTrailingDirective, {
-    read: ElementRef,
-  });
+  constructor() {
+    super();
+    effect(() => {
+      this.check()?.disabled.set(this.disabled());
+      this.iconButton()?.disabled.set(this.disabled());
+      this.avatar()?.disabled.set(this.disabled());
+    });
+  }
 
-  click(event: Event) {
+  click() {
     if (this.split() || !this.interactive()) {
       return;
     }
 
-    if (this._trailing().length) {
-      for (const element of this._trailing()) {
-        dispatchActivationClick(element.nativeElement, false);
-      }
+    if (this.check()) {
+      dispatchActivationClick(this.check()!.hostElement, false);
     }
   }
 }

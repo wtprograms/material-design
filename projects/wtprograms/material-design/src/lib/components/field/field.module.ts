@@ -1,24 +1,24 @@
 import { NgModule } from '@angular/core';
-import { MdFieldUserDirective } from './field-user.directive';
-import { MdFieldComponent } from './field.component';
 import { MdFieldLeadingDirective } from './field-leading.directive';
+import { MdFieldSupportingTextDirective } from './field-supporting-text.directive';
 import { MdFieldTrailingDirective } from './field-trailing.directive';
-import { MdFieldBottomDirective } from './field-bottom.directive';
+import { MdFieldComponent } from './field.component';
+import { MdFieldPopoverContentComponent } from './field-popover-content/field-popover-content.component';
 
 @NgModule({
   imports: [
     MdFieldLeadingDirective,
+    MdFieldSupportingTextDirective,
     MdFieldTrailingDirective,
     MdFieldComponent,
-    MdFieldUserDirective,
-    MdFieldBottomDirective
+    MdFieldPopoverContentComponent,
   ],
   exports: [
     MdFieldLeadingDirective,
+    MdFieldSupportingTextDirective,
     MdFieldTrailingDirective,
     MdFieldComponent,
-    MdFieldUserDirective,
-    MdFieldBottomDirective
+    MdFieldPopoverContentComponent,
   ],
 })
 export class MdFieldModule {}

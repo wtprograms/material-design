@@ -1,13 +1,11 @@
-:host {
-  md-field ::ng-deep .input-container {
-    cursor: text;
-  }
+@use '../md';
 
-  .value-text {
-    position: absolute;
-    z-index: -1;
-    opacity: 0;
-    pointer-events: none;
+:host {
+  display: inline-flex;
+  outline: none;
+
+  ::ng-deep md-field .field-body {
+    cursor: text;
   }
 
   input,
@@ -22,14 +20,18 @@
     outline: none;
     background-color: transparent;
     color: inherit;
-    caret-color: inherit;
+    caret-color: var(--_indicator-color);
     resize: none;
     overflow: hidden;
     font-family: inherit;
     font-weight: inherit;
     font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
     box-sizing: border-box;
-    caret-color: var(--_label-color);
+    field-sizing: content;
+    min-width: 16px;
+    flex-grow: 1;
 
     &::placeholder {
       color: currentColor;
@@ -53,9 +55,5 @@
     &[type='number'] {
       -moz-appearance: textfield;
     }
-  }
-
-  md-popover {
-    max-height: 260px;
   }
 }

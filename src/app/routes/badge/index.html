@@ -1,0 +1,18 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="display.options" [(value)]="display"
+      >Display</app-select-property
+    >
+    <app-check-property [(checked)]="embedded">Embedded</app-check-property>
+  </app-properties>
+
+  <div>
+    <div class="w-6 h-6 border border-outline relative">
+      <md-badge
+        [text]="display() === 'dot' ? undefined : display()"
+        [dot]="display() === 'dot'"
+        [embedded]="embedded()"
+      />
+    </div>
+  </div>
+</app-page>

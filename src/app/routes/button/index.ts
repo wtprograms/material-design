@@ -1,22 +1,25 @@
-import { Component, signal } from '@angular/core';
-import { ButtonVariant, MdAvatarModule, MdButtonModule, MdListModule } from '@wtprograms/material-design';
-import { ComponentsModule } from '../../components/components.module';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ButtonVariant, MdButtonModule, MdIconModule } from '@wtprograms/material-design';
 import { options } from '../../common/options';
+import { AppModule } from '../../components/app-components';
 
 @Component({
   templateUrl: './index.html',
-  imports: [ComponentsModule, MdButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AppModule, MdButtonModule, MdIconModule],
 })
 export default class Page {
-  readonly button = `<md-button>
-  <md-icon mdButtonLeading>home</md-icon>
-  Home
-</md-button>`;
-
-  readonly anchor = signal(false);
-  readonly variant = options<ButtonVariant>('elevated', 'filled', 'outlined', 'text', 'tonal', 'plain');
+  readonly variant = options<ButtonVariant>(
+    'elevated',
+    'filled',
+    'tonal',
+    'outlined',
+    'text',
+    'plain'
+  );
+  readonly leading = options('none', 'icon', 'img');
+  readonly trailing = options('none', 'icon', 'badge');
   readonly disabled = signal(false);
-  readonly leading = signal(false);
-  readonly trailing = signal(false);
-  readonly progressIndeterminate = signal(false);
+  readonly anchor = signal(false);
+  readonly progressIndicator = signal(false);
 }

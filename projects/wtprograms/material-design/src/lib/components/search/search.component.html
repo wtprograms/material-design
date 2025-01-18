@@ -1,0 +1,24 @@
+<ng-template #header>
+  <ng-content select="[mdSearchLeading]" />
+  <input #input (focus)="open.set(true)" [(ngModel)]="value" />
+  <md-tint [target]="input" />
+  <ng-content select="[mdSearchTrailing]" />
+</ng-template>
+
+<ng-template #contents>
+  <ng-content />
+</ng-template>
+
+@if (dialog()) {
+<md-dialog [(open)]="open" [fullscreen]="true">
+  <md-dialog-headline>
+    <ng-container *ngTemplateOutlet="header" />
+  </md-dialog-headline>
+  <ng-container *ngTemplateOutlet="contents" />
+</md-dialog>
+} @else {
+<ng-container *ngTemplateOutlet="header" />
+<div class="content">
+  <ng-container *ngTemplateOutlet="contents" />
+</div>
+}

@@ -1,56 +1,46 @@
-<div #body class="body" (click)="bodyClick.emit($event)">
-  <span class="label small"></span>
-  @if (variant() === 'filled') {
-  <md-ripple [interactive]="false" />
+<div #body class="field-body" (click)="onBodyClick($event)">
+  @if (this.variant() === 'filled') {
+  <md-tint />
+  } @if (label()) {
+  <span (mdResize)="labelRect.set($event)" class="label-small">{{
+    label()
+    }}</span>
+  <span class="label" [style.transition]="loaded() ? '' : 'none'" [style.inset-inline-start.px]="labelStart()">{{
+    label() }}</span>
   }
-  <div class="border x"></div>
-  <div class="border top start"></div>
-  <div class="border top end" [style.margin-inline-start.px]="borderStart()"></div>
-  <div class="border bottom"></div>
-  <div #leadingElement class="leading">
-    <ng-content select="[mdFieldLeading]" />
+  <div class="border-top-start"></div>
+  <div class="border-top-end" [style.margin-inline-start.px]="borderStart()"></div>
+  <div class="border-bottom"></div>
+  <div class="border-start"></div>
+  <div class="border-end"></div>
+  <div #leading class="leading">
+    <ng-content select="[mdFieldLeading]"></ng-content>
   </div>
-  @if (label()) {
-  <span class="label normal" [style.inset-inline-start.px]="labelStart()">
-    {{ label() }}
-  </span>
-  }
-  <div class="input-container" (click)="inputContainerClick.emit($event)">
-    <div class="input">
-      @if (prefix()) {
-      <span class="prefix">
-        {{ prefix() }}
-      </span>
-      }
-      <div class="input-content">
-        <ng-content />
-      </div>
-      @if (suffix()) {
-      <span class="suffix">
-        {{ suffix() }}
-      </span>
-      }
+  <div class="content">
+    @if (prefixText()) {
+    <span class="prefix">{{ prefixText() }}</span>
+    }
+    <div class="control">
+      <ng-content></ng-content>
     </div>
+    @if (suffixText()) {
+    <span class="suffix">{{ suffixText() }}</span>
+    }
   </div>
-  <div class="trailing">
-    <ng-content select="[mdFieldTrailing]" />
-  </div>
+  <ng-content select="[mdFieldTrailing]"></ng-content>
 </div>
+<md-popover [target]="body" [(open)]="open" trigger="manual" [targetWidth]="targetWidth()" placement="bottom-start"
+  [offset]="4">
+  <ng-content select="md-list, md-field-popover-content" />
+</md-popover>
 <div class="footer">
-  @if (error() && error() !== true) {
-  <div class="error-text">
-    {{ error() }}
-  </div>
-  }
-  @if (supportingText()) {
+  @if (stateMessage()) {
   <span class="supporting-text">
-    {{ supportingText() }}
+    {{ stateMessage() }}
   </span>
-  }
-  @if (counter()) {
-  <span class="counter">
-    {{ counter() }}
-  </span>
+  } @else {
+  <ng-content select="md-field-supporting-text" />
+  } @if (counterText()) {
+  <span class="counter">{{ counterText() }}</span>
   }
 </div>
-<ng-content select="[mdFieldBottom]" />

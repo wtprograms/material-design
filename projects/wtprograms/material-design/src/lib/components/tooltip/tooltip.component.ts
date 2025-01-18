@@ -1,39 +1,57 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   contentChildren,
+  effect,
   inject,
   input,
   model,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
+import { MdComponent } from '../../common/base/md.component';
+import { Placement } from '@floating-ui/dom';
+import { TooltipVariant } from './tooltip-variant';
+import { PopoverTrigger } from '../popover/popover-trigger';
+import { MdAttachableDirective } from '../../directives/attachable/attachable.directive';
+import { MdButtonComponent } from '../button/button.component';
 import { MdPopoverComponent } from '../popover/popover.component';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
-import { MdTooltipActionDirective } from './tooltip-action.directive';
-
-export type TooltipVariant = 'plain' | 'rich';
 
 @Component({
   selector: 'md-tooltip',
   templateUrl: './tooltip.component.html',
-  styleUrl: './tooltip.component.scss',
+  styleUrls: ['./tooltip.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MdPopoverComponent],
   hostDirectives: [
     {
       directive: MdAttachableDirective,
       inputs: ['target'],
     },
   ],
+  imports: [CommonModule, MdPopoverComponent],
   host: {
-    '[class]': 'variant()',
+    '[attr.variant]': 'variant()',
   },
 })
 export class MdTooltipComponent extends MdComponent {
   readonly attachable = inject(MdAttachableDirective);
+  readonly trigger = input<PopoverTrigger>('hover');
   readonly variant = input<TooltipVariant>('plain');
-  private readonly _actions = contentChildren(MdTooltipActionDirective);
-  readonly hasActions = computed(() => !!this._actions().length);
+  readonly flip = input(true);
+  readonly shift = input(true);
+  readonly offset = input(8);
+  readonly openDelay = input(500);
+  readonly placement = input<Placement>('bottom');
   readonly open = model(false);
+  readonly buttons = contentChildren(MdButtonComponent);
+
+  constructor() {
+    super();
+    effect(() => {
+      const buttons = this.buttons();
+      for (const button of buttons) {
+        button.hostElement.addEventListener('click', () => this.open.set(false));
+        button.variant.set('text');
+      }
+    });
+  }
 }

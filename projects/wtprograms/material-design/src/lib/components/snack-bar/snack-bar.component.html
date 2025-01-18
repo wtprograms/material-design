@@ -1,11 +1,9 @@
-<div class="content">
+<span>
   <ng-content />
-</div>
+</span>
 <div class="actions">
-  @if (action()) {
-  <md-button (click)="actionClicked($event)">{{ action() }}</md-button>
-  }
+  <ng-content select="md-button" />
   @if (closable()) {
-  <md-icon-button (click)="closeClicked($event)">close</md-icon-button>
+  <md-icon-button (click)="closeClick()">close</md-icon-button>
   }
 </div>

@@ -1,0 +1,19 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="level.options" [(value)]="level"
+      >Level</app-select-property
+    >
+    <app-check-property [(checked)]="hoverable">Hoverable</app-check-property>
+    <app-check-property [(checked)]="interactive"
+      >Interactive</app-check-property
+    >
+  </app-properties>
+
+  <div class="w-24 h-24 relative border border-outline-variant">
+    <md-elevation
+      [level]="level()"
+      [hoverable]="hoverable()"
+      [interactive]="interactive()"
+    />
+  </div>
+</app-page>

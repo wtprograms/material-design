@@ -1,83 +1,128 @@
-@use "../md";
+@use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on),
+  'border-color': var(--md-sys-color-outline),
+  'icon-filled': 0,
+  'padding': (
+    '': 1.5rem,
+    'addon': 1rem,
+    'start': var(--_padding),
+    'end': var(--_padding),
+  ),
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+    'border-color': var(--md-sys-color-disabled-border),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'icon-filled': 1,
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'border-color': var(--md-sys-color-disabled-border),
+    ),
+  ),
+);
 
 :host {
-  --_color: currentColor;
-  -webkit-tap-highlight-color: transparent;
-  display: inline-flex;
-  position: relative;
-  height: 40px;
-  flex-shrink: 0;
-  place-content: center;
-  place-items: center;
-  gap: 8px;
-  user-select: none;
-  outline: none;
-  padding-inline: 24px;
-  border-color: var(--md-sys-color-outline);
-  border-style: solid;
-  border-top-width: 1px;
-  border-bottom-width: 1px;
-  color: var(--md-sys-color-surface-variant-on);
+  @include md.declare-tokens($tokens, 'md-comp-button', true);
+  @include md.declare-tokens($tokens, '_');
+  --_current-color: currentColor;
 
-  @include md.typescale("label", "large");
-  @include md.motion("background-color", "border-color", "color");
-
-  ::ng-deep [mdSegmentedButtonLeading],
-  ::ng-deep [mdSegmentedButtonTrailing],
-  md-icon {
-    --md-comp-icon-size: 18;
-    max-height: 18px;
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
   }
 
-  &.show-check-icon:has(input:checked) ::ng-deep [mdSegmentedButtonLeading] {
-    display: none;
+  &[selected] {
+    @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+
+    &[disabled] {
+      @include md.set-tokens(
+        map.get(map.get($tokens, 'selected'), 'disabled'),
+        'selected-disabled'
+      );
+    }
+  }
+
+  --_current-color: currentColor;
+  position: relative;
+  display: inline-flex;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  height: 2.5rem;
+  text-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
+  outline: none;
+  user-select: none;
+  padding-inline-start: var(--_padding-start);
+  padding-inline-end: var(--_padding-end);
+  gap: 0.5rem;
+  border-color: var(--_border-color);
+  border-style: solid;
+  border-width: 0.0625rem;
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, border');
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 4px 0 4px 4px;
+    border-radius: inherit;
+    outline: 0;
+    cursor: pointer;
   }
 
   &:first-child {
     border-start-start-radius: var(--md-sys-shape-full);
     border-end-start-radius: var(--md-sys-shape-full);
-    border-inline-start-width: 1px;
+    border-inline-start-width: 0.0625rem;
   }
 
   &:last-child {
     border-start-end-radius: var(--md-sys-shape-full);
     border-end-end-radius: var(--md-sys-shape-full);
-    border-inline-end-width: 1px;
+    border-inline-end-width: 0.0625rem;
   }
 
-  &:has(::ng-deep [mdSegmentedButtonLeading]),
-  &.show-check-icon:has(input:checked) {
-    padding-inline-start: 16px;
-  }
-  &:has(::ng-deep [mdSegmentedButtonTrailing]),
-  &:has(md-badge) {
-    padding-inline-end: 16px;
-  }
-
-  &.selected {
-    color: var(--md-sys-color-secondary-container-on);
-    background-color: var(--md-sys-color-secondary-container);
-  }
-
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-
-    &.selected {
-      background-color: var(--md-sys-color-disabled-background);
+  &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
+    md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
     }
   }
 
-  md-ripple {
-    --md-comp-ripple-color: var(--_color);
+  &:has(::ng-deep [mdSegmentedButtonLeading]) {
+    padding-inline-start: var(--_padding-addon);
   }
 
-  input {
-    appearance: none;
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    outline: 0;
-    cursor: pointer;
+  &:has(
+      > md-badge,
+      > [mdEmbeddedButton] > md-badge,
+      ::ng-deep [mdSegmentedButtonTrailing]
+    ) {
+    padding-inline-end: var(--_padding-addon);
+  }
+
+  ::ng-deep md-icon,
+  img {
+    --md-comp-icon-filled: var(--_icon-filled);
+    --md-comp-icon-size: 18;
+    max-height: 1.125rem;
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
+  }
+
+  md-ripple {
+    --md-comp-ripple-color: var(--_current-color);
+  }
+
+  & + ::ng-deep md-segmented-button {
+    border-inline-start: 0rem;
   }
 }

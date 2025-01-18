@@ -1,0 +1,18 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="variant.options" [(value)]="variant">Variant</app-select-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="anchor">Anchor</app-check-property>
+    <app-check-property [(checked)]="interactive">Interactive</app-check-property>
+  </app-properties>
+
+  <md-card [variant]="variant()" [disabled]="disabled()" [href]="anchor() ? '#' : undefined"
+    [interactive]="interactive()">
+    Ullamco proident ad velit excepteur velit enim nisi. Nisi laborum
+    cupidatat culpa exercitation dolor laboris do enim proident exercitation
+    cupidatat. Cillum elit dolore et pariatur non dolore amet aliquip quis
+    proident duis.
+
+    <md-button>Button</md-button>
+  </md-card>
+</app-page>

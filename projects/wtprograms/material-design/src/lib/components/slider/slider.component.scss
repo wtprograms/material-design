@@ -1,0 +1,200 @@
+@use '../md';
+@use 'sass:map';
+
+$token: (
+  'active-color': var(--md-sys-color-primary),
+  'active-color-on': var(--md-sys-color-primary-on),
+  'track': (
+    'color': var(--md-sys-color-primary-container),
+    'active-color': var(--_active-color),
+  ),
+  'handle': (
+    'color': var(--_active-color),
+    'label': (
+      'background': var(--_active-color),
+      'color': var(--_active-color-on),
+    ),
+  ),
+  'success': (
+    'active-color': var(--md-sys-color-success),
+    'active-color-on': var(--md-sys-color-success-on),
+    'track': (
+      'color': var(--md-sys-color-success-container),
+    ),
+  ),
+  'warning': (
+    'active-color': var(--md-sys-color-warning),
+    'active-color-on': var(--md-sys-color-warning-on),
+    'track': (
+      'color': var(--md-sys-color-warning-container),
+    ),
+  ),
+  'error': (
+    'active-color': var(--md-sys-color-danger),
+    'active-color-on': var(--md-sys-color-danger-on),
+    'track': (
+      'color': var(--md-sys-color-danger-container),
+    ),
+  ),
+);
+
+$states: ('success', 'warning', 'error');
+
+:host {
+  @include md.declare-tokens($token, 'md-comp-slider', true);
+
+  @each $state in $states {
+    &[state='#{$state}'] {
+      @include md.set-tokens(map.get($token, $state), $state);
+    }
+  }
+
+  position: relative;
+  display: inline-flex;
+  height: 44px;
+  min-width: 200px;
+  align-items: center;
+  cursor: grab;
+
+  .track {
+    position: absolute;
+    height: 100%;
+    display: inline-flex;
+    position: absolute;
+    pointer-events: none;
+    height: 16px;
+    overflow: hidden;
+
+    &.start {
+      background-color: var(--_track-active-color);
+      width: calc(var(--_start-position) - 4px);
+      border-radius: 10px 4px 4px 10px;
+
+      &.range {
+        background-color: var(--_track-color);
+      }
+    }
+
+    &.middle {
+      background-color: var(--_track-active-color);
+      width: calc(var(--_end-position) - var(--_start-position) - 12px);
+      margin-inline-start: calc(var(--_start-position) + 8px);
+      border-radius: var(--md-sys-shape-extra-small);
+    }
+
+    &.end {
+      background-color: var(--_track-color);
+      margin-inline-start: calc(var(--_start-position) + 8px);
+      width: calc(var(--_width) - var(--_start-position) - 8px);
+      border-radius: 4px 10px 10px 4px;
+
+      &::after {
+        --_tick-color: var(--_track-active-color);
+      }
+
+      &.range {
+        margin-inline-start: calc(var(--_end-position) + 8px);
+        width: calc(var(--_width) - var(--_end-position) - 8px);
+      }
+    }
+  }
+
+  .ticks {
+    --_tick-color: var(--_track-color);
+    position: absolute;
+    background: repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent calc(100% / var(--_max) - 2px),
+      var(--_tick-color) calc(100% / var(--_max) - 2px),
+      var(--_tick-color) calc(100% / var(--_max))
+    );
+    width: calc(100% - 2px);
+    top: calc(50% - 1px);
+    height: 2px;
+    inset-inline-start: 2px;
+
+    &.start {
+      clip-path: inset(0 2px 0 0);
+      &.range {
+        --_tick-color: var(--_track-active-color);
+      }
+    }
+
+    &.middle {
+      clip-path: inset(0 calc(100% - var(--_end-position)) 0 var(--_start-position));
+    }
+
+    &.end {
+      clip-path: inset(0 2px 0 var(--_start-position));
+      --_tick-color: var(--_track-active-color);
+
+      &.range {
+        clip-path: inset(0 2px 0 var(--_end-position));
+        --_tick-color: var(--_track-active-color);
+      }
+    }
+  }
+
+  .handle {
+    pointer-events: none;
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background-color: var(--_handle-color);
+    border-radius: var(--md-sys-shape-full);
+    inset-inline-start: var(--_start-position);
+
+    &.end {
+      inset-inline-start: var(--_end-position);
+    }
+  }
+
+  md-popover {
+    justify-content: center;
+    align-items: center;
+    background-color: var(--md-sys-color-surface-inverse);
+    color: var(--md-sys-color-surface-inverse-on);
+    border-radius: var(--md-sys-shape-full);
+    user-select: none;
+    min-width: 48px;
+    min-height: 44px;
+    inset-inline-start: -20px;
+  }
+
+  input[type='range']:not(.test) {
+    opacity: 0;
+    position: absolute;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    height: 100%;
+    width: calc(100% + 16px);
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+    appearance: none;
+
+    ::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      block-size: 20px;
+      inline-size: 20px;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    ::-moz-range-thumb {
+      appearance: none;
+      block-size: 40px;
+      inline-size: 40px;
+      transform: scaleX(0);
+      opacity: 0;
+      z-index: 2;
+    }
+  }
+
+  .top {
+    z-index: 1;
+  }
+}

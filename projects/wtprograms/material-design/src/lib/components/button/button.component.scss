@@ -1,99 +1,168 @@
-@use "../md";
+@use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on),
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+  ),
+  'padding': (
+    '': 1rem,
+    'addon': 0.75rem,
+    'start': var(--_padding),
+    'end': var(--_padding),
+  ),
+  'text': (
+    'color': var(--md-sys-color-primary),
+    'border-radius': var(--md-sys-shape-full),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+    ),
+  ),
+  'filled': (
+    'color': var(--md-sys-color-primary-on),
+    'background-color': var(--md-sys-color-primary),
+    'border-radius': var(--md-sys-shape-full),
+    'padding': (
+      '': 1.5rem,
+      'addon': 1rem,
+      'start': var(--_padding),
+      'end': var(--_padding),
+    ),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'box-shadow': 0,
+    ),
+  ),
+  'tonal': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'border-radius': var(--md-sys-shape-full),
+    'padding': (
+      '': 1.5rem,
+      'addon': 1rem,
+      'start': var(--_padding),
+      'end': var(--_padding),
+    ),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'box-shadow': 0,
+    ),
+  ),
+  'elevated': (
+    'color': var(--md-sys-color-primary),
+    'background-color': var(--md-sys-color-surface-container-low),
+    'border-radius': var(--md-sys-shape-full),
+    'padding': (
+      '': 1.5rem,
+      'addon': 1rem,
+      'start': var(--_padding),
+      'end': var(--_padding),
+    ),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'box-shadow': 0,
+    ),
+  ),
+  'outlined': (
+    'color': var(--md-sys-color-primary),
+    'border': 0.0625rem solid var(--md-sys-color-outline),
+    'border-radius': var(--md-sys-shape-full),
+    'padding': (
+      '': 1.5rem,
+      'addon': 1rem,
+      'start': var(--_padding),
+      'end': var(--_padding),
+    ),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'border': 0.0625rem solid var(--md-sys-color-disabled-border),
+    ),
+  ),
+);
+
+$variants: ('text', 'filled', 'tonal', 'outlined', 'elevated');
 
 :host {
-  --_color: currentColor;
-  -webkit-tap-highlight-color: transparent;
-  display: inline-flex;
+  @include md.declare-tokens($tokens, 'md-comp-button', true);
+
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  @each $variant in $variants {
+    &[variant='#{$variant}'] {
+      @include md.set-tokens(map.get($tokens, $variant), $variant);
+
+      &[disabled] {
+        @include md.set-tokens(
+          map.get($tokens, $variant, 'disabled'),
+          '#{$variant}-disabled'
+        );
+      }
+    }
+  }
+
+  --_current-color: currentColor;
   position: relative;
-  border-radius: var(--md-sys-shape-full);
-  height: 40px;
-  flex-shrink: 0;
-  place-content: center;
-  place-items: center;
-  gap: 8px;
-  user-select: none;
+  display: inline-flex;
+  border-radius: var(--_border-radius);
+  background-color: var(--_background-color);
+  border: var(--_border);
+  color: var(--_color);
+  height: 2.5rem;
+  text-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
   outline: none;
-  padding-inline: 24px;
+  padding-inline-start: var(--_padding-start);
+  padding-inline-end: var(--_padding-end);
+  gap: 0.5rem;
+  flex-shrink: 0;
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, border, box-shadow');
 
-  @include md.typescale("label", "large");
-  @include md.motion("background-color", "border-color", "color");
+  &:has(
+      ::ng-deep [mdButtonLeading],
+      > [mdEmbeddedButton] > md-badge
+    ) {
+    padding-inline-start: var(--_padding-addon);
+  }
+  &:has(::ng-deep [mdButtonTrailing], > [mdEmbeddedButton] > md-badge) {
+    padding-inline-end: var(--_padding-addon);
+  }
 
-  ::ng-deep [mdButtonLeading], ::ng-deep [mdButtonTrailing] {
+  &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
+    ::ng-deep md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+    }
+  }
+
+  ::ng-deep md-icon,
+  img {
     --md-comp-icon-size: 18;
-    max-height: 18px;
+    max-height: 1.125rem;
   }
 
-  &:has(::ng-deep [mdButtonLeading]) {
-    padding-inline-start: 16px;
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
   }
-  &:has(::ng-deep [mdButtonTrailing]) {
-    padding-inline-end: 16px;
-  }
-
-  &.text {
-    padding-inline: 16px;
-    &:has(::ng-deep [mdButtonLeading]) {
-      padding-inline-start: 12px;
-    }
-    &:has(::ng-deep [mdButtonTrailing]) {
-      padding-inline-end: 12px;
-    }
-  }
-
-  &.disabled {
-    &.elevated,
-    &.filled,
-    &.tonal {
-      background-color: var(--md-sys-color-disabled-background);
-    }
-  }
-
-  &.elevated,
-  &.outlined,
-  &.text {
-    color: var(--md-sys-color-primary);
-  }
-
-  &.elevated {
-    background-color: var(--md-sys-color-surface-container-low);
-  }
-
-  &.filled {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-primary-on);
-  }
-
-  &.tonal {
-    background-color: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-secondary-container-on);
-  }
-
-  &.outlined {
-    border: 1px solid var(--md-sys-color-outline);
-
-    &.disabled {
-      border-color: var(--md-sys-color-disabled-border);
-    }
-  }
-
-  &.plain {
-    border-radius: 0;
-    color: var(--md-sys-color-surface-variant-on);
-    padding-inline: 0;
-
-    &:has(::ng-deep [mdButtonLeading]),
-    &:has(::ng-deep [mdButtonTrailing]) {
-      padding-inline: 0;
-    }
-  }
-
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-  }
-
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-color: var(--_current-color);
+  }
+  md-progress-indicator[variant='circular'] {
+    --md-comp-progress-indicator-color: var(--_current-color);
+    --md-comp-progress-indicator-size: 28;
+    --md-comp-progress-indicator-width: 8;
+    position: absolute;
   }
 
   &:has(md-progress-indicator) {
@@ -101,47 +170,8 @@
     [mdEmbeddedButton] {
       color: transparent;
     }
-  }
-
-  md-progress-indicator {
-    --md-comp-progress-indicator-color: var(--_color);
-    --md-comp-progress-indicator-size: 32;
-    --md-comp-progress-indicator-width: 8;
-    position: absolute;
-  }
-}
-
-:host-context(md-tooltip), :host-context(md-dialog:not(.date-picker)) {
-  &.filled {
-    color: var(--md-sys-color-primary);
-    background-color: transparent;
-    padding-inline: 16px;
     md-elevation {
-      display: none;
-    }
-    &:has(::ng-deep [mdButtonLeading]) {
-      padding-inline-start: 12px;
-    }
-    &:has(::ng-deep [mdButtonTrailing]) {
-      padding-inline-end: 12px;
-    }
-  }
-}
-
-
-:host-context(md-snack-bar) {
-  &.filled {
-    color: var(--md-sys-color-primary-inverse-on);
-    background-color: transparent;
-    padding-inline: 16px;
-    md-elevation {
-      display: none;
-    }
-    &:has(::ng-deep [mdButtonLeading]) {
-      padding-inline-start: 12px;
-    }
-    &:has(::ng-deep [mdButtonTrailing]) {
-      padding-inline-end: 12px;
+      box-shadow: none;
     }
   }
 }

@@ -1,0 +1,37 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="layout.options" [(value)]="layout">Layout</app-select-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="badge">Badge</app-check-property>
+  </app-properties>
+
+  <md-tabs #tabs class="w-full" [layout]="layout()">
+    <md-tab #tab1 [selected]="selectedTab() === tab1" (click)="selectedTab.set(tab1)" [disabled]="disabled()"
+      [badgeText]="badge() ? 'New' : undefined">
+      <md-icon>home</md-icon>
+      One
+    </md-tab>
+    <md-tab #tab2 [selected]="selectedTab() === tab2" (click)="selectedTab.set(tab2)">
+      <md-icon>home</md-icon>
+      Two
+    </md-tab>
+    <md-tab #tab3 [selected]="selectedTab() === tab3" (click)="selectedTab.set(tab3)">
+      <md-icon>home</md-icon>
+      Three
+    </md-tab>
+  </md-tabs>
+  <md-tabs type="radio" class="w-full" [layout]="layout()">
+    <md-tab [(value)]="radioValue" [radioValue]="1">
+      <md-icon>home</md-icon>
+      One
+    </md-tab>
+    <md-tab [(value)]="radioValue" [radioValue]="2">
+      <md-icon>home</md-icon>
+      Two
+    </md-tab>
+    <md-tab [(value)]="radioValue" [radioValue]="3">
+      <md-icon>home</md-icon>
+      Three
+    </md-tab>
+  </md-tabs>
+</app-page>

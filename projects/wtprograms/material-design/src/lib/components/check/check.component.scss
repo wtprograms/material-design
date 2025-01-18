@@ -1,289 +1,504 @@
-
 @use '../md';
+@use 'sass:map';
 
-@mixin _disabled {
-  color: var(--md-sys-color-disabled-color);
-  pointer-events: none;
+$tokens: (
+  'border-radius': var(--md-sys-shape-full),
+  'color': (
+    'unchecked': var(--md-sys-color-surface-variant-on),
+    'checked': var(--md-sys-color-primary),
+    'indeterminate': var(--md-sys-color-primary),
+    'error': var(--md-sys-color-danger),
+    'success': var(--md-sys-color-success),
+    'warning': var(--md-sys-color-warning),
+    'disabled': var(--md-sys-color-disabled-color),
+  ),
+  'switch': (
+    'unchecked': (
+      'track': (
+        'background-color': var(--md-sys-color-surface-container-highest),
+        'border-color': var(--md-sys-color-outline),
+      ),
+      'handle': (
+        'background-color': var(--md-sys-color-outline),
+        'color': var(--md-sys-color-surface-container-highest),
+      ),
+      'error': (
+        'track': (
+          'background-color': var(--md-sys-color-danger-container),
+          'border-color': var(--md-sys-color-danger),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-danger),
+          'color': var(--md-sys-color-danger-container),
+        ),
+      ),
+      'warning': (
+        'track': (
+          'background-color': var(--md-sys-color-warning-container),
+          'border-color': var(--md-sys-color-warning),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-warning),
+          'color': var(--md-sys-color-warning-container),
+        ),
+      ),
+      'success': (
+        'track': (
+          'background-color': var(--md-sys-color-success-container),
+          'border-color': var(--md-sys-color-success),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-success),
+          'color': var(--md-sys-color-success-container),
+        ),
+      ),
+      'disabled': (
+        'track': (
+          'background-color': var(--md-sys-color-disabled-background),
+          'border-color': var(--md-sys-color-disabled-border),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-disabled-border),
+          'color': var(--md-sys-color-disabled-color),
+        ),
+      ),
+    ),
+    'checked': (
+      'track': (
+        'background-color': var(--md-sys-color-primary),
+        'border-color': var(--md-sys-color-primary),
+      ),
+      'handle': (
+        'background-color': var(--md-sys-color-primary-on),
+        'color': var(--md-sys-color-primary),
+      ),
+      'error': (
+        'track': (
+          'background-color': var(--md-sys-color-danger),
+          'border-color': var(--md-sys-color-danger),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-danger-on),
+          'color': var(--md-sys-color-danger),
+        ),
+      ),
+      'warning': (
+        'track': (
+          'background-color': var(--md-sys-color-warning),
+          'border-color': var(--md-sys-color-warning),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-warning-on),
+          'color': var(--md-sys-color-warning),
+        ),
+      ),
+      'success': (
+        'track': (
+          'background-color': var(--md-sys-color-success),
+          'border-color': var(--md-sys-color-success),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-success-on),
+          'color': var(--md-sys-color-success),
+        ),
+      ),
+      'disabled': (
+        'track': (
+          'background-color': var(--md-sys-color-disabled-background),
+          'border-color': var(--md-sys-color-disabled-border),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-disabled-border),
+          'color': var(--md-sys-color-disabled-color),
+        ),
+      ),
+    ),
+    'indeterminate': (
+      'track': (
+        'background-color': var(--md-sys-color-primary-container),
+        'border-color': var(--md-sys-color-primary),
+      ),
+      'handle': (
+        'background-color': var(--md-sys-color-primary),
+        'color': var(--md-sys-color-primary-container),
+      ),
+      'error': (
+        'track': (
+          'background-color': var(--md-sys-color-danger-container),
+          'border-color': var(--md-sys-color-danger),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-danger),
+          'color': var(--md-sys-color-danger-container),
+        ),
+      ),
+      'warning': (
+        'track': (
+          'background-color': var(--md-sys-color-warning-container),
+          'border-color': var(--md-sys-color-warning),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-warning),
+          'color': var(--md-sys-color-warning-container),
+        ),
+      ),
+      'success': (
+        'track': (
+          'background-color': var(--md-sys-color-success-container),
+          'border-color': var(--md-sys-color-success),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-success),
+          'color': var(--md-sys-color-success-container),
+        ),
+      ),
+      'disabled': (
+        'track': (
+          'background-color': var(--md-sys-color-disabled-background),
+          'border-color': var(--md-sys-color-disabled-border),
+        ),
+        'handle': (
+          'background-color': var(--md-sys-color-disabled-border),
+          'color': var(--md-sys-color-disabled-color),
+        ),
+      ),
+    ),
+  ),
+);
 
-  .track {
-    background-color: var(--md-sys-color-surface-container-highest);
-    border-color: var(--md-sys-color-disabled-border);
+@mixin disabled {
+  &:not(:has(input:checked))[disabled],
+  &:has(input:checked)[disabled],
+  &:has(input:indeterminate)[disabled] {
+    & {
+      --_color: var(--_color-disabled);
+    }
   }
 
-  .handle {
-    color: var(--md-sys-color-surface);
-    background-color: var(--md-sys-color-disabled-border);
+  &[switch] {
+    $switch-tokens: map.get($tokens, 'switch');
+
+    &:not(:has(input:checked))[disabled] {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'unchecked', 'disabled'),
+        'switch-unchecked-disabled'
+      );
+    }
+
+    &:has(input:checked)[disabled] {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'checked', 'disabled'),
+        'switch-checked-disabled'
+      );
+    }
+
+    &:has(input:indeterminate)[disabled] {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'indeterminate', 'disabled'),
+        'switch-indeterminate-disabled'
+      );
+    }
   }
 }
 
+$states: ('success', 'warning', 'error');
+
 :host {
-  --_color: currentColor;
+  @include md.declare-tokens($tokens, 'md-comp-check', true);
+
+  --_current-color: currentColor;
   position: relative;
   display: inline-flex;
-  flex-direction: row;
   gap: 8px;
-  color: var(--md-sys-color-surface-variant-on);
   align-items: center;
-  @include md.typescale('label', 'large');
-  @include md.motion('color');
+  flex-shrink: 0;
+  color: var(--_color);
 
   input {
     appearance: none;
     position: absolute;
-    inset: 0;
+    inset: 4px 0 4px 4px;
     border-radius: inherit;
     outline: 0;
     cursor: pointer;
   }
 
+  &:has(input:hover, input:focus-visible) {
+    md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+    }
+  }
+
+  .track,
+  .handle {
+    display: contents;
+  }
+
   .container {
     position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 4px;
+    border-radius: var(--_border-radius);
     display: inline-flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .track {
+    position: relative;
     border-radius: var(--md-sys-shape-full);
-    width: 40px;
-    height: 40px;
     flex-shrink: 0;
   }
 
-  md-ripple {
-    --md-comp-ripple-color: var(--_color);
-    --md-comp-ripple-transform-default: scale(0);
-    --md-comp-ripple-transform-hover: scale(1);
+  .container,
+  .handle {
+    border-radius: inherit;
   }
 
-  &.error {
-    color: var(--md-sys-color-danger);
-  }
-
-  .icon,
-  ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon] {
-    --md-comp-icon-size: 24;
-    width: 24px;
-    height: 24px;
-  }
-
-  .icon {
-    display: inline-flex;
-  }
-
-  ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon]  {
+  ::ng-deep [mdCheckIcon] {
     display: none;
   }
 
-  &:has(input:checked),
-  &:has(input:indeterminate) {
-    color: var(--md-sys-color-primary);
+  &:not(:has(input:checked)) {
+    --_color: var(--_color-unchecked);
 
-    md-icon,
-    ::ng-deep [mdCheckCheckedIcon],
-    ::ng-deep [mdCheckIndeterminateIcon] {
+    @each $state in $states {
+      &[state='#{$state}'] {
+        --_color: var(--_color-#{$state});
+      }
+    }
+
+    ::ng-deep [mdCheckIcon='unchecked'] {
+      display: inline-flex;
+    }
+
+    &:has(::ng-deep [mdCheckIcon='unchecked']) .icon {
+      display: none;
+    }
+  }
+
+  &:has(input:checked) {
+    --_color: var(--_color-checked);
+
+    ::ng-deep md-icon {
       --md-comp-icon-filled: 1;
     }
 
-    &.error {
-      color: var(--md-sys-color-danger);
-    }
-  }
-
-  &:has(::ng-deep [mdCheckUncheckedIcon]):not(:has(input:checked)):not(
-      :has(input:indeterminate)
-    ) {
-    ::ng-deep [mdCheckUncheckedIcon] {
-      display: inline-flex;
-    }
-
-    .icon {
-      display: none;
-    }
-  }
-
-  &:has(::ng-deep [mdCheckCheckedIcon]):has(input:checked):not(
-      :has(input:indeterminate)
-    ) {
-    ::ng-deep [mdCheckCheckedIcon] {
-      display: inline-flex;
-    }
-
-    .icon {
-      display: none;
-    }
-  }
-
-  &:has(::ng-deep [mdCheckIndeterminateIcon]):has(input:indeterminate) {
-    ::ng-deep {
-      [mdCheckUncheckedIcon],
-      [mdCheckCheckedIcon] {
-        display: none;
-      }
-
-      [mdCheckIndeterminateIcon] {
-        display: inline-flex;
+    @each $state in $states {
+      &[state='#{$state}'] {
+        --_color: var(--_color-#{$state});
       }
     }
 
-    .icon {
+    ::ng-deep [mdCheckIcon='checked'] {
+      display: inline-flex;
+    }
+    &:has(::ng-deep [mdCheckIcon='checked']) .icon {
       display: none;
     }
   }
 
-  &.switch {
-    .icon {
+  &:has(input:indeterminate):not([type='radio']) {
+    --_color: var(--_color-indeterminate);
+
+    md-icon {
+      --md-comp-icon-filled: 1;
+    }
+
+    @each $state in $states {
+      &[state='#{$state}'] {
+        --_color: var(--_color-#{$state});
+      }
+    }
+
+    ::ng-deep [mdCheckIcon] {
       display: none;
     }
 
+    ::ng-deep [mdCheckIcon='indeterminate'] {
+      --md-comp-icon-filled: 1;
+      display: inline-flex;
+    }
+    &:has(::ng-deep [mdCheckIcon='indeterminate']) .icon {
+      display: none;
+    }
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
+    --md-comp-tint-transform: scale(0);
+    --md-comp-tint-transform-hover: scale(1);
+  }
+  md-ripple {
+    --md-comp-ripple-color: var(--_current-color);
+  }
+
+  .icon,
+  [mdCheckIcon] {
+    object-fit: cover;
+  }
+
+  &:not(.switch) {
     .icon,
-    ::ng-deep [mdCheckCheckedIcon], ::ng-deep [mdCheckIndeterminateIcon], ::ng-deep [mdCheckUncheckedIcon] {
+    ::ng-deep [mdCheckIcon] {
+      --md-comp-icon-size: 24;
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+    }
+  }
+
+  &[switch] {
+    .container {
+      @include md.motion('margin-inline-start');
+    }
+
+    .handle {
+      @include md.motion('width, height, background-color, color');
+    }
+
+    .icon {
+      display: none;
+    }
+
+    ::ng-deep [mdCheckIcon] {
       --md-comp-icon-size: 16;
       width: 16px;
       height: 16px;
+      object-fit: cover;
     }
 
     .track {
-      position: relative;
+      display: inline-flex;
       width: 52px;
       height: 32px;
-      display: inline-flex;
-      justify-content: center;
+      background-color: var(--_track-background-color);
+      border: 2px solid var(--_track-border-color);
       align-items: center;
-      background-color: var(--md-sys-color-surface-container-highest);
-      border: 2px solid var(--md-sys-color-outline);
-      border-radius: var(--md-sys-shape-full);
-      box-sizing: border-box;
-      @include md.motion('background-color', 'border');
+      @include md.motion('border, background-color, color');
+    }
+
+    .container {
+      position: absolute;
     }
 
     .handle {
       width: 16px;
       height: 16px;
       display: inline-flex;
+      background-color: var(--_handle-background-color);
+      color: var(--_handle-color);
       justify-content: center;
       align-items: center;
-      color: var(--md-sys-color-surface-container-highest);
-      background-color: var(--md-sys-color-outline);
-      border-radius: inherit;
-      @include md.motion('width, height, background-color');
     }
 
-    &:has(:not(input:checked)):has(::ng-deep [mdCheckUncheckedIcon]),
-    &:has(input:indeterminate):has(::ng-deep [mdCheckCheckedIcon]) {
-      .handle {
-        height: 24px;
-        width: 24px;
-      }
-    }
+    $switch-tokens: map.get($tokens, 'switch');
+    &:not(:has(input:checked)) {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'unchecked'),
+        'switch-unchecked'
+      );
 
-    .container {
-      position: absolute;
-      @include md.motion('inset-inline-start');
-    }
-
-    &:has(:not(input:checked)) .container {
-      inset-inline-start: -6px;
-    }
-
-    &.error {
-      .track {
-        background-color: var(--md-sys-color-danger-container);
-        border-color: var(--md-sys-color-danger);
+      @each $state in $states {
+        &[state='#{$state}'] {
+          @include md.set-tokens(
+            map.get(map.get($switch-tokens, 'unchecked'), $state),
+            'switch-unchecked-#{$state}'
+          );
+        }
       }
 
-      .handle {
-        color: var(--md-sys-color-danger-on);
-        background-color: var(--md-sys-color-danger);
+      .container {
+        margin-inline-start: -6px;
+      }
+
+      &:has(::ng-deep [mdCheckIcon='unchecked']) {
+        .handle {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      &:active {
+        .handle {
+          width: 28px;
+          height: 28px;
+        }
       }
     }
 
     &:has(input:checked) {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'checked'),
+        'switch-checked'
+      );
+
+      @each $state in $states {
+        &[state='#{$state}'] {
+          @include md.set-tokens(
+            map.get(map.get($switch-tokens, 'checked'), $state),
+            'switch-checked-#{$state}'
+          );
+        }
+      }
+
       .container {
-        inset-inline-start: 14px;
-      }
-
-      .track {
-        background-color: var(--md-sys-color-primary);
-        border-color: var(--md-sys-color-primary);
+        margin-inline-start: 14px;
       }
 
       .handle {
-        height: 24px;
         width: 24px;
-        color: var(--md-sys-color-primary);
-        background-color: var(--md-sys-color-primary-on);
+        height: 24px;
       }
 
-      &.error {
-        .track {
-          background-color: var(--md-sys-color-danger);
-          border-color: var(--md-sys-color-danger);
-        }
-
+      &:active {
         .handle {
-          color: var(--md-sys-color-danger);
-          background-color: var(--md-sys-color-danger-on);
+          width: 28px;
+          height: 28px;
         }
       }
     }
 
-    &:has(input:indeterminate) {
+    &:has(input:indeterminate):not([type='radio']) {
+      @include md.set-tokens(
+        map.get($switch-tokens, 'indeterminate'),
+        'switch-indeterminate'
+      );
+
+      @each $state in $states {
+        &[state='#{$state}'] {
+          @include md.set-tokens(
+            map.get(map.get($switch-tokens, 'indeterminate'), $state),
+            'switch-indeterminate-#{$state}'
+          );
+        }
+      }
+
       .container {
-        inset-inline-start: 16px;
-      }
-
-      .track {
-        background-color: var(--md-sys-color-primary-container);
-        border-color: var(--md-sys-color-primary);
+        margin-inline-start: 4px;
       }
 
       .handle {
-        height: 24px;
-        width: 24px;
-        color: var(--md-sys-color-primary-on);
-        background-color: var(--md-sys-color-primary);
+        width: 16px;
+        height: 16px;
       }
 
-      &.error {
-        .track {
-          background-color: var(--md-sys-color-danger-container);
-          border-color: var(--md-sys-color-danger);
-        }
-
+      &:has(::ng-deep [mdCheckIcon='indeterminate']) {
         .handle {
-          color: var(--md-sys-color-danger-on);
-          background-color: var(--md-sys-color-danger);
+          width: 24px;
+          height: 24px;
         }
       }
-    }
 
-    &:has(input:indeterminate) .container {
-      inset-inline-start: revert;
-    }
-
-    &:has(input:active),
-    &:has(input:active:not(:checked)):has(
-        ::ng-deep [mdCheckIndeterminateIcon]
-      ) {
-      .handle {
-        height: 28px;
-        width: 28px;
+      &:active {
+        .handle {
+          width: 24px;
+          height: 24px;
+        }
       }
     }
   }
 
-  &.disabled,
-  &.disabled:has(input:checked),
-  &.disabled:has(input:indeterminate),
-  &.error.disabled,
-  &.error.disabled:has(input:checked),
-  &.error.disabled:has(input:indeterminate) {
-    @include _disabled;
-  }
-}
-
-:host-context(md-list-item.interactive:not(.split)) {
-  pointer-events: none;
-}
-
-:host-context(md-list-item.disabled) {
-  @include _disabled;
+  @include disabled;
 }

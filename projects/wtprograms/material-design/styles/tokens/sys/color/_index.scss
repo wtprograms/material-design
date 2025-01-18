@@ -4,6 +4,7 @@
 @use 'surface';
 @use 'outline';
 @use 'disabled';
+@use 'elevation';
 
 $tokens: (
   'primary': theme-palette.theme-palette('primary'),
@@ -16,5 +17,6 @@ $tokens: (
   'surface': surface.$tokens,
   'outline': outline.$tokens,
   'scrim': color.color('neutral', 0, 0),
-  'disabled': disabled.$tokens
+  'disabled': disabled.$tokens,
+  'elevation': elevation.$tokens,
 );

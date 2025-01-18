@@ -4,83 +4,75 @@ import {
   computed,
   inject,
   input,
+  model,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { MdElevationComponent } from '../elevation/elevation.component';
-import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
-import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.component';
+import { MdComponent } from '../../common/base/md.component';
 import { CommonModule } from '@angular/common';
-import { MdRippleComponent } from '../ripple/ripple.component';
-import { MdTooltipComponent } from '../tooltip/tooltip.component';
-import { MdProgressIndicatorUserDirective } from '../progress-indicator/progress-indicator-user.directive';
-import { MdProgressIndicatorModule } from '../progress-indicator/progress-indicator.module';
-
-export type ButtonVariant =
-  | 'elevated'
-  | 'filled'
-  | 'tonal'
-  | 'outlined'
-  | 'text'
-  | 'plain';
-export type ButtonType = 'button' | 'submit' | 'reset';
-
-const ELEVATION_VARIANTS: ButtonVariant[] = ['elevated', 'filled', 'tonal'];
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.module';
+import { MdRippleComponent } from '../ripple/ripple.module';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.module';
+import { ButtonVariant } from './button-variant';
+import { MdEmbeddedBadgeDirective } from '../badge/embedded-badge.directive';
+import { MdEmbeddedProgressIndicatorDirective } from '../progress-indicator/embedded-progress-indicator.directive';
+import { MdBadgeComponent } from '../badge/badge.component';
+import { MdElevationComponent } from '../elevation/elevation.component';
+import { MdProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
+import { MdTintComponent } from '../tint/tint.component';
 
 @Component({
   selector: 'md-button',
   templateUrl: './button.component.html',
-  styleUrl: './button.component.scss',
+  styleUrls: ['./button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdElevationComponent,
-    MdFocusRingComponent,
-    MdEmbeddedButtonComponent,
-    MdRippleComponent,
     CommonModule,
-    MdProgressIndicatorModule
+    MdTintComponent,
+    MdFocusRingComponent,
+    MdRippleComponent,
+    MdElevationComponent,
+    MdEmbeddedButtonComponent,
+    MdBadgeComponent,
+    MdProgressIndicatorComponent,
   ],
   hostDirectives: [
     {
-      directive: MdProgressIndicatorUserDirective,
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
+    },
+    {
+      directive: MdEmbeddedProgressIndicatorDirective,
       inputs: [
-        'progressValue',
-        'progressMax',
-        'progressIndeterminate',
-      ]
-    }
+        'indeterminate: progressIndicatorIndeterminate',
+        'value: progressIndicatorValue',
+        'max: progressIndicatorMax',
+        'buffer: progressIndicatorBuffer',
+      ],
+    },
   ],
   host: {
-    '[class]': 'variant()',
-    '[class.disabled]': 'disabled()',
-    '(click)': 'click()',
+    '[attr.variant]': 'variant() ? variant() : null',
+    '[attr.disabled]': 'disabled() ? "" : null',
   },
 })
 export class MdButtonComponent extends MdComponent {
-  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
-  readonly variant = input<ButtonVariant>('filled');
-  readonly type = input<ButtonType>('button');
-  readonly disabled = input(false);
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
+  readonly embeddedProgressIndicator = inject(
+    MdEmbeddedProgressIndicatorDirective
+  );
+  readonly variant = model<ButtonVariant>('filled');
+  readonly type = input<string>('button');
   readonly href = input<string>();
   readonly target = input<string>();
-  readonly hasElevation = computed(() =>
-    ELEVATION_VARIANTS.includes(this.variant())
+  readonly disabled = model(false);
+  readonly value = input<boolean | number | string>();
+  readonly hasElevation = computed(
+    () =>
+      ['elevated', 'filled', 'tonal'].includes(this.variant()) &&
+      !this.disabled()
   );
   readonly elevationLevel = computed(() =>
-    this.variant() !== 'elevated' ? 0 : 1
+    this.variant() === 'elevated' ? 1 : 0
   );
 
-  private readonly _tooltip = inject(MdTooltipComponent, {
-    host: true,
-    optional: true,
-  });
-
-  click() {
-    if (this.disabled()) {
-      return;
-    }
-
-    if (this._tooltip) {
-      this._tooltip.open.set(false);
-    }
-  }
+  click(event: Event) {}
 }

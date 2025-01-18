@@ -1,12 +1,18 @@
-<md-field #field [label]="fieldUser.label()" [disabled]="disabled()" [error]="error()" [variant]="fieldUser.variant()"
-  [populated]="populated()" (bodyClick)="bodyClick()" [prefix]="fieldUser.prefix()" [suffix]="fieldUser.suffix()"
-  [supportingText]="fieldUser.supportingText()" [counter]="fieldUser.counter()">
-  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]" />
+<md-field [variant]="variant()" [disabled]="disabled()" [state]="state()" [stateMessage]="stateMessage()"
+  [label]="label()" [prefixText]="prefixText()" [suffixText]="suffixText()" [populated]="populated()"
+  (bodyClick)="bodyClick()">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]"></ng-content>
+  <ng-content select="[mdFieldTrailing]" ngProjectAs="[mdFieldTrailing]"></ng-content>
+  @if (!trailing()) {
   <md-icon mdFieldTrailing>arrow_drop_down</md-icon>
-
-  <ng-content />
-
-  <md-popover [target]="field.body" trigger="manual" [(open)]="open" [offset]="4" [useTargetWidth]="true">
+  }
+  <ng-content select="md-field-supporting-text" ngProjectAs="md-field-supporting-text"></ng-content>
+  @if (selected()) {
+  <ng-content select="md-drop-down-field-selected" />
+  } @else {
+  {{ value() }}
+  }
+  <md-list>
     <ng-content select="md-list-item" />
-  </md-popover>
+  </md-list>
 </md-field>

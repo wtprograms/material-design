@@ -1,61 +1,66 @@
-@use "../md";
+@use '../md';
 
 :host {
+  flex-direction: row;
   background-color: var(--md-sys-color-surface-inverse);
   color: var(--md-sys-color-surface-inverse-on);
+  transform-origin: bottom;
   border-radius: var(--md-sys-shape-extra-small);
-  box-shadow: var(--md-sys-elevation-2);
-  z-index: var(--md-sys-z-index-popover);
-  margin-top: auto;
-  margin-inline: auto;
-  margin-bottom: 0;
-  bottom: 24px;
-  display: none;
-  flex-direction: row;
-  position: fixed;
-  align-items: center;
+  box-shadow: var(--md-sys-elevation-3);
+  padding-inline: 16px;
   gap: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  min-width: min(calc(100dvw - 24px), 380px);
-  max-width: min(calc(100dvw - 24px), 480px);
-  @include md.typescale("body", "medium");
-  @include md.motion('transform', 'standard', 'long-4');
+  min-height: 48px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-inline: 24px;
+  margin-bottom: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  transform: scaleY(0);
+  width: calc(100% - 48px);
+  display: none;
+  transition: display var(--md-sys-motion-duration-short-4) allow-discrete,
+    transform var(--md-sys-motion-duration-short-4) allow-discrete;
 
-  .actions {
-    display: none;
-    gap: 8px;
-  }
+  &:popover-open {
+    display: inline-flex;
+    transform: scaleY(1);
 
-  .content {
-    padding-inline: 16px;
-    flex-grow: 1;
-  }
-
-  &:has(md-icon-button, md-button) {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    .actions {
-      display: inline-flex;
-      margin-inline-start: auto;
+    @starting-style {
+      transform: scaleY(0);
     }
   }
 
-  &.multiline {
-    align-items: flex-start;
+  .actions {
+    display: none;
+    align-items: center;
+    margin-inline-start: auto;
+    margin-inline-end: -8px;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    gap: 8px;
+  }
+
+  &:has(md-button, md-icon-button) .actions {
+    display: inline-flex;
+  }
+
+  &[multiline] {
     flex-direction: column;
+    align-items: flex-start;
   }
 
-  &.opening,
-  &.closing {
-    overflow: hidden;
+  @include md.screen('small') {
+    margin-inline: auto;
+    width: fit-content;
+    min-width: min(460px, 100%);
   }
 
-  &.height {
-    display: inline-flex !important;
-    opacity: 0 !important;
-    z-index: -1 !important;
-    height: fit-content !important;
-    pointer-events: none !important;
+  ::ng-deep md-button {
+    --md-comp-button-text-color: var(--md-sys-color-primary-inverse-on);
+  }
+
+  ::ng-deep md-icon-button {
+    color: var(--md-sys-color-surface-inverse-on);
   }
 }

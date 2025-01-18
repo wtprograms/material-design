@@ -1,0 +1,65 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="variant.options" [(value)]="variant"
+      >Variant</app-select-property
+    >
+    <app-select-property [options]="layout.options" [(value)]="layout"
+      >Layout</app-select-property
+    >
+    <app-select-property [options]="type.options" [(value)]="type"
+      >Type</app-select-property
+    >
+    <app-select-property [options]="leading.options" [(value)]="leading"
+      >Leading</app-select-property
+    >
+    <app-select-property [options]="trailing.options" [(value)]="trailing"
+      >Trailing</app-select-property
+    >
+    <app-select-property [options]="state.options" [(value)]="state"
+      >State</app-select-property
+    >
+    <app-select-property [options]="label.options" [(value)]="label"
+      >Label</app-select-property
+    >
+    <app-check-property [(checked)]="counter">Counter</app-check-property>
+    <app-check-property [(checked)]="supportingText"
+      >Supporting Text</app-check-property
+    >
+    <app-check-property [(checked)]="prefixText">Prefix</app-check-property>
+    <app-check-property [(checked)]="suffixText">Suffix</app-check-property>
+    <app-check-property [(checked)]="min">Min</app-check-property>
+    <app-check-property [(checked)]="max">Max</app-check-property>
+  </app-properties>
+
+  <md-date-picker
+    #picker
+    [layout]="layout()"
+    [variant]="variant()"
+    [state]="state()"
+    [stateText]="state() ? 'State text' : undefined"
+    [label]="labelText()"
+    [prefixText]="prefixText() ? 'Prefix' : undefined"
+    [suffixText]="suffixText() ? 'Suffix' : undefined"
+    [min]="min() ? minValue : undefined"
+    [max]="max() ? maxValue : undefined"
+  >
+    @if (leading() === 'icon') {
+    <md-icon mdFieldLeading>home</md-icon>
+    } @else if (leading() === 'image') {
+    <img mdFieldLeading src="https://placehold.co/600x400" />
+    } @else if (leading() === 'button') {
+    <md-icon-button mdFieldLeading>home</md-icon-button>
+    } @if (trailing() === 'icon') {
+    <md-icon mdFieldTrailing>home</md-icon>
+    } @else if (trailing() === 'image') {
+    <img mdFieldTrailing src="https://placehold.co/600x400" />
+    } @else if (trailing() === 'button') {
+    <md-icon-button mdFieldTrailing>home</md-icon-button>
+    } @if (supportingText()) {
+    <md-field-supporting-text>Supporting text</md-field-supporting-text>
+    }
+  </md-date-picker>
+  <div>
+    {{ picker.value() }}
+  </div>
+</app-page>

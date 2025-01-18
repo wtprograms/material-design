@@ -1,11 +1,57 @@
-@use "../md";
+@use '../md';
+
+@function _elevate($level) {
+  @return var(--_#{$level}-one) var(--_color-one),
+    var(--_#{$level}-two) var(--_color-two),
+    var(--_#{$level}-three) var(--_color-three);
+}
+
+$tokens: (
+  'color': (
+    'one': var(--md-sys-color-elevation-one),
+    'two': var(--md-sys-color-elevation-two),
+    'three': var(--md-sys-color-elevation-three),
+  ),
+  '0': 0 0 0 0 transparent,
+  '1': (
+    '': _elevate(1),
+    'one': var(--md-sys-elevation-1-one),
+    'two': var(--md-sys-elevation-1-two),
+    'three': var(--md-sys-elevation-1-three),
+  ),
+  '2': (
+    '': _elevate(2),
+    'one': var(--md-sys-elevation-2-one),
+    'two': var(--md-sys-elevation-2-two),
+    'three': var(--md-sys-elevation-2-three),
+  ),
+  '3': (
+    '': _elevate(3),
+    'one': var(--md-sys-elevation-3-one),
+    'two': var(--md-sys-elevation-3-two),
+    'three': var(--md-sys-elevation-3-three),
+  ),
+  '4': (
+    '': _elevate(4),
+    'one': var(--md-sys-elevation-4-one),
+    'two': var(--md-sys-elevation-4-two),
+    'three': var(--md-sys-elevation-4-three),
+  ),
+  '5': (
+    '': _elevate(5),
+    'one': var(--md-sys-elevation-5-one),
+    'two': var(--md-sys-elevation-5-two),
+    'three': var(--md-sys-elevation-5-three),
+  ),
+);
 
 :host {
+  @include md.declare-tokens($tokens, 'md-comp-elevation', true);
   position: absolute;
-  border-radius: inherit;
   inset: 0;
-  -webkit-tap-highlight-color: transparent;
+  border-radius: inherit;
+  box-shadow: var(--_box-shadow);
   pointer-events: none;
 
-  @include md.motion("box-shadow");
+  @include md.motion('box-shadow');
 }

@@ -1,5 +1,0 @@
-<md-snack-bar [(open)]="open" [closable]="!!snackBarData()?.close" [multiline]="!!snackBarData()?.multiline"
-  (openCloseStateChange)="stateChanged($event)" [action]="snackBarData()?.action?.[0] ?? undefined"
-  (actionClick)="snackBarData()?.action?.[1]()">
-  {{ snackBarData()?.message }}
-</md-snack-bar>

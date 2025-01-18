@@ -1,13 +1,27 @@
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  ChangeDetectionStrategy,
   inject,
   input,
-  model,
-  output,
   signal,
+  model,
+  ElementRef,
+  DestroyRef,
+  PLATFORM_ID,
+  computed,
+  isSignal,
+  effect,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
+import {
+  autoUpdate,
+  computePosition,
+  flip,
+  offset,
+  Placement,
+  shift,
+  Side,
+} from '@floating-ui/dom';
 import {
   delay,
   distinctUntilChanged,
@@ -16,54 +30,36 @@ import {
   map,
   merge,
   of,
-  skip,
   switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
-import {
-  autoUpdate,
-  computePosition,
-  flip,
-  Middleware,
-  MiddlewareState,
-  offset,
-  Placement,
-  shift,
-  Side,
-  Strategy,
-} from '@floating-ui/dom';
 import {
   takeUntilDestroyed,
   toObservable,
   toSignal,
 } from '@angular/core/rxjs-interop';
-import { openClose, OpenCloseState } from '../../common/rxjs/open-close';
-import { isPlatformBrowser } from '@angular/common';
-import { DURATION } from '../../common/motion/duration';
-import { EASING } from '../../common/motion/easing';
+import { PopoverTrigger } from './popover-trigger';
+import { getTargetElement } from '../../directives/attachable/get-target-element';
+import { MdComponent } from '../../common/base/md.component';
+import { EASING, DURATION } from '../../common/motion';
+import { MdAttachableDirective } from '../../directives/attachable/attachable.directive';
+import { TargetType } from '../../directives/attachable/target-type';
 
-export type PopoverTrigger =
-  | 'click'
-  | 'hover'
-  | 'focus'
-  | 'contextmenu'
-  | 'manual';
-
-export interface PopoverPosition {
+interface PopoverPosition {
   placement: Placement;
   top?: string;
-  bottom?: string;
   start: string;
+  transformOrigin: 'top' | 'bottom';
   targetWidth: string;
 }
 
 @Component({
   selector: 'md-popover',
   templateUrl: './popover.component.html',
-  styleUrl: './popover.component.scss',
+  styleUrls: ['./popover.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule],
   hostDirectives: [
     {
       directive: MdAttachableDirective,
@@ -71,63 +67,87 @@ export interface PopoverPosition {
     },
   ],
   host: {
-    '[class]': 'openCloseState() + " " + strategy()',
+    '[attr.opened]': 'opened() ? "" : null',
     '[style.top]': 'position()?.top',
     '[style.bottom]': 'position()?.bottom',
-    '[style.inset-inline-start]': 'position()?.start',
+    '[style.inset-inline-start]':
+      '!customStart() && position()?.start ? position()?.start : null',
+    '[style.transform-origin]': 'position()?.transformOrigin',
+    '[style.position]': 'strategy()',
   },
 })
 export class MdPopoverComponent extends MdComponent {
   private readonly _attachable = inject(MdAttachableDirective);
-
   readonly trigger = input<PopoverTrigger>('click');
-  readonly open = model(false);
-  readonly offset = input(0);
+  readonly positioningTarget = input<TargetType>();
+  readonly _positioningTargetElement = computed(() => {
+    let target = this.positioningTarget();
+    if (isSignal(target)) {
+      target = target();
+    }
+    return getTargetElement(this.document, undefined, target);
+  });
   readonly flip = input(true);
   readonly shift = input(true);
-  readonly delay = input(0);
+  readonly offset = input(0);
+  readonly openDelay = input(0);
   readonly placement = input<Placement>('bottom');
-  readonly strategy = input<Strategy>('absolute');
-  readonly hoverCloseOnPointerLeave = input(true);
-  readonly useTargetWidth = input(false);
+  readonly closeOnLeave = input(true);
+  readonly targetWidth = input(false);
+  readonly position = signal<PopoverPosition | undefined>(undefined);
+  readonly open = model(false);
+  readonly closedTransform = input('scaleY(0)');
+  readonly openedTransform = input('scaleY(1)');
+  readonly customStart = input(false);
+  readonly strategy = input<'fixed' | 'absolute'>('fixed');
+  readonly native = input(true);
 
-  private readonly _position = signal<PopoverPosition | undefined>(undefined);
-  readonly position = this._position.asReadonly();
-  private _animation?: Animation;
+  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _document = inject(DOCUMENT);
+  private readonly _hostElement =
+    inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
-  private readonly _targetEventOpen$ = this._attachable.targetEvent$.pipe(
+  private readonly _targetOpen$ = this._attachable.targetEvent$.pipe(
     filter(() => this.trigger() !== 'manual'),
     filter(
       (event) =>
         (event.type === 'click' && this.trigger() === 'click') ||
         (event.type === 'pointerenter' && this.trigger() === 'hover') ||
         (event.type === 'pointerleave' && this.trigger() === 'hover') ||
-        (event.type === 'contextmenu' && this.trigger() === 'contextmenu')
+        (event.type === 'contextmenu' && this.trigger() === 'contextmenu') ||
+        (event.type === 'focusin' && this.trigger() === 'focus') ||
+        (event.type === 'focusout' && this.trigger() === 'focus') ||
+        (event.type === 'pointerdown' && this.trigger() === 'mousedown') ||
+        (event.type === 'pointerup' && this.trigger() === 'mousedown')
     ),
     switchMap((event) => {
       if (event.type === 'contextmenu') {
         event.preventDefault();
       }
-      if (event.type === 'pointerenter' && this.trigger() === 'hover') {
+      if (
+        (event.type === 'pointerenter' && this.trigger() === 'hover') ||
+        (event.type === 'focusin' && this.trigger() === 'focus') ||
+        (event.type === 'pointerdown' && this.trigger() === 'mousedown')
+      ) {
         if (this.open()) {
           return of({});
         }
         return of(true).pipe(
-          delay(this.delay()),
-          takeUntilDestroyed(this._destroyRef),
+          delay(this.openDelay()),
           takeUntil(
             this._attachable.targetEvent$.pipe(
-              filter((x) => x.type === 'pointerleave')
+              filter((x) => x.type === 'pointerleave' || x.type === 'focusout')
             )
           )
         );
       }
-      if (event.type === 'pointerleave' && this.trigger() === 'hover') {
-        if (
-          !this.hoverCloseOnPointerLeave() &&
-          (this.openCloseState() === 'opened' ||
-            this.openCloseState() === 'opening')
-        ) {
+      if (
+        (event.type === 'pointerleave' && this.trigger() === 'hover') ||
+        (event.type === 'focusout' && this.trigger() === 'focus') ||
+        (event.type === 'pointerup' && this.trigger() === 'mousedown')
+      ) {
+        if (!this.closeOnLeave() && this.open()) {
           if (this.open()) {
             return of({});
           }
@@ -146,7 +166,7 @@ export class MdPopoverComponent extends MdComponent {
     filter((x) => typeof x === 'boolean')
   );
 
-  private readonly _documentClick$ = fromEvent(this._document, 'click').pipe(
+  private readonly _documentOpen$ = fromEvent(this._document, 'click').pipe(
     takeUntilDestroyed(this._destroyRef),
     filter((event) => {
       const targetElement = this._attachable.targetElement();
@@ -154,107 +174,86 @@ export class MdPopoverComponent extends MdComponent {
         return false;
       }
       const path = event.composedPath();
-      if (path.includes(this.hostElement) || path.includes(targetElement)) {
+      if (path.includes(this._hostElement) || path.includes(targetElement)) {
         return false;
       }
       return true;
     }),
     map(() => false)
   );
-  
-  readonly openCloseStateChange = output<OpenCloseState>();
 
-  readonly openCloseState = toSignal(
-    openClose(
-      merge(
-        toObservable(this.open).pipe(skip(1)),
-        this._targetEventOpen$,
-        this._documentClick$,
-        fromEvent(this.hostElement, 'popover-close').pipe(map(() => false))
-      ).pipe(
-        filter(() => isPlatformBrowser(this._platformId)),
-        distinctUntilChanged(),
-        tap((open) => {
-          if (open) {
-            this._stopPositioning = autoUpdate(
-              this._attachable.targetElement(),
-              this.hostElement,
-              () => this.computePosition(),
-              {
-                elementResize: false,
-              }
-            );
-          } else {
-            this._stopPositioning?.();
-          }
-          this.animate(open);
-          if (this.open() !== open) {
-            this.open.set(open);
-          }
-        }),
-        takeUntilDestroyed(this._destroyRef)
-      ), 'long1'
-    ).pipe(tap((state) => this.openCloseStateChange.emit(state)))
+  readonly opened = toSignal(
+    merge(
+      toObservable(this.open),
+      this._targetOpen$,
+      this._documentOpen$,
+      fromEvent(this._hostElement, 'closepopover').pipe(map(() => false))
+    ).pipe(
+      filter(() => isPlatformBrowser(this._platformId)),
+      distinctUntilChanged(),
+      tap((open) => {
+        if (open) {
+          this._stopPositioning = autoUpdate(
+            this._positioningTargetElement() ??
+              this._attachable.targetElement()!,
+            this._hostElement,
+            () => this.computePosition()
+          );
+        } else {
+          this._stopPositioning?.();
+        }
+        this.animate(open);
+        if (this.open() !== open) {
+          this.open.set(open);
+        }
+      })
+    )
   );
 
+  private _animation?: Animation;
   private _stopPositioning?: () => void;
 
   constructor() {
     super();
-    this.hostElement.popover = 'manual';
-  }
-
-  private getHeight() {
-    this.hostElement.classList.add('height');
-    const height = this.hostElement.offsetHeight;
-    this.hostElement.classList.remove('height');
-    return height;
+    effect(() => {
+      if (this.native()) {
+        this._hostElement.popover = 'manual';
+      } else {
+        this._hostElement.popover = null;
+      }
+    });
   }
 
   async computePosition() {
-    const target = this._attachable.targetElement();
+    const target =
+      this._positioningTargetElement() ?? this._attachable.targetElement();
     if (!target) {
       return;
     }
-    if (this.useTargetWidth()) {
-      this.hostElement.style.width = target.offsetWidth + 'px';
+    if (this.targetWidth()) {
+      this._hostElement.style.width = target.offsetWidth + 'px';
+    } else {
+      this._hostElement.style.width = '';
     }
     const middleware: any[] = [
       offset(this.offset()),
       this.flip() ? flip() : undefined,
       this.shift() ? shift() : undefined,
     ];
-    let height = this.hostElement.offsetHeight;
-    if (this.openCloseState() === 'closed') {
-      height = this.getHeight();
-      const setFixedHeight: () => Middleware = () => ({
-        name: 'setFixedHeight',
-        fn: (state: MiddlewareState) => {
-          state.rects.floating.height = height;
-          return state;
-        },
-      });
-      middleware.unshift(setFixedHeight());
-    }
-    const result = await computePosition(target, this.hostElement, {
+    const result = await computePosition(target, this._hostElement, {
       middleware,
       placement: this.placement(),
-      strategy: this.strategy(),
+      strategy: 'fixed',
     });
     const side = result.placement.split('-')[0] as Side;
     const position: PopoverPosition = {
       placement: result.placement,
       start: result.x + 'px',
       targetWidth: target.offsetWidth + 'px',
+      transformOrigin: side === 'top' ? 'bottom' : 'top',
     };
-    if (side === 'top') {
-      position.bottom = window.innerHeight - result.y - height + 'px';
-      position.top = 'auto';
-    } else {
-      position.top = result.y + 'px';
-      position.bottom = 'auto';
-    }
-    this._position.set(position);
+    position.top = result.y + 'px';
+    this.position.set(position);
   }
 
   private async animate(open: boolean) {
@@ -266,33 +265,35 @@ export class MdPopoverComponent extends MdComponent {
     };
 
     if (open) {
-      this.hostElement.style.display = 'inline-flex';
-      this.hostElement.showPopover();
+      this._hostElement.style.display = 'inline-flex';
+      if (this.native()) {
+        this._hostElement.showPopover();
+      }
     }
 
-    const height = this.getHeight();
     const style: any = {
       opacity: ['0', '1'],
-      height: ['0px', `${height}px`],
+      transform: [this.closedTransform(), this.openedTransform()],
     };
 
     if (!open) {
-      style.height = style.height.reverse();
+      this._hostElement.style.overflow = '';
+      style.transform = style.transform.reverse();
       style.opacity = style.opacity.reverse();
       timings.easing = EASING.standardAccelerate;
       timings.duration = DURATION.short3;
     }
 
-    this._animation = this.hostElement.animate(style, timings);
+    this._animation = this._hostElement.animate(style, timings);
     try {
       await this._animation.finished;
-      this._animation.cancel();
     } catch {}
-    this.hostElement.style.height = open ? 'fit-content' : '0px';
 
     if (!open) {
-      this.hostElement.style.display = 'none';
-      this.hostElement.hidePopover();
+      this._hostElement.style.display = 'none';
+      if (this.native()) {
+        this._hostElement.hidePopover();
+      }
     }
   }
 }

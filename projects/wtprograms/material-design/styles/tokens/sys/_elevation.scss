@@ -1,16 +1,45 @@
-
-$_level-0: 0 0 0 0 transparent;
-$_level-1: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-$_level-2: 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12);
-$_level-3: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-$_level-4: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-$_level-5: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 12px 17px 2px rgba(0, 0, 0, 0.14), 0 5px 22px 4px rgba(0, 0, 0, 0.12);
+@function _elevate($level) {
+  @return var(--md-sys-elevation-#{$level}-one)
+      var(--md-sys-color-elevation-one),
+    var(--md-sys-elevation-#{$level}-two) var(--md-sys-color-elevation-two),
+    var(--md-sys-elevation-#{$level}-three) var(--md-sys-color-elevation-three);
+}
 
 $tokens: (
-  '0': $_level-0,
-  '1': $_level-1,
-  '2': $_level-2,
-  '3': $_level-3,
-  '4': $_level-4,
-  '5': $_level-5
+  'alpha': (
+    'one': 0.2,
+    'two': 0.14,
+    'three': 0.12,
+  ),
+  '0': 0 0 0 0 transparent,
+  '1': (
+    '': _elevate(1),
+    'one': 0 2px 1px -1px,
+    'two': 0 1px 1px 0,
+    'three': 0 1px 3px 0,
+  ),
+  '2': (
+    '': _elevate(2),
+    'one': 0 3px 3px -2px,
+    'two': 0 3px 4px 0,
+    'three': 0 1px 8px 0,
+  ),
+  '3': (
+    '': _elevate(3),
+    'one': 0 3px 5px -1px,
+    'two': 0 6px 10px 0,
+    'three': 0 1px 18px 0,
+  ),
+  '4': (
+    '': _elevate(4),
+    'one': 0 5px 5px -3px,
+    'two': 0 8px 10px 1px,
+    'three': 0 3px 14px 2px,
+  ),
+  '5': (
+    '': _elevate(5),
+    'one': 0 7px 8px -4px,
+    'two': 0 12px 17px 2px,
+    'three': 0 5px 22px 4px,
+  ),
 );

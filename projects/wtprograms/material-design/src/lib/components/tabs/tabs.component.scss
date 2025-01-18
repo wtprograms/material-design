@@ -1,21 +1,51 @@
 @use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'indicator': (
+    'color': var(--md-sys-color-primary),
+  ),
+  'primary': (
+    'min-height': 64px,
+    'indicator': (
+      'height': 3px,
+      'border-radius': 3px 3px 0 0,
+    ),
+  ),
+  'secondary': (
+    'min-height': 48px,
+    'indicator': (
+      'height': 2px,
+      'border-radius': 0,
+    ),
+  ),
+);
+
+$layouts: ('primary', 'secondary');
 
 :host {
-  display: grid;
-  flex-grow: 1;
+  @include md.declare-tokens($tokens, 'md-comp-tabs', true);
+
+  @each $layout in $layouts {
+    &[layout='#{$layout}'] {
+      @include md.set-tokens(map.get($tokens, $layout), $layout);
+    }
+  }
+
   position: relative;
+  display: inline-flex;
+  min-height: var(--_min-height);
+  width: 100%;
 
   .indicator {
     position: absolute;
-    height: 0;
-    border-radius: 3px 3px 0 0;
-    background-color: var(--md-sys-color-primary);
-    bottom: 0;
     inset-inline-start: 0;
-    @include md.motion('height');
+    bottom: 0;
+    background-color: var(--_indicator-color);
+    border-radius: var(--_indicator-border-radius);
+    height: var(--_indicator-height);
+    min-width: 24px;
+    @include md.motion('inset-inline-start, width');
   }
 
-  &.secondary .indicator {
-    border-radius: 0;
-  }
 }

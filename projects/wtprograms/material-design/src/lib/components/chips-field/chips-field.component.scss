@@ -1,0 +1,74 @@
+@use '../md';
+
+:host {
+  display: inline-flex;
+  outline: none;
+
+  ::ng-deep {
+    md-field .field-body {
+      cursor: text;
+
+      .content {
+        padding-bottom: 6px;
+      }
+
+      .control {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+
+    md-chip {
+      margin-top: -4px;
+    }
+  }
+
+  input,
+  textarea {
+    display: inline-flex;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    caret-color: var(--_indicator-color);
+    resize: none;
+    overflow: hidden;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    box-sizing: border-box;
+    field-sizing: content;
+    min-width: 16px;
+    flex-grow: 1;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+}

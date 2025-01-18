@@ -1,5 +1,4 @@
-export function dispatchClosePopover(element: HTMLElement) {
-  element.dispatchEvent(
-    new Event('popover-close', { bubbles: true })
-  );
+export function dispatchClosePopover(element: HTMLElement, event?: Event) {
+  event?.stopPropagation();
+  element.dispatchEvent(new Event('closepopover', { bubbles: true }));
 }

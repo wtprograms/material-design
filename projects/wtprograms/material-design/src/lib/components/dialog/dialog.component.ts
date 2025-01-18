@@ -1,95 +1,137 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  contentChildren,
+  effect,
   ElementRef,
-  HostListener,
+  input,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { skip, tap } from 'rxjs';
-import { CommonModule, isPlatformServer } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { DURATION } from '../../common/motion/duration';
-import { EASING } from '../../common/motion/easing';
+import { debounceTime, filter, tap } from 'rxjs';
+import { MdButtonComponent } from '../button/button.component';
+import { MdIconButtonComponent } from '../icon-button/icon-button.component';
+import { MdTooltipComponent } from '../tooltip/tooltip.component';
+import { MdComponent } from '../../common/base/md.component';
+import { EASING, DURATION } from '../../common/motion';
+import { observeMedia } from '../../common/signals/observe-media';
 
 @Component({
-  selector: 'dialog[mdDialog]',
+  selector: 'md-dialog',
   templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.scss',
-  standalone: true,
-  imports: [CommonModule],
+  styleUrls: ['./dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MdIconButtonComponent, CommonModule, MdTooltipComponent],
+  host: {
+    '[attr.open]': 'open() ? "" : null',
+    '[attr.fullscreen]': 'fullscreen() ? "" : null',
+    '[attr.require-action]': 'notifyRequireAction() ? "" : null',
+    '(document:keydown.escape)': 'escape($event)',
+  },
 })
-export class MdDialogComponent extends MdComponent<HTMLDialogElement> {
+export class MdDialogComponent extends MdComponent {
   readonly open = model(false);
+  readonly fullscreen = input(false);
+  readonly requireAction = input(false);
+  readonly actions = contentChildren(MdButtonComponent);
+  readonly notifyRequireAction = signal(false);
+  private readonly _scrim =
+    viewChild.required<ElementRef<HTMLDivElement>>('scrim');
+  private readonly _dialog =
+    viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
+  private readonly _container =
+    viewChild.required<ElementRef<HTMLDivElement>>('container');
 
-  private readonly _contentElement =
-    viewChild<ElementRef<HTMLElement>>('content');
-  private readonly _containerHostElement =
-    viewChild<ElementRef<HTMLElement>>('containerHost');
-  private readonly _containerElement =
-    viewChild<ElementRef<HTMLElement>>('container');
-
-  private _abortController?: AbortController;
+  readonly isMedium = observeMedia('medium');
 
   constructor() {
     super();
+    effect(() => {
+      const actions = this.actions();
+      for (const action of actions) {
+        action.variant.set('text');
+      }
+      const cancelAction = actions.find(
+        (x) => x.hostElement.getAttribute('mdDialogAction') === 'cancel'
+      );
+      cancelAction?.hostElement.addEventListener('click', () =>
+        this.open.set(false)
+      );
+    });
     toObservable(this.open)
       .pipe(
-        skip(1),
-        tap((open) => {
-          if (isPlatformServer(this._platformId)) {
-            return;
-          }
-          this._document.body.style.overflow = open ? 'hidden' : '';
-          this.animate(open);
-          if (open) {
-            this._contentElement()!.nativeElement!.scrollTop = 0;
-          }
-        })
+        filter(() => isPlatformBrowser(this.platformId)),
+        tap((open) => this.animate(open))
+      )
+      .subscribe();
+    toObservable(this.notifyRequireAction)
+      .pipe(
+        filter((x) => x),
+        debounceTime(250),
+        tap(() => this.notifyRequireAction.set(false))
       )
       .subscribe();
   }
 
-  @HostListener('document:keydown.escape')
-  escape() {
-    this.open.set(false);
+  escape(event: KeyboardEvent) {
+    event.preventDefault();
+    this.scrimClick();
   }
 
   scrimClick() {
+    if (this.requireAction()) {
+      this.notifyRequireAction.set(true);
+      return;
+    }
     this.open.set(false);
   }
 
-  private async animate(opened: boolean) {
-    if (opened) {
-      this.hostElement.style.display = 'inline-flex';
-      this.hostElement.showModal();
+  private async animate(open: boolean) {
+    if (open) {
+      this.document.body.style.overflow = 'hidden';
+      this._dialog().nativeElement.showModal();
     }
 
-    this._abortController?.abort();
-    this._abortController = new AbortController();
-
     const promises = [
-      this.animateHost(opened),
-      this.animateContainerHost(opened),
-    ].map(async (animation) => {
-      this._abortController?.signal.addEventListener('abort', () =>
-        animation.cancel()
-      );
-      await animation.finished.catch(() => {});
-      animation.commitStyles();
-    });
+      this.animateScrim(open),
+      this.animateDialog(open),
+      this.animateContainer(open),
+    ];
 
     await Promise.all(promises);
 
-    if (!opened) {
-      this.hostElement.close();
-      this.hostElement.style.display = 'none';
+    if (!open) {
+      this.document.body.style.overflow = '';
+      this._dialog().nativeElement.close();
     }
   }
 
-  private animateHost(opened: boolean) {
+  private async animateScrim(open: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
+
+    const style = {
+      opacity: ['0', '0.32'],
+    };
+
+    if (!open) {
+      style.opacity = style.opacity.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
+    }
+
+    await this._scrim()
+      .nativeElement.animate(style, timings)
+      .finished.catch(() => {});
+  }
+
+  private async animateDialog(open: boolean) {
     const timings: OptionalEffectTiming = {
       easing: EASING.emphasizedDecelerate,
       duration: DURATION.long3,
@@ -100,66 +142,40 @@ export class MdDialogComponent extends MdComponent<HTMLDialogElement> {
       opacity: ['0', '1'],
     };
 
-    if (!opened) {
+    if (!open) {
       style.opacity = style.opacity.reverse();
       timings.easing = EASING.emphasizedAccelerate;
       timings.duration = DURATION.short4;
     }
 
-    return this.hostElement.animate(style, timings);
+    await this._dialog()
+      .nativeElement.animate(style, timings)
+      .finished.catch(() => {});
   }
 
-  private animateContainerHost(opened: boolean) {
+  private async animateContainer(open: boolean) {
     const timings: OptionalEffectTiming = {
       easing: EASING.emphasizedDecelerate,
       duration: DURATION.long3,
       fill: 'forwards',
     };
 
-    const style: any = {
-      transform: [],
-      height: [],
+    const style = {
+      transform: ['translateY(-50%)', 'translateY(0)'],
     };
 
-    this._containerHostElement()!.nativeElement.style.height = 'auto';
-    const containerHostRect =
-      this._containerHostElement()!.nativeElement.getBoundingClientRect();
+    if (this.fullscreen() && !this.isMedium()) {
+      style.transform = ['translateY(50%)', 'translateY(0)'];
+    }
 
-    const containerRect =
-      this._containerElement()!.nativeElement.getBoundingClientRect();
-    this._containerElement()!.nativeElement.style.height = `${containerRect.height}px`;
-    style.transform = [
-      `translateY(-${containerHostRect.height * 0.75}px)`,
-      'translateY(0)',
-    ];
-    style.height = [
-      `${containerHostRect.height * 0.25}px`,
-      `${containerHostRect.height}px`,
-    ];
-
-    if (!opened) {
+    if (!open) {
       style.transform = style.transform.reverse();
-      style.height = style.height.reverse();
       timings.easing = EASING.emphasizedAccelerate;
       timings.duration = DURATION.short4;
     }
 
-    const animation = this._containerHostElement()!.nativeElement.animate(
-      style,
-      timings
-    );
-    this._abortController?.signal.addEventListener('abort', () =>
-      animation.cancel()
-    );
-    const reset = () => {
-      this._containerElement()!.nativeElement.style.height = '';
-      this._containerHostElement()!.nativeElement.style.height = '';
-    };
-    animation.onfinish = () => {
-      animation.cancel();
-      reset();
-    };
-    animation.oncancel = () => reset();
-    return animation;
+    await this._container()
+      .nativeElement.animate(style, timings)
+      .finished.catch(() => {});
   }
 }

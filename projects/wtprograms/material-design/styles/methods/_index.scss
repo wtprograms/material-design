@@ -1,9 +1,10 @@
 @forward 'color';
 @forward 'declare-tokens';
+@forward 'set-tokens';
 @forward 'palette';
 @forward 'set-mode';
 @forward 'screen';
 @forward 'typescale';
 @forward 'motion';
 @forward 'mix';
-@forward 'declare-component-tokens';
+@forward 'str-replace';

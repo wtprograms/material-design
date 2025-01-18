@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
-import { MdAccordionModule, MdCardModule, MdScrollToDirective } from '@wtprograms/material-design';
-import { CodeComponent } from '../../components/code.component';
-import { PageComponent } from '../../components/page.component';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { AppModule } from '../../components/app-components';
+import { MdAccordionModule } from '@wtprograms/material-design';
 
 @Component({
   templateUrl: './index.html',
-  imports: [MdScrollToDirective, MdCardModule, CodeComponent, PageComponent, MdAccordionModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AppModule, MdAccordionModule],
 })
 export default class Page {
-  readonly accordion = `<md-accordion>
-  <span mdAccordionHeadline>Headline</span>
-  The contents of the accordion is here.
-</md-accordion>`;
+  readonly open = signal(false);
 }

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { MdMenuComponent } from './menu.component';
-import { MdMenuItemComponent } from './menu-item/menu-item.component';
 import { MdMenuItemLeadingDirective } from './menu-item/menu-item-leading.directive';
-import { MdMenuItemTrailingDirective } from './menu-item/menu-item-trailing.directive';
+import { MdMenuItemTrailingComponent } from './menu-item/menu-item-trailing/menu-item-trailing.component';
+import { MdMenuItemComponent } from './menu-item/menu-item.component';
 
 @NgModule({
   imports: [
-    MdMenuItemLeadingDirective,
-    MdMenuItemTrailingDirective,
     MdMenuComponent,
     MdMenuItemComponent,
+    MdMenuItemLeadingDirective,
+    MdMenuItemTrailingComponent,
   ],
   exports: [
-    MdMenuItemLeadingDirective,
-    MdMenuItemTrailingDirective,
     MdMenuComponent,
     MdMenuItemComponent,
+    MdMenuItemLeadingDirective,
+    MdMenuItemTrailingComponent,
   ],
 })
 export class MdMenuModule {}

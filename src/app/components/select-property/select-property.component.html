@@ -1,0 +1,8 @@
+<label [for]="labelId" class="w-full">
+  <ng-content />
+</label>
+<select [id]="labelId" [(ngModel)]="value">
+  @for (option of options(); track $index) {
+  <option [ngValue]="option">{{ option }}</option>
+  }
+</select>

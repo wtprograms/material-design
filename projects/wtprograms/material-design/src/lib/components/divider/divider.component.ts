@@ -1,15 +1,19 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { MdComponent } from '../md.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+} from '@angular/core';
+import { MdComponent } from '../../common/base/md.component';
 
 @Component({
   selector: 'md-divider',
-  template: ``,
-  styleUrl: './divider.component.scss',
+  templateUrl: './divider.component.html',
+  styleUrls: ['./divider.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class.vertical]': 'vertical()',
-  }
+    '[attr.vertical]': 'vertical() ? vertical() : null',
+  },
 })
-export class MdDividerComponent extends MdComponent {
+export class MdDivider extends MdComponent {
   readonly vertical = input(false);
 }

@@ -1,0 +1,28 @@
+@use '../md';
+
+$tokens: (
+  'color': currentColor,
+  'transform': (
+    '': unset,
+    'hover': unset,
+  ),
+);
+
+:host {
+  @include md.declare-tokens($tokens, 'md-comp-tint', true);
+
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--_color);
+  transform: var(--_transform);
+  opacity: 0;
+  pointer-events: none;
+
+  @include md.motion('background-color, transform, opacity');
+
+  &[hovered] {
+    opacity: var(--md-sys-state-hover);
+    --_transform: var(--_transform-hover);
+  }
+}

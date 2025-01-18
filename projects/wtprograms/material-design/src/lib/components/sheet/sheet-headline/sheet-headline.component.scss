@@ -1,0 +1,7 @@
+@use '../../md';
+
+:host {
+  color: var(--md-sys-color-surface-on);
+  gap: 16px;
+  @include md.typescale('headline', 'small');
+}

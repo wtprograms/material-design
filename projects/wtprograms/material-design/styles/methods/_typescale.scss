@@ -3,4 +3,6 @@
   font-size: var(--md-sys-typescale-#{$typescale}-size);
   font-weight: var(--md-sys-typescale-#{$typescale}-weight);
   font-family: var(--md-sys-typescale-#{$typescale}-font);
+  letter-spacing: var(--md-sys-typescale-#{$typescale}-tracking);
+  line-height: var(--md-sys-typescale-#{$typescale}-line-height);
 }

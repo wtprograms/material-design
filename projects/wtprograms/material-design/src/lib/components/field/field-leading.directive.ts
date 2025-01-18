@@ -1,6 +1,7 @@
-import { Directive, ElementRef, inject, input } from '@angular/core';
+import { Directive } from '@angular/core';
+import { MdDirective } from '../../common/base/md.directive';
 
 @Directive({
-  selector: '[mdFieldLeading]'
+  selector: '[mdFieldLeading]',
 })
-export class MdFieldLeadingDirective {}
+export class MdFieldLeadingDirective extends MdDirective {}

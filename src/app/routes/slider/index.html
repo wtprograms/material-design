@@ -1,0 +1,11 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="state.options" [(value)]="state">State</app-select-property>
+    <app-check-property [(checked)]="range">Range</app-check-property>
+    <app-check-property [(checked)]="ticks">Ticks</app-check-property>
+  </app-properties>
+
+  <div class="inline-flex flex-col">
+    <md-slider [state]="state()" [stateMessage]="state() ? 'State text' : undefined" [value]="50" [range]="range()" [max]="10" [ticks]="ticks()"/>
+  </div>
+</app-page>

@@ -1,80 +1,86 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
-  contentChild,
-  effect,
-  ElementRef,
+  ChangeDetectionStrategy,
   inject,
   input,
+  model,
   viewChild,
+  ElementRef,
+  contentChild,
+  effect,
 } from '@angular/core';
-import { MdBadgeUserDirective } from '../../badge/badge-user.directive';
+import { MdNavigationComponent } from '../navigation.component';
 import { MdBadgeComponent } from '../../badge/badge.component';
-import { ButtonType } from '../../button/button.component';
-import { MdEmbeddedButtonModule } from '../../embedded-button/embedded-button.module';
+import { MdEmbeddedBadgeDirective } from '../../badge/embedded-badge.directive';
+import { MdEmbeddedButtonComponent } from '../../embedded-button/embedded-button.component';
 import { MdFocusRingComponent } from '../../focus-ring/focus-ring.component';
 import { MdIconComponent } from '../../icon/icon.component';
-import { MdComponent } from '../../md.component';
 import { MdRippleComponent } from '../../ripple/ripple.component';
-import { MdNavigationComponent } from '../navigation.component';
+import { MdTintComponent } from '../../tint/tint.component';
+import { MdComponent } from '../../../common/base/md.component';
+import { dispatchCloseDialog } from '../../../common/events/dispatch-close-dialog';
 
 @Component({
   selector: 'md-navigation-item',
   templateUrl: './navigation-item.component.html',
-  styleUrl: './navigation-item.component.scss',
+  styleUrls: ['./navigation-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdRippleComponent,
-    MdFocusRingComponent,
+    MdEmbeddedButtonComponent,
     CommonModule,
-    MdEmbeddedButtonModule,
     MdBadgeComponent,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
   ],
   hostDirectives: [
     {
-      directive: MdBadgeUserDirective,
-      inputs: ['badgeDot', 'badgeNumber'],
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
     },
   ],
   host: {
-    '[class.selected]': 'selected()',
-    '[class.disabled]': 'disabled()',
+    '[attr.disabled]': 'disabled() ? "" : null',
+    '[attr.selected]': 'selected() ? "" : null',
+    '(click)': 'click()',
   },
 })
 export class MdNavigationItemComponent extends MdComponent {
-  readonly badgeUser = inject(MdBadgeUserDirective);
-  readonly selected = input(false);
-  readonly type = input<ButtonType>('button');
-  readonly disabled = input(false);
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
+  readonly type = input<string>('button');
   readonly href = input<string>();
   readonly target = input<string>();
-
+  readonly disabled = input(false);
+  readonly selected = model(false);
+  readonly button = viewChild<
+    MdEmbeddedButtonComponent,
+    ElementRef<HTMLElement>
+  >(MdEmbeddedButtonComponent, { read: ElementRef });
   readonly navigation = inject(MdNavigationComponent);
-
-  private readonly _iconChild = contentChild(MdIconComponent, {
-    read: MdIconComponent,
-  });
-  readonly buttonElement = viewChild<ElementRef<HTMLElement>>('button');
+  private readonly _icon = contentChild(MdIconComponent);
 
   constructor() {
     super();
     effect(() => {
-      const dot = this.badgeUser.badgeDot();
-      const number = this.badgeUser.badgeNumber();
-      const iconChild = this._iconChild();
       const layout = this.navigation.layout();
-      if (!iconChild) {
+      const dot = this.embeddedBadge.dot();
+      const text = this.embeddedBadge.text();
+      const icon = this._icon();
+      if (!icon) {
         return;
       }
-
-      if (layout === 'drawer' || this.disabled()) {
-        iconChild.badgeUser.badgeDot.set(false);
-        iconChild.badgeUser.badgeNumber.set(0);
+      if (layout !== 'drawer') {
+        icon.embeddedBadge.dot.set(dot);
+        icon.embeddedBadge.text.set(text);
       } else {
-        iconChild.badgeUser.badgeDot.set(dot);
-        iconChild.badgeUser.badgeNumber.set(number);
+        icon.embeddedBadge.dot.set(false);
+        icon.embeddedBadge.text.set(undefined);
       }
     });
+  }
+
+  click() {
+    dispatchCloseDialog(this.hostElement);
   }
 }

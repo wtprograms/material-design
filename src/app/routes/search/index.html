@@ -1,0 +1,26 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+    <app-check-property [(checked)]="dialog">Dialog</app-check-property>
+    <app-select-property [options]="leading.options" [(value)]="leading">Leading</app-select-property>
+    <app-select-property [options]="trailing.options" [(value)]="trailing">Trailing</app-select-property>
+  </app-properties>
+
+  <md-search [dialog]="dialog()" [(open)]="open">
+    @if (leading() === 'icon') {
+    <md-icon mdSearchLeading>menu</md-icon>
+    } @else if (leading() === 'button') {
+    <md-icon-button mdSearchLeading>menu</md-icon-button>
+    }
+    @if (trailing() === 'icon') {
+    <md-icon mdSearchTrailing>close</md-icon>
+    } @else if (trailing() === 'button') {
+    <md-icon-button mdSearchTrailing>close</md-icon-button>
+    }
+
+    Nostrud consectetur tempor aliqua aliqua nulla eiusmod nulla pariatur magna cupidatat enim. Adipisicing quis ad
+    cillum nostrud. Duis et qui eiusmod deserunt duis excepteur aliquip consequat irure do cillum irure. Amet non
+    eiusmod dolore sunt ut aliqua laborum deserunt in dolore commodo non deserunt. Anim excepteur qui cupidatat aliquip
+    laborum Lorem veniam officia.
+  </md-search>
+</app-page>

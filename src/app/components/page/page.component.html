@@ -1,0 +1,8 @@
+<h1>{{ path() }}</h1>
+<hr>
+<div class="inline-flex gap-4">
+  <ng-content select="app-properties" />
+  <div class="inline-flex flex-col items-start gap-4 grow">
+    <ng-content />
+  </div>
+</div>

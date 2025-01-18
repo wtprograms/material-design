@@ -1,31 +1,21 @@
 import { NgModule } from '@angular/core';
 import { MdListComponent } from './list.component';
-import { MdListItemComponent } from './list-item/list-item.component';
-import { MdDividerComponent } from '../divider/divider.component';
-import { MdListItemLeadingDirective } from './list-item/list-item-leading.directive';
+import { MdListItemSupportingText } from './list-item/list-item-supporting-text/list-item-supporting-text.component';
 import { MdListItemTrailingDirective } from './list-item/list-item-trailing.directive';
-import { MdListItemSupportingTextDirective } from './list-item/list-item-supporting-text.directive';
-import { MdCheckModule } from '../check/check.module';
-import { MdIconButtonModule } from '../icon-button/icon-button.module';
+import { MdListItemComponent } from './list-item/list-item.component';
 
 @NgModule({
   imports: [
-    MdListItemLeadingDirective,
-    MdListItemTrailingDirective,
-    MdListItemSupportingTextDirective,
     MdListComponent,
     MdListItemComponent,
-    MdDividerComponent,
+    MdListItemSupportingText,
+    MdListItemTrailingDirective,
   ],
   exports: [
-    MdListItemLeadingDirective,
-    MdListItemTrailingDirective,
-    MdListItemSupportingTextDirective,
     MdListComponent,
     MdListItemComponent,
-    MdDividerComponent,
-    MdCheckModule,
-    MdIconButtonModule
+    MdListItemSupportingText,
+    MdListItemTrailingDirective,
   ],
 })
 export class MdListModule {}

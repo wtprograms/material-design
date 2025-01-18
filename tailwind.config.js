@@ -5,7 +5,5 @@ const md = require("./projects/wtprograms/material-design/tailwind");
  */
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
-  important: true,
   theme: md.theme,
-  plugins: [md.plugins.typescale],
 };

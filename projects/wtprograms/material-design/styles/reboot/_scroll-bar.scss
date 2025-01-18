@@ -1,0 +1,25 @@
+@use '../methods';
+
+@mixin reboot {
+  * {
+    // WebKit browsers
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: methods.mix(var(--md-sys-color-surface-dim), var(--md-sys-color-surface-on), 0.1);
+      border-radius: 10px;
+      border: 3px solid transparent;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: methods.mix(var(--md-sys-color-surface-dim), var(--md-sys-color-surface-on), 0.2)
+    }
+  }
+}

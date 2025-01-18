@@ -1,0 +1,8 @@
+<md-text-field [(value)]="text" [variant]="variant()" [disabled]="disabled()" [state]="state()" [stateMessage]="stateMessage()"
+  [label]="label()" [prefixText]="prefixText()" [suffixText]="suffixText()" [manualPopulated]="!!value() && value()!.length > 0" (keyDown)="keyDown($event)">
+  <ng-content select="[mdFieldLeading]" ngProjectAs="[mdFieldLeading]"></ng-content>
+  <ng-content select="[mdFieldTrailing]" ngProjectAs="[mdFieldTrailing]"></ng-content>
+  <ng-content select="md-field-supporting-text" ngProjectAs="md-field-supporting-text"></ng-content>
+  <ng-content select="md-list-item" ngProjectAs="md-list-item" />
+  <ng-content select="md-chip" />
+</md-text-field>

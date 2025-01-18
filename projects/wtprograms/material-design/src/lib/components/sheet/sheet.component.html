@@ -1,21 +1,14 @@
-<ng-template #actions>
-  <ng-content select="[mdSheetAction]" />
-</ng-template>
-<div #scrim class="scrim" (click)="scrimClick()"></div>
-<div #containerHost class="container-host">
+<dialog #dialog>
+  <div #scrim class="scrim" (click)="scrimClick()"></div>
   <div #container class="container">
     <div class="body">
-      <div class="header">
-        <ng-content select="[mdSheetIcon]" />
-        <ng-content select="[mdSheetHeadline]" />
-      </div>
-      <ng-content select="[mdSheetSupportingText]" />
-      <div #content class="content">
+      <ng-content select="md-sheet-headline" />
+      <div class="content">
         <ng-content />
       </div>
     </div>
     <div class="actions">
-      <ng-container *ngTemplateOutlet="actions" />
+      <ng-content select="[mdSheetAction]" />
     </div>
   </div>
-</div>
+</dialog>

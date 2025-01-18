@@ -1,7 +1,7 @@
 @use 'to-typescale';
 
 $tokens: (
-  'large': to-typescale.to-typescale('label-large',  0.875rem, 'plain', 'medium'),
-  'medium': to-typescale.to-typescale('label-medium',  0.75rem, 'plain', 'medium'),
-  'small': to-typescale.to-typescale('label-small', 0.6875rem, 'plain', 'medium')
+  'large': to-typescale.to-typescale('label-large', 'plain', 'medium', 1.25, 0.875, 0.00625),
+  'medium': to-typescale.to-typescale('label-medium', 'plain', 'medium', 1, 0.75, 0.03125),
+  'small': to-typescale.to-typescale('label-small', 'plain', 'medium', 1, 0.6875, 0.03125)
 );

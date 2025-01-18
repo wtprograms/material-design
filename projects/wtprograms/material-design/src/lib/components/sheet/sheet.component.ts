@@ -1,49 +1,69 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, model, viewChild } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { CommonModule, isPlatformServer } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  contentChildren,
+  effect,
+  ElementRef,
+  input,
+  model,
+  viewChild,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { skip, tap } from 'rxjs';
-import { DURATION } from '../../common/motion/duration';
-import { EASING } from '../../common/motion/easing';
-
-export type SheetSide = 'top' | 'bottom' | 'start' | 'end';
+import { filter, tap } from 'rxjs';
+import { SheetDock } from './sheet-dock';
+import { MdButtonComponent } from '../button/button.component';
+import { MdComponent } from '../../common/base/md.component';
+import { EASING, DURATION } from '../../common/motion';
 
 @Component({
-  selector: 'dialog[mdSheet]',
+  selector: 'md-sheet',
   templateUrl: './sheet.component.html',
-  styleUrl: './sheet.component.scss',
+  styleUrls: ['./sheet.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
   host: {
-    '[class]': 'side()',
+    '[attr.open]': 'open() ? "" : null',
+    '[attr.dock]': 'dock()',
   },
 })
-export class MdSheetComponent extends MdComponent<HTMLDialogElement> {
+export class MdSheetComponent extends MdComponent {
   readonly open = model(false);
-  readonly side = input<SheetSide>('start');
-  readonly embedded = input(false);
-
-  private readonly _contentElement =
-    viewChild<ElementRef<HTMLElement>>('content');
-  private readonly _containerHostElement =
-    viewChild<ElementRef<HTMLElement>>('containerHost');
-  private readonly _scrimElement = viewChild<ElementRef<HTMLElement>>('scrim');
+  readonly dock = input<SheetDock>('start');
+  private readonly _scrim =
+    viewChild.required<ElementRef<HTMLDivElement>>('scrim');
+  private readonly _dialog =
+    viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
+  private readonly _container =
+    viewChild.required<ElementRef<HTMLDivElement>>('container');
+  readonly actions = contentChildren(MdButtonComponent);
 
   constructor() {
     super();
+    this.hostElement.addEventListener('closedialog', () =>
+      this.open.set(false)
+    );
+    effect(() => {
+      const actions = this.actions();
+      for (const action of actions) {
+        if (action.hostElement.getAttribute('mdSheetAction') === 'submit') {
+          action.variant.set('filled');
+        } else if (
+          action.hostElement.getAttribute('mdSheetAction') === 'cancel'
+        ) {
+          action.variant.set('outlined');
+        }
+      }
+      const cancelAction = actions.find(
+        (x) => x.hostElement.getAttribute('mdSheetAction') === 'cancel'
+      );
+      cancelAction?.hostElement.addEventListener('click', () =>
+        this.open.set(false)
+      );
+    });
     toObservable(this.open)
       .pipe(
-        skip(1),
-        tap((open) => {
-          if (isPlatformServer(this._platformId)) {
-            return;
-          }
-          this._document.body.style.overflow = open ? 'hidden' : '';
-          this.animate(open);
-          if (open) {
-            this._contentElement()!.nativeElement!.scrollTop = 0;
-          }
-        })
+        filter(() => isPlatformBrowser(this.platformId)),
+        tap((open) => this.animate(open))
       )
       .subscribe();
   }
@@ -52,50 +72,97 @@ export class MdSheetComponent extends MdComponent<HTMLDialogElement> {
     this.open.set(false);
   }
 
-  private async animate(opened: boolean) {
+  private async animate(open: boolean) {
+    if (open) {
+      this.document.body.style.overflow = 'hidden';
+      this._dialog().nativeElement.showModal();
+    }
+
+    const promises = [
+      this.animateScrim(open),
+      this.animateDialog(open),
+      this.animateContainer(open),
+    ];
+
+    await Promise.all(promises);
+
+    if (!open) {
+      this.document.body.style.overflow = '';
+      this._dialog().nativeElement.close();
+    }
+  }
+
+  private async animateScrim(open: boolean) {
     const timings: OptionalEffectTiming = {
       easing: EASING.emphasizedDecelerate,
       duration: DURATION.long3,
       fill: 'forwards',
     };
 
-    const func =
-      this.side() === 'top' || this.side() === 'bottom'
-        ? 'translateY'
-        : 'translateX';
-    const amount =
-      this.side() === 'top' || this.side() === 'start' ? '-100%' : '100%';
-    const transform = [`${func}(${amount})`, `${func}(0)`];
-
-    const containerStyle: any = {
-      transform,
-    };
-    const scrimStyle: any = {
+    const style = {
       opacity: ['0', '0.32'],
     };
 
-    if (!opened) {
-      containerStyle.transform = containerStyle.transform.reverse();
-      scrimStyle.opacity = scrimStyle.opacity.reverse();
+    if (!open) {
+      style.opacity = style.opacity.reverse();
       timings.easing = EASING.emphasizedAccelerate;
       timings.duration = DURATION.short4;
     }
 
-    if (opened) {
-      this.hostElement.style.display = 'inline-flex';
+    await this._scrim()
+      .nativeElement.animate(style, timings)
+      .finished.catch(() => {});
+  }
+
+  private async animateDialog(open: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
+
+    const style = {
+      opacity: ['0', '1'],
+    };
+
+    if (!open) {
+      style.opacity = style.opacity.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
     }
 
-    this._scrimElement()!.nativeElement.animate(scrimStyle, timings);
-    const animation = this._containerHostElement()!.nativeElement.animate(
-      containerStyle,
-      timings
-    );
-    try {
-      await animation.finished;
-    } catch {}
+    await this._dialog()
+      .nativeElement.animate(style, timings)
+      .finished.catch(() => {});
+  }
 
-    if (!opened) {
-      this.hostElement.style.display = '';
+  private async animateContainer(open: boolean) {
+    const timings: OptionalEffectTiming = {
+      easing: EASING.emphasizedDecelerate,
+      duration: DURATION.long3,
+      fill: 'forwards',
+    };
+
+    const axis = this.dock() === 'top' || this.dock() === 'bottom' ? 'Y' : 'X';
+    const offset =
+      this.dock() === 'top' || this.dock() === 'start' ? -100 : 100;
+
+    const style = {
+      transform: [`translate${axis}(${offset}%)`, `translate${axis}(0)`],
+    };
+
+    if (!open) {
+      style.transform = style.transform.reverse();
+      timings.easing = EASING.emphasizedAccelerate;
+      timings.duration = DURATION.short4;
+    }
+
+    const animation = this._container().nativeElement.animate(style, timings);
+
+    await animation.finished.catch(() => {});
+
+    if (!open) {
+      animation.cancel();
     }
   }
 }

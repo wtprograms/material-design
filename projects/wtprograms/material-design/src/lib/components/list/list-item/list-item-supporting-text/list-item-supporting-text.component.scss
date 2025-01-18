@@ -1,0 +1,5 @@
+@use '../../../md';
+
+:host {
+  @include md.typescale('body', 'medium');
+}

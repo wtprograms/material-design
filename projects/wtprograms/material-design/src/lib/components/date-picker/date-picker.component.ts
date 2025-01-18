@@ -1,47 +1,32 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   effect,
-  ElementRef,
   forwardRef,
-  inject,
   input,
   model,
   signal,
   viewChild,
 } from '@angular/core';
-import { MdValueAccessorComponent } from '../md-value-accessor.component';
-import { MdFieldUserDirective } from '../field/field-user.directive';
-import { MdIconButtonComponent } from '../icon-button/icon-button.component';
-import { CommonModule, DatePipe } from '@angular/common';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import {
-  combineLatest,
-  fromEvent,
-  map,
-  merge,
-  skip,
-  startWith,
-  tap,
-} from 'rxjs';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DURATION } from '../../common/motion/duration';
-import { EASING } from '../../common/motion/easing';
-import { openClose } from '../../common/rxjs/open-close';
-import { MdButtonModule } from '../button/button.module';
-import { MdDialogModule } from '../dialog/dialog.module';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { filter, tap, delay } from 'rxjs';
 import { MdFieldModule } from '../field/field.module';
-import { MdIconComponent } from '../icon/icon.component';
 import { MdListModule } from '../list/list.module';
-import { MdPopoverComponent } from '../popover/popover.component';
-
-export type DatePickerInputVariant = 'embedded' | 'dropdown' | 'dialog';
-
-export type DatePickerValueType =
-  | string
-  | undefined
-  | [string | undefined, string | undefined];
+import { DatePickerLayout } from './date-picker-layout';
+import { MdButtonComponent } from '../button/button.component';
+import { MdFieldTrailingDirective } from '../field/field-trailing.directive';
+import { FieldVariant } from '../field/field-variant';
+import { MdIconButtonComponent } from '../icon-button/icon-button.component';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdListComponent } from '../list/list.component';
+import { MdTooltipComponent } from '../tooltip/tooltip.component';
+import { MdDialogModule } from '../dialog/dialog.module';
+import { MdValueAccessorComponent } from '../../common/base/value-accessor/md-value-accessor.component';
+import { durationToMilliseconds } from '../../common/motion';
 
 interface Day {
   day: number;
@@ -49,32 +34,24 @@ interface Day {
   date: Date;
 }
 
+const NOW = new Date();
+const TODAY = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
+
 @Component({
   selector: 'md-date-picker',
   templateUrl: './date-picker.component.html',
-  styleUrl: './date-picker.component.scss',
+  styleUrls: ['./date-picker.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdIconButtonComponent,
-    MdButtonModule,
-    MdIconComponent,
     CommonModule,
-    MdListModule,
     MdFieldModule,
+    MdListModule,
+    MdIconButtonComponent,
+    MdButtonComponent,
+    MdTooltipComponent,
     MdDialogModule,
-    MdPopoverComponent,
-    FormsModule,
-    DatePipe,
+    MdIconComponent,
   ],
-  hostDirectives: [
-    {
-      directive: MdFieldUserDirective,
-      inputs: ['variant', 'label', 'prefix', 'suffix', 'supportingText'],
-    },
-  ],
-  host: {
-    '[class]': 'inputVariant()',
-  },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -83,147 +60,47 @@ interface Day {
     },
   ],
 })
-export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerValueType> {
-  readonly fieldUser = inject(MdFieldUserDirective);
-  readonly range = input(false);
-  readonly inputVariant = input<DatePickerInputVariant>('dropdown');
+export class MdDatePickerComponent extends MdValueAccessorComponent<string> {
+  readonly variant = input<FieldVariant>('filled');
+  readonly layout = input<DatePickerLayout>('field');
+  readonly stateText = model<string>();
+  readonly label = input<string>();
+  readonly prefixText = input<string>();
+  readonly suffixText = input<string>();
+  readonly selectedValue = model<string>();
   readonly open = model(false);
-  readonly selectedValue = model<DatePickerValueType>();
   readonly locale = input('en');
+  readonly today = TODAY;
+  readonly min = input<string>();
+  readonly max = input<string>();
 
-  readonly populated = toSignal(
-    combineLatest({
-      focused: merge(
-        fromEvent(this.hostElement, 'focus').pipe(
-          map(() => true),
-          startWith(false)
-        ),
-        fromEvent(this.hostElement, 'blur').pipe(
-          map(() => false),
-          startWith(false)
-        )
-      ),
-      value: toObservable(this.value),
-      open: toObservable(this.open),
-    }).pipe(map(({ focused, value, open }) => focused || !!value || open)),
-    {
-      initialValue: false,
-    }
-  );
+  readonly trailing = contentChild(MdFieldTrailingDirective);
 
-  private readonly _monthsDropdown =
-    viewChild<ElementRef<HTMLElement>>('monthsDropdown');
-  private readonly _yearsDropdown =
-    viewChild<ElementRef<HTMLElement>>('yearsDropdown');
+  readonly populated = computed(() => !!this.value() || this.open());
 
-  readonly monthsOpen = signal(false);
-  readonly monthsOpenCloseState = toSignal(
-    openClose(
-      toObservable(this.monthsOpen).pipe(
-        skip(1),
-        tap((open) => {
-          if (open) {
-            this.yearsOpen.set(false);
-          }
-        }),
-        tap((open) =>
-          this.animate(
-            this._monthsDropdown()!.nativeElement,
-            open,
-            'inline-flex'
-          )
-        )
-      )
-    )
-  );
+  readonly monthsList = viewChild<MdListComponent>('monthsList');
+  readonly yearsList = viewChild<MdListComponent>('yearsList');
 
-  readonly yearsOpen = signal(false);
-  readonly yearsOpenCloseState = toSignal(
-    openClose(
-      toObservable(this.yearsOpen).pipe(
-        skip(1),
-        tap((open) => {
-          if (open) {
-            this.monthsOpen.set(false);
-          }
-        }),
-        tap((open) =>
-          this.animate(this._yearsDropdown()!.nativeElement, open, 'grid')
-        )
-      )
-    )
-  );
-
-  get fromValueAsDate() {
-    const value = this.value();
-    if (this.range()) {
-      return value?.[0] ? new Date(value[0]) : undefined;
-    } else {
-      return value ? new Date(value as string) : undefined;
-    }
+  get valueAsDate() {
+    return this.value() ? new Date(this.value()!) : undefined;
   }
-  set fromValueAsDate(date: Date | undefined) {
-    if (this.range()) {
-      this.value.update((value) => [date?.toUTCString(), value?.[1]]);
-    } else {
-      this.value.set(date?.toUTCString());
-    }
-    this.month.set(date?.getMonth() ?? this.today.getMonth());
-    this.year.set(date?.getFullYear() ?? this.today.getFullYear());
+  set valueAsDate(date: Date | undefined) {
+    this.value.set(date?.toISOString() ?? undefined);
   }
 
-  get toValueAsDate() {
-    const value = this.value();
-    if (this.range()) {
-      return value?.[1] ? new Date(value[1]) : undefined;
-    } else {
-      return value ? new Date(value as string) : undefined;
-    }
+  get selectedValueAsDate() {
+    return this.selectedValue() ? new Date(this.selectedValue()!) : undefined;
   }
-  set toValueAsDate(date: Date | undefined) {
-    if (this.range()) {
-      this.value.update((value) => [value?.[0], date?.toUTCString()]);
-    } else {
-      this.value.set(date?.toUTCString());
-    }
-    this.month.set(date?.getMonth() ?? this.today.getMonth());
-    this.year.set(date?.getFullYear() ?? this.today.getFullYear());
+  set selectedValueAsDate(date: Date | undefined) {
+    this.selectedValue.set(date?.toISOString() ?? undefined);
   }
 
-  get fromSelectedValueAsDate() {
-    const selectedValue = this.selectedValue();
-    if (this.range()) {
-      return selectedValue?.[0] ? new Date(selectedValue[0]) : undefined;
-    } else {
-      return selectedValue ? new Date(selectedValue as string) : undefined;
-    }
-  }
-  set fromSelectedValueAsDate(date: Date | undefined) {
-    if (this.range()) {
-      this.selectedValue.update((value) => [date?.toUTCString(), value?.[1]]);
-    } else {
-      this.selectedValue.set(date?.toUTCString());
-    }
-    this.month.set(date?.getMonth() ?? this.today.getMonth());
-    this.year.set(date?.getFullYear() ?? this.today.getFullYear());
+  get minAsDate() {
+    return this.min() ? new Date(this.min()!) : undefined;
   }
 
-  get toSelectedValueAsDate() {
-    const selectedValue = this.selectedValue();
-    if (this.range()) {
-      return selectedValue?.[1] ? new Date(selectedValue[1]) : undefined;
-    } else {
-      return selectedValue ? new Date(selectedValue as string) : undefined;
-    }
-  }
-  set toSelectedValueAsDate(date: Date | undefined) {
-    if (this.range()) {
-      this.selectedValue.update((value) => [value?.[0], date?.toUTCString()]);
-    } else {
-      this.selectedValue.set(date?.toUTCString());
-    }
-    this.month.set(date?.getMonth() ?? this.today.getMonth());
-    this.year.set(date?.getFullYear() ?? this.today.getFullYear());
+  get maxAsDate() {
+    return this.max() ? new Date(this.max()!) : undefined;
   }
 
   readonly months = computed(() => {
@@ -234,16 +111,17 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     }));
   });
 
-  readonly month = signal(this.today.getMonth());
+  readonly month = signal(TODAY.getMonth());
   readonly monthText = computed(() => {
     const month = this.month();
-    const date = this.fromSelectedValueAsDate ?? new Date(this.today);
+    const date = this.selectedValueAsDate ?? new Date(TODAY);
     date.setMonth(month);
     const dateString = date.toLocaleDateString(this.locale(), {
       month: 'short',
     });
     return dateString;
   });
+  readonly monthsOpen = signal(false);
 
   get years() {
     const startYear = 1930;
@@ -254,16 +132,17 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     );
   }
 
-  readonly year = signal(this.today.getFullYear());
+  readonly year = signal(TODAY.getFullYear());
   readonly yearText = computed(() => {
     const year = this.year();
-    const date = this.fromSelectedValueAsDate ?? new Date(this.today);
+    const date = this.selectedValueAsDate ?? new Date(TODAY);
     date.setFullYear(year);
     const dateString = date.toLocaleDateString(this.locale(), {
       year: 'numeric',
     });
     return dateString;
   });
+  readonly yearsOpen = signal(false);
 
   readonly dayNames = computed(() => {
     const formatter = new Intl.DateTimeFormat(this.locale(), {
@@ -274,10 +153,8 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     );
   });
 
-  readonly days = computed(() => {
-    const month = this.month();
-    const year = this.year();
-    const date = new Date(year, month);
+  readonly calendarDays = computed(() => {
+    const date = new Date(this.year(), this.month());
     const firstDayOfMonth = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -308,27 +185,87 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     return calendarDays;
   });
 
-  get today() {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-
   constructor() {
     super();
+    toObservable(this.yearsOpen)
+      .pipe(
+        filter(() => isPlatformBrowser(this.platformId)),
+        tap((open) => {
+          if (open && this.monthsOpen()) {
+            this.monthsOpen.set(false);
+          }
+        }),
+        delay(durationToMilliseconds('short4')),
+        tap(() => {
+          const element =
+            this.yearsList()?.hostElement.querySelector('[selected]');
+          element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        })
+      )
+      .subscribe();
+    toObservable(this.monthsOpen)
+      .pipe(
+        filter(() => isPlatformBrowser(this.platformId)),
+        tap((open) => {
+          if (open && this.yearsOpen()) {
+            this.yearsOpen.set(false);
+          }
+        }),
+        filter((x) => x),
+        delay(durationToMilliseconds('short4')),
+        tap(() => {
+          const element =
+            this.yearsList()?.hostElement.querySelector('[selected]');
+          element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        })
+      )
+      .subscribe();
     effect(() => {
-      this.open();
-      this.month();
-      this.selectedValue();
-      this.value();
-      this.monthsOpen.set(false);
+      const min = this.minAsDate;
+      const max = this.maxAsDate;
+      const selectedValue = this.selectedValueAsDate;
+      if (min && selectedValue && selectedValue < min) {
+        this.selectedValueAsDate = undefined;
+      }
+      if (max && selectedValue && selectedValue > max) {
+        this.selectedValueAsDate = undefined;
+      }
     });
     effect(() => {
-      this.open();
-      this.year();
-      this.selectedValue();
-      this.value();
+      const open = this.open();
+      if (open) {
+        return;
+      }
+      this.month.set(this.selectedValueAsDate?.getMonth() ?? TODAY.getMonth());
+      this.monthsOpen.set(false);
+      this.year.set(
+        this.selectedValueAsDate?.getFullYear() ?? TODAY.getFullYear()
+      );
       this.yearsOpen.set(false);
     });
+  }
+
+  bodyClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'BUTTON') {
+      return;
+    }
+    this.open.set(true);
+  }
+
+  setMonth(month: number) {
+    this.month.set(month);
+    this.monthsOpen.set(false);
+  }
+
+  setYear(year: number) {
+    this.year.set(year);
+    this.yearsOpen.set(false);
+  }
+
+  goToToday() {
+    this.month.set(TODAY.getMonth());
+    this.year.set(TODAY.getFullYear());
   }
 
   isDateEqual(date1: Date | undefined, date2: Date | undefined) {
@@ -342,69 +279,33 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     );
   }
 
-  isDateSelected(date: Date) {
-    return (
-      this.isDateEqual(this.fromSelectedValueAsDate, date) ||
-      this.isDateEqual(this.toSelectedValueAsDate, date)
-    );
+  isInRange(date: Date) {
+    const min = this.minAsDate;
+    const max = this.maxAsDate;
+    if (min && date < min) {
+      return false;
+    }
+    if (max && date > max) {
+      return false;
+    }
+    return true;
   }
 
-  private _isSelectingTo = false;
+  isYearInRange(year: number) {
+    const date = new Date(year, 0, 1);
+    return this.isInRange(date);
+  }
+
+  isDateSelected(date: Date) {
+    const selectedDate = this.selectedValueAsDate;
+    const result = this.isDateEqual(selectedDate, date);
+    return result;
+  }
+
   select(date: Date) {
+    this.selectedValueAsDate = date;
     this.month.set(date.getMonth());
     this.year.set(date.getFullYear());
-    if (!this.range()) {
-      this.fromSelectedValueAsDate = date;
-      if (this.inputVariant() === 'embedded') {
-        this.fromValueAsDate = this.fromSelectedValueAsDate;
-      }
-    } else {
-      if (!this._isSelectingTo) {
-        this.fromSelectedValueAsDate = date;
-        this.toSelectedValueAsDate = undefined;
-        if (this.inputVariant() === 'embedded') {
-          this.fromValueAsDate = this.fromSelectedValueAsDate;
-          this.toValueAsDate = this.toSelectedValueAsDate;
-        }
-        this._isSelectingTo = true;
-      } else {
-        if (date < this.fromSelectedValueAsDate!) {
-          this._isSelectingTo = false;
-          this.select(date);
-          return;
-        }
-        this.toSelectedValueAsDate = date;
-        if (this.inputVariant() === 'embedded') {
-          this.toValueAsDate = this.toSelectedValueAsDate;
-        }
-        this._isSelectingTo = false;
-      }
-    }
-  }
-
-  todayClick() {
-    this.month.set(this.today.getMonth());
-    this.year.set(this.today.getFullYear());
-  }
-
-  selectMonth(index: number) {
-    this.month.set(index);
-    this.monthsOpen.set(false);
-  }
-
-  selectYear(index: number) {
-    this.year.set(index);
-    this.yearsOpen.set(false);
-  }
-
-  clear() {
-    this.selectedValue.set(undefined);
-    this.value.set(undefined);
-  }
-
-  cancel() {
-    this.selectedValue.set(this.value());
-    this.open.set(false);
   }
 
   okay() {
@@ -412,61 +313,14 @@ export class MdDatePickerComponent extends MdValueAccessorComponent<DatePickerVa
     this.open.set(false);
   }
 
-  inRange(date: Date) {
-    if (!this.fromSelectedValueAsDate || !this.toSelectedValueAsDate) {
-      return false;
-    }
-    return (
-      date >= this.fromSelectedValueAsDate && date <= this.toSelectedValueAsDate
-    );
+  cancel() {
+    this.selectedValue.set(this.value());
+    this.open.set(false);
   }
 
-  bodyClick() {
-    this.open.set(true);
-  }
-
-  private getHeight(dropdown: HTMLElement) {
-    dropdown.classList.add('measure');
-    const height = dropdown.offsetHeight;
-    dropdown.classList.remove('measure');
-    return height;
-  }
-
-  private _animation?: Animation;
-  private async animate(dropdown: HTMLElement, open: boolean, display: string) {
-    const timings: OptionalEffectTiming = {
-      easing: EASING.standardDecelerate,
-      duration: DURATION.short4,
-      fill: 'forwards',
-    };
-
-    if (open) {
-      dropdown.style.display = display;
-    }
-
-    const height = this.getHeight(dropdown);
-    const style: any = {
-      opacity: ['0', '1'],
-      height: ['0px', `${height}px`],
-    };
-
-    if (!open) {
-      style.height = style.height.reverse();
-      style.opacity = style.opacity.reverse();
-      timings.easing = EASING.standardAccelerate;
-      timings.duration = DURATION.short3;
-    }
-
-    this._animation = dropdown.animate(style, timings);
-    try {
-      await this._animation.finished;
-    } catch {}
-    dropdown.style.height = open ? 'auto' : '0px';
-    const item = dropdown.querySelector('.current');
-    item?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
-    if (!open) {
-      dropdown.style.display = 'none';
-    }
+  reset() {
+    this.value.set(undefined);
+    this.selectedValue.set(undefined);
+    this.open.set(false);
   }
 }

@@ -1,53 +1,116 @@
 @use '../../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-on),
+  'icon-filled': 0,
+  'background-color': transparent,
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-primary),
+    'icon-filled': 1,
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+    ),
+  ),
+  'primary': (
+    'flex-direction': column,
+    'gap': 4px,
+  ),
+  'secondary': (
+    'flex-direction': row,
+    'gap': 8px,
+  ),
+);
+
+$layouts: ('primary', 'secondary');
 
 :host {
-  --_color: currentColor;
-  -webkit-tap-highlight-color: transparent;
-  display: inline-flex;
-  position: relative;
-  height: 64px;
-  flex-shrink: 0;
-  place-content: center;
-  place-items: center;
-  gap: 8px;
-  user-select: none;
-  outline: none;
-  padding-inline: 24px;
-  color: var(--md-sys-color-surface-variant-on);
+  @include md.declare-tokens($tokens, 'md-comp-tab', true);
+  --_current-color: currentColor;
 
-  @include md.typescale('label', 'large');
-  @include md.motion('background-color', 'color');
-
-  [mdEmbeddedButton] {
-    flex-direction: column;
-  }
-
-  ::ng-deep [mdButtonLeading],
-  ::ng-deep [mdButtonTrailing] {
-    --md-comp-icon-size: 18;
-    max-height: 18px;
-  }
-
-  &.selected {
-    color: var(--md-sys-color-primary);
-    ::ng-deep md-icon {
-      --md-comp-icon-filled: 1;
+  @each $layout in $layouts {
+    &[layout='#{$layout}'] {
+      @include md.set-tokens(map.get($tokens, $layout), $layout);
     }
   }
 
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
+  &[selected] {
+    @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+
+    &[disabled] {
+      @include md.set-tokens(
+        map.get(map.get($tokens, 'selected'), 'disabled'),
+        'selected-disabled'
+      );
+    }
+  }
+
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+  }
+
+  --_current-color: currentColor;
+  position: relative;
+  display: inline-flex;
+  flex-direction: var(--_flex-direction);
+  background-color: var(--_background-color);
+  color: var(--_color);
+  text-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
+  outline: none;
+  user-select: none;
+  gap: var(--_gap);
+  flex-grow: 1;
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color');
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 4px 0 4px 4px;
+    border-radius: inherit;
+    outline: 0;
+    cursor: pointer;
+  }
+
+  &:has(
+      > [mdEmbeddedButton]:hover,
+      > [mdEmbeddedButton]:focus-visible,
+      > input:hover,
+      > input:focus-visible
+    ) {
+    ::ng-deep md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+    }
+  }
+
+  ::ng-deep md-icon {
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-color: var(--_current-color);
   }
-}
 
-:host-context(md-tabs.secondary) {
-  height: 48px;
-  [mdEmbeddedButton] {
-    flex-direction: row;
+  [mdEmbeddedButton] > md-badge,
+  > md-badge {
+    margin-inline-start: -4px;
+  }
+
+  .contents {
+    display: inherit;
+    flex-direction: inherit;
+    align-items: inherit;
+    gap: inherit;
+    align-self: center;
   }
 }

@@ -1,0 +1,68 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="variant.options" [(value)]="variant">Variant</app-select-property>
+    <app-select-property [options]="type.options" [(value)]="type">Type</app-select-property>
+    <app-select-property [options]="leading.options" [(value)]="leading">Leading</app-select-property>
+    <app-select-property [options]="trailing.options" [(value)]="trailing">Trailing</app-select-property>
+    <app-select-property [options]="state.options" [(value)]="state">State</app-select-property>
+    <app-select-property [options]="label.options" [(value)]="label">Label</app-select-property>
+    <app-check-property [(checked)]="counter">Counter</app-check-property>
+    <app-check-property [(checked)]="supportingText">Supporting Text</app-check-property>
+    <app-check-property [(checked)]="prefixText">Prefix</app-check-property>
+    <app-check-property [(checked)]="suffixText">Suffix</app-check-property>
+  </app-properties>
+
+  <md-drop-down-field [variant]="variant()" [state]="state()" [stateMessage]="state() ? 'State text' : undefined"
+    [label]="labelText()" [prefixText]="prefixText() ? 'Prefix' : undefined"
+    [suffixText]="suffixText() ? 'Suffix' : undefined" class="w-full">
+    @if (leading() === 'icon') {
+    <md-icon mdFieldLeading>home</md-icon>
+    } @else if (leading() === 'image') {
+    <img mdFieldLeading src="https://placehold.co/600x400" />
+    } @else if (leading() === 'button') {
+    <md-icon-button mdFieldLeading>home</md-icon-button>
+    }
+
+    @if (trailing() === 'icon') {
+    <md-icon mdFieldTrailing>home</md-icon>
+    } @else if (trailing() === 'image') {
+    <img mdFieldTrailing src="https://placehold.co/600x400" />
+    } @else if (trailing() === 'button') {
+    <md-icon-button mdFieldTrailing>home</md-icon-button>
+    } @if (supportingText()) {
+    <md-field-supporting-text>Supporting text</md-field-supporting-text>
+    }
+
+    <md-list-item>None</md-list-item>
+    <md-list-item value="Item 1">Item 1</md-list-item>
+    <md-list-item value="Item 2">Item 2</md-list-item>
+    <md-list-item value="Item 3">Item 3</md-list-item>
+  </md-drop-down-field>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="inline-flex flex-col items-start gap-4">
+    <md-drop-down-field formControlName="firstName" label="First name">
+      <md-list-item>None</md-list-item>
+      <md-list-item value="Willem">Willem</md-list-item>
+      <md-list-item value="Richard">Richard</md-list-item>
+      <md-list-item value="Leonard">Leonard</md-list-item>
+      <md-list-item value="John">John</md-list-item>
+      <md-list-item value="Andrew">Andrew</md-list-item>
+      <md-list-item value="Paul">Paul</md-list-item>
+      <md-list-item value="Louis">Louis</md-list-item>
+      <md-list-item value="Clark">Clark</md-list-item>
+      <md-list-item value="Andy">Andy</md-list-item>
+    </md-drop-down-field>
+    <md-drop-down-field #ddf formControlName="lastName" label="Last name">
+      <md-drop-down-field-selected>
+        {{ ddf.value()?.toString()?.toLowerCase() }}
+      </md-drop-down-field-selected>
+      <md-list-item>None</md-list-item>
+      <md-list-item value="Toerien">Toerien</md-list-item>
+      <md-list-item value="Kirton">Kirton</md-list-item>
+      <md-list-item value="Balley">Balley</md-list-item>
+    </md-drop-down-field>
+    <md-button type="submit" [disabled]="form.signals.invalid()">Submit</md-button>
+  </form>
+
+  {{ form.signals.invalid()}}
+</app-page>

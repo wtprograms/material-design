@@ -1,0 +1,35 @@
+@use 'str-replace';
+@use 'sass:meta';
+@use 'sass:string';
+
+@mixin set-tokens($tokens, $prefix: '') {
+  @include _set-tokens($tokens, '_' + $prefix, $prefix);
+}
+
+@mixin _set-tokens($tokens, $prefix, $top-prefix) {
+  @each $key, $value in $tokens {
+    @if ($value != ()) {
+      $prefix-key: if(
+        $prefix == '_',
+        '#{$prefix}#{$key}',
+        '#{$prefix}-#{$key}'
+      );
+      $token-name: if($key == '', $prefix, $prefix-key);
+      @if meta.type-of($value) == 'map' {
+        @include _set-tokens($value, $token-name, $top-prefix);
+      } @else {
+        $prefix-key: str-replace.str-replace(
+          $prefix-key,
+          $top-prefix + '-',
+          ''
+        );
+        $prefix-key: if(
+          string.slice($prefix-key, string.length($prefix-key), -1) == '-',
+          string.slice($prefix-key, 0, -2),
+          $prefix-key
+        );
+        --#{$prefix-key}: var(--#{$token-name});
+      }
+    }
+  }
+}

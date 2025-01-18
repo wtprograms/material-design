@@ -1,71 +1,131 @@
 @use '../../md';
+@use 'sass:map';
+
+$tokens: (
+  'background-color': transparent,
+  'color': var(--md-sys-color-surface-on),
+  'addon-color': var(--md-sys-color-surface-variant-on),
+  'icon-filled': 0,
+  'disabled': (
+    'background-color': transparent,
+    'color': var(--md-sys-color-disabled-color),
+    'addon-color': var(--md-sys-color-disabled-color),
+  ),
+  'selected': (
+    'background-color': var(--md-sys-color-secondary-container),
+    'color': var(--md-sys-color-secondary-container-on),
+    'addon-color': var(--md-sys-color-secondary-container-on),
+    'icon-filled': 1,
+    'disabled': (
+      'background-color': var(--md-sys-color-disabled-background),
+      'color': var(--md-sys-color-disabled-color),
+      'addon-color': var(--md-sys-color-disabled-color),
+    ),
+  ),
+);
 
 :host {
-  --_color: currentColor;
-  -webkit-tap-highlight-color: transparent;
-  display: inline-flex;
-  position: relative;
-  height: 48px;
-  flex-shrink: 0;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
-  outline: none;
-  padding-inline: 12px;
+  @include md.declare-tokens($tokens, 'md-comp-menu-item', true);
 
-  @include md.typescale('label', 'large');
-  @include md.motion('background-color', 'border-color', 'color');
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
 
-  .shortcut {
-    @include md.typescale('label', 'small');
+    img {
+      opacity: 0.5;
+    }
   }
 
-  .leading {
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+  }
+
+  &[selected] {
+    @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+
+    &[disabled] {
+      @include md.set-tokens(
+        map.get($tokens, 'selected', 'disabled'),
+        'selected-disabled'
+      );
+    }
+  }
+
+  --_current-color: currentColor;
+  position: relative;
+  display: inline-flex;
+  background-color: var(--_background-color);
+  color: var(--_color);
+  height: 48px;
+  text-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  appearance: none;
+  outline: none;
+  gap: 12px;
+  padding-inline: 12px;
+  flex-shrink: 0;
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color, border');
+
+  input {
+    appearance: none;
+    position: absolute;
+    inset: 4px 0 4px 4px;
+    border-radius: inherit;
+    outline: 0;
+    cursor: pointer;
+  }
+
+  &:has(
+      > ::ng-deep md-icon:not(:has(.blank)),
+      > ::ng-deep [mdMenuItemLeading],
+      > [mdEmbeddedButton] > ::ng-deep md-icon:not(:has(.blank)),
+      > [mdEmbeddedButton] > ::ng-deep [mdMenuItemLeading]
+    )
+    .blank {
     display: none;
   }
 
-  & > [mdEmbeddedButton] ::ng-deep [mdMenuItemTrailing],
-  .trailing,
-  .shortcut {
-    margin-inline-start: auto;
+  &:has(
+      > [mdEmbeddedButton]:hover,
+      > [mdEmbeddedButton]:focus-visible,
+      > input:hover,
+      > input:focus-visible
+    ) {
+    ::ng-deep md-icon:not([mdMenuItemTrailing]) {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+    }
   }
 
   [mdEmbeddedButton] {
     flex-grow: 1;
   }
 
-  &.selected {
-    color: var(--md-sys-color-secondary-container-on);
-    background-color: var(--md-sys-color-secondary-container);
+  ::ng-deep md-icon,
+  ::ng-deep [mdMenuItemLeading],
+  ::ng-deep [mdMenuItemTrailing],
+  ::ng-deep md-menu-item-trailing {
+    color: var(--_addon-color);
   }
 
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-
-    &.selected {
-      background-color: var(--md-sys-color-disabled-background);
-    }
+  .trailing {
+    margin-inline-start: auto;
   }
 
+  ::ng-deep md-icon,
+  img {
+    --md-comp-icon-size: 24;
+    max-height: 24px;
+  }
+
+  ::ng-deep md-icon:not([mdMenuItemTrailing]) {
+    --md-comp-icon-filled: var(--_icon-filled);
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
+  }
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
-  }
-
-  &.show-check-icon:has(input:checked)
-    >
-    ::ng-deep
-    [mdMenuItemTrailing] {
-    display: none;
-  }
-
-  input {
-    appearance: none;
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    outline: 0;
-    cursor: pointer;
+    --md-comp-ripple-color: var(--_current-color);
   }
 }

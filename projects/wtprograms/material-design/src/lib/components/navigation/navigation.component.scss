@@ -1,38 +1,200 @@
+@use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'indicator': (
+    'color': var(--md-sys-color-primary),
+  ),
+  'primary': (
+    'min-height': 64px,
+    'indicator': (
+      'height': 3px,
+      'border-radius': 3px 3px 0 0,
+    ),
+  ),
+  'secondary': (
+    'min-height': 48px,
+    'indicator': (
+      'height': 2px,
+      'border-radius': 0,
+    ),
+  ),
+  'bar': (
+    'background-color': var(--md-sys-color-surface-container),
+    'box-shadow': var(--md-sys-elevation-2),
+    'flex-direction': row,
+    'width': 100%,
+    'padding': 12px 0 16px 0,
+    'gap': 8px,
+    'decorator-display': none,
+    'container': (
+      'display': inline-flex,
+      'width': 64px,
+      'height': 32px,
+    ),
+    'item': (
+      'flex-direction': column,
+      'justify-content': center,
+      'gap': 4px,
+      'before-display': none,
+      'font': (
+        '': var(--md-sys-typescale-label-large-font),
+        'size': var(--md-sys-typescale-label-small-size),
+        'weight': var(--md-sys-typescale-label-small-weight),
+        'line-height': var(--md-sys-typescale-label-small-line-height),
+        'tracking': var(--md-sys-typescale-label-small-tracking),
+      ),
+    ),
+    'tint-transform': (
+      '': scaleX(0),
+      'hover': scaleX(1),
+    ),
+  ),
+  'rail': (
+    'background-color': transparent,
+    'box-shadow': 0,
+    'flex-direction': column,
+    'height': 100%,
+    'padding': 0 12px 0 12px,
+    'decorator-display': none,
+    'container': (
+      'display': inline-flex,
+      'width': 56px,
+      'height': 32px,
+    ),
+    'item': (
+      'flex-direction': column,
+      'justify-content': center,
+      'gap': 4px,
+      'before-display': none,
+      'font': (
+        '': var(--md-sys-typescale-label-large-font),
+        'size': var(--md-sys-typescale-label-small-size),
+        'weight': var(--md-sys-typescale-label-small-weight),
+        'line-height': var(--md-sys-typescale-label-small-line-height),
+        'tracking': var(--md-sys-typescale-label-small-tracking),
+      ),
+    ),
+    'tint-transform': (
+      '': scaleX(0),
+      'hover': scaleX(1),
+    ),
+  ),
+  'drawer': (
+    'background-color': transparent,
+    'box-shadow': 0,
+    'flex-direction': column,
+    'height': 100%,
+    'width': auto,
+    'padding': 0,
+    'decorator-display': inline-flex,
+    'container': (
+      'display': contents,
+    ),
+    'item': (
+      'badge-start': auto,
+      'height': 56px,
+      'flex-direction': row,
+      'justify-content': flex-start,
+      'gap': 12px,
+      'padding': (
+        'start': 16px,
+        'end': 24px,
+      ),
+      'before-display': inline-flex,
+      'font': (
+        '': var(--md-sys-typescale-label-large-font),
+        'size': var(--md-sys-typescale-label-large-size),
+        'weight': var(--md-sys-typescale-label-large-weight),
+        'line-height': var(--md-sys-typescale-label-large-line-height),
+        'tracking': var(--md-sys-typescale-label-large-tracking),
+      ),
+      'badge-margin': auto
+    ),
+    'horizontal': (
+      'background-color': var(--md-sys-color-surface-container),
+      'box-shadow': var(--md-sys-elevation-1),
+      'flex-direction': row,
+      'height': auto,
+      'width': 100%,
+      'padding': 0,
+      'decorator-display': none,
+      'border-radius': var(--md-sys-shape-full),
+      'item': (
+        'badge-start': 0,
+        'height': 56px,
+        'flex-direction': row,
+        'justify-content': center,
+        'badge-margin': 0
+      ),
+    ),
+  ),
+);
+
+$layouts: ('bar', 'rail', 'drawer');
+
 :host {
+  @include md.declare-tokens($tokens, 'md-comp-navigation', true);
+
+  @each $layout in $layouts {
+    &[layout='#{$layout}'] {
+      @include md.set-tokens(map.get($tokens, $layout), $layout);
+    }
+  }
+
+  &[layout='drawer'][horizontal] {
+    $tokens: map.get($tokens, 'drawer', 'horizontal');
+    @include md.set-tokens($tokens, 'drawer-horizontal');
+  }
+
+  position: relative;
   display: inline-flex;
+  gap: var(--_gap);
+  background-color: var(--_background-color);
+  box-shadow: var(--_box-shadow);
+  flex-direction: var(--_flex-direction);
+  width: var(--_width);
+  height: var(--_height);
+  padding: var(--_padding);
+  border-radius: var(--_border-radius);
 
-  ::ng-deep {
-    md-navigation-headline, md-divider {
-      display: none;
+  ::ng-deep md-navigation-item {
+    flex-direction: var(--_item-flex-direction);
+    height: var(--_item-height);
+    justify-content: var(--_item-justify-content);
+    gap: var(--_item-gap);
+    padding-inline-start: var(--_item-padding-start);
+    padding-inline-end: var(--_item-padding-end);
+    font-family: var(--_item-font);
+    font-size: var(--_item-font-size);
+    font-weight: var(--_item-font-weight);
+    line-height: var(--_item-font-line-height);
+    letter-spacing: var(--_item-font-tracking);
+    margin-inline-start: var(--_item-badge-margin);
+
+    &::before {
+      display: var(--_item-before-display);
+    }
+
+    .container {
+      display: var(--_container-display);
+      width: var(--_container-width);
+      height: var(--_container-height);
+    }
+
+    md-badge {
+      margin-inline-start: var(--_item-badge-start);
     }
   }
 
-  &.bar {
-    background-color: var(--md-sys-color-surface-container);
-    box-shadow: var(--md-sys-elevation-2);
-    gap: 8px;
+  ::ng-deep md-divider {
+    --md-comp-divider-color: var(--md-sys-color-outline-variant);
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
-  &.rail, &.drawer {
-    flex-direction: column;
+  ::ng-deep md-divider,
+  ::ng-deep md-navigation-sub-header {
+    display: var(--_decorator-display);
   }
-
-  &.rail {
-    padding-inline: 12px;
-    gap: 12px;
-  }
-
-  &.drawer {
-    gap: 0;
-
-    ::ng-deep {
-      md-navigation-headline, md-divider {
-        display: inline-flex;
-      }
-    }
-  }
-}
-
-:host-context(md-navigation.drawer) {
-  padding: 12px;
 }

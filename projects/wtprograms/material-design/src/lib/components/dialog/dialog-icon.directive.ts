@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
+import { MdDirective } from '../../common/base/md.directive';
 
 @Directive({
   selector: '[mdDialogIcon]',
-  standalone: true,
 })
-export class MdDialogIconDirective {}
+export class MdDialogIconDirective extends MdDirective {}

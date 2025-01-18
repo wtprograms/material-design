@@ -1,10 +1,11 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
       "@wtprograms/material-design": [
         "./dist/wtprograms/material-design",
-        "./projects/wtprograms/material-design/src/public-api.ts"
       ]
     },
     "outDir": "./dist/out-tsc",

@@ -1,64 +1,50 @@
-@use "../md";
+@use '../md';
 
 :host {
   display: inline-flex;
   flex-direction: column;
-  flex-grow: 1;
-  position: relative;
+  color: var(--md-sys-color-surface-on);
 
-  .headline {
+  > [mdEmbeddedButton] {
     position: relative;
+    flex-direction: row;
     display: inline-flex;
-    align-items: center;
     justify-content: space-between;
-    flex-grow: 1;
+    align-items: center;
     padding: 8px;
-    background-color: var(--md-sys-color-surface-container);
-    @include md.typescale("title", "large");
   }
 
-  &.opening,
-  &.closing {
-    .body {
-      overflow: hidden;
+  > [mdEmbeddedButton] > md-icon {
+    @include md.motion('transform');
+  }
+
+  .container {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    @include md.motion('grid-template-rows');
+
+    .content {
+      min-height: 0;
+      padding-inline: 8px;
+      padding-top: 0;
+      padding-bottom: 0;
+      @include md.motion('padding');
     }
   }
 
-  md-icon {
-    @include md.motion("transform");
-  }
-
-  &.closing,
-  &.closed {
-    md-icon {
-      transform: rotate(0deg);
+  &[open] {
+    .container {
+      grid-template-rows: 1fr;
     }
-  }
 
-  &.opening,
-  &.opened {
-    md-icon {
+    > [mdEmbeddedButton] > md-icon {
       transform: rotate(180deg);
     }
-  }
 
-  .body {
-    padding: 8px;
-    height: 0;
-    display: none;
-    flex-grow: 1;
+    .content {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
   }
-
-  [mdEmbeddedButton] {
-    flex-grow: 1;
-  }
-}
-
-.height {
-  position: absolute;
-  display: inline-flex !important;
-  opacity: 0 !important;
-  z-index: -1 !important;
-  height: fit-content !important;
-  pointer-events: none !important;
 }

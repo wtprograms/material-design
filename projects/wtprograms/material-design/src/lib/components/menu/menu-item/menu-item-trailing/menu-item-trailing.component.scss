@@ -1,0 +1,6 @@
+@use '../../../md';
+
+:host {
+  margin-inline-start: auto;
+  @include md.typescale('label', 'small');
+}

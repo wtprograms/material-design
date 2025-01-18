@@ -1,15 +1,20 @@
-import { Component, input } from '@angular/core';
-
-export type NavigationLayout = 'bar' | 'rail' | 'drawer';
+import { ChangeDetectionStrategy, Component, contentChildren, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NavigationLayout } from './navigation-layout';
+import { MdComponent } from '../../common/base/md.component';
 
 @Component({
   selector: 'md-navigation',
   templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss',
+  styleUrls: ['./navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule],
   host: {
-    '[class]': 'layout()',
-  }
+    '[attr.layout]': 'layout()',
+    '[attr.horizontal]': 'horizontal() ? "" : null',
+  },
 })
-export class MdNavigationComponent {
+export class MdNavigationComponent extends MdComponent {
   readonly layout = input<NavigationLayout>('bar');
+  readonly horizontal = input(false);
 }

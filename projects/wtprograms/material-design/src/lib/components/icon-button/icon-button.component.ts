@@ -3,69 +3,67 @@ import {
   Component,
   inject,
   input,
+  model,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { MdFocusRingComponent } from '../focus-ring/focus-ring.component';
-import { MdIconComponent } from '../icon/icon.component';
-import { MdRippleComponent } from '../ripple/ripple.component';
-import { ButtonType } from '../button/button.component';
-import { MdBadgeUserDirective } from '../badge/badge-user.directive';
+import { MdEmbeddedButtonComponent } from '../embedded-button/embedded-button.module';
 import { CommonModule } from '@angular/common';
-import { MdBadgeComponent } from '../badge/badge.component';
-import { MdEmbeddedButtonModule } from '../embedded-button/embedded-button.module';
-import { MdProgressIndicatorUserDirective } from '../progress-indicator/progress-indicator-user.directive';
-import { MdProgressIndicatorModule } from '../progress-indicator/progress-indicator.module';
-
-export type IconButtonVariant =
-  | 'standard'
-  | 'filled'
-  | 'tonal'
-  | 'outlined'
-  | 'plain';
+import { MdFocusRingComponent } from '../focus-ring/focus-ring.module';
+import { MdRippleComponent } from '../ripple/ripple.module';
+import { MdComponent } from '../../common/base/md.component';
+import { IconButtonVariant } from './icon-button-variant';
+import { MdEmbeddedBadgeDirective } from '../badge/embedded-badge.directive';
+import { MdEmbeddedProgressIndicatorDirective } from '../progress-indicator/embedded-progress-indicator.directive';
+import { MdIconComponent } from '../icon/icon.component';
+import { MdProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
+import { MdTintComponent } from '../tint/tint.component';
 
 @Component({
   selector: 'md-icon-button',
   templateUrl: './icon-button.component.html',
-  styleUrl: './icon-button.component.scss',
+  styleUrls: ['./icon-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MdRippleComponent,
-    MdFocusRingComponent,
-    MdIconComponent,
+    MdEmbeddedButtonComponent,
     CommonModule,
-    MdEmbeddedButtonModule,
-    MdBadgeComponent,
-    MdProgressIndicatorModule
+    MdIconComponent,
+    MdFocusRingComponent,
+    MdTintComponent,
+    MdRippleComponent,
+    MdProgressIndicatorComponent,
   ],
   hostDirectives: [
     {
-      directive: MdBadgeUserDirective,
-      inputs: ['badgeDot', 'badgeNumber'],
+      directive: MdEmbeddedBadgeDirective,
+      inputs: ['dot: badgeDot', 'text: badgeText'],
     },
     {
-      directive: MdProgressIndicatorUserDirective,
+      directive: MdEmbeddedProgressIndicatorDirective,
       inputs: [
-        'progressValue',
-        'progressMax',
-        'progressIndeterminate',
-      ]
-    }
+        'indeterminate: progressIndicatorIndeterminate',
+        'value: progressIndicatorValue',
+        'max: progressIndicatorMax',
+        'buffer: progressIndicatorBuffer',
+      ],
+    },
   ],
   host: {
-    '[class]': 'variant()',
-    '[class.selected]': 'selected()',
-    '[class.disabled]': 'disabled()',
+    '[attr.variant]': 'variant() ? variant() : null',
+    '[attr.disabled]': 'disabled() ? "" : null',
+    '[attr.selected]': 'selected() ? "" : null',
   },
 })
 export class MdIconButtonComponent extends MdComponent {
-  readonly badgeUser = inject(MdBadgeUserDirective);
-  readonly progressIndicatorUser = inject(MdProgressIndicatorUserDirective);
+  readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
+  readonly embeddedProgressIndicator = inject(
+    MdEmbeddedProgressIndicatorDirective
+  );
   readonly variant = input<IconButtonVariant>('standard');
-  readonly selected = input(false);
-  readonly type = input<ButtonType>('button');
-  readonly disabled = input(false);
+  readonly type = input<string>('button');
   readonly href = input<string>();
   readonly target = input<string>();
-  readonly customIcon = input(false);
-  readonly filled = input<boolean>();
+  readonly disabled = model(false);
+  readonly selected = model(false);
+  readonly custom = input(false);
+  readonly filled = input(false);
+  readonly value = input<boolean | number | string>();
 }

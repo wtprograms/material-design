@@ -1,9 +1,75 @@
-<md-button (click)="dialog.open.set(true)">Open</md-button>
-<dialog mdDialog #dialog>
-  <span mdDialogHeadline>Headline</span>
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="open">Open</app-check-property>
+    <app-check-property [(checked)]="icon">Icon</app-check-property>
+    <app-check-property [(checked)]="headline">Headline</app-check-property>
+    <app-check-property [(checked)]="supportingText">Supporting text</app-check-property>
+    <app-check-property [(checked)]="actions">Actions</app-check-property>
+    <app-check-property [(checked)]="fullscreen">Fullscreen</app-check-property>
+    <app-check-property [(checked)]="requireAction">Require action</app-check-property>
+    <app-select-property [options]="body.options" [(value)]="body">Body</app-select-property>
+  </app-properties>
 
-  Qui commodo laboris mollit commodo nostrud nulla non eu eu quis pariatur do voluptate do. Ut aute cillum irure sint
-  minim qui et consequat. Aliquip consequat minim sit minim. Non reprehenderit aliquip officia duis proident.
-
-  <md-button mdDialogAction (click)="dialog.open.set(false)">Close</md-button>
-</dialog>
+  <md-dialog [(open)]="open" [fullscreen]="fullscreen()" [requireAction]="requireAction()">
+    @if (icon()) {
+    <md-icon mdDialogIcon>home</md-icon>
+    } @if (headline()) {
+    <md-dialog-headline>Headline</md-dialog-headline>
+    } @if (supportingText()) {
+    <md-dialog-supporting-text>Est qui consectetur incididunt dolor minim.</md-dialog-supporting-text>
+    } @if (body() === 'long') { Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. Officia occaecat excepteur minim officia
+    nostrud Lorem. Magna amet est mollit aliqua reprehenderit proident mollit
+    ut aliquip ea ullamco. Duis minim culpa laborum eu deserunt consectetur ea
+    Lorem. In id aliqua anim quis elit commodo Lorem ullamco. Et reprehenderit
+    ut dolor occaecat elit sint. Eu aute ullamco velit labore et sunt aliqua
+    elit. Id adipisicing minim ut nulla ipsum in cillum id mollit et duis
+    occaecat qui exercitation. } @else if (body() === 'short') { Officia
+    occaecat excepteur minim officia nostrud Lorem. Magna amet est mollit
+    aliqua reprehenderit proident mollit ut aliquip ea ullamco. Duis minim
+    culpa laborum eu deserunt consectetur ea Lorem. In id aliqua anim quis
+    elit commodo Lorem ullamco. Et reprehenderit ut dolor occaecat elit sint.
+    Eu aute ullamco velit labore et sunt aliqua elit. Id adipisicing minim ut
+    nulla ipsum in cillum id mollit et duis occaecat qui exercitation. } @if
+    (actions()) {
+    <md-button mdDialogAction="submit">Okay</md-button>
+    } @if (actions()) {
+    <md-button mdDialogAction="cancel">Cancel</md-button>
+    }
+  </md-dialog>
+</app-page>

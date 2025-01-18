@@ -1,100 +1,105 @@
 @use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'small': (
+    'size': 2.5rem,
+    'padding': 0.5rem,
+    'border-radius': var(--md-sys-shape-extra-small),
+    'icon-size': 24,
+  ),
+  'medium': (
+    'size': 3.5rem,
+    'padding': 1rem,
+    'border-radius': var(--md-sys-shape-small),
+    'icon-size': 24,
+  ),
+  'large': (
+    'size': 6rem,
+    'padding': 2rem,
+    'border-radius': var(--md-sys-shape-medium),
+    'icon-size': 36,
+  ),
+);
+
+$sizes: ('large', 'medium', 'small');
 
 :host {
-  --_color: currentColor;
-  --_icon-size: 24;
+  @include md.declare-tokens($tokens, 'md-comp-fab', true);
 
-  width: auto;
+  @each $size in $sizes {
+    &[size='#{$size}'] {
+      @include md.set-tokens(map.get($tokens, $size), $size);
+    }
+  }
+
+  --_current-color: currentColor;
   position: relative;
   display: inline-flex;
-  border-radius: var(--md-sys-shape-full);
-  height: 40px;
+  border-radius: var(--_border-radius);
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary-container-on);
+  border: var(--_border);
+  height: var(--_size);
+  min-width: var(--_size);
+  width: var(--_size);
   text-wrap: nowrap;
-  flex-shrink: 0;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
   appearance: none;
   outline: none;
   user-select: none;
-  background-color: var(--md-sys-color-primary-container);
-  color: var(--md-sys-color-primary-container-on);
+  padding: var(--_padding);
+  flex-shrink: 0;
   @include md.typescale('label', 'large');
-  @include md.motion('background-color, color, border-color, width');
+  @include md.motion('background-color, color, border, box-shadow');
 
-  ::ng-deep [mdFabIcon] {
-    --md-comp-icon-size: var(--_icon-size);
-    max-height: calc(--_icon-size * 1px);
-  }
-
-  ::ng-deep [mdFabLabel] {
-    margin-inline-start: 8px;
-  }
-
-  .label {
-    display: none;
-    overflow: hidden;
-  }
-
-  &:not(.closed), &:not(:has(::ng-deep [mdFabIcon])) {
-    .label {
-      display: inline-flex;
+  &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
+    md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
     }
   }
 
-  &.large {
-    height: 96px;
-    width: 96px;
-    padding: 32px;
-    border-radius: var(--md-sys-shape-medium);
-
-    @include md.typescale('title', 'large');
-
-    ::ng-deep [mdFabIcon] {
-      --_icon-size: 36;
-    }
-  }
-
-  &.medium {
-    height: 56px;
-    width: 56px;
-    padding: 16px;
-    border-radius: var(--md-sys-shape-small);
-  }
-
-  &.small {
-    height: 40px;
-    width: 40px;
-    padding: 8px;
-    border-radius: var(--md-sys-shape-extra-small);
-  }
-
-  &:has(::ng-deep [mdFabLabel]) {
-    width: auto;
-  }
-
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
+  &[disabled] {
     background-color: var(--md-sys-color-disabled-background);
+    color: var(--md-sys-color-disabled-color);
+  }
+
+  ::ng-deep md-icon {
+    --md-comp-icon-size: var(--_icon-size);
+  }
+
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
   }
 
   md-ripple {
-    --md-comp-ripple-color: var(--_color);
+    --md-comp-ripple-color: var(--_current-color);
   }
 
-  .label-width {
-    opacity: 0;
-    position: absolute;
-    pointer-events: none;
-    z-index: -1;
+  &:has(md-fab-label) {
+    width: auto;
   }
 
-  .grow {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background-color: inherit;
-    opacity: 0;
-    pointer-events: none;
+  &[extended] {
+    &:not(:has(md-icon)) ::ng-deep {
+      md-fab-label {
+        grid-template-columns: 1fr;
+
+        .md-fab-label {
+          padding-inline-start: 0;
+        }
+      }
+    }
+  }
+
+  &:not(:has(md-icon)) ::ng-deep {
+    md-fab-label {
+      grid-template-columns: 1fr;
+
+      .md-fab-label {
+        padding-inline-start: 0;
+      }
+    }
   }
 }

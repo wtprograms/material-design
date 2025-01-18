@@ -1,0 +1,67 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="leading.options" [(value)]="leading"
+      >Leading</app-select-property
+    >
+    <app-select-property [options]="trailing.options" [(value)]="trailing"
+      >Trailing</app-select-property
+    >
+    <app-select-property
+      [options]="supportingText.options"
+      [(value)]="supportingText"
+      >Supporting text</app-select-property
+    >
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="selected">Selected</app-check-property>
+    <app-check-property [(checked)]="split">Split</app-check-property>
+    <app-check-property [(checked)]="switch">Switch</app-check-property>
+    <app-check-property [(checked)]="badge">Badge</app-check-property>
+    <app-check-property [(checked)]="interactive"
+      >Interactive</app-check-property
+    >
+    <app-check-property [(checked)]="top">Top</app-check-property>
+    <app-check-property [(checked)]="large">Large</app-check-property>
+  </app-properties>
+
+  <md-list class="w-full">
+    <md-list-item
+      [badgeText]="badge() ? 'New' : undefined"
+      [disabled]="disabled()"
+      [split]="split()"
+      [selected]="selected()"
+      [interactive]="interactive()"
+      [top]="top()"
+      [large]="large()"
+    >
+      @if (leading() === 'avatar') {
+      <md-avatar name="Willem Toerien" />
+      } @else if (leading() === 'icon') {
+      <md-icon>home</md-icon>
+      } @else if (leading() === 'image') {
+      <img src="https://placehold.co/600x400" />
+      } Headline @if (supportingText() === 'small') {
+      <span mdListItemSupportingText
+        >Non velit ex id fugiat tempor officia nisi eiusmod voluptate.</span
+      >
+      } @else if (supportingText() === 'large') {
+      <span mdListItemSupportingText
+        >Adipisicing dolore labore ullamco in eiusmod cupidatat nulla nulla
+        pariatur tempor et. In do occaecat do laboris anim in aliqua
+        incididunt pariatur ea amet fugiat. Cillum dolore Lorem sint qui est
+        elit sunt quis minim est. Magna qui nisi amet qui deserunt anim
+        occaecat dolor proident ex esse magna. Voluptate Lorem eu sunt
+        adipisicing anim.</span
+      >
+      } @if (trailing() === 'icon') {
+      <md-icon mdListItemTrailing>home</md-icon>
+      } @else if (trailing() === 'check') {
+      <md-check [switch]="switch()" />
+      } @else if (trailing() === 'icon-button') {
+      <md-icon-button>menu</md-icon-button>
+      }
+    </md-list-item>
+    <md-list-item [interactive]="true">Two</md-list-item>
+    <md-divider />
+    <md-list-item [interactive]="true">Three</md-list-item>
+  </md-list>
+</app-page>

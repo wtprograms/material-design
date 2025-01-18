@@ -1,56 +1,92 @@
-@use "../md";
+@use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-on),
+  'border-radius': var(--md-sys-shape-medium),
+  'padding': 8px 16px,
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+  ),
+  'filled': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'box-shadow': 0,
+    ),
+  ),
+  'elevated': (
+    'background-color': var(--md-sys-color-surface-container-low),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+      'box-shadow': 0,
+    ),
+  ),
+  'outlined': (
+    'border': 0.0625rem solid var(--md-sys-color-outline-variant),
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'border': 0.0625rem solid var(--md-sys-color-disabled-border),
+    ),
+  ),
+);
+
+$variants: ('filled', 'outlined', 'elevated');
 
 :host {
-  --_color: currentColor;
-  -webkit-tap-highlight-color: transparent;
+  @include md.declare-tokens($tokens, 'md-comp-card', true);
+  --_current-color: currentColor;
+
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  @each $variant in $variants {
+    &[variant='#{$variant}'] {
+      @include md.set-tokens(map.get($tokens, $variant), $variant);
+
+      &[disabled] {
+        @include md.set-tokens(
+          map.get($tokens, $variant, 'disabled'),
+          '#{$variant}-disabled'
+        );
+      }
+    }
+  }
+
+  --_current-color: currentColor;
+  position: relative;
   display: inline-flex;
   flex-direction: column;
-  position: relative;
-  border-radius: var(--md-sys-shape-medium);
-  flex-shrink: 0;
+  align-items: flex-start;
+  border-radius: var(--_border-radius);
+  background-color: var(--_background-color);
+  border: var(--_border);
+  color: var(--_color);
+  appearance: none;
   outline: none;
-  padding: 16px;
+  padding: var(--_padding);
+  @include md.motion('background-color, color, border, box-shadow');
 
-  @include md.motion("background-color", "border-color", "color");
-
-  [mdEmbeddedButton] {
-    position: absolute;
-    inset: 0;
+  &:has(> [mdEmbeddedButton]:hover) {
+    --_box-shadow: var(--_box-shadow-hover);
   }
 
-  &.disabled {
-    &.elevated,
-    &.filled {
-      background-color: var(--md-sys-color-disabled-background);
-    }
+  &:has(> [mdEmbeddedButton]:active) {
+    --_box-shadow: var(--_box-shadow-active);
   }
 
-  &.elevated {
-    background-color: var(--md-sys-color-surface-container-low);
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
   }
-
-  &.filled {
-    background-color: var(--md-sys-color-surface-container-highest);
-  }
-
-  &.outlined {
-    border: 1px solid var(--md-sys-color-outline-variant);
-
-    &.disabled {
-      border-color: var(--md-sys-color-disabled-border);
-    }
-  }
-
-  &.disabled {
-    color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-  }
-
-  &:has(> md-progress-indicator) {
-    pointer-events: none;
-  }
-
-  md-progress-indicator {
-    position: absolute;
+  md-ripple {
+    --md-comp-ripple-color: var(--_current-color);
   }
 }

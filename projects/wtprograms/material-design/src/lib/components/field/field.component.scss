@@ -1,305 +1,341 @@
 @use '../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on),
+  'label': (
+    'color': var(--md-sys-color-surface-variant-on),
+    'font': (
+      '': var(--md-sys-typescale-body-large-font),
+      'weight': var(--md-sys-typescale-body-large-weight),
+      'size': var(--md-sys-typescale-body-large-size),
+      'line-height': var(--md-sys-typescale-body-large-line-height),
+      'letter-spacing': var(--md-sys-typescale-body-large-tracking),
+    ),
+  ),
+  'border-color': var(--md-sys-color-outline),
+  'leading-color': var(--md-sys-color-surface-variant-on),
+  'trailing-color': var(--md-sys-color-surface-variant-on),
+  'footer-color': var(--md-sys-color-surface-variant-on),
+  'indicator-color': var(--md-sys-color-primary),
+  'success': (
+    'indicator-color': var(--md-sys-color-success),
+  ),
+  'warning': (
+    'indicator-color': var(--md-sys-color-warning),
+  ),
+  'error': (
+    'indicator-color': var(--md-sys-color-danger),
+  ),
+  'populated': (
+    'label-font': (
+      '': var(--md-sys-typescale-label-small-font),
+      'weight': var(--md-sys-typescale-label-small-weight),
+      'size': var(--md-sys-typescale-label-small-size),
+      'line-height': var(--md-sys-typescale-label-small-line-height),
+      'letter-spacing': var(--md-sys-typescale-label-small-tracking),
+    ),
+  ),
+);
 
 :host {
-  --_border-color: var(--md-sys-color-outline);
-  --_populated-color: var(--md-sys-color-primary);
-  --_error-color: var(--md-sys-color-danger);
-  --_content-color: var(--md-sys-color-surface-variant-on);
-  --_trailing-color: var(--md-sys-color-surface-variant-on);
-  --_footer-color: var(--md-sys-color-surface-variant-on);
-  --_label-color: var(--md-sys-color-surface-variant-on);
+  @include md.declare-tokens($tokens, 'md-comp-field', true);
+
+  &[state='success'] {
+    @include md.set-tokens(map.get($tokens, 'success'), 'success');
+    &:hover {
+      --_indicator-color: #{md.mix(
+          var(--md-comp-field-success-indicator-color),
+          var(--md-sys-color-surface-on),
+          0.2
+        )};
+    }
+  }
+
+  &[state='warning'] {
+    @include md.set-tokens(map.get($tokens, 'warning'), 'warning');
+    &:hover {
+      --_indicator-color: #{md.mix(
+          var(--md-comp-field-warning-indicator-color),
+          var(--md-sys-color-surface-on),
+          0.2
+        )};
+    }
+  }
+
+  &[state='error'] {
+    @include md.set-tokens(map.get($tokens, 'error'), 'error');
+    &:hover {
+      --_indicator-color: #{md.mix(
+          var(--md-comp-field-error-indicator-color),
+          var(--md-sys-color-surface-on),
+          0.2
+        )};
+    }
+  }
+
+  &[state],
+  &[populated] {
+    --_label-color: var(--_indicator-color);
+    --_border-color: var(--_indicator-color);
+    --_footer-color: var(--_indicator-color);
+    --_trailing-color: var(--_indicator-color);
+  }
+
+  &[populated] {
+    @include md.set-tokens(map.get($tokens, 'populated'), 'populated');
+  }
 
   display: inline-flex;
-  gap: 4px;
   flex-direction: column;
-  min-width: 280px;
+  gap: 4px;
+  min-width: 200px;
+  outline: none;
+  user-select: none;
 
-  .body {
+  .field-body {
+    display: inline-flex;
     position: relative;
-    display: inline-flex;
-    gap: 16px;
+    min-height: 56px;
     padding-inline: 16px;
-    min-height: 52px;
-    @include md.motion('background-color');
+    gap: 16px;
+    color: var(--_color);
+    user-select: none;
   }
 
-  .input,
-  .input-container {
-    display: inline-flex;
-    flex-grow: 1;
-  }
-
-  .input-content {
-    flex-grow: 1;
-  }
-
-  .input {
-    margin-top: 16px;
-    margin-bottom: 4px;
-    @include md.typescale('body', 'large');
-    @include md.motion('opacity, margin-top');
-  }
-
-  .leading,
-  .trailing,
-  .footer,
-  .prefix,
-  .suffix,
-  .supporting-text,
-  .counter {
+  .leading {
     display: none;
   }
 
-  .body:has(::ng-deep > .leading > [mdFieldLeading]) {
-    padding-inline-start: 12px;
+  ::ng-deep img {
+    height: 24px;
+  }
+
+  ::ng-deep [mdFieldLeading] {
+    color: var(--_leading-color);
+    margin-top: 16px;
+  }
+
+  &:has(::ng-deep [mdFieldLeading]) {
     .leading {
       display: inline-flex;
     }
-  }
 
-  .body:has(::ng-deep [mdFieldTrailing]) {
-    padding-inline-end: 12px;
-    .trailing {
-      display: inline-flex;
+    .field-body {
+      padding-inline-start: 12px;
     }
   }
 
-  .input:has(.prefix) .prefix {
-    display: inline-flex;
+  ::ng-deep [mdFieldTrailing] {
+    color: var(--_trailing-color);
+    margin-top: 16px;
   }
 
-  .input:has(.suffix) .suffix {
-    display: inline-flex;
-  }
-
-  .footer:has(.supporting-text) {
-    display: inline-flex;
-    .supporting-text {
-      display: inline-flex;
+  &:has(::ng-deep [mdFieldTrailing]) {
+    > .field-body {
+      padding-inline-end: 12px;
     }
   }
 
-  .footer:has(.counter) {
-    display: inline-flex;
-    .counter {
-      display: inline-flex;
-    }
+  .border-top-start,
+  .border-top-end,
+  .border-bottom,
+  .border-start,
+  .border-end {
+    position: absolute;
+    display: none;
+    inset: 0;
+    pointer-events: none;
   }
 
-  .footer:has(.error-text) {
-    display: inline-flex;
-    .counter {
-      display: inline-flex;
-    }
+  .label-small {
+    pointer-events: none;
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
 
-    .supporting-text {
-      display: none;
-    }
+    @include md.typescale('label', 'small');
+  }
+
+  .label {
+    position: absolute;
+    pointer-events: none;
+    color: var(--_label-color);
+    font-family: var(--_label-font);
+    font-weight: var(--_label-font-weight);
+    font-size: var(--_label-font-size);
+    line-height: var(--_label-font-line-height);
+    letter-spacing: var(--_label-font-letter-spacing);
+    top: 0;
+    inset-inline-start: 0;
+    top: 16px;
+
+    @include md.motion(
+      'color, font-family, font-size, top, inset-inline-start'
+    );
+  }
+
+  .content {
+    display: inline-flex;
+    padding-top: 16px;
+    padding-bottom: 4px;
+    width: 100%;
+    user-select: none;
+
+    @include md.typescale('body', 'large');
+    @include md.motion('padding-top, opacity');
+  }
+
+  &:hover ::ng-deep md-icon[mdFieldLeading] {
+    --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
+  }
+
+  ::ng-deep md-icon-button[mdFieldLeading],
+  ::ng-deep md-icon-button[mdFieldTrailing],
+  ::ng-deep button[mdFieldLeading],
+  ::ng-deep button[mdFieldTrailing],
+  ::ng-deep md-button[mdFieldLeading],
+  ::ng-deep md-button[mdFieldTrailing] {
+    margin-top: 8px;
+  }
+
+  .control {
+    display: inline-flex;
+    position: relative;
+    align-items: flex-start;
+    flex-grow: 1;
+    user-select: none;
   }
 
   .footer {
-    color: var(--_footer-color);
+    display: none;
     padding-inline: 16px;
     gap: 16px;
+    color: var(--_footer-color);
+
     @include md.typescale('body', 'small');
-    @include md.motion('color');
+  }
+
+  &:has(.supporting-text, .counter, ::ng-deep md-field-supporting-text) .footer {
+    display: inline-flex;
+  }
+
+  ::ng-deep md-field-supporting-text,
+  .supporting-text {
+    flex-grow: 1;
+  }
+
+  &:has(.label) .content {
+    opacity: 0;
+  }
+
+  &[variant='filled'] {
+    .field-body {
+      border-radius: var(--md-sys-shape-extra-small-top);
+      background-color: var(--md-sys-color-surface-container-highest);
+    }
+
+    .border-bottom {
+      display: block;
+      border-bottom: 1px solid var(--_border-color);
+      @include md.motion('border-bottom');
+
+      &::after {
+        content: '';
+        background-color: var(--_border-color);
+        height: 1px;
+        transform: scaleX(0);
+        position: absolute;
+        inset: auto 0 0 0;
+        border: 0;
+        @include md.motion('background-color, transform');
+      }
+    }
+
+    &[populated] {
+      .border-bottom::after {
+        height: 1px;
+        transform: scaleX(1);
+      }
+
+      &:has(.label) {
+        .label {
+          top: 10px;
+        }
+
+        .content {
+          padding-top: 22px;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &[variant='outlined'] {
+    --_border-width: 1px;
+    .field-body {
+      border-radius: var(--md-sys-shape-extra-small);
+    }
+
+    .border-top-start,
+    .border-top-end,
+    .border-bottom,
+    .border-start,
+    .border-end {
+      display: block;
+      border-color: var(--_border-color);
+      border-radius: inherit;
+    }
+
+    .border-bottom {
+      border-bottom-style: solid;
+      border-bottom-width: var(--_border-width);
+    }
+
+    .border-start {
+      border-inline-start-style: solid;
+      border-inline-start-width: var(--_border-width);
+    }
+
+    .border-end {
+      border-inline-end-style: solid;
+      border-inline-end-width: var(--_border-width);
+    }
+
+    .border-top-start {
+      border-top-style: solid;
+      border-top-width: var(--_border-width);
+      width: 12px;
+      border-start-end-radius: 0;
+    }
+
+    .border-top-end {
+      border-top-style: solid;
+      border-top-width: var(--_border-width);
+      border-start-start-radius: 0;
+      margin-inline-start: 12px;
+      @include md.motion('margin-inline-start');
+    }
+
+    &[populated] {
+      --_border-width: 2px;
+
+      .label {
+        top: -7px;
+      }
+
+      .content {
+        opacity: 1;
+      }
+    }
   }
 
   .counter {
     margin-inline-start: auto;
   }
 
-  .leading,
-  .trailing {
-    margin-top: 14px;
-    --md-comp-icon-size: 24;
-    max-height: 24px;
-
-    &:has(::ng-deep md-icon-button) {
-      margin-top: 6px;
-      max-height: revert;
-    }
-
-    ::ng-deep md-icon-button {
-      color: inherit;
-    }
-  }
-
-  .leading,
-  .input {
-    color: var(--_content-color);
-  }
-
-  .trailing {
-    color: var(--_trailing-color);
-    @include md.motion('color');
-  }
-
-  .border {
-    position: absolute;
-    border-color: var(--_border-color);
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-    @include md.motion('border-color');
-  }
-
-  .label {
-    position: absolute;
-    color: var(--_label-color);
-    pointer-events: none;
-  }
-
-  .label.small {
-    opacity: 0;
-    z-index: -1;
-    @include md.typescale('label', 'small');
-  }
-
-  .label.normal {
-    top: 16px;
-    @include md.typescale('body', 'large');
-    @include md.motion('color, font-size, inset-inline-start, top');
-  }
-
-  &:has(.label.normal) .input {
-    opacity: 0;
-  }
-
-  &:hover {
-    --_border-color: #{md.mix(
-        var(--md-sys-color-outline),
-        var(--md-sys-color-surface-variant-on),
-        0.5
-      )};
-    --_content-color: var(--md-sys-color-surface-on);
-    --_trailing-color: var(--md-sys-color-surface-on);
-    --_label-color: var(--md-sys-color-surface-on);
-    --_footer-color: var(--md-sys-color-surface-on);
-  }
-
-  &.populated {
-    --_border-color: var(--_populated-color);
-    --_label-color: var(--_populated-color);
-
-    .label.normal {
-      @include md.typescale('label', 'small');
-    }
-
-    &:has(.label.normal) .input {
-      opacity: 1;
-    }
-  }
-
-  &.error {
-    --_populated-color: var(--_error-color);
-    --_border-color: var(--_error-color);
-    --_label-color: var(--_error-color);
-    --_footer-color: var(--_error-color);
-    --_trailing-color: var(--_error-color);
-
-    &:hover {
-      --_error-color: #{md.mix(
-          var(--md-sys-color-danger),
-          var(--md-sys-color-surface-variant-on),
-          0.34
-        )};
-    }
-  }
-
-  &.disabled {
-    --_border-color: var(--md-sys-color-disabled-border);
-    --_populated-color: var(--md-sys-color-disabled-color);
-    --_content-color: var(--md-sys-color-disabled-color);
-    --_label-color: var(--md-sys-color-disabled-color);
-    --_footer-color: var(--md-sys-color-disabled-color);
-    --_trailing-color: var(--md-sys-color-disabled-color);
-    pointer-events: none;
-  }
-
-  &.filled {
-    --_transform: scaleX(0);
-
-    .body {
-      border-radius: var(--md-sys-shape-extra-small-top);
-      background-color: var(--md-sys-color-surface-container-high);
-    }
-
-    .border.bottom {
-      position: absolute;
-      inset: 0;
-      border-bottom-width: 1px;
-
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-bottom: 2px solid var(--_border-color);
-        transform: var(--_transform);
-        @include md.motion('border, transform');
-      }
-    }
-
-    &.disabled {
-      .body {
-        background-color: var(--md-sys-color-disabled-background);
-      }
-    }
-
-    &.populated {
-      --_transform: scaleX(1);
-
-      .label.normal {
-        top: 8px;
-      }
-
-      &:has(.label.normal) .input {
-        margin-top: 22px;
-      }
-    }
-  }
-
-  &.outlined {
-    --_border-width: 1px;
-
-    .body,
-    .border {
-      border-radius: var(--md-sys-shape-extra-small);
-    }
-
-    .border {
-      inset: 0;
-    }
-
-    .border.x {
-      border-inline-start-width: var(--_border-width);
-      border-inline-end-width: var(--_border-width);
-    }
-
-    .border.bottom {
-      border-bottom-width: var(--_border-width);
-    }
-
-    .border.top {
-      border-top-width: var(--_border-width);
-    }
-
-    .border.top.start {
-      width: 12px;
-      border-start-end-radius: 0;
-    }
-
-    .border.top.end {
-      margin-inline-start: 12px;
-      border-start-start-radius: 0;
-      @include md.motion('margin-inline-start');
-    }
-
-    &.populated {
-      --_border-width: 2px;
-      .label.normal {
-        top: -6px;
-      }
-    }
+  ::ng-deep md-popover > md-list {
+    max-height: 250px;
+    overflow-y: auto;
   }
 }

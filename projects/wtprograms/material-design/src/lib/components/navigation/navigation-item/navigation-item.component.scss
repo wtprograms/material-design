@@ -1,126 +1,114 @@
-@use "../../md";
+@use '../../md';
+@use 'sass:map';
+
+$tokens: (
+  'color': var(--md-sys-color-surface-variant-on),
+  'icon-filled': 0,
+  'background-color': transparent,
+  'border-radius': var(--md-sys-shape-full),
+  'disabled': (
+    'color': var(--md-sys-color-disabled-color),
+  ),
+  'selected': (
+    'color': var(--md-sys-color-secondary-container-on),
+    'background-color': var(--md-sys-color-secondary-container),
+    'icon-filled': 1,
+    'disabled': (
+      'color': var(--md-sys-color-disabled-color),
+      'background-color': var(--md-sys-color-disabled-background),
+    ),
+  ),
+);
 
 :host {
-  --_color: currentColor;
-  display: inline-flex;
-  position: relative;
-  border-radius: var(--md-sys-shape-full);
-  color: var(--md-sys-color-surface-variant-on);
+  @include md.declare-tokens($tokens, 'md-comp-navigation-item', true);
 
-  @include md.motion("background-color, color");
+  &[selected] {
+    @include md.set-tokens(map.get($tokens, 'selected'), 'selected');
+
+    &[disabled] {
+      @include md.set-tokens(
+        map.get(map.get($tokens, 'selected'), 'disabled'),
+        'selected-disabled'
+      );
+    }
+  }
+
+  &[disabled] {
+    @include md.set-tokens(map.get($tokens, 'disabled'), 'disabled');
+
+    md-badge {
+      display: none;
+    }
+  }
+
+  --_current-color: currentColor;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  color: var(--_color);
+  text-wrap: nowrap;
+  align-items: center;
+  appearance: none;
+  outline: none;
+  user-select: none;
+  gap: 4px;
+  flex-grow: 1;
+
+  @include md.typescale('label', 'large');
+  @include md.motion('background-color, color');
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--_border-radius);
+    background-color: var(--_background-color);
+    z-index: -1;
+    @include md.motion('background-color');
+  }
 
   [mdEmbeddedButton] {
-    flex-direction: inherit;
     flex-grow: 1;
   }
 
-  ::ng-deep [mdNavigationItemIcon] {
-    --md-comp-icon-size: 24;
-    height: 24px;
-    width: 24px;
-  }
-
-  &.selected {
-    ::ng-deep [mdNavigationItemIcon] {
-      --md-comp-icon-filled: 1;
+  &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
+    ::ng-deep md-icon {
+      --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
     }
   }
 
-  md-ripple {
-    --md-comp-ripple-color: var(--_color);
+  md-badge,
+  .trailing {
+    margin-inline-start: auto;
+    @include md.typescale('label', 'small');
   }
-
-  &.disabled {
-    pointer-events: none;
-  }
-}
-
-:host-context(md-navigation.bar),
-:host-context(md-navigation.rail) {
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-
-  @include md.typescale("label", "small");
 
   .container {
     position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--md-sys-shape-full);
-    flex-shrink: 0;
-    width: 64px;
-    height: 32px;
-
-    @include md.motion("background-color");
+    border-radius: var(--_border-radius);
+    background-color: var(--_background-color);
+    align-items: inherit;
+    justify-content: inherit;
   }
 
-  [mdEmbeddedButton] {
-    border-radius: 0;
+  ::ng-deep md-icon {
+    --md-comp-icon-filled: var(--_icon-filled);
   }
 
-  &.selected {
-    color: var(--md-sys-color-secondary-container-on);
-
-    .container {
-      position: relative;
-      background-color: var(--md-sys-color-secondary-container);
-    }
+  ::ng-deep img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
   }
 
+  md-tint {
+    --md-comp-tint-color: var(--_current-color);
+    --md-comp-tint-transform: var(--_tint-transform);
+    --md-comp-tint-transform-hover: var(--_tint-transform-hover);
+  }
   md-ripple {
-    --md-comp-ripple-transform-default: scaleX(0);
-    --md-comp-ripple-transform-hover: scaleX(1);
-  }
-
-  &.disabled,
-  &.selected.disabled {
-    color: var(--md-sys-color-disabled-color);
-    &.selected .container {
-      background-color: var(--md-sys-color-disabled-background);
-    }
-  }
-}
-
-:host-context(md-navigation.bar) {
-  flex-grow: 1;
-  padding-bottom: 16px;
-  padding-top: 12px;
-}
-
-:host-context(md-navigation.rail) {
-  .container {
-    width: 56px;
-  }
-}
-
-:host-context(md-navigation.drawer) {
-  gap: 12px;
-  align-items: center;
-  justify-content: flex-start;
-  padding-inline-start: 16px;
-  padding-inline-end: 24px;
-  height: 56px;
-  flex-shrink: 0;
-
-  @include md.typescale("label", "large");
-
-  md-badge {
-    margin-inline-start: auto;
-  }
-
-  &.selected {
-    color: var(--md-sys-color-secondary-container-on);
-    background-color: var(--md-sys-color-secondary-container);
-  }
-
-  &.disabled,
-  &.selected.disabled {
-    color: var(--md-sys-color-disabled-color);
-    &.selected {
-      background-color: var(--md-sys-color-disabled-background);
-    }
+    --md-comp-ripple-color: var(--_current-color);
   }
 }

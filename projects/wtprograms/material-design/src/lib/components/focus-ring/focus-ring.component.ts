@@ -4,15 +4,15 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { MdComponent } from '../md.component';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, filter, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import { MdComponent } from '../../common/base/md.component';
+import { MdAttachableDirective } from '../../directives/attachable/attachable.directive';
 
 @Component({
   selector: 'md-focus-ring',
-  template: '',
-  styleUrl: './focus-ring.component.scss',
+  templateUrl: './focus-ring.component.html',
+  styleUrls: ['./focus-ring.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
@@ -21,32 +21,23 @@ import { combineLatest, filter, map } from 'rxjs';
     },
   ],
   host: {
-    '[style.outline-width.px]': 'style()?.outlineWidth',
-    '[style.opacity]': 'style()?.opacity',
+    '[attr.focused]': 'focused() ? "" : null',
   },
 })
 export class MdFocusRingComponent extends MdComponent {
-  readonly focusVisible = input(true);
   private readonly _attachable = inject(MdAttachableDirective);
-  readonly style = toSignal(
-    combineLatest({
-      focusVisible: toObservable(this.focusVisible),
-      targetElement: toObservable(this._attachable.targetElement),
-      event: this._attachable.targetEvent$,
-    }).pipe(
-      filter(
-        ({ event }) => event.type === 'focusin' || event.type === 'focusout'
-      ),
-      map(({ event, focusVisible, targetElement }) => {
-        if (event.type === 'focusout') {
-          return false;
-        }
 
-        return focusVisible
-          ? targetElement.matches(':focus-visible') ?? false
-          : true;
-      }),
-      map((focused) => (focused ? { outlineWidth: 3, opacity: 1 } : undefined))
+  readonly focusVisible = input(true);
+
+  readonly focused = toSignal(
+    this._attachable.targetEvent$.pipe(
+      filter((event) => event.type === 'focusout' || event.type === 'focusin'),
+      map(
+        (event) =>
+          (event.type === 'focusin' && !this.focusVisible()) ||
+          (this.focusVisible() &&
+            this._attachable.targetElement()?.matches(':focus-visible'))
+      )
     )
   );
 }

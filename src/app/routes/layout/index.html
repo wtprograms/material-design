@@ -1,0 +1,16 @@
+<nav class="inline-flex flex-col overflow-y-auto shrink-0 h-dvh pe-2 bg-surface-container">
+  @for (route of routes; track $index) {
+  <a [routerLink]="route.path"
+    class="relative text-nowrap text-surface-variant-on px-4 py-2 rounded-full-end outline-none"
+    routerLinkActive="tw !bg-secondary-container !text-secondary-container-on">
+    <md-focus-ring />
+    <md-tint />
+    <md-ripple />
+    {{ route.path }}
+  </a>
+  }
+</nav>
+
+<div class="inline-flex grow pt-4 pe-4">
+  <router-outlet />
+</div>

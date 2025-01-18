@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { MdAccordionComponent } from './accordion.component';
-import { mdAccordionHeadlineDirective } from './accordion-headline.directive';
+import { MdAccordionHeadlineComponent } from './accordion-headline/accordion-headline.component';
 
 @NgModule({
-  imports: [MdAccordionComponent, mdAccordionHeadlineDirective],
-  exports: [MdAccordionComponent, mdAccordionHeadlineDirective],
+  imports: [MdAccordionComponent, MdAccordionHeadlineComponent],
+  exports: [MdAccordionComponent, MdAccordionHeadlineComponent],
 })
 export class MdAccordionModule {}

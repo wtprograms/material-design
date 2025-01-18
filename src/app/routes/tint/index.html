@@ -1,0 +1,9 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="hoverable">Hoverable</app-check-property>
+  </app-properties>
+
+  <div class="w-24 h-24 relative border border-outline-variant">
+    <md-tint [hoverable]="hoverable()" />
+  </div>
+</app-page>

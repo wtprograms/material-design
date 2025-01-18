@@ -1,0 +1,37 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="layout.options" [(value)]="layout">Layout</app-select-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="badge">Badge</app-check-property>
+    <app-check-property [(checked)]="horizontal">Horizontal</app-check-property>
+    <app-check-property [(checked)]="modal">Modal</app-check-property>
+  </app-properties>
+
+  <ng-template #navigation>
+    <md-navigation [layout]="layout()" [horizontal]="horizontal()">
+      <md-navigation-sub-header>Headline</md-navigation-sub-header>
+      <md-navigation-item #item1 [selected]="selectedItem() === item1" (click)="selectedItem.set(item1)"
+        [disabled]="disabled()" [badgeText]="badge() ? 'New' : undefined">
+        <md-icon>home</md-icon>
+        One
+      </md-navigation-item>
+      <md-navigation-item #item2 [selected]="selectedItem() === item2" (click)="selectedItem.set(item2)">
+        <md-icon>home</md-icon>
+        Two
+      </md-navigation-item>
+      <md-divider />
+      <md-navigation-item #item3 [selected]="selectedItem() === item3" (click)="selectedItem.set(item3)">
+        <md-icon>home</md-icon>
+        Three
+      </md-navigation-item>
+    </md-navigation>
+  </ng-template>
+  @if (modal() && layout() === 'drawer') {
+    <md-button (click)="sheet.open.set(true)">Open</md-button>
+    <md-sheet #sheet>
+      <ng-container *ngTemplateOutlet="navigation" />
+    </md-sheet>
+  } @else {
+    <ng-container *ngTemplateOutlet="navigation" />
+  }
+</app-page>

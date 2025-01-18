@@ -1,0 +1,38 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="variant.options" [(value)]="variant"
+      >Variant</app-select-property
+    >
+    <app-check-property [(checked)]="open">Open</app-check-property>
+  </app-properties>
+
+  <md-button #button> Outside </md-button>
+  <md-tooltip [variant]="variant()" [(open)]="open" [target]="button">
+    @if (variant() === 'rich') {
+    <md-tooltip-headline>Headline</md-tooltip-headline>
+    } @if (variant() === 'plain') { This is a tooltip. } @else { Dolor fugiat
+    id cupidatat voluptate in ex quis fugiat minim officia cillum nulla
+    fugiat. Et nostrud id nostrud duis aliqua pariatur ullamco ipsum nisi
+    reprehenderit. Dolore eu pariatur enim nulla elit. Proident ex nulla
+    proident duis. Ipsum laboris officia qui qui labore officia nisi. } @if
+    (variant() === 'rich') {
+    <md-button>Close</md-button>
+    }
+  </md-tooltip>
+
+  <md-button>
+    Inside
+    <md-tooltip [variant]="variant()">
+      @if (variant() === 'rich') {
+      <md-tooltip-headline>Headline</md-tooltip-headline>
+      } @if (variant() === 'plain') { This is a tooltip. } @else { Dolor
+      fugiat id cupidatat voluptate in ex quis fugiat minim officia cillum
+      nulla fugiat. Et nostrud id nostrud duis aliqua pariatur ullamco ipsum
+      nisi reprehenderit. Dolore eu pariatur enim nulla elit. Proident ex
+      nulla proident duis. Ipsum laboris officia qui qui labore officia nisi.
+      } @if (variant() === 'rich') {
+      <md-button>Close</md-button>
+      }
+    </md-tooltip>
+  </md-button>
+</app-page>

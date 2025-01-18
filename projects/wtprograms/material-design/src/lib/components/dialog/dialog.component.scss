@@ -1,109 +1,170 @@
-@use "../md";
+@use '../md';
 
 :host {
-  inset: 0;
-  width: 100dvw;
-  height: 100dvh;
-  max-width: 100dvw;
-  max-height: 100dvh;
-  color: var(--md-sys-color-surface-on);
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  place-items: center;
-  place-content: center;
-  padding: 48px;
-  position: fixed;
-  opacity: 0;
-  overflow: clip;
-  z-index: var(--md-sys-z-index-dialog);
-  display: none;
-  @include md.typescale("body", "medium");
-  @include md.motion("opacity", "emphasized-decelerate", "short-4");
+  display: contents;
+  @include md.motion('transform');
 
-  &::backdrop {
-    display: none;
-  }
-
-  .scrim {
+  .md-dialog-scrim {
     position: absolute;
     inset: 0;
     background-color: var(--md-sys-color-scrim);
-    opacity: 0.32;
+    opacity: 0;
     z-index: -1;
   }
 
-  .container-host {
-    overflow: clip;
-    max-width: 670px;
-    max-height: calc(100dvh - 48px * 2);
-    border-radius: var(--md-sys-shape-extra-large);
-    box-shadow: var(--md-sys-elevation-3);
-    display: inline-flex;
-  }
-
-  .container {
-    flex-grow: 1;
-    padding: 24px;
-    gap: 24px;
-    background-color: var(--md-sys-color-surface-container);
+  .md-dialog-body {
     display: inline-flex;
     flex-direction: column;
-    overflow: clip;
   }
 
-  .body {
-    overflow-y: auto;
+  dialog {
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    inset: 0;
+    width: 100dvw;
+    height: 100dvh;
+    max-width: 100dvw;
+    max-height: 100dvh;
+    overflow: hidden;
+
+    &[open] {
+      display: inline-flex;
+    }
+    @include md.motion('transform');
   }
 
-  .body,
-  .header {
+  ::backdrop {
+    display: none;
+  }
+
+  .md-dialog-container {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 24px;
+    margin: 24px;
+    gap: 16px;
+    max-width: min(100%, 560px);
+    max-height: calc(100dvh - 48px);
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-extra-large);
+    box-shadow: var(--md-sys-elevation-2);
+  }
+
+  .md-dialog-header {
     display: inline-flex;
     flex-direction: column;
     gap: 16px;
   }
 
-  .header {
-    overflow: clip;
-  }
-
-  .content {
+  .md-dialog-heading {
     display: inline-flex;
-    flex-direction: column;
-    outline: none;
-    overflow-y: auto;
-    max-height: 100%;
-  }
-
-  ::ng-deep {
-    [mdDialogHeadline] {
-      display: inline-flex;
-      @include md.typescale("headline", "small");
-    }
-
-    [mdDialogSupportingText] {
-      color: var(--md-sys-color-surface-variant-on);
-    }
-
-    [mdDialogIcon] {
-      --md-comp-icon-size: 24;
-      color: var(--md-sys-color-secondary);
-    }
-  }
-
-  &:has([mdDialogIcon]) .header {
-    flex-direction: column;
     align-items: center;
+    gap: 16px;
   }
 
-  &:has([mdDialogAction]) .actions {
+  .md-dialog-body {
+    overflow: auto;
+  }
+
+  &:has(::ng-deep [mdDialogIcon]) .md-dialog-heading {
+    flex-direction: column;
+  }
+
+  ::ng-deep [mdDialogIcon] {
+    color: var(--md-sys-color-secondary);
+    max-height: 24px;
+  }
+
+  .md-dialog-actions {
+    display: none;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  &:has(::ng-deep [mdDialogAction]) .md-dialog-actions {
     display: inline-flex;
   }
 
-  .actions {
-    margin-top: auto;
-    display: none;
-    justify-content: flex-end;
-    gap: 8px;
+  &[require-action] dialog {
+    transform: scale(1.1);
+  }
+
+  &[fullscreen] {
+    dialog[open] {
+      display: block;
+    }
+    .md-dialog-container {
+      border-radius: 0;
+      margin: 0;
+      padding: 0;
+      width: 100dvw;
+      height: 100dvh;
+      max-width: 100dvw;
+      max-height: 100dvh;
+    }
+    ::ng-deep [mdDialogIcon] {
+      display: none;
+    }
+    .md-dialog-heading {
+      flex-direction: row;
+      height: 56px;
+      margin-inline-start: 8px;
+      margin-inline-end: 16px;
+    }
+    ::ng-deep md-dialog-supporting-text {
+      margin-inline: 24px;
+    }
+    .md-dialog-body {
+      padding-inline: 24px;
+    }
+    ::ng-deep [mdDialogAction='submit'] {
+      margin-inline-start: auto;
+    }
+    ::ng-deep md-button:not([mdDialogAction='submit']) {
+      display: none;
+    }
+
+    &[require-action] dialog {
+      transform: scale(1);
+    }
+
+    @include md.screen('medium') {
+      dialog[open] {
+        display: inline-flex;
+      }
+
+      &[require-action] dialog {
+        transform: scale(1.05);
+      }
+      .md-dialog-container {
+        height: auto;
+        width: auto;
+        max-width: min(100%, 560px);
+        max-height: calc(100dvh - 48px - 48px);
+        margin-top: 24px;
+        padding-bottom: 24px;
+        padding-top: 16px;
+        margin-bottom: 24px;
+        border-radius: var(--md-sys-shape-extra-large);
+      }
+      .md-dialog-heading {
+        flex-direction: row-reverse;
+        margin-inline-start: 24px;
+        md-icon-button {
+          margin-inline-start: auto;
+        }
+      }
+      ::ng-deep [mdDialogAction='submit'] {
+        margin-inline-start: 0;
+      }
+      .md-dialog-actions {
+        margin-inline-end: 24px;
+      }
+      ::ng-deep md-button:not([mdDialogAction='submit']) {
+        display: inline-flex;
+      }
+    }
   }
 }

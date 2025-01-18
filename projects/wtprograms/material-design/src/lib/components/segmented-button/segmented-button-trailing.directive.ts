@@ -1,4 +1,4 @@
-import { Directive, ElementRef, inject, input } from '@angular/core';
+import { Directive } from '@angular/core';
 
 @Directive({
   selector: '[mdSegmentedButtonTrailing]'

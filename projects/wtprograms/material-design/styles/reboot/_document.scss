@@ -11,10 +11,9 @@
   *::before,
   *::after {
     box-sizing: border-box;
-    interpolate-size: allow-keywords;
   }
 
-  :root {
+  :root, .md-colors {
     @include methods.declare-tokens(tokens.$tokens, 'md');
     @include methods.set-mode('light');
 

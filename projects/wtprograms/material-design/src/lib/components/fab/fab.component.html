@@ -1,21 +1,16 @@
 <ng-template #content>
-  <md-ripple [hoverable]="true" [interactive]="!grow()" />
-  <md-focus-ring />
   <md-elevation [level]="elevationLevel()" />
-  <ng-content select="[mdFabIcon]"  />
-  <div #labelSpan class="label">
-    <ng-content select="[mdFabLabel]" />
-  </div>
+  <md-focus-ring />
+  <md-tint />
+  <md-ripple />
+  <ng-content />
 </ng-template>
-
 @if (href()) {
-<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+<a mdEmbeddedButton [href]="href()" [target]="target()">
   <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+<button mdEmbeddedButton type="button">
   <ng-container *ngTemplateOutlet="content" />
 </button>
 }
-
-<div #growElement class="grow"></div>

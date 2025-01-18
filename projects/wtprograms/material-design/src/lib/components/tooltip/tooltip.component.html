@@ -1,7 +1,9 @@
-<md-popover [target]="attachable.targetElement()" [delay]="500" [offset]="8" trigger="hover" [hoverCloseOnPointerLeave]="variant() === 'plain' || !hasActions()" [(open)]="open">
-  <ng-content select="[mdTooltipHeadline]" />
+<md-popover [target]="attachable.targetElement()" [(open)]="open" [trigger]="trigger()" [flip]="flip()"
+  [shift]="shift()" [offset]="offset()" [placement]="placement()" [openDelay]="openDelay()"
+  [closeOnLeave]="variant() !== 'rich' || buttons().length === 0">
+  <ng-content select="md-tooltip-headline"></ng-content>
   <ng-content />
   <div class="actions">
-    <ng-content select="[mdTooltipAction]" />
+    <ng-content select="md-button" />
   </div>
 </md-popover>

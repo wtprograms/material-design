@@ -1,0 +1,8 @@
+<app-page>
+  <app-properties>
+    <app-check-property [(checked)]="filled">Filled</app-check-property>
+    <app-check-property [(checked)]="badge">Badge</app-check-property>
+  </app-properties>
+
+  <md-icon [filled]="filled()" [badgeText]="badge() ? 'New' : undefined">home</md-icon>
+</app-page>

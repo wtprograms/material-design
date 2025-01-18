@@ -1,14 +1,14 @@
 @use "../projects/wtprograms/material-design/styles/index" as md;
-@use './styles//index' as styles;
 
 @include md.import;
 
 @layer base {
   @include md.reboot;
-  @include styles.rules;
 }
 
-@include styles.document-rules;
+ng-component {
+  display: contents;
+}
 
 @tailwind base;
 @tailwind components;

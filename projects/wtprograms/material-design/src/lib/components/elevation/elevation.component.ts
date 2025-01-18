@@ -1,30 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-} from '@angular/core';
-import { MdComponent } from '../md.component';
-import { MdAttachableDirective } from '../../directives/attachable.directive';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { combineLatest, filter, map, startWith } from 'rxjs';
-import { isDefined } from '../../common/assertion/is-defined';
-
-export type ElevationLevel = 0 | 1 | 2 | 3 | 4 | 5;
-
-const EVENTS = [
-  'pointerenter',
-  'pointerleave',
-  'pointerdown',
-  'pointerup',
-  'pointercancel',
-];
+import { Component, computed, inject, input } from '@angular/core';
+import { MdAttachableDirective } from '../../directives/attachable/attachable.directive';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import { ElevationLevel } from './elevation-level';
+import { MdComponent } from '../../common/base/md.component';
 
 @Component({
   selector: 'md-elevation',
-  template: '',
-  styleUrl: './elevation.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './elevation.component.html',
+  styleUrls: ['./elevation.component.scss'],
   hostDirectives: [
     {
       directive: MdAttachableDirective,
@@ -32,40 +16,50 @@ const EVENTS = [
     },
   ],
   host: {
-    '[style.box-shadow]': 'boxShadow()',
+    '[style.--_box-shadow]': 'boxShadow()',
   },
 })
 export class MdElevationComponent extends MdComponent {
+  private readonly _attachable = inject(MdAttachableDirective);
   readonly level = input<ElevationLevel>(0);
   readonly hoverable = input(true);
   readonly interactive = input(true);
 
-  private readonly _attachable = inject(MdAttachableDirective);
-
-  readonly boxShadow = toSignal(
-    combineLatest({
-      event: this._attachable.targetEvent$.pipe(startWith(undefined)),
-      level: toObservable(this.level),
-    }).pipe(
-      map((x) => {
-        if (!x.event) {
-          return `var(--md-sys-elevation-${x.level})`;
-        }
-        if (
-          (x.event.type === 'pointerenter' || x.event.type === 'pointerup') &&
-          (this.hoverable() || this.interactive())
-        ) {
-          return `var(--md-sys-elevation-${x.level + 1})`;
-        }
-        if (
-          (x.event.type === 'pointerdown' && this.interactive()) ||
-          x.event.type === 'pointerleave'
-        ) {
-          return `var(--md-sys-elevation-${x.level})`;
-        }
-        return undefined;
-      }),
-      filter((x) => isDefined(x))
+  readonly hovered = toSignal(
+    this._attachable.targetEvent$.pipe(
+      filter(
+        (event) =>
+          (event.type === 'pointerenter' && this.hoverable()) ||
+          event.type === 'pointerleave' ||
+          event.type === 'pointercancel'
+      ),
+      map((event) => event.type === 'pointerenter')
     )
   );
+
+  readonly pressed = toSignal(
+    this._attachable.targetEvent$.pipe(
+      filter(
+        (event) =>
+          (event.type === 'pointerdown' && this.interactive()) ||
+          event.type === 'pointerup' ||
+          event.type === 'pointercancel'
+      ),
+      map((event) => event.type === 'pointerdown')
+    )
+  );
+
+  readonly boxShadow = computed(() => {
+    const hovered = this.hovered();
+    const pressed = this.pressed();
+    const level = this.level();
+    let result = `var(--_${level})`;
+    if (hovered && level < 5) {
+      result = `var(--_${level + 1})`;
+    }
+    if (pressed) {
+      result = `var(--_${level})`;
+    }
+    return result;
+  });
 }

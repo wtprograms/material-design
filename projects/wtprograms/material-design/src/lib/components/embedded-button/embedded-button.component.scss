@@ -1,28 +1,27 @@
 :host {
   display: inline-flex;
-  border-radius: inherit;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  gap: inherit;
-  user-select: inherit;
-  text-decoration: none;
   color: inherit;
+  border-radius: inherit;
   appearance: none;
-  text-wrap: nowrap;
-  place-content: inherit;
-  place-items: inherit;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
   justify-content: inherit;
   align-items: inherit;
-  -webkit-tap-highlight-color: transparent;
+  gap: inherit;
+  flex-direction: inherit;
+  text-align: inherit;
 
-  .touch {
+  &:hover,
+  &:active {
+    color: inherit;
+    cursor: pointer;
+  }
+
+  &::after {
+    content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-  }
-
-  &:hover, &:active {
-    color: inherit;
   }
 }

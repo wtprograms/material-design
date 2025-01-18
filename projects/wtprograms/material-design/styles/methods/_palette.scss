@@ -1,3 +1,3 @@
-@function palette($palette-name, $lightness) {
-  @return hsl(var(--md-ref-palette-hue-#{$palette-name}), var(--md-ref-palette-saturation-#{$palette-name}), $lightness);
+@function palette($palette-name, $lightness, $alpha: 1) {
+  @return hsla(var(--md-ref-palette-hue-#{$palette-name}), var(--md-ref-palette-saturation-#{$palette-name}), $lightness, $alpha);
 }

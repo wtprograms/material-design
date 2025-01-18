@@ -1,0 +1,35 @@
+<input #startInput type="range" [min]="min()" [max]="max()" [valueAsNumber]="startValue" (input)="setStartValue($event)"
+  [disabled]="disabled()" [class.top]="startHover()">
+@if (range()) {
+<input #endInput type="range" [min]="min()" [max]="max()" [valueAsNumber]="endValue" (input)="setEndValue($event)"
+  [disabled]="disabled()" [class.top]="endHover()">
+}
+<div class="track start" [class.range]="range()"></div>
+@if (range()) {
+<div class="track middle"></div>
+}
+<div class="track end" [class.range]="range()"></div>
+@if (ticks()) {
+<div class="ticks start" [class.range]="range()"></div>
+@if (range()) {
+<div class="ticks middle"></div>
+}
+<div class="ticks end" [class.range]="range()"></div>
+}
+
+<div #startHandle class="handle">
+  <md-popover [target]="startInput" strategy="absolute" [native]="false" [customStart]="true"
+    [positioningTarget]="startHandle" placement="top" trigger="mousedown" [openDelay]="0" [offset]="4"
+    closedTransform="scale(0)" openedTransform="scale(1)">
+    {{ startValue }}
+  </md-popover>
+</div>
+@if (range()) {
+<div #endHandle class="handle end">
+  <md-popover [target]="endInput" strategy="absolute" [native]="false" [customStart]="true"
+    [positioningTarget]="endHandle" placement="top" trigger="mousedown" [openDelay]="0" [offset]="4"
+    closedTransform="scale(0)" openedTransform="scale(1)">
+    {{ endValue }}
+  </md-popover>
+</div>
+}

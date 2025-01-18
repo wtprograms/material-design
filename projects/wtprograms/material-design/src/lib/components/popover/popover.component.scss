@@ -10,19 +10,9 @@
   padding: 0;
   display: none;
   flex-direction: column;
+  position: fixed;
+  text-wrap: auto;
   @include md.typescale('body', 'medium');
-
-  &.opening, &.closing {
-    overflow: hidden;
-  }
-
-  &.absolute {
-    position: absolute;
-  }
-
-  &.fixed {
-    position: fixed;
-  }
 
   &.height {
     display: inline-flex !important;

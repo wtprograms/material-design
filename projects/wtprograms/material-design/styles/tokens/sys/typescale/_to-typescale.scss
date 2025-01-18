@@ -1,7 +1,9 @@
-@function to-typescale($typescale, $size, $font, $weight) {
+@function to-typescale($typescale, $font, $weight, $line-height, $size, $tracking) {
   @return (
-    'size': $size,
+    'size': #{$size}rem,
     'font': var(--md-ref-typeface-font-#{$font}),
     'weight': var(--md-ref-typeface-weight-#{$weight}),
+    'line-height': #{$line-height}rem,
+    'tracking': #{$tracking}rem
   );
 }

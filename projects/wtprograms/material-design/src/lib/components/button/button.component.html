@@ -1,27 +1,30 @@
 <ng-template #content>
-  <md-ripple />
-  <md-focus-ring />
   @if (hasElevation()) {
   <md-elevation [level]="elevationLevel()" />
   }
-  <ng-content select="[MdButtonLeading]" />
+  <md-focus-ring />
+  <md-tint />
+  <md-ripple />
+  <ng-content select="[mdButtonLeading]" />
   <ng-content />
   <ng-content select="[mdButtonTrailing]" />
+  @if (!disabled() && (embeddedBadge.dot() ||
+  embeddedBadge.text())) {
+  <md-badge [dot]="embeddedBadge.dot()" [text]="embeddedBadge.text()" [embedded]="true" />
+  }
 </ng-template>
-
 @if (href()) {
-<a mdEmbeddedButton [href]="href()" [attr.target]="target() ?? null" [tabIndex]="disabled() ? -1 : 0">
+<a mdEmbeddedButton [href]="href()" [target]="target()">
   <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button mdEmbeddedButton [type]="type()" [disabled]="disabled()">
+<button mdEmbeddedButton [type]="type()" [value]="value()" [disabled]="disabled()">
   <ng-container *ngTemplateOutlet="content" />
 </button>
+} @if (embeddedProgressIndicator.value() ||
+embeddedProgressIndicator.indeterminate()) {
+<md-progress-indicator [value]="embeddedProgressIndicator.value()" [indeterminate]="
+    embeddedProgressIndicator.indeterminate()
+  " [max]="embeddedProgressIndicator.max()" [buffer]="embeddedProgressIndicator.buffer()" />
 }
-
-@if (progressIndicatorUser.progressIndeterminate() || progressIndicatorUser.progressValue()) {
-  <md-progress-indicator [indeterminate]="progressIndicatorUser.progressIndeterminate()"
-    [max]="progressIndicatorUser.progressMax()" [value]="progressIndicatorUser.progressValue()" variant="circular" />
-}
-
 <ng-content select="md-popover, md-tooltip, md-menu" />

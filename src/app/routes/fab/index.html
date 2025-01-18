@@ -1,0 +1,20 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="size.options" [(value)]="size">Size</app-select-property>
+    <app-check-property [(checked)]="lowered">Lowered</app-check-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="extended">Extended</app-check-property>
+    <app-check-property [(checked)]="anchor">Anchor</app-check-property>
+    <app-check-property [(checked)]="icon">Icon</app-check-property>
+    <app-check-property [(checked)]="label">Label</app-check-property>
+  </app-properties>
+
+  <md-fab [size]="size()" [extended]="extended()" [lowered]="lowered()" [disabled]="disabled()"
+    [href]="anchor() ? '#' : undefined">
+    @if (icon()) {
+    <md-icon>home</md-icon>
+    } @if (label()) {
+    <md-fab-label>Label text</md-fab-label>
+    }
+  </md-fab>
+</app-page>

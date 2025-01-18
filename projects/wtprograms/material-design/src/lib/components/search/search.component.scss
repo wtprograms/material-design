@@ -1,0 +1,161 @@
+@use '../md';
+
+$tokens: (
+  'padding': (
+    '': 24px,
+    'start': var(--md-comp-search-padding),
+    'end': var(--md-comp-search-padding),
+    'addon': 8px,
+  ),
+);
+
+:host {
+  @include md.declare-tokens($tokens, 'md-comp-search', true);
+
+  &:has(::ng-deep [mdSearchLeading]) {
+    --_padding-start: var(--_padding-addon);
+  }
+
+  &:has(::ng-deep [mdSearchTrailing]) {
+    --_padding-end: var(--_padding-addon);
+  }
+
+  ::ng-deep > md-icon {
+    margin-inline: 8px;
+  }
+
+  &:not([dialog]) {
+    display: inline-flex;
+    position: relative;
+    background-color: var(--md-sys-color-surface-container-high);
+    color: var(--md-sys-color-surface-variant-on);
+    height: 56px;
+    border-radius: var(--md-sys-shape-full);
+    min-width: 200px;
+    padding-inline: var(--_padding-start) var(--_padding-end);
+    gap: 8px;
+    align-items: center;
+    @include md.motion('border-radius, box-shadow');
+    transition-delay: var(--md-sys-motion-duration-short-4);
+
+    .content {
+      background-color: inherit;
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      min-height: 100px;
+      max-height: 250px;
+      overflow-y: auto;
+      top: calc(100% + 1px);
+      inset-inline: 0;
+      border-radius: var(--md-sys-shape-extra-large-bottom);
+      box-shadow: var(--md-sys-elevation-2);
+      transform-origin: top;
+      transform: scaleY(0);
+      transition: display var(--md-sys-motion-duration-short-4) allow-discrete,
+        transform var(--md-sys-motion-duration-short-4) allow-discrete;
+      transition-delay: 0;
+      padding: 12px;
+    }
+
+    &[open] {
+      box-shadow: var(--md-sys-elevation-2);
+      border-bottom: 1px solid var(--md-sys-color-outline);
+      border-radius: var(--md-sys-shape-extra-large-top);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      transition-delay: var(--md-sys-motion-duration-short-1);
+
+      .content {
+        display: inline-flex;
+        transform: scaleY(1);
+        transition-delay: var(--md-sys-motion-duration-short-4);
+
+        @starting-style {
+          transform: scaleY(0);
+        }
+      }
+    }
+  }
+
+  &[dialog] {
+    ::ng-deep {
+      .md-dialog-container {
+        padding-top: 0 !important;
+      }
+
+      md-dialog-headline {
+        display: inline-flex;
+        height: 100%;
+        flex-grow: 1;
+        border-top-left-radius: inherit;
+        align-items: center;
+        gap: 8px;
+        border-top-right-radius: inherit;
+      }
+
+      .md-dialog-header {
+        border-bottom: 1px solid var(--md-sys-color-outline);
+        position: relative;
+        height: 72px;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+      }
+
+      .md-dialog-heading {
+        height: 100% !important;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+      }
+    }
+  }
+
+  input {
+    display: inline-flex;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: 0;
+    outline: none;
+    background-color: transparent;
+    color: inherit;
+    caret-color: var(--_indicator-color);
+    resize: none;
+    overflow: hidden;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    box-sizing: border-box;
+    field-sizing: content;
+    min-width: 16px;
+    flex-grow: 1;
+    height: 100%;
+
+    &::placeholder {
+      color: currentColor;
+      opacity: 1;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+  }
+}

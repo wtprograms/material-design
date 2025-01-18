@@ -1,0 +1,38 @@
+<app-page>
+  <app-properties>
+    <app-select-property [options]="state.options" [(value)]="state">State</app-select-property>
+    <app-check-property [(checked)]="disabled">Disabled</app-check-property>
+    <app-check-property [(checked)]="checkedIcon">Checked Icon</app-check-property>
+    <app-check-property [(checked)]="uncheckedIcon">Unchecked Icon</app-check-property>
+    <app-check-property [(checked)]="indeterminateIcon">Indeterminate Icon</app-check-property>
+    <app-check-property [(checked)]="switch">Switch</app-check-property>
+    <app-check-property [(checked)]="indeterminate">Indeterminate</app-check-property>
+  </app-properties>
+
+  <md-check [(checked)]="checked" [(indeterminate)]="indeterminate"
+    [disabled]="disabled()" [state]="state()" [switch]="switch()">
+    @if (checkedIcon()) {
+    <md-icon mdCheckIcon="checked">home</md-icon>
+    } @if (uncheckedIcon()) {
+    <md-icon mdCheckIcon="unchecked">close</md-icon>
+    } @if (indeterminateIcon()) {
+    <md-icon mdCheckIcon="indeterminate">star</md-icon>
+    } Check label
+  </md-check>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="inline-flex flex-col items-start">
+    <md-check #check formControlName="agree">
+      Agree?
+    </md-check>
+
+    <md-check type="radio" formControlName="isOn" [radioValue]="0">
+      Off
+    </md-check>
+    <md-check type="radio" formControlName="isOn" [radioValue]="1">
+      On
+    </md-check>
+    <md-button type="submit" [disabled]="form.invalid">Submit</md-button>
+  </form>
+
+  {{ formValue() | json}}
+  {{ check.value() | json }}
+</app-page>

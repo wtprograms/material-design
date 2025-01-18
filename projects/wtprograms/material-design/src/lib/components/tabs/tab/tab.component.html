@@ -1,9 +1,27 @@
-<button mdEmbeddedButton type="button" [disabled]="disabled()">
-  <md-ripple />
+<ng-template #content>
   <md-focus-ring />
-  <ng-content select="[mdTabLeading]" />
+  <md-tint />
+  <md-ripple />
   <ng-content />
-  @if (badgeUser.badgeDot() || badgeUser.badgeNumber()) {
-  <md-badge [dot]="badgeUser.badgeDot()" [number]="badgeUser.badgeNumber()" />
+  @if (layout() === 'secondary' && !disabled() &&
+  (embeddedBadge.dot() || embeddedBadge.text())) {
+  <md-badge [dot]="embeddedBadge.dot()" [text]="embeddedBadge.text()" [embedded]="true" />
   }
+</ng-template>
+@if (href()) {
+<a mdEmbeddedButton [href]="href()" [target]="target()">
+  <ng-container *ngTemplateOutlet="content" />
+</a>
+} @else if (type() === 'button') {
+<button mdEmbeddedButton [type]="type()" [value]="value()" [disabled]="disabled()">
+  <ng-container *ngTemplateOutlet="content" />
 </button>
+} @else {
+<md-focus-ring [target]="input" />
+<md-tint [target]="input" />
+<md-ripple [target]="input" />
+<div #contents class="contents">
+  <ng-container *ngTemplateOutlet="content" />
+</div>
+<input #input [type]="type()" [checked]="selected()" (input)="onInput($event)" [disabled]="disabled()" />
+}

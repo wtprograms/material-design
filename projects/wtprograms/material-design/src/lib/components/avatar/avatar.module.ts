@@ -3,6 +3,6 @@ import { MdAvatarComponent } from './avatar.component';
 
 @NgModule({
   imports: [MdAvatarComponent],
-  exports: [MdAvatarComponent],
+  exports: [MdAvatarComponent]
 })
 export class MdAvatarModule {}
