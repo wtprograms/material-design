@@ -22,9 +22,11 @@ import { MdBadgeComponent } from '../badge/badge.component';
   ],
   host: {
     '[attr.filled]': 'filled() ? "" : null',
+    '[style.--_size]': 'size() ?? null',
   },
 })
 export class MdIconComponent extends MdComponent {
   readonly embeddedBadge = inject(MdEmbeddedBadgeDirective);
   readonly filled = input(false);
+  readonly size = input();
 }

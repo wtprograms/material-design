@@ -46,7 +46,7 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
   flex-shrink: 0;
   @include md.typescale('label', 'large');
   @include md.motion('background-color, color');
-  zoom: calc(var(--md-comp-avatar-size) / 40);
+  zoom: calc(var(--_size) / 40);
 
   &::before {
     content: '';

@@ -8,7 +8,7 @@ $tokens: (
 
 :host {
   @include md.declare-tokens($tokens, 'md-comp-icon', true);
-  --_size-px: calc(var(--md-comp-icon-size) * 1px);
+  --_size-px: calc(var(--_size) * 1px);
 
   position: relative;
   font-size: var(--_size-px);

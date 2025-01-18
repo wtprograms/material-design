@@ -26,6 +26,7 @@ import { MdTintComponent } from '../tint/tint.component';
   ],
   host: {
     '[attr.disabled]': 'disabled() ? "" : null',
+    '[style.--_size]': 'size() ?? null',
   },
 })
 export class MdAvatarComponent extends MdComponent {
@@ -37,4 +38,5 @@ export class MdAvatarComponent extends MdComponent {
   readonly src = input<string>();
   readonly value = input<boolean | number | string>();
   readonly initials = computed(() => this.name()[0].toUpperCase());
+  readonly size = input();
 }

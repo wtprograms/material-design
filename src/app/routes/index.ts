@@ -137,6 +137,10 @@ export default [
         path: 'tooltip',
         loadComponent: () => import('./tooltip'),
       },
+      {
+        path: 'typography',
+        loadComponent: () => import('./typography'),
+      },
     ],
   },
 ] satisfies Routes;

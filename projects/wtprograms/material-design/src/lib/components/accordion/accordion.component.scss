@@ -11,7 +11,7 @@
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
+    padding: 0.5rem;
   }
 
   > [mdEmbeddedButton] > md-icon {
@@ -26,7 +26,7 @@
 
     .content {
       min-height: 0;
-      padding-inline: 8px;
+      padding-inline: 0.5rem;
       padding-top: 0;
       padding-bottom: 0;
       @include md.motion('padding');
@@ -43,8 +43,8 @@
     }
 
     .content {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
   }
 }

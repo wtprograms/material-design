@@ -2,17 +2,11 @@
   <app-properties>
     <app-check-property [(checked)]="disabled">Disabled</app-check-property>
     <app-check-property [(checked)]="anchor">Anchor</app-check-property>
-    <app-check-property [(checked)]="interactive"
-      >Interactive</app-check-property
-    >
+    <app-check-property [(checked)]="interactive">Interactive</app-check-property>
     <app-check-property [(checked)]="image">Image</app-check-property>
+    <app-select-property [options]="size.options" [(value)]="size">Size</app-select-property>
   </app-properties>
 
-  <md-avatar
-    name="Willem"
-    [href]="anchor() ? '#' : undefined"
-    [disabled]="disabled()"
-    [interactive]="interactive()"
-    [src]="image() ? 'https://avatar.iran.liara.run/public/26' : undefined"
-  />
+  <md-avatar name="Willem" [href]="anchor() ? '#' : undefined" [disabled]="disabled()" [interactive]="interactive()"
+    [src]="image() ? 'https://avatar.iran.liara.run/public/26' : undefined" [size]="size()" />
 </app-page>
