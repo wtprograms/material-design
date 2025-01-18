@@ -55,14 +55,14 @@ $tokens: (
   display: inline-flex;
   background-color: var(--_background-color);
   color: var(--_color);
-  height: 48px;
+  height: 3rem;
   text-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
   appearance: none;
   outline: none;
-  gap: 12px;
-  padding-inline: 12px;
+  gap: 0.75rem;
+  padding-inline: 0.75rem;
   flex-shrink: 0;
   @include md.typescale('label', 'large');
   @include md.motion('background-color, color, border');
@@ -70,7 +70,7 @@ $tokens: (
   input {
     appearance: none;
     position: absolute;
-    inset: 4px 0 4px 4px;
+    inset: 0.25rem 0 0.25rem 0.25rem;
     border-radius: inherit;
     outline: 0;
     cursor: pointer;
@@ -114,8 +114,8 @@ $tokens: (
 
   ::ng-deep md-icon,
   img {
-    --md-comp-icon-size: 24;
-    max-height: 24px;
+    --md-comp-icon-size: 1.5;
+    max-height: 1.5rem;
   }
 
   ::ng-deep md-icon:not([mdMenuItemTrailing]) {

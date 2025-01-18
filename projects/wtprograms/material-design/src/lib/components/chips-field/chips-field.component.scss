@@ -9,17 +9,17 @@
       cursor: text;
 
       .content {
-        padding-bottom: 6px;
+        padding-bottom: 0.375rem;
       }
 
       .control {
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 0.5rem;
       }
     }
 
     md-chip {
-      margin-top: -4px;
+      margin-top: -0.25rem;
     }
   }
 
@@ -45,7 +45,7 @@
     letter-spacing: inherit;
     box-sizing: border-box;
     field-sizing: content;
-    min-width: 16px;
+    min-width: 1rem;
     flex-grow: 1;
 
     &::placeholder {

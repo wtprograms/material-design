@@ -52,7 +52,7 @@ $tokens: (
   appearance: none;
   outline: none;
   user-select: none;
-  gap: 4px;
+  gap: 0.25rem;
   flex-grow: 1;
 
   @include md.typescale('label', 'large');
@@ -98,8 +98,8 @@ $tokens: (
   }
 
   ::ng-deep img {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     object-fit: cover;
   }
 

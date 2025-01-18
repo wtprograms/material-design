@@ -88,17 +88,17 @@ $tokens: (
 
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 200px;
+  gap: 0.25rem;
+  min-width: 12.5rem;
   outline: none;
   user-select: none;
 
   .field-body {
     display: inline-flex;
     position: relative;
-    min-height: 56px;
-    padding-inline: 16px;
-    gap: 16px;
+    min-height: 3.5rem;
+    padding-inline: 1rem;
+    gap: 1rem;
     color: var(--_color);
     user-select: none;
   }
@@ -108,12 +108,13 @@ $tokens: (
   }
 
   ::ng-deep img {
-    height: 24px;
+    height: 1.5rem;
   }
 
   ::ng-deep [mdFieldLeading] {
+    --md-comp-icon-size: 1.5;
     color: var(--_leading-color);
-    margin-top: 16px;
+    margin-top: 1rem;
   }
 
   &:has(::ng-deep [mdFieldLeading]) {
@@ -122,18 +123,19 @@ $tokens: (
     }
 
     .field-body {
-      padding-inline-start: 12px;
+      padding-inline-start: 0.75rem;
     }
   }
 
   ::ng-deep [mdFieldTrailing] {
+    --md-comp-icon-size: 1.5;
     color: var(--_trailing-color);
-    margin-top: 16px;
+    margin-top: 1rem;
   }
 
   &:has(::ng-deep [mdFieldTrailing]) {
     > .field-body {
-      padding-inline-end: 12px;
+      padding-inline-end: 0.75rem;
     }
   }
 
@@ -168,7 +170,7 @@ $tokens: (
     letter-spacing: var(--_label-font-letter-spacing);
     top: 0;
     inset-inline-start: 0;
-    top: 16px;
+    top: 1rem;
 
     @include md.motion(
       'color, font-family, font-size, top, inset-inline-start'
@@ -177,8 +179,8 @@ $tokens: (
 
   .content {
     display: inline-flex;
-    padding-top: 16px;
-    padding-bottom: 4px;
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
     width: 100%;
     user-select: none;
 
@@ -196,7 +198,7 @@ $tokens: (
   ::ng-deep button[mdFieldTrailing],
   ::ng-deep md-button[mdFieldLeading],
   ::ng-deep md-button[mdFieldTrailing] {
-    margin-top: 8px;
+    margin-top: 0.5rem;
   }
 
   .control {
@@ -209,8 +211,8 @@ $tokens: (
 
   .footer {
     display: none;
-    padding-inline: 16px;
-    gap: 16px;
+    padding-inline: 1rem;
+    gap: 1rem;
     color: var(--_footer-color);
 
     @include md.typescale('body', 'small');
@@ -237,13 +239,13 @@ $tokens: (
 
     .border-bottom {
       display: block;
-      border-bottom: 1px solid var(--_border-color);
+      border-bottom: 0.0625rem solid var(--_border-color);
       @include md.motion('border-bottom');
 
       &::after {
         content: '';
         background-color: var(--_border-color);
-        height: 1px;
+        height: 0.0625rem;
         transform: scaleX(0);
         position: absolute;
         inset: auto 0 0 0;
@@ -254,17 +256,17 @@ $tokens: (
 
     &[populated] {
       .border-bottom::after {
-        height: 1px;
+        height: 0.0625rem;
         transform: scaleX(1);
       }
 
       &:has(.label) {
         .label {
-          top: 10px;
+          top: 0.625rem;
         }
 
         .content {
-          padding-top: 22px;
+          padding-top: 1.375rem;
           opacity: 1;
         }
       }
@@ -272,7 +274,7 @@ $tokens: (
   }
 
   &[variant='outlined'] {
-    --_border-width: 1px;
+    --_border-width: 0.0625rem;
     .field-body {
       border-radius: var(--md-sys-shape-extra-small);
     }
@@ -305,7 +307,7 @@ $tokens: (
     .border-top-start {
       border-top-style: solid;
       border-top-width: var(--_border-width);
-      width: 12px;
+      width: 0.75rem;
       border-start-end-radius: 0;
     }
 
@@ -313,15 +315,15 @@ $tokens: (
       border-top-style: solid;
       border-top-width: var(--_border-width);
       border-start-start-radius: 0;
-      margin-inline-start: 12px;
+      margin-inline-start: 0.75rem;
       @include md.motion('margin-inline-start');
     }
 
     &[populated] {
-      --_border-width: 2px;
+      --_border-width: 0.125rem;
 
       .label {
-        top: -7px;
+        top: -0.4375rem;
       }
 
       .content {
@@ -335,7 +337,7 @@ $tokens: (
   }
 
   ::ng-deep md-popover > md-list {
-    max-height: 250px;
+    max-height: 15.625rem;
     overflow-y: auto;
   }
 }

@@ -15,7 +15,7 @@ $tokens: (
   opacity: 0;
 
   outline-width: 0;
-  outline-offset: 3px;
+  outline-offset: 0.1875rem;
   outline-color: var(--_color);
   outline-style: solid;
 
@@ -23,6 +23,6 @@ $tokens: (
 
   &[focused] {
     opacity: 1;
-    outline-width: 3px;
+    outline-width: 0.1875rem;
   }
 }

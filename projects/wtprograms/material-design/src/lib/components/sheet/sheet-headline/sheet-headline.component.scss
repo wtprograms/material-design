@@ -2,6 +2,6 @@
 
 :host {
   color: var(--md-sys-color-surface-on);
-  gap: 16px;
+  gap: 1rem;
   @include md.typescale('headline', 'small');
 }

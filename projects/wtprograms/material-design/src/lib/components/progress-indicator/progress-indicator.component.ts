@@ -10,7 +10,7 @@ export type ProgressIndicatorVariant = 'circular' | 'linear';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.variant]': 'variant()',
-    '[style.--md-comp-progress-indicator-size]': 'size() ? size() : null',
+    '[style.--_size]': 'size() ? size() : null',
   },
 })
 export class MdProgressIndicatorComponent extends MdComponent {
@@ -27,7 +27,7 @@ export class MdProgressIndicatorComponent extends MdComponent {
       (this.indeterminate() ? 1 : this.value() / this.max()) * 100
     }%)`,
   }));
-  readonly dotSize = computed(() =>
+  readonly dotSize = computed<number>(() =>
     this.indeterminate() || !this.buffer() ? 1 : this.buffer() / this.max()
   );
   readonly dotStyle = computed<Partial<CSSStyleDeclaration>>(() => ({

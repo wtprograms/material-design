@@ -5,7 +5,7 @@ $tokens: (
   'background-color': var(--md-sys-color-surface-container),
   'color': var(--md-sys-color-surface-variant-on),
   'border-radius': var(--md-sys-shape-extra-small),
-  'padding': 4px 0,
+  'padding': 0.25rem 0,
 );
 
 :host {
@@ -17,7 +17,7 @@ $tokens: (
   padding: var(--_padding);
 
   md-popover {
-    min-width: 114px;
+    min-width: 7.125rem;
     background-color: inherit;
     color: inherit;
     border-radius: inherit;
@@ -25,8 +25,8 @@ $tokens: (
   }
 
   ::ng-deep md-divider {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
     --md-comp-divider-color: var(--md-sys-color-outline-variant);
   }
 }

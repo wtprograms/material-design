@@ -13,9 +13,9 @@ $tokens: (
     'pill': var(--md-sys-shape-full),
   ),
   'padding': (
-    '': 16px,
-    'addon': 8px,
-    'avatar': 2px,
+    '': 1rem,
+    'addon': 0.5rem,
+    'avatar': 0.125rem,
     'start': var(--_padding),
     'end': var(--_padding),
   ),
@@ -152,11 +152,11 @@ $tokens: (
     > [mdEmbeddedButton] > md-icon {
       color: var(--_icon-color);
       --md-comp-icon-filled: var(--_icon-filled);
-      --md-comp-icon-size: 18;
+      --md-comp-icon-size: 1.125;
     }
 
     md-icon-button [mdEmbeddedButton] md-icon {
-      --md-comp-icon-size: 18;
+      --md-comp-icon-size: 1.125;
     }
   }
 
@@ -167,7 +167,7 @@ $tokens: (
   }
 
   ::ng-deep md-avatar {
-    --md-comp-avatar-size: 24;
+    --md-comp-avatar-size: 1.5;
   }
 
   md-tint {
@@ -196,7 +196,7 @@ $tokens: (
     border: 0;
 
     ::ng-deep md-icon {
-      --md-comp-icon-size: 18;
+      --md-comp-icon-size: 1.125;
       color: inherit;
     }
   }

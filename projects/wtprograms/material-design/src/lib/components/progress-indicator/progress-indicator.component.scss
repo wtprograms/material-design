@@ -6,7 +6,7 @@ $tokens: (
   'width': 4,
   'track': (
     'color': var(--md-sys-color-surface-container-highest),
-    'height': 4px,
+    'height': 0.25rem,
   ),
 );
 
@@ -15,8 +15,8 @@ $tokens: (
 
   &[variant='circular'] {
     pointer-events: none;
-    --_size-px: calc(var(--_size) * 1px);
-    $container-padding: 4px;
+    --_size-px: calc(var(--_size) * 0.0625rem);
+    $container-padding: 0.25rem;
     $arc-duration: 1333ms;
     $cycle-duration: calc(4 * $arc-duration);
     $linear-rotate-duration: calc($arc-duration * 360 / 306);
@@ -170,7 +170,7 @@ $tokens: (
     $_indeterminate-duration: 2s;
     display: flex;
     position: relative;
-    min-width: 80px;
+    min-width: 5rem;
     height: var(--_track-height);
     content-visibility: auto;
     contain: strict;
@@ -336,12 +336,12 @@ $tokens: (
 
     @keyframes primary-indeterminate-translate {
       0% {
-        transform: translateX(0px);
+        transform: translateX(0rem);
       }
 
       20% {
         animation-timing-function: cubic-bezier(0.5, 0, 0.701732, 0.495819);
-        transform: translateX(0px);
+        transform: translateX(0rem);
       }
 
       59.15% {
@@ -362,7 +362,7 @@ $tokens: (
     @keyframes secondary-indeterminate-translate {
       0% {
         animation-timing-function: cubic-bezier(0.15, 0, 0.515058, 0.409685);
-        transform: translateX(0px);
+        transform: translateX(0rem);
       }
 
       25% {

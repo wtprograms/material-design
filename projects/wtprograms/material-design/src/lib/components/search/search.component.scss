@@ -2,10 +2,10 @@
 
 $tokens: (
   'padding': (
-    '': 24px,
+    '': 1.5rem,
     'start': var(--md-comp-search-padding),
     'end': var(--md-comp-search-padding),
-    'addon': 8px,
+    'addon': 0.5rem,
   ),
 );
 
@@ -21,7 +21,7 @@ $tokens: (
   }
 
   ::ng-deep > md-icon {
-    margin-inline: 8px;
+    margin-inline: 0.5rem;
   }
 
   &:not([dialog]) {
@@ -29,11 +29,11 @@ $tokens: (
     position: relative;
     background-color: var(--md-sys-color-surface-container-high);
     color: var(--md-sys-color-surface-variant-on);
-    height: 56px;
+    height: 3.5rem;
     border-radius: var(--md-sys-shape-full);
-    min-width: 200px;
+    min-width: 12.5rem;
     padding-inline: var(--_padding-start) var(--_padding-end);
-    gap: 8px;
+    gap: 0.5rem;
     align-items: center;
     @include md.motion('border-radius, box-shadow');
     transition-delay: var(--md-sys-motion-duration-short-4);
@@ -43,10 +43,10 @@ $tokens: (
       display: none;
       flex-direction: column;
       position: absolute;
-      min-height: 100px;
-      max-height: 250px;
+      min-height: 6.25rem;
+      max-height: 15.625rem;
       overflow-y: auto;
-      top: calc(100% + 1px);
+      top: calc(100% + 0.0625rem);
       inset-inline: 0;
       border-radius: var(--md-sys-shape-extra-large-bottom);
       box-shadow: var(--md-sys-elevation-2);
@@ -55,12 +55,12 @@ $tokens: (
       transition: display var(--md-sys-motion-duration-short-4) allow-discrete,
         transform var(--md-sys-motion-duration-short-4) allow-discrete;
       transition-delay: 0;
-      padding: 12px;
+      padding: 0.75rem;
     }
 
     &[open] {
       box-shadow: var(--md-sys-elevation-2);
-      border-bottom: 1px solid var(--md-sys-color-outline);
+      border-bottom: 0.0625rem solid var(--md-sys-color-outline);
       border-radius: var(--md-sys-shape-extra-large-top);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
@@ -90,14 +90,14 @@ $tokens: (
         flex-grow: 1;
         border-top-left-radius: inherit;
         align-items: center;
-        gap: 8px;
+        gap: 0.5rem;
         border-top-right-radius: inherit;
       }
 
       .md-dialog-header {
-        border-bottom: 1px solid var(--md-sys-color-outline);
+        border-bottom: 0.0625rem solid var(--md-sys-color-outline);
         position: relative;
-        height: 72px;
+        height: 4.5rem;
         border-top-left-radius: inherit;
         border-top-right-radius: inherit;
       }
@@ -131,7 +131,7 @@ $tokens: (
     letter-spacing: inherit;
     box-sizing: border-box;
     field-sizing: content;
-    min-width: 16px;
+    min-width: 1rem;
     flex-grow: 1;
     height: 100%;
 

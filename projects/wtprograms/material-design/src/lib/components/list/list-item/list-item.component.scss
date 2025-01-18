@@ -4,7 +4,7 @@
 $tokens: (
   'color': var(--md-sys-color-surface-on),
   'supporting-text-color': var(--md-sys-color-surface-variant-on),
-  'padding': 8px 16px,
+  'padding': 0.5rem 1rem,
   'icon-filled': 0,
   'disabled': (
     'color': var(--md-sys-color-disabled-color),
@@ -58,10 +58,10 @@ $tokens: (
   appearance: none;
   outline: none;
   padding: var(--_padding);
-  gap: 16px;
+  gap: 1rem;
   text-align: start;
   flex-grow: 1;
-  min-height: 48px;
+  min-height: 3rem;
   @include md.typescale('body', 'large');
   @include md.motion('background-color, color, border, box-shadow');
 
@@ -69,17 +69,27 @@ $tokens: (
     flex-grow: 1;
   }
 
+  ::ng-deep {
+    > md-icon, > [mdEmbeddedButton] > md-icon {
+      --md-comp-icon-size: 1.5;
+    }
+
+    [mdListItemTrailing] {
+      margin-inline-start: auto;
+    }
+  }
+
   img {
-    width: 56px;
-    height: 56px;
+    width: 3.5rem;
+    height: 3.5rem;
     object-fit: cover;
   }
 
   &[large]:has(img) {
-    --_padding: 12px 16px 12px 0;
+    --_padding: 0.75rem 1rem 0.75rem 0;
     img {
       width: auto;
-      max-height: 64px;
+      max-height: 4rem;
     }
   }
 
@@ -136,7 +146,7 @@ $tokens: (
 
   .split {
     display: inline-flex;
-    gap: 16px;
+    gap: 1rem;
     margin-inline-start: auto;
     height: 100%;
   }

@@ -3,8 +3,8 @@
 
 $tokens: (
   'top': (
-    'max-height': calc(100% - 48px),
-    'max-width': min(640px, 100%),
+    'max-height': calc(100% - 3rem),
+    'max-width': min(40rem, 100%),
     'border-radius': var(--md-sys-shape-extra-large-bottom),
     'flex-direction': column,
     'justify-content': flex-start,
@@ -13,15 +13,15 @@ $tokens: (
   ),
   'end': (
     'max-height': calc(100dvh),
-    'max-width': min(360px, calc(100% - 48px)),
+    'max-width': min(22.5rem, calc(100% - 3rem)),
     'border-radius': var(--md-sys-shape-extra-large-start),
     'flex-direction': row,
     'justify-content': flex-end,
     'actions-justify-content': flex-start,
   ),
   'bottom': (
-    'max-height': calc(100% - 48px),
-    'max-width': min(640px, 100%),
+    'max-height': calc(100% - 3rem),
+    'max-width': min(40rem, 100%),
     'border-radius': var(--md-sys-shape-extra-large-top),
     'flex-direction': column-reverse,
     'align-items': center,
@@ -29,7 +29,7 @@ $tokens: (
   ),
   'start': (
     'max-height': calc(100dvh),
-    'max-width': min(360px, calc(100% - 48px)),
+    'max-width': min(22.5rem, calc(100% - 3rem)),
     'border-radius': var(--md-sys-shape-extra-large-end),
     'justify-content': flex-start,
     'flex-direction': row,
@@ -60,8 +60,8 @@ $tokens: (
   .container {
     display: inline-flex;
     flex-direction: column;
-    padding: 24px;
-    gap: 16px;
+    padding: 1.5rem;
+    gap: 1rem;
     max-height: var(--_max-height);
     max-width: var(--_max-width);
     background-color: var(--md-sys-color-surface-container);
@@ -71,10 +71,10 @@ $tokens: (
 
     &:has(::ng-deep md-navigation) {
       padding: 0;
-      min-width: 320px;
+      min-width: 20rem;
 
       ::ng-deep md-navigation {
-        padding: 16px;
+        padding: 1rem;
       };
     }
   }
@@ -83,7 +83,7 @@ $tokens: (
     display: inline-flex;
     flex-direction: column;
     flex-grow: 1;
-    gap: 16px;
+    gap: 1rem;
     overflow: hidden;
   }
 
@@ -117,9 +117,9 @@ $tokens: (
 
   .actions {
     display: none;
-    gap: 8px;
+    gap: 0.5rem;
     justify-content: var(--_actions-justify-content);
-    margin-top: 6px;
+    margin-top: 0.375rem;
   }
 
   &:has(::ng-deep [mdsheetAction]) .actions {

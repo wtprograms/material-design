@@ -6,16 +6,16 @@ $tokens: (
     'color': var(--md-sys-color-primary),
   ),
   'primary': (
-    'min-height': 64px,
+    'min-height': 4rem,
     'indicator': (
-      'height': 3px,
-      'border-radius': 3px 3px 0 0,
+      'height': 0.1875rem,
+      'border-radius': 0.1875rem 0.1875rem 0 0,
     ),
   ),
   'secondary': (
-    'min-height': 48px,
+    'min-height': 3rem,
     'indicator': (
-      'height': 2px,
+      'height': 0.125rem,
       'border-radius': 0,
     ),
   ),
@@ -24,18 +24,18 @@ $tokens: (
     'box-shadow': var(--md-sys-elevation-2),
     'flex-direction': row,
     'width': 100%,
-    'padding': 12px 0 16px 0,
-    'gap': 8px,
+    'padding': 0.75rem 0 1rem 0,
+    'gap': 0.5rem,
     'decorator-display': none,
     'container': (
       'display': inline-flex,
-      'width': 64px,
-      'height': 32px,
+      'width': 4rem,
+      'height': 2rem,
     ),
     'item': (
       'flex-direction': column,
       'justify-content': center,
-      'gap': 4px,
+      'gap': 0.25rem,
       'before-display': none,
       'font': (
         '': var(--md-sys-typescale-label-large-font),
@@ -55,17 +55,17 @@ $tokens: (
     'box-shadow': 0,
     'flex-direction': column,
     'height': 100%,
-    'padding': 0 12px 0 12px,
+    'padding': 0 0.75rem 0 0.75rem,
     'decorator-display': none,
     'container': (
       'display': inline-flex,
-      'width': 56px,
-      'height': 32px,
+      'width': 3.5rem,
+      'height': 2rem,
     ),
     'item': (
       'flex-direction': column,
       'justify-content': center,
-      'gap': 4px,
+      'gap': 0.25rem,
       'before-display': none,
       'font': (
         '': var(--md-sys-typescale-label-large-font),
@@ -93,13 +93,13 @@ $tokens: (
     ),
     'item': (
       'badge-start': auto,
-      'height': 56px,
+      'height': 3.5rem,
       'flex-direction': row,
       'justify-content': flex-start,
-      'gap': 12px,
+      'gap': 0.75rem,
       'padding': (
-        'start': 16px,
-        'end': 24px,
+        'start': 1rem,
+        'end': 1.5rem,
       ),
       'before-display': inline-flex,
       'font': (
@@ -122,7 +122,7 @@ $tokens: (
       'border-radius': var(--md-sys-shape-full),
       'item': (
         'badge-start': 0,
-        'height': 56px,
+        'height': 3.5rem,
         'flex-direction': row,
         'justify-content': center,
         'badge-margin': 0
@@ -189,8 +189,8 @@ $layouts: ('bar', 'rail', 'drawer');
 
   ::ng-deep md-divider {
     --md-comp-divider-color: var(--md-sys-color-outline-variant);
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
   }
 
   ::ng-deep md-divider,

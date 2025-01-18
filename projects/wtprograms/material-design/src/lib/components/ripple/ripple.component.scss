@@ -38,7 +38,7 @@ $tokens: (
   &::after {
     background: radial-gradient(
       closest-side,
-      var(--_color) max(calc(100% - 70px), 65%),
+      var(--_color) max(calc(100% - 4.375rem), 65%),
       transparent 100%
     );
     transform-origin: center center;

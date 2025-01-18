@@ -41,11 +41,11 @@
   .md-dialog-container {
     display: inline-flex;
     flex-direction: column;
-    padding: 24px;
-    margin: 24px;
-    gap: 16px;
-    max-width: min(100%, 560px);
-    max-height: calc(100dvh - 48px);
+    padding: 1.5rem;
+    margin: 1.5rem;
+    gap: 1rem;
+    max-width: min(100%, 35rem);
+    max-height: calc(100dvh - 3rem);
     background-color: var(--md-sys-color-surface-container);
     border-radius: var(--md-sys-shape-extra-large);
     box-shadow: var(--md-sys-elevation-2);
@@ -54,13 +54,13 @@
   .md-dialog-header {
     display: inline-flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .md-dialog-heading {
     display: inline-flex;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .md-dialog-body {
@@ -72,15 +72,16 @@
   }
 
   ::ng-deep [mdDialogIcon] {
+    --md-comp-icon-size: 2.5;
     color: var(--md-sys-color-secondary);
-    max-height: 24px;
+    max-height: 1.5rem;
   }
 
   .md-dialog-actions {
     display: none;
-    gap: 8px;
+    gap: 0.5rem;
     justify-content: flex-end;
-    margin-top: 6px;
+    margin-top: 0.375rem;
   }
 
   &:has(::ng-deep [mdDialogAction]) .md-dialog-actions {
@@ -109,15 +110,15 @@
     }
     .md-dialog-heading {
       flex-direction: row;
-      height: 56px;
-      margin-inline-start: 8px;
-      margin-inline-end: 16px;
+      height: 3.5rem;
+      margin-inline-start: 0.5rem;
+      margin-inline-end: 1rem;
     }
     ::ng-deep md-dialog-supporting-text {
-      margin-inline: 24px;
+      margin-inline: 1.5rem;
     }
     .md-dialog-body {
-      padding-inline: 24px;
+      padding-inline: 1.5rem;
     }
     ::ng-deep [mdDialogAction='submit'] {
       margin-inline-start: auto;
@@ -141,17 +142,17 @@
       .md-dialog-container {
         height: auto;
         width: auto;
-        max-width: min(100%, 560px);
-        max-height: calc(100dvh - 48px - 48px);
-        margin-top: 24px;
-        padding-bottom: 24px;
-        padding-top: 16px;
-        margin-bottom: 24px;
+        max-width: min(100%, 35rem);
+        max-height: calc(100dvh - 3rem - 3rem);
+        margin-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        padding-top: 1rem;
+        margin-bottom: 1.5rem;
         border-radius: var(--md-sys-shape-extra-large);
       }
       .md-dialog-heading {
         flex-direction: row-reverse;
-        margin-inline-start: 24px;
+        margin-inline-start: 1.5rem;
         md-icon-button {
           margin-inline-start: auto;
         }
@@ -160,7 +161,7 @@
         margin-inline-start: 0;
       }
       .md-dialog-actions {
-        margin-inline-end: 24px;
+        margin-inline-end: 1.5rem;
       }
       ::ng-deep md-button:not([mdDialogAction='submit']) {
         display: inline-flex;
