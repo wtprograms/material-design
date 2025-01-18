@@ -11,5 +11,5 @@ import { options } from '../../common/options';
 export default class Page {
   readonly filled = signal(false);
   readonly badge = signal(false);
-    readonly size = options(undefined, 24, 48, 72);
+    readonly size = options(undefined, 1, 1.5, 2, 4);
 }

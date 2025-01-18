@@ -235,6 +235,7 @@ export class MdPopoverComponent extends MdComponent {
     } else {
       this._hostElement.style.width = '';
     }
+    const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const middleware: any[] = [
       offset(this.offset()),
       this.flip() ? flip() : undefined,

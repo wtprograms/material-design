@@ -187,7 +187,7 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
   md-icon,
   img {
     --md-comp-icon-filled: var(--_icon-filled);
-    --md-comp-icon-size: 24;
+    --md-comp-icon-size: 1.5;
     width: 1.5rem;
     height: 1.5rem;
   }

@@ -45,7 +45,7 @@ export default class Page {
     'top-end',
     'top-start'
   );
-  readonly offset = signal(false);
+  readonly offset = options(0, 10, 20, 30);
   readonly width = options('auto', 'target', '200px');
   readonly shift = signal(true);
   readonly flip = signal(true);

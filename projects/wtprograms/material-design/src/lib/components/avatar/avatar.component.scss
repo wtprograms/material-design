@@ -2,7 +2,7 @@
 @use 'sass:map';
 
 $tokens: (
-  'size': 40,
+  'size': unset,
   'color': var(--md-sys-color-primary),
   'background-color': var(--md-sys-color-primary-container),
   'border-color': var(--md-sys-color-primary),
@@ -28,15 +28,15 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
     }
   }
 
+  --_size-rem: calc(var(--_size, 2.5) * 1rem);
   --_current-color: currentColor;
   position: relative;
   display: inline-flex;
   border-radius: var(--md-sys-shape-full);
   background-color: var(--_background-color);
   color: var(--_color);
-  height: 2.5rem;
-  width: 2.5rem;
-  margin: 0.25rem;
+  height: var(--_size-rem);
+  width: var(--_size-rem);
   text-wrap: nowrap;
   justify-content: center;
   align-items: center;
@@ -45,23 +45,15 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
   user-select: none;
   flex-shrink: 0;
   @include md.typescale('label', 'large');
+  font-size: calc(var(--_size-rem) / 2.5);
   @include md.motion('background-color, color');
-  zoom: calc(var(--_size) / 40);
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: 2px solid var(--_border-color);
-    @include md.motion('border-color');
-  }
-
-  .md-avatar-border {
-    position: absolute;
-    inset: 0;
-    border: 2px solid var(--_border-color);
-    border-radius: inherit;
+    border: calc(var(--_size-rem) * 0.05) solid var(--_border-color);
     @include md.motion('border-color');
   }
 
@@ -75,7 +67,7 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
 
   md-icon {
     --md-comp-icon-filled: var(--_icon-filled);
-    --md-comp-icon-size: 24;
+    --md-comp-icon-size: 1.5;
     width: 1.5rem;
     height: 1.5rem;
   }

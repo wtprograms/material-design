@@ -3,18 +3,20 @@
 $tokens: (
   'filled': 0,
   'weight': var(--md-ref-typeface-weight-regular),
-  'size': 24,
+  'size': unset,
 );
 
 :host {
   @include md.declare-tokens($tokens, 'md-comp-icon', true);
-  --_size-px: calc(var(--_size) * 1px);
+  --_size-rem: calc(var(--_size) * 1rem);
+  --_size-px: calc(var(--_size, 24) / 16);
 
   position: relative;
-  font-size: var(--_size-px);
-  width: var(--_size-px);
-  max-width: var(--_size-px);
-  height: var(--_size-px);
+  font-size: var(--_size-rem, inherit);
+  width: var(--_size-rem, auto);
+  max-width: var(--_size-rem);
+  height: var(--_size-rem, auto);
+  max-height: var(--_size-rem);
   color: inherit;
   display: inline-flex;
   font-style: normal;
@@ -35,7 +37,7 @@ $tokens: (
   font-weight: var(--_weight);
   pointer-events: none;
   font-variation-settings: 'FILL' var(--_filled), 'wght' var(--_weight),
-    'GRAD' 0, 'opsz' clamp(20, var(--_size), 48);
+    'GRAD' 0, 'opsz' clamp(20, var(--_size-px), 48);
 
   @include md.motion('font-variation-settings');
 

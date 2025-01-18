@@ -13,5 +13,5 @@ export default class Page {
   readonly interactive = signal(false);
   readonly anchor = signal(false);
   readonly image = signal(false);
-  readonly size = options(undefined, 24, 80, 120);
+  readonly size = options(2.5, 5, 7.5, 10);
 }

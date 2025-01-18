@@ -20,6 +20,7 @@ import { observeResize$ } from '../../common/rxjs/observe-resize';
 import { MdResizeDirective } from '../../directives/resize.directive';
 import { MdPopoverComponent } from '../popover/popover.component';
 import { MdTintComponent } from '../tint/tint.component';
+import { remToPx } from '../../common/rem-to-px';
 
 @Component({
   selector: 'md-field',
@@ -71,15 +72,15 @@ export class MdFieldComponent extends MdComponent implements AfterViewInit {
     const variant = this.variant();
     const leadingWidth = this._leadingWidth();
     if (!label || !leadingWidth?.width) {
-      return 16;
+      return remToPx(1);
     }
 
-    const start = leadingWidth ? 12 + leadingWidth.width + 16 : 16;
+    const start = leadingWidth ? remToPx(0.75) + leadingWidth.width + remToPx(1) : remToPx(1);
     if (variant === 'filled' || !populated) {
       return start;
     }
 
-    return 16;
+    return remToPx(1);
   });
 
   readonly borderStart = computed(() => {
@@ -88,9 +89,9 @@ export class MdFieldComponent extends MdComponent implements AfterViewInit {
     const label = this.label();
     const smallLabelWidth = this.labelRect()?.width ?? 0;
     if (!label || !smallLabelWidth || variant === 'filled' || !populated) {
-      return 12;
+      return remToPx(0.75);
     }
-    return smallLabelWidth + 20;
+    return smallLabelWidth + remToPx(1.25);
   });
 
   onBodyClick(event: Event) {

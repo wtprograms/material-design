@@ -9,6 +9,9 @@
     <app-select-property [options]="width.options" [(value)]="width"
       >Width</app-select-property
     >
+    <app-select-property [options]="offset.options" [(value)]="offset"
+      >Offset</app-select-property
+    >
     <app-check-property [(checked)]="offset">Offset</app-check-property>
     <app-check-property [(checked)]="flip">Flip</app-check-property>
     <app-check-property [(checked)]="shift">Shift</app-check-property>
@@ -22,7 +25,7 @@
   <md-popover
     [trigger]="trigger()"
     [placement]="placement()"
-    [offset]="offset() ? 16 : 0"
+    [offset]="offset()"
     [flip]="flip()"
     [shift]="shift()"
     [(open)]="open"

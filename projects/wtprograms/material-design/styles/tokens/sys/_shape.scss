@@ -3,11 +3,11 @@
 }
 
 $tokens: (
-  'none': _sides(0px),
-  'extra-small': _sides(4px),
-  'small': _sides(8px),
-  'medium': _sides(12px),
-  'large': _sides(16px),
-  'extra-large': _sides(28px),
-  'full': _sides(9999px),
+  'none': _sides(0rem),
+  'extra-small': _sides(0.25rem),
+  'small': _sides(0.5rem),
+  'medium': _sides(0.75rem),
+  'large': _sides(1rem),
+  'extra-large': _sides(1.75rem),
+  'full': _sides(624.9375rem),
 );
