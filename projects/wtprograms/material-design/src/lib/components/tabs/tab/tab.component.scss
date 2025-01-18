@@ -90,6 +90,7 @@ $layouts: ('primary', 'secondary');
   }
 
   ::ng-deep md-icon {
+    --md-comp-icon-size: 2.5;
     --md-comp-icon-filled: var(--_icon-filled);
   }
 
