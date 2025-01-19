@@ -6,6 +6,9 @@ $tokens: (
   'disabled': (
     'color': var(--md-sys-color-disabled-color),
   ),
+  'background-color': transparent,
+  'border-radius': 0,
+  'border': 0,
   'padding': (
     '': 1rem,
     'addon': 0.75rem,
@@ -130,10 +133,7 @@ $variants: ('text', 'filled', 'tonal', 'outlined', 'elevated');
   @include md.typescale('label', 'large');
   @include md.motion('background-color, color, border, box-shadow');
 
-  &:has(
-      ::ng-deep [mdButtonLeading],
-      > [mdEmbeddedButton] > md-badge
-    ) {
+  &:has(::ng-deep [mdButtonLeading], > [mdEmbeddedButton] > md-badge) {
     padding-inline-start: var(--_padding-addon);
   }
   &:has(::ng-deep [mdButtonTrailing], > [mdEmbeddedButton] > md-badge) {
