@@ -16,18 +16,18 @@ import { filter, switchMap } from 'rxjs';
 import { FieldVariant } from './field-variant';
 import { MdComponent } from '../../common/base/md.component';
 import { ControlState } from '../../common/base/value-accessor/control-state';
-import { observeResize$ } from '../../common/rxjs/observe-resize';
-import { MdResizeDirective } from '../../directives/resize.directive';
 import { MdPopoverComponent } from '../popover/popover.component';
 import { MdTintComponent } from '../tint/tint.component';
 import { remToPx } from '../../common/rem-to-px';
+import { observeResize$ } from '../../common/rxjs/observe-resize';
+import { MdResizedDirective } from '../../directives/resized.directive';
 
 @Component({
   selector: 'md-field',
   templateUrl: 'field.component.html',
   styleUrls: ['field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MdResizeDirective, MdTintComponent, MdPopoverComponent],
+  imports: [MdResizedDirective, MdTintComponent, MdPopoverComponent],
   host: {
     '[attr.variant]': 'variant()',
     '[attr.state]': 'state() ? state() : null',

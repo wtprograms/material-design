@@ -1,13 +1,13 @@
 import { Directive } from '@angular/core';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
-import { observeResize$ } from '../common/rxjs/observe-resize';
 import { MdDirective } from '../common/base/md.directive';
+import { observeResize$ } from '../common/rxjs/observe-resize';
 
 @Directive({
-  selector: '[mdResize]',
+  selector: '[mdResized]',
 })
-export class MdResizeDirective extends MdDirective {
-  readonly mdResize = outputFromObservable<DOMRect | undefined>(
+export class MdResizedDirective extends MdDirective {
+  readonly mdResized = outputFromObservable<DOMRect | undefined>(
     observeResize$(this.hostElement, this.platformId)
   );
 }

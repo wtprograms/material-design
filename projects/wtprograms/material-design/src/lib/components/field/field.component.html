@@ -2,7 +2,7 @@
   @if (this.variant() === 'filled') {
   <md-tint />
   } @if (label()) {
-  <span (mdResize)="labelRect.set($event)" class="label-small">{{
+  <span (mdResized)="labelRect.set($event)" class="label-small">{{
     label()
     }}</span>
   <span class="label" [style.transition]="loaded() ? '' : 'none'" [style.inset-inline-start.px]="labelStart()">{{
