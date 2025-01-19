@@ -20,4 +20,14 @@
   >
     home
   </md-icon-button>
+  <md-icon-button
+    [variant]="variant()"
+    [selected]="selected()"
+    [disabled]="disabled()"
+    [badgeText]="badge() ? 'New' : undefined"
+    [progressIndicatorIndeterminate]="progressIndicator()"
+    [custom]="true"
+  >
+    <img src="https://avatar.iran.liara.run/public/26">
+  </md-icon-button>
 </app-page>

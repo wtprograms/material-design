@@ -114,8 +114,8 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
     md-badge {
       display: none;
     }
-    
-    img {
+
+    ::ng-deep img {
       opacity: 0.5;
     }
   }
@@ -180,15 +180,17 @@ $variants: ('standard', 'filled', 'tonal', 'outlined');
   @include md.motion('background-color, color, border');
 
   &:has(> [mdEmbeddedButton]:hover, > [mdEmbeddedButton]:focus-visible) {
-    md-icon {
+    ::ng-deep md-icon {
       --md-comp-icon-weight: var(--md-ref-typeface-weight-bold);
     }
   }
 
-  md-icon,
-  img {
+  ::ng-deep md-icon {
     --md-comp-icon-filled: var(--_icon-filled);
     --md-comp-icon-size: 1.5;
+  }
+
+  ::ng-deep img {
     width: 1.5rem;
     height: 1.5rem;
   }

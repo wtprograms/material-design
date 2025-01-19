@@ -18,7 +18,7 @@
   <ng-container *ngTemplateOutlet="content" />
 </a>
 } @else {
-<button mdEmbeddedButton [type]="type()" [value]="value()" [disabled]="disabled()">
+<button mdEmbeddedButton [type]="type()" [value]="value() ?? null" [disabled]="disabled()">
   <ng-container *ngTemplateOutlet="content" />
 </button>
 } @if (embeddedProgressIndicator.value() ||

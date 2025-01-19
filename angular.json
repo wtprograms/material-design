@@ -107,7 +107,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/wtprograms/material-design/ng-package.json"
           },
@@ -135,6 +135,6 @@
     }
   },
   "cli": {
-    "analytics": "2852e432-8237-4420-a8dc-e8ee91fda5a4"
+    "analytics": "08ff08ec-ce24-4f18-8302-12804cb8c705"
   }
 }
